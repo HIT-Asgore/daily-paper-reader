@@ -1,0 +1,2318 @@
+Title: Stabilized neural Hamilton–Jacobi–Bellman solvers: Error analysis and applications in model-based reinforcement learning
+
+URL Source: https://arxiv.org/pdf/2605.07116v1
+
+Published Time: Mon, 11 May 2026 00:31:52 GMT
+
+Number of Pages: 22
+
+Markdown Content:
+# Stabilized Neural Hamilton–Jacobi–Bellman Solvers: Error Analysis and Applications in Model-Based Reinforcement Learning 
+
+Minseok Kim 1 Yeongjong Kim 2 Namkyeong Cho 3,† Yeoneung Kim 1,†
+
+> 1
+
+Seoul National University of Science and Technology 
+
+> 2
+
+POSTECH 3Gachon University 
+
+Abstract 
+
+Physics-informed neural solvers offer a promising route to model-based reinforcement learning in continuous time, where optimal feedback synthesis is governed by Hamilton–Jacobi–Bellman (HJB) equations. Practical imple-mentations often occupy a regime that is neither a classical grid method nor a continuous-PDE PINN: the value function is represented by a neural network, finite-difference HJB policy-evaluation operators are evaluated by network queries at shifted points, and residuals are minimized by random continuous collocation. This regime preserves the stabilized finite-difference policy-evaluation structure while avoiding grid-based value unknowns. We develop an error theory for this hybrid regime. Interpreting finite differences as shift operators acting on neural networks, we prove a population L2
+
+stability estimate for one policy-evaluation step with learned dynamics. The bound separates residual error, initial and exterior-collar mismatch, policy mismatch, and model-identification error, with an explicit gradi-ent amplification factor for learned dynamics, while the underlying linear evaluation stability remains free of hidden inverse-viscosity blow-up. We fur-ther give a finite-sample collocation certificate and a conditional multi-step propagation result through greedy policy improvement. Experiments on compact-control LQR upto 64 dimensions, Allen–Cahn control, pendulum, Hopper, and 3D quadrotor benchmarks compare against representative model-based and model-free RL baselines, demonstrating the predicted residual, policy-mismatch, and learned-model error trends. 
+
+1 Introduction 
+
+Model-based reinforcement learning (MBRL) aims to improve sample efficiency by learning or exploiting a dynamics model and then planning with that model. This principle dates back to Dyna-style architectures [ 1] and has been developed into data-efficient probabilistic policy-search methods such as PILCO [ 2]. Modern deep MBRL methods combine neural dynamics models with uncertainty-aware planning or short model-generated rollouts, as in PETS and MBPO [ 3, 4]. In continuous-time control, the planning problem is naturally described by Hamilton–Jacobi–Bellman (HJB) equations, whose solutions encode optimal feedback laws through the value gradient [ 5, 6 ]. This connection is classical in dynamic programming and policy iteration [ 7 , 8 , 9, 10 ], but it becomes computationally challenging in high-dimensional systems because the HJB equation is nonlinear, first- or second-order, and posed over a continuous state space.   
+
+> †Co-corresponding authors: namkyeong.cho@gmail.com ,yeoneung.kim@seoultech.ac.kr
+> Preprint.
+> arXiv:2605.07116v1 [cs.LG] 8 May 2026
+
+Neural PDE solvers provide a possible way around the curse of dimensionality. Physics-informed neural networks (PINNs) minimize PDE residuals at collocation points [ 11 ], while deep learning methods for high-dimensional PDEs have shown that neural parameterizations can be effective beyond the reach of tensor-product grids [ 12 ]. In parallel, physics-informed and HJB-based reinforcement-learning methods have begun to connect neural PDE solvers with continuous-control algorithms [ 13 , 14 , 15 , 16 ]. However, directly minimizing a fully nonlinear HJB residual is often unstable: the Hamiltonian contains a pointwise optimization over controls, and model error in MBRL perturbs the PDE operator itself. Policy iteration offers a more structured alternative. Given a policy, one solves a linear policy-evaluation equation; the policy is then improved by a greedy minimization step. This idea underlies classical Howard policy iteration [ 7 , 17 , 8] and has recently been analyzed for continuous-time controlled diffusions, deterministic HJB equations, nonconvex Hamilton– Jacobi equations, and entropy-regularized control [ 10 , 18 , 19 , 20 , 21 , 22 ]. Neural variants of policy iteration have also appeared for HJB/HJI equations, operator-learning settings, and exploratory or entropy-regularized control [ 15 , 23 , 24 , 16 ]. Yet existing analyses typically focus on exact or prescribed dynamics, continuous PDE residuals, or grid-based discretizations. What is missing is an analysis of the practically used middle ground: a semi-discrete HJB policy-evaluation operator applied to a neural value function and trained by random collocation under learned dynamics. This hybrid regime presents a fundamental stability-scalability trade-off : while continuous-PDE PINNs offer mesh-free scalability, they often struggle with numerical insta-bilities inherent in HJB equations, particularly when automatic differentiation (AD) fails to respect the monotonicity required for stable viscosity solutions. Conversely, classical grid-based finite-difference methods provide stabilized operators but are crippled by the curse of dimensionality. To bridge this gap, we decouple the operator discretization 
+
+from the value representation . Instead of computing derivatives through AD, we treat the HJB operator as a semi-discrete object that probes the neural value function at small displacements. As illustrated in the stability proof map in Figure 1, our approach keeps the stabilized finite-difference structure, including the artificial-viscosity term, but represents the value function Vθ by a neural network. The figure provides a visual trajectory of our error analysis, tracing how the dynamics identification error ηn and the semi-discrete residual qn are transformed into a rigorous L2 value-iterate bound. A key innovation highlighted in this framework is using the finite-difference scale h strictly as a translation scale for network queries: Vθ (τ, x ± he i), rather than a grid spacing for trainable unknowns. By evaluating the semi-discrete gradient ∇h 
+
+> 0
+
+Vθ and Laplacian ∆hVθ through these shifted queries, the method preserves the monotonicity and stabilization of finite-difference schemes while remaining mesh-free and compatible with random continuous collocation. This distinction is mathematically critical. If the residual is treated as a continuous-PDE object, the analysis fails to capture the implemented operator’s behavior; if it is treated as a grid residual, we reintroduce the grid constraints that the neural solver aims to avoid. We address the following question: 
+
+For a random-collocation neural solver of a semi-discrete HJB policy-evaluation equation, how do population residuals, exterior-collar mismatches, and learned-model errors quantitatively control the value-iterate error? 
+
+Our answer is a deterministic population error theory that interprets finite differences as shift operators acting on neural networks. We prove a stability estimate in the energy norm Yh,identifying a precise viscosity–model-error tradeoff : while the linear evaluation remains stable without hidden inverse-viscosity blow-up, the learned-model identification error is explicitly amplified by a factor of 1/√νh.
+
+Our contributions are as follows: 
+
+• Semi-discrete neural policy evaluation: We formulate a PINN policy-evaluation framework for semi-discrete HJB equations where h serves as a translation scale and the boundary is treated as an exterior collar. 2• Population L2 stability with learned dynamics: We prove a one-step value-error bound (Theorem 1) that separates residual error, initial/exterior-collar mismatch, policy mismatch, and model-identification error. 
+
+• Random-collocation and multi-step propagation: We provide a finite-sample collo-cation certificate and a conditional multi-step error recursion (Corollary 1) for convergence through greedy policy improvement. 
+
+• Broad empirical validation: We demonstrate these theoretical trends on 16, 32, and 64-dimensional LQR, Allen–Cahn control, and nonlinear MuJoCo benchmarks, showing SDPI’s superior stability over representative RL baselines.  
+
+> Stability Analysis
+> Dynamics Identification
+> ∥
+
+˜fϕ − f ∥L∞(QT ) ≤ η(∞)
+
+> n
+> Assumed from Regression
+> SDPI Evaluation
+> ∥
+
+˜Vn − V hn ∥Yh ≤ C(qn, b n, δ n, ηn √νh )
+
+> Theorem 1
+> Greedy Policy Improvement
+> ∥
+
+˜un − un∥L∞ ≤ Ku μ dist (∇˜V , ∇V ) + δn    
+
+> Lipschitz Sensitivity
+> PI Convergence
+> En≤ΛhEn−1+Cϵ n
+> Corollary 1
+> ηn
+> ∇
+
+˜Vn  
+
+> f
+> Λh<1
+
+Figure 1: Proof map for the stability and convergence of the proposed semi-discrete PINN policy iteration. The analysis branch connects the dynamics identification error ηn to the one-step L2 value-error bound (Theorem 1) and propagates it through the greedy policy sensitivity to establish multi-step PI convergence (Corollary 1). 
+
+2 Semi-Discrete HJB Policy Iteration without Grid Unknowns 
+
+A central design choice is the level at which the HJB operator should be approximated. Directly minimizing the continuous HJB residual with a PINN keeps the representation mesh-free, but it leaves the solver with the full Hamiltonian nonlinearity and provides little access to the monotone structure underlying stable viscosity schemes. In contrast, classical finite-difference policy iteration introduces a semi-discrete operator, but represents the value function by grid unknowns and therefore scales poorly with dimension. For deterministic continuous-time control, this semi-discrete viewpoint is not only a numerical convenience. Tang-Tran-Zhang [ 18 ] analyze an exact semi-discrete PI scheme with artificial viscosity νh = N h and N ≥ ∥ f ∥∞/2, for which the finite-difference Hamiltonian is monotone and a comparison principle holds. As a consequence, the exact PI iterates are order monotone, V hn+1 ≤ V hn up to the time-reversal convention, converge exponentially fast to the nonlinear semi-discrete HJB solution V h for fixed h, and satisfy the consistency estimate 
+
+∥V h − V ∥∞ = O(√h) as h → 0. Thus the exact semi-discrete PI scheme provides a stable deterministic reference, while our goal is to quantify the additional error introduced by shifted neural-network queries, random collocation, inexact greedy updates, and learned dynamics. Our method keeps this policy-iteration operator but changes its representation. Instead of storing value unknowns on a grid, we represent the value function by a neural network and evaluate finite-difference terms by querying the same network at shifted points, Vθ (τ, x ± he i).
+
+Thus the parameter h is used as a translation scale for the operator, not as a tensor-product grid of trainable values. The resulting method preserves the finite-difference stability structure of semi-discrete HJB policy iteration while retaining the mesh-free scalability of random-collocation PINN training. Let Ω ⊂ Rd be bounded, QT = (0 , T ) × Ω, and U ⊂ Rm compact. Set 
+
+Ω+h := Ω + [ −h, h ]d, Γext  
+
+> h
+
+:= Ω +h \ Ω.
+
+3For v : Ω +h → R, define 
+
+D+,h i v(x) = v(x + he i) − v(x)
+
+h , D−,h i v(x) = v(x) − v(x − he i)
+
+h ,D0,h i v(x) = v(x + he i) − v(x − he i)2h , ∇h 
+
+> 0
+
+v = ( D0,h  
+
+> 1
+
+v, . . . , D 0,h d v),
+
+∆hv(x) = 
+
+> d
+
+∑
+
+> i=1
+
+D−,h i D+,h i v(x) = 
+
+> d
+
+∑
+
+> i=1
+
+v(x + he i) − 2v(x) + v(x − he i)
+
+h2 . (1) These are finite-difference operators, but v is not a grid function. In the neural implementation, 
+
+v = Vθ , and the shifted values are obtained by network queries. For the controlled ODE 
+
+˙xs = f (xs, u s), us ∈ U, 
+
+with running cost L and terminal cost g, reverse time by τ = T − t. A policy un induces the finite-difference policy-evaluation equation 
+
+∂τ V hn − an · ∇ h 
+
+> 0
+
+V hn − νh∆hV hn = L(x, u n) in QT , an = f (·, u n), (2) with initial data V hn (0 , x ) = g(x). Here νh > 0 is the artificial viscosity; the monotone exact-PI reference of [ 18 ] corresponds to the scaling νh = N h with N ≥ Ma/2, while our one-step stability estimate below is stated for general positive νh. Because (1) uses x ± he i,the exact evaluation problem is supplemented by exterior-collar data 
+
+V hn (τ, x ) = gext ,n (τ, x ), (τ, x ) ∈ (0 , T ) × Γext  
+
+> h
+
+. (3) The greedy update is 
+
+un+1 (τ, x ) ∈ arg min 
+
+> u∈U
+
+{f (x, u ) · ∇ h 
+
+> 0
+
+V hn (τ, x ) + L(x, u )} . (4) Our target is the neural error ˜Vn − V hn relative to the finite-difference policy-evaluation solution, not the consistency error between V hn and the viscosity solution of the original continuous HJB equation. 
+
+3 Random-Collocation Neural Policy Evaluation 
+
+We now describe the computational object analyzed in the rest of the paper. The policy-evaluation equation is the finite-difference equation (2) from Section 2, but the value function is represented by a neural network and trained from random collocation samples. 
+
+Learning the dynamics. When the dynamics are unknown, we fit a differentiable surrogate ˜fϕ from transition data. Let 
+
+Dn = {(xj , u j , x + 
+
+> j
+
+, ∆tj )}Nd
+
+> j=1
+
+denote the dataset available at policy-iteration step n, where xj is the state, uj is the applied control, and x+ 
+
+> j
+
+≈ x(tj + ∆ tj ) is the subsequent state observed after a time interval 
+
+∆tj . We use the finite-time difference quotient ̂ fj = x+  
+
+> j−xj
+> ∆tj
+
+as a supervised target for the continuous-time vector field and train ˜fϕ by minimizing 
+
+Ldyn (ϕ) = 1
+
+NdNd∑
+
+> j=1
+
+∣∣∣ ˜fϕ(xj , u j ) −̂ fj
+
+∣∣∣2
+
+.
+
+At step n, the learned closed-loop drift is ˜an(τ, x ) := ˜fϕ(x, ˜un(τ, x )) .
+
+Residual evaluated by shifted network queries. For a neural value function 
+
+Vθ : (0 , T ) × Ω+h → R,
+
+we define the finite-difference residual 
+
+Rn,h [Vθ ] := ∂τ Vθ − ˜an · ∇ h 
+
+> 0
+
+Vθ − νh∆hVθ − L(x, ˜un). (5) Only the time derivative is a continuous derivative. The spatial derivatives are finite differences evaluated by shifted network queries, Vθ (τ, x ± he i). This is the key distinction from a continuous-PDE PINN. 4Algorithm 1: Online PINN policy iteration  
+
+> 1
+
+Input: ˜u0, D0, h, ∆t, νh, NPI Output: ˜Vn, ˜un 
+
+> 2
+
+Initialize ˜fϕ0 from D0 
+
+> 3
+
+for n = 0 , . . . , N PI − 1 do  
+
+> 4
+
+Collect transitions and augment 
+
+Dn = Dn−1 ∪ { (xj , u j , x + 
+
+> j
+
+, ∆tj )}Nd
+
+> j=1
+
+,̂ fj = x+  
+
+> j−xj
+> ∆tj
+
+. 
+
+> 5
+
+Fit ˜fϕn on Dn by least squares.  
+
+> 6
+
+Set ˜an = ˜fϕn (·, ˜un) and compute ˜Vn ≈ arg min Vθ̂ L(n)PINN (θ). 
+
+> 7
+
+Update ˜un+1 ∈ arg min u∈U
+
+{ ˜fϕn (·, u ) · ∇ h 
+
+> 0
+
+˜Vn + L(·, u )
+
+}
+
+.
+
+Population and empirical training objectives. The population residual minimized by the idealized solver is ∥R n,h [Vθ ]∥2 
+
+> L2(QT)
+
+. In practice, this quantity is estimated from random collocation points (τj , x j ) ∼ ρQ in QT . We also sample initial points x0 
+
+> j
+
+∼ ρΩ and exterior-collar points (τ bj , y j ) ∼ ρΓh , where yj ∈ Γext  
+
+> h
+
+. The empirical PINN loss is ̂
+
+L(n)PINN (θ) := 1
+
+NrNr∑
+
+> j=1
+
+|R n,h [Vθ ]( τj , x j )|2 + λic 
+
+1
+
+N0
+
+> N0
+
+∑
+
+> j=1
+
+∣∣Vθ (0 , x 0 
+
+> j
+
+) − g(x0 
+
+> j
+
+)∣∣2
+
++ λext 
+
+1
+
+NbNb∑
+
+> j=1
+
+∣∣Vθ (τ bj , y j ) − V h, ref  
+
+> n
+
+(τ bj , y j )∣∣2 . (6) The exterior-collar loss is essential because the finite-difference operator uses values at x ± he i.The population error analysis assumes that the trained network ˜Vn satisfies 
+
+∂τ ˜Vn − ˜an · ∇ h 
+
+> 0
+
+˜Vn − νh∆h ˜Vn = L(x, ˜un) + qn in QT , (7) with initial mismatch 
+
+˜Vn(0 , x ) = g(x) + rn(x) in Ω,
+
+and exterior-collar mismatch 
+
+˜Vn = V h, ref  
+
+> n
+
++ bn on (0 , T ) × Γext  
+
+> h
+
+. (8) Writing eext ,n := V h, ref  
+
+> n
+
+− gext ,n , the total exterior mismatch is bn + eext ,n .1
+
+4 Population Error Analysis 
+
+We now quantify the error between the learned value iterate ˜Vn and the finite-difference policy-evaluation solution V hn . The result is deterministic: empirical random collocation enters later only as a way to certify the population residual norm. Define the energy norm 
+
+∥w∥Yh := ∥w∥L∞(0 ,T ;L2(Ω)) + √νh
+
+∥∥∇h
+
+> +
+
+w∥∥L2(QT ) , ∇h
+
+> +
+
+w = ( D+,h  
+
+> 1
+
+w, . . . , D +,h d w). (9) Constants denoted by C may depend on T, d, Ω and uniform data bounds, but not on the policy-iteration index n and not on 1/ν h unless explicitly displayed. 
+
+> 1
+
+The exterior-collar Γext  
+
+> h
+
+is the set of points {x ± he i /∈ Ω | x ∈ Ω} required for shifted queries. We decompose the total boundary error as ˜Vn − gext ,n = bn + eext ,n , where bn := ˜Vn − V h, ref  
+
+> n
+
+represents the training residual relative to a prescribed reference V h, ref  
+
+> n
+
+on the collar, and eext ,n := V h, ref  
+
+> n
+
+− gext ,n denotes the approximation bias of that reference relative to the true exterior data. 
+
+5Exterior-collar trace norm. For a collar trace b : (0 , T ) × Γext  
+
+> h
+
+→ R, define 
+
+∥b∥Th,ν h
+
+:= inf   
+
+> B=bon Γext
+> h
+
+(
+
+∥B∥L∞(0 ,T ;L2(Ω)) + ∥∂τ B∥L2(QT ) + ∥∥∇h 
+
+> 0
+
+B∥∥L2(QT )
+
++ √νh
+
+∥∥∇h
+
+> +
+
+B∥∥L2(QT ) + νh ∥∆hB∥L2(QT )
+
+)
+
+, (10) where the infimum is over admissible extensions to (0 , T ) × Ω+h. This is the finite-difference analogue of a parabolic trace norm. 
+
+Assumption 1 (Regularity and perturbation bounds) . For each policy-iteration step n,assume: (i) L and f are Lipschitz in u with constants KL, K f .(ii) The closed-loop drifts an = f (·, u n), ˜an = ˜fϕ(·, ˜un) satisfy ∥an∥L∞ + ∥˜an∥L∞ ≤ Ma,
+
+and ∑
+
+> i
+
+∥∥∥D+,h i an,i 
+
+∥∥∥L∞
+
++ ∑
+
+> i
+
+∥∥∥D+,h i ˜an,i 
+
+∥∥∥L∞
+
+≤ MD .
+
+(iii) 0 < ν h ≤ ν0.(iv) The relevant exterior-collar traces have finite Th,ν h norm. (v) The learned-dynamics error along the learned policy satisfies 
+
+η(∞) 
+
+> n
+
+:= 
+
+∥∥∥ ˜fϕ(·, ˜un) − f (·, ˜un)
+
+∥∥∥L∞(QT )
+
+< ∞.
+
+Stability of one evaluation equation. The following lemma is the basic deterministic PDE estimate. The important point is that the stability constant has no hidden 1/ν h
+
+blow-up. 
+
+Lemma 1 (Population stability for finite-difference policy evaluation) . Let w solve 
+
+∂τ w − a · ∇ h 
+
+> 0
+
+w − νh∆hw = F in QT ,
+
+with initial data w0 and exterior-collar data b. If a satisfies the Ma, M D bounds in Assump-tion 1, then 
+
+∥w∥Yh ≤ C
+
+(
+
+∥w0∥L2(Ω) + ∥F ∥L2(QT ) + ∥b∥Th,ν h
+
+)
+
+. (11) The proof uses a lifting of the exterior-collar data, a shifted-product identity for the central transport term, and the finite-difference integration-by-parts identity for ∆h; see Appendix B. 
+
+Lemma 2 (Finite-difference gradient scale) . If the exact evaluation data are uniformly bounded in the norms of Lemma 1, then 
+
+∥∥∇h 
+
+> 0
+
+V hn
+
+∥∥L2(QT ) ≤ Cgrad 
+
+(
+
+1 + ν−1/2
+
+> h
+
+)
+
+. (12) This gradient estimate is the bridge from linear evaluation stability to learned-model error propagation: it controls the forcing term in which the dynamics error is multiplied by ∇h 
+
+> 0
+
+V hn .
+
+Theorem 1 (One-step population L2 error bound) . Under Assumption 1, let V hn solve 
+
+(2) –(3) , and let ˜Vn satisfy (7) –(8) . Then 
+
+∥∥∥ ˜Vn − V hn
+
+∥∥∥Yh
+
+≤ C
+
+(
+
+∥rn∥L2(Ω) + ∥qn∥L2(QT ) + ∥bn + eext ,n ∥Th,ν h
+
++ KL ∥˜un − un∥L2(QT )
+
++ Gh
+
+[Kf ∥˜un − un∥L∞(QT ) + η(∞)
+
+> n
+
+])
+
+. (13) 
+
+The constant C is independent of 1/ν h except through the explicit factor Gh := 1 + ν−1/2 
+
+> h
+
+..Proof sketch. Introduce an auxiliary value ̂ Vn that solves the learned-dynamics evaluation equation with exact initial and exterior-collar data. Decompose 
+
+˜Vn − V hn = ( ˜Vn −̂ Vn) + ( ̂ Vn − V hn ) =: Wn + Zn.
+
+6The first term Wn contains the PINN residual, initial mismatch, and exterior-collar mismatch; Lemma 1 gives the first three terms in (13) . The second term Zn has zero initial and collar data and forcing 
+
+Ξn = L(x, ˜un) − L(x, u n) + ∇h 
+
+> 0
+
+V hn · [ ˜fϕ(x, ˜un) − f (x, u n)] .
+
+The cost part is bounded by KL ∥˜un − un∥L2(QT ). The dynamics part is split into model error and policy mismatch; Lemma 2 yields the factor Gh. Full details are in Appendix D. The theorem separates four error sources: population residual error qn, data-enforcement errors rn and bn, policy mismatch ˜un − un, and learned-dynamics error η(∞) 
+
+> n
+
+. The artificial viscosity does not destabilize the linear evaluation estimate; it enters only because model error is multiplied by the finite-difference gradient ∇h 
+
+> 0
+
+V hn , whose available energy bound scales as 1/√νh.
+
+Empirical certification. While Theorem 1 is formulated using the population L2 residual 
+
+qn, the practical solver minimizes the empirical loss ̂ L(n)PINN over random collocation points. The bridge between these quantities is provided by uniform concentration bounds; we provide a formal certificate in Appendix E showing that the empirical residual effectively controls the population norm required for our stability estimates. 
+
+4.1 Conditional propagation through policy iteration 
+
+Theorem 1 is a one-step estimate conditional on ˜un − un. To propagate errors across policy-iteration steps, one must control the greedy policy mismatch by the previous value error. For a model F , define 
+
+GF (x, p ) := arg min 
+
+> u∈U
+
+{F (x, u ) · p + L(x, u )}.
+
+Assumption 2 (Greedy-map stability) . Assume the greedy objective is μ-strongly convex in 
+
+u for all relevant x and |p| ≤ P∗. Assume also that 
+
+∥∂uf ∥L∞ +
+
+∥∥∥∂u ˜fϕ
+
+∥∥∥L∞
+
+≤ Ku,
+
+the derivative-level model error is η(∞)
+
+> ∂u,n
+
+, and the computed greedy update has error ρgreedy  
+
+> n
+
+.Set 
+
+δgreedy  
+
+> n
+
+:= ρgreedy  
+
+> n
+
++ P∗
+
+μ η(∞)
+
+> ∂u,n
+
+.
+
+Under Assumption 2, 
+
+∥˜un − un∥L∞(QT ) ≤ Ku
+
+μ
+
+∥∥∥∇h 
+
+> 0
+
+( ˜Vn−1 − V hn−1)
+
+∥∥∥L∞(QT )
+
++ δgreedy  
+
+> n
+
+. (14) Assume further that the relevant value-error class obeys the inverse estimate ∥∥∇h 
+
+> 0
+
+e∥∥L∞(QT ) ≤ Cinv (h, F) ∥e∥L∞(0 ,T ;L2(Ω)) . (15) For neural networks, Cinv (h, F) depends on architecture, activation smoothness, and weight or spectral regularization. 
+
+Corollary 1 (Conditional multi-step propagation) . Let En := 
+
+∥∥∥ ˜Vn − V hn
+
+∥∥∥L∞(0 ,T ;L2(Ω)) 
+
+and 
+
+εn := ∥rn∥L2 + ∥qn∥L2 + ∥bn + eext ,n ∥Th,ν h
+
++ Ghη(∞) 
+
+> n
+
+.
+
+Under Theorem 1, Assumption 2, and (15) ,
+
+En ≤ Cε n + Λ hEn−1 + C
+
+(
+
+|QT |1/2KL + GhKf
+
+)
+
+δgreedy  
+
+> n
+
+, (16) 
+
+where 
+
+Λh := C
+
+(
+
+|QT |1/2KL + GhKf
+
+) Ku
+
+μ Cinv (h, F).
+
+If Λh < 1, the errors satisfy the geometric convolution bound obtained by iterating (16) .
+
+The condition Λh < 1 is intentionally explicit. It is not an unconditional convergence claim for arbitrary networks; it is a regularized-function-class condition describing when the one-step PDE stability can be propagated through greedy improvement. 7(a) LQR slice comparisons along x[1] . (b) Duffing value function at t = 5 .
+
+Figure 2: Value function validation across linear and nonlinear tasks. (a) Slice-wise com-parison along the x[1] coordinate for LQR problems with control inputs constrained to a compact set in d ∈ { 4, 8, 16 } dimensions. The neural approximation Vpred is validated against reference solutions Vref obtained via an interior point method . (b) 2D visualization of the value function for the nonlinear Duffing system at t = 5 , including the neural prediction (left), finite-difference reference (middle), and the resulting RMSE map (right). 
+
+Scope of the estimate. The analysis supports the chain continuous HJB → finite-difference HJB/PI operator → random-collocation neural solver .
+
+It does not replace the finite-difference operator by a continuous PDE operator. The residual minimized by the solver is (5) , not ∂τ Vθ − ˜fϕ · ∇ Vθ − ν∆Vθ − L. Theorem 1 controls the neural approximation and learned-dynamics errors relative to the exact semi-discrete iterate 
+
+V hn . Combined with the exact-PI and semi-discrete consistency results of [ 18 ], the total error can be viewed schematically as 
+
+∥ ˜Vn − V ∥ ≤ ∥ ˜Vn − V hn ∥
+
+︸ ︷︷ ︸
+
+> neural/model error
+
++ ∥V hn − V h∥
+
+︸ ︷︷ ︸
+
+> exact PI error
+
++ ∥V h − V ∥
+
+︸ ︷︷ ︸ 
+
+> O(√h)consistency
+
+.
+
+We do not claim unconditional monotonicity or convergence of the neural iterates themselves; the monotonicity belongs to the exact semi-discrete reference scheme. 
+
+5 Experiments 
+
+We evaluate the proposed semi-discrete PINN policy iteration (SDPI) across a range of control tasks to assess its scalability and verify the error channels identified in Theorem 1. Perfor-mance metrics for LQR scaling and nonlinear tasks are summarized in Tables 1 and 2, respec-tively, while Table 3 details the quantitative dynamics identification error. The experiments are structured to first validate the solver against exact HJB solutions in low dimensions where the dynamics are known, and then benchmark its performance against standard reinforcement learning baselines in more complex, high-dimensional settings. Full details of the experimen-tal setup and hyperparameter configurations are provided in the Appendix and available at 
+
+https://anonymous.4open.science/r/pinn-model-based-rl-si-0A6E/README.md .
+
+Verification against HJB Reference Solutions To establish numerical fidelity, we compare the neural value function directly against reference HJB solutions in cases where the dynamics are known (Figure 2). For the nonlinear Duffing oscillator, SDPI is evaluated against a high-resolution FDM reference at t = 5 . As shown in Figure 2(b), the neural prediction accurately matches the FDM reference, and the resulting RMSE map confirms that the shifted-query approach captures intricate curvature without the numerical dissipation typical of standard continuous-PDE PINNs. In LQR tasks with compact control sets 
+
+U = [ −k, k ]m for dimensions d ∈ { 4, 8, 16 }, we validate the neural approximation against reference solutions Vref obtained via an interior point method. The slice-wise comparisons along the x[1] coordinate in Figure 2(a) demonstrate that SDPI accurately recovers the quadratic value structure and correctly identifies the non-smoothness introduced by control saturation. 
+
+Comparative Benchmarking with Baselines For higher-dimensional tasks and settings with unknown dynamics, we evaluate SDPI against representative model-free and model-based reinforcement learning baselines, including SAC, PPO, and MBPO. In LQR scaling tests up to 64 dimensions, SDPI maintains stable rollout costs while baselines exhibit significant 8performance degradation and high variance. Similarly, in nonlinear tasks such as Allen–Cahn PDE control (10D and 20D) and MuJoCo locomotion (Hopper-v5), SDPI demonstrates superior sample efficiency. The results indicate that the semi-discrete operator provides a structured inductive bias that remains robust in high-dimensional state spaces where pure reward-based exploration often fails. 
+
+Empirical Analysis of Model Accuracy To verify the error decomposition, we quanti-tatively analyze the dynamics identification error ηn. We compute the relative L2 error of the learned surrogate ˜fϕ against the ground-truth vector field over Neval ∈ [512 , 1024] test points. Our findings reveal a direct correlation between this identification fidelity and the final control cost. In particular, the performance gap observed in the 64D LQR and Hopper benchmarks coincides with relative dynamics errors exceeding 10%. This provides empirical evidence for the model-error channel, suggesting that while the population residual qn can be minimized through PINN training, the overall policy quality is fundamentally constrained by the accuracy of the identified dynamics, as predicted by the propagation recursion in Corollary 1. Table 1: Evaluation cost across LQR benchmark tasks. Lower is better. Values report the mean over three runs; standard deviations will be added after all runs are completed. 
+
+Method LQR 4D LQR 8D LQR 16D LQR 32D LQR 64D 
+
+SDPI (known dyn.) 1.056 ± 0.118 3.569 ± 0.518 10 .30 ± 1.783 18 .146 ± 2.837 36 .12 ± 4.450 
+
+SDPI (unknown dyn.) 2.716 ± 0.232 3.692 ± 0.851 9.895 ± 0.310 17 .72 ± 0.377 34 .073 ± 4.189 
+
+SAC 1.115 ± 0.028 3.751 ± 0.319 10 .96 ± 0.214 33 .30 ± 7.324 93 .926 ± 8.120 
+
+PPO 1.057 ± 0.010 3.875 ± 0.049 12 .64 ± 0.061 26 .10 ± 0.341 201 .386 ± 3.914 
+
+MBPO 1.637 ± 0.218 4.534 ± 0.160 17 .10 ± 0.112 46 .321 ± 0.593 95 .271 ± 5.911 
+
+Table 2: Evaluation cost across nonlinear benchmark tasks, including Allen–Cahn problems with varying dimensions. Lower is better.                                                                                                                 
+
+> Method Duffing Spacecraft Pendulum Hopper Quad3D Allen–Cahn 10D Allen–Cahn 20D
+> SDPI (known dyn.) 2.044 ±0.013 3.645 ±0.048 11 .905 ±6.055 78 .520 ±2.391 51 .053 ±13 .015 66 .29 ±3.58 119 .80 ±4.109
+> SDPI (unknown dyn.) 1.92 ±0.219 4.321 ±0.873 8.391 ±2.248 81 .875 ±9.490 30 .220 ±0.427 113 .04 ±2.18 208 .46 ±6.32
+> SAC 2.128 ±0.110 181 ±250 3.405 ±0.975 35 .640 ±5.022 10 .772 ±0.168 113 .04 ±2.18 283 .91 ±48 .16
+> PPO 2.040 ±0.105 2312 ±655 3.448 ±0.978 48 .371 ±2.298 13 .381 ±0.851 103 .99 ±5.72 215 .72 ±0.79
+> MBPO 3.441 ±0.481 351 ±219 3.730 ±0.771 73 .531 ±5.221 229 ±181 150 .24 ±32 .43 254 .77 ±54 .10
+
+Table 3: Relative L2 error of the learned dynamics model ˜fϕ compared to ground-truth f .Metrics are averaged over Neval ∈ [512 , 1024] test points per environment. Metric LQR 4D LQR 8D LQR 16D LQR 32D LQR 64D Duffing Spacecraft Pendulum Hopper Quad3D Allen–Cahn 10D Allen–Cahn 20D Relative error 0.004 0.006 0.006 0.019 0.138 0.032 0.037 0.081 0.156 0.124 0.0385 0.1072 
+
+6 Conclusion 
+
+We established a population L2 stability theory for neural policy iteration in semi-discrete Hamilton–Jacobi–Bellman equations, effectively bridging the mesh-free scalability of Physics-Informed Neural Networks with the structural monotonicity of classical finite-difference schemes. By decoupling the operator discretization from the value representation through shifted queries, we provide a rigorous error decomposition isolating the impacts of population residuals, exterior-collar mismatches, and the 1/√νh amplification of model-identification errors (Theorem 1). This analysis, complemented by a finite-sample collocation certificate and a multi-step error recursion (Corollary 1), establishes a deterministic framework for certifying value-iterate stability and convergence through iterative greedy policy improvements. Empirical results on high-dimensional LQR and Allen–Cahn control confirm that this inductive bias yields superior stability over standard reinforcement learning baselines, though contact-dominated benchmarks like Hopper-v4 reveal a bottleneck where numerical smoothing can blur sharp force transitions. To mitigate this, future work will focus on the adaptive refinement of the translation scale h and non-isotropic viscosity strategies to better capture localized high-curvature regions without excessive computation. These developments will be essential for balancing numerical dissipation with model-error mitigation in increasingly stiff or non-smooth dynamical systems where resolving discrete transitions is as critical as maintaining global stability. 9Acknowledgments and Disclosure of Funding 
+
+All funding and conflict-of-interest disclosures will be provided in the camera-ready version. 
+
+References 
+
+[1] Richard S Sutton. Dyna, an integrated architecture for learning, planning, and reacting. 
+
+ACM Sigart Bulletin , 2(4):160–163, 1991. [2] Marc Deisenroth and Carl E Rasmussen. Pilco: A model-based and data-efficient approach to policy search. In Proceedings of the 28th International Conference on machine learning (ICML-11) , pages 465–472, 2011. [3] Kurtland Chua, Roberto Calandra, Rowan McAllister, and Sergey Levine. Deep reinforcement learning in a handful of trials using probabilistic dynamics models. In 
+
+Advances in Neural Information Processing Systems , volume 31, 2018. [4] Michael Janner, Justin Fu, Marvin Zhang, and Sergey Levine. When to trust your model: Model-based policy optimization. In Advances in Neural Information Processing Systems , volume 32, 2019. [5] Hung V Tran. Hamilton–Jacobi equations: theory and applications , volume 213. Ameri-can Mathematical Soc., 2021. [6] Lawrence C Evans. Partial differential equations , volume 19. American mathematical society, 2022. [7] Ronald A Howard. Dynamic programming and markov processes. 1960. [8] M. L. Puterman. On the convergence of policy iteration for controlled diffusions. Journal of Optimization Theory and Applications , 33(1):137–144, 1981. [9] Saul D Jacka and Aleksandar Mijatović. On the policy improvement algorithm in continuous time. Stochastics , 89(1):348–359, 2017. [10] B. Kerimkulov, D. Šiška, and Łukasz Szpruch. Exponential convergence and stability of howard’s policy improvement algorithm for controlled diffusions. SIAM Journal on Control and Optimization , 58(3):1314–1340, 2020. [11] Maziar Raissi, Paris Perdikaris, and George E Karniadakis. Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations. Journal of Computational physics , 378:686–707, 2019. [12] Jiequn Han, Arnulf Jentzen, and Weinan E. Solving high-dimensional partial differen-tial equations using deep learning. Proceedings of the National Academy of Sciences ,115(34):8505–8510, 2018. [13] Adithya Ramesh and Balaraman Ravindran. Physics-informed model-based reinforce-ment learning. In Learning for Dynamics and Control Conference , pages 26–37. PMLR, 2023. [14] Amartya Mukherjee and Jun Liu. Bridging physics-informed neural networks with reinforcement learning: Hamilton-jacobi-bellman proximal policy optimization (hjbppo). 
+
+arXiv preprint arXiv:2302.00237 , 2023. [15] Yiming Meng, Ruikun Zhou, Amartya Mukherjee, Maxwell Fitzsimmons, Christopher Song, and Jun Liu. Physics-informed neural network policy iteration: Algorithms, convergence, and verification. arXiv preprint arXiv:2402.10119 , 2024. [16] Yeongjong Kim, Namkyeong Cho, Minseok Kim, and Yeoneung Kim. Physics-informed approach for exploratory Hamilton–Jacobi–Bellman equations via policy iterations. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 40, pages 22609–22616, 2026. 10 [17] Martin L Puterman and Shelby L Brumelle. On the convergence of policy iteration in stationary dynamic programming. Mathematics of Operations Research , 4(1):60–69, 1979. [18] Wenpin Tang, Hung Vinh Tran, and Yuming Paul Zhang. Policy iteration for the deterministic control problems—a viscosity approach. SIAM Journal on Control and Optimization , 63(1):375–401, 2025. [19] Xiaoqin Guo, Hung V Tran, and Yuming P Zhang. Policy iteration for nonconvex viscous hamilton–jacobi equations. SIAM Journal on Applied Mathematics , 86(2):532–556, 2026. [20] Hung Vinh Tran, Zhenhua Wang, and Yuming Paul Zhang. Policy iteration for ex-ploratory Hamilton–Jacobi–Bellman equations. Applied Mathematics & Optimization ,91(2):50, 2025. [21] Yu-Jui Huang, Zhenhua Wang, and Zhou Zhou. Convergence of policy iteration for entropy-regularized stochastic control problems. SIAM Journal on Control and Opti-mization , 63(2):752–777, 2025. [22] Jin Ma, Gaozhan Wang, and Jianfeng Zhang. Convergence analysis for entropy-regularized control problems: A probabilistic approach. SIAM Journal on Control and Optimization , 64(2):816–842, 2026. [23] Hee Jun Yang, Min Jung Kim, and Yeoneung Kim. Solving nonconvex hamilton–jacobi– isaacs equations with pinn-based policy iteration. arXiv preprint arXiv:2507.15455 ,2025. [24] Jae Yong Lee and Yeoneung Kim. Hamilton–Jacobi based policy-iteration via deep operator learning. Neurocomputing , page 130515, 2025. 
+
+A Finite-difference calculus and zero-extension identities 
+
+This appendix gives the full deterministic proof of the population estimate. All identities are first justified for smooth functions and then extended by density to the energy class used in the main text. Throughout, when a function z vanishes on the exterior collar (0 , T ) × Γext  
+
+> h
+
+,we denote by the same symbol its zero extension to (0 , T ) × Rd. This convention is important: after zero extension, all shift identities can be written on Rd, where translations preserve Lebesgue measure and no boundary surface terms appear. For a coordinate direction ei, write 
+
+T + 
+
+> i
+
+v(x) := v(x + he i), T − 
+
+> i
+
+v(x) := v(x − he i).
+
+Then 
+
+D+,h i v = T + 
+
+> i
+
+v − vh , D−,h i v = v − T − 
+
+> i
+
+vh , D0,h i v = T + 
+
+> i
+
+v − T − 
+
+> i
+
+v
+
+2h .
+
+Lemma 3 (Discrete adjointness) . Let φ, ψ ∈ L2(Rd) be such that the displayed expressions are in L1(Rd). Then 
+
+∫
+
+> Rd
+
+φ(x)D−,h i ψ(x) dx = −
+
+∫
+
+> Rd
+
+D+,h i φ(x)ψ(x) dx. (17) 
+
+Consequently, ∫
+
+> Rd
+
+φ(x)D+,h i ψ(x) dx = −
+
+∫
+
+> Rd
+
+D−,h i φ(x)ψ(x) dx. (18) 
+
+Proof. By definition, 
+
+∫
+
+> Rd
+
+φD −,h i ψ dx = 1
+
+h
+
+∫
+
+> Rd
+
+φ(x){ψ(x) − ψ(x − he i)} dx. 
+
+11 In the second term, use the change of variables y = x − he i. Since Lebesgue measure is translation invariant, ∫
+
+> Rd
+
+φ(x)ψ(x − he i) dx =
+
+∫
+
+> Rd
+
+φ(y + he i)ψ(y) dy. 
+
+Therefore ∫
+
+> Rd
+
+φD −,h i ψ dx = 1
+
+h
+
+∫
+
+> Rd
+
+{φ(y) − φ(y + he i)}ψ(y) dy = −
+
+∫
+
+> Rd
+
+D+,h i φ ψ dy. 
+
+The second identity follows in the same way, or by replacing h with −h.
+
+Lemma 4 (Central-difference transport identity) . Let z be zero-extended outside Ω, and let 
+
+ai satisfy D+,h i ai ∈ L∞(Rd). Then 
+
+∫
+
+> Ω
+
+z(x)ai(x)D0,h i z(x) dx = − 12
+
+∫
+
+> Rd
+
+D+,h i ai(x)z(x)z(x + he i) dx. (19) 
+
+In particular, ∣∣∣∣∫
+
+> Ω
+
+za iD0,h i z dx 
+
+∣∣∣∣ ≤ 12
+
+∥∥∥D+,h i ai
+
+∥∥∥L∞
+
+∥z∥2 
+
+> L2(Ω)
+
+. (20) 
+
+Proof. Because z is zero outside Ω, the integral over Ω equals the integral over Rd. Then 
+
+∫
+
+> Rd
+
+za iD0,h i z dx = 12h
+
+∫
+
+> Rd
+
+z(x)ai(x)z(x + he i) dx − 12h
+
+∫
+
+> Rd
+
+z(x)ai(x)z(x − he i) dx. 
+
+In the second integral, set y = x − he i. This gives 
+
+∫
+
+> Rd
+
+z(x)ai(x)z(x − he i) dx =
+
+∫
+
+> Rd
+
+z(y + he i)ai(y + he i)z(y) dy. 
+
+Renaming y as x,
+
+∫
+
+> Rd
+
+za iD0,h i z dx = 12h
+
+∫
+
+> Rd
+
+z(x)z(x + he i){ai(x) − ai(x + he i)} dx 
+
+= − 12
+
+∫
+
+> Rd
+
+D+,h i ai(x)z(x)z(x + he i) dx, 
+
+which proves the identity. The bound follows from Holder’s inequality and 
+
+∥z(· + he i)∥L2(Rd) = ∥z∥L2(Rd) = ∥z∥L2(Ω) .
+
+Lemma 5 (Discrete diffusion identity) . Let z be zero-extended outside Ω. Then 
+
+∫
+
+> Ω
+
+z∆hz dx = −
+
+> d
+
+∑
+
+> i=1
+
+∥∥∥D+,h i z
+
+∥∥∥2
+
+> L2(Rd)
+
+. (21) 
+
+Proof. Since z = 0 outside Ω,
+
+∫
+
+> Ω
+
+z∆hz dx =
+
+∫
+
+> Rd
+
+z∆hz dx =
+
+> d
+
+∑
+
+> i=1
+
+∫
+
+> Rd
+
+zD −,h i D+,h i z dx. 
+
+Apply Lemma 3 with φ = z and ψ = D+,h i z to obtain 
+
+∫
+
+> Rd
+
+zD −,h i D+,h i z dx = −
+
+∫
+
+> Rd
+
+D+,h i zD +,h i z dx. 
+
+Summing over i proves the claim. 
+
+Lemma 6 (Central gradient controlled by forward differences) . If z is zero-extended outside 
+
+Ω, then ∥∥∇h 
+
+> 0
+
+z∥∥L2(Ω) ≤ ∥∥∇h
+
+> +
+
+z∥∥L2(Rd) . (22) 12 Proof. For each i,
+
+D0,h i z(x) = 12 D+,h i z(x) + 12 D+,h i z(x − he i).
+
+Taking L2(Ω) norms and using translation invariance after zero extension gives 
+
+∥∥∥D0,h i z
+
+∥∥∥L2(Ω) 
+
+≤ 12
+
+∥∥∥D+,h i z
+
+∥∥∥L2(Rd)
+
++ 12
+
+∥∥∥D+,h i z(· − he i)
+
+∥∥∥L2(Ω) 
+
+≤
+
+∥∥∥D+,h i z
+
+∥∥∥L2(Rd)
+
+.
+
+Summing over i gives the result. 
+
+B Exterior-collar lifting and proof of stability 
+
+We now prove Lemma 1. The only small strengthening relative to the most compact notation is that the trace norm includes the term √νh
+
+∥∥∇h
+
+> +
+
+B∥∥L2(QT ). This is the natural term needed to recover the full Yh norm of w from the homogeneous-collar part z = w − B.
+
+Proof of Lemma 1. Fix δ > 0. By the definition of the collar norm, choose an admissible extension B with B = b on (0 , T ) × Γext  
+
+> h
+
+and 
+
+∥B∥L∞(0 ,T ;L2(Ω)) + ∥∂τ B∥L2(QT ) + ∥∥∇h 
+
+> 0
+
+B∥∥L2(QT )
+
++ √νh
+
+∥∥∇h
+
+> +
+
+B∥∥L2(QT ) + νh ∥∆hB∥L2(QT ) ≤ ∥ b∥Th,ν h
+
++ δ. (23) Set 
+
+z := w − B. 
+
+Then z = 0 on the exterior collar, so we extend it by zero outside Ω. Subtracting the equation for B gives 
+
+∂τ z − a · ∇ h 
+
+> 0
+
+z − νh∆hz = FB in QT , (24) where 
+
+FB := F − ∂τ B + a · ∇ h 
+
+> 0
+
+B + νh∆hB. (25) Because ∥a∥L∞ ≤ Ma,
+
+∥FB ∥L2(QT ) ≤ ∥ F ∥L2(QT ) + ∥∂τ B∥L2(QT ) + Ma
+
+∥∥∇h 
+
+> 0
+
+B∥∥L2(QT ) + νh ∥∆hB∥L2(QT ) . (26) Multiply (24) by z and integrate over Ω. Since z has homogeneous collar data, the identities in Appendix A apply. We obtain, for a.e. τ ∈ (0 , T ),
+
+12
+
+ddτ ∥z(τ )∥2 
+
+> L2(Ω)
+
+−
+
+∫
+
+> Ω
+
+za · ∇ h 
+
+> 0
+
+z dx − νh
+
+∫
+
+> Ω
+
+z∆hz dx =
+
+∫
+
+> Ω
+
+zF B dx. (27) By Lemma 4 and the divergence bound, 
+
+∣∣∣∣∫
+
+> Ω
+
+za · ∇ h 
+
+> 0
+
+z dx 
+
+∣∣∣∣ ≤ MD
+
+2 ∥z∥2 
+
+> L2(Ω)
+
+. (28) By Lemma 5, 
+
+−νh
+
+∫
+
+> Ω
+
+z∆hz dx = νh
+
+∥∥∇h
+
+> +
+
+z∥∥2 
+
+> L2(Rd)
+
+. (29) Finally, ∫
+
+> Ω
+
+zF B dx ≤ 12 ∥z∥2 
+
+> L2(Ω)
+
++ 12 ∥FB ∥2 
+
+> L2(Ω)
+
+. (30) Substituting (28)–(30) into (27) gives 
+
+ddτ ∥z(τ )∥2 
+
+> L2(Ω)
+
++ 2 νh
+
+∥∥∇h
+
+> +
+
+z(τ )∥∥2 
+
+> L2(Rd)
+
+≤ C0 ∥z(τ )∥2 
+
+> L2(Ω)
+
++ ∥FB (τ )∥2 
+
+> L2(Ω)
+
+, (31) where C0 = MD + 1 . Integrating in time and applying Gronwall’s inequality, 
+
+sup 
+
+> 0≤s≤T
+
+∥z(s)∥2 
+
+> L2(Ω)
+
++ 2 νh
+
+∫ T
+
+> 0
+
+∥∥∇h
+
+> +
+
+z(s)∥∥2 
+
+> L2(Rd)
+
+ds 
+
+≤ CT
+
+(
+
+∥z(0) ∥2 
+
+> L2(Ω)
+
++ ∥FB ∥2 
+
+> L2(QT)
+
+)
+
+, (32) 13 with CT depending only on T and MD . Taking square roots gives 
+
+∥z∥L∞(0 ,T ;L2(Ω)) + √νh
+
+∥∥∇h
+
+> +
+
+z∥∥L2((0 ,T )×Rd)
+
+≤ C
+
+(
+
+∥z(0) ∥L2(Ω) + ∥FB ∥L2(QT )
+
+)
+
+. (33) The initial datum satisfies 
+
+∥z(0) ∥L2(Ω) ≤ ∥ w0∥L2(Ω) + ∥B∥L∞(0 ,T ;L2(Ω)) . (34) Combining (26), (33), and (34), and then using (23), yields 
+
+∥z∥L∞L2 + √νh
+
+∥∥∇h
+
+> +
+
+z∥∥L2 ≤ C
+
+(
+
+∥w0∥L2 + ∥F ∥L2 + ∥b∥Th,ν h
+
++ δ
+
+)
+
+. (35) Since w = z + B,
+
+∥w∥L∞L2 ≤ ∥ z∥L∞L2 + ∥B∥L∞L2 ,
+
+√νh
+
+∥∥∇h
+
+> +
+
+w∥∥L2(QT ) ≤ √νh
+
+∥∥∇h
+
+> +
+
+z∥∥L2((0 ,T )×Rd) + √νh
+
+∥∥∇h
+
+> +
+
+B∥∥L2(QT ) .
+
+Using the lifting bound once more and letting δ ↓ 0 proves 
+
+∥w∥Yh ≤ C
+
+(
+
+∥w0∥L2(Ω) + ∥F ∥L2(QT ) + ∥b∥Th,ν h
+
+)
+
+.
+
+The constant is independent of 1/ν h; the only occurrences of νh are inside the coercive norm and the trace norm. 
+
+C Proof of the finite-difference estimate 
+
+Proof of Lemma 2. Apply Lemma 1 to the exact semi-discrete evaluation equation (2) with 
+
+w = V hn , a = an, F = L(·, u n), w0 = g, b = gext ,n .
+
+The assumed uniform data bound gives 
+
+√νh
+
+∥∥∇h
+
+> +
+
+V hn
+
+∥∥L2(QT ) ≤ Cdata . (36) To convert this into a bound for the central finite-difference, decompose the collar data by the same lifting used in the stability proof. Let V hn = z + B, with z homogeneous on the exterior collar. Lemma 6 gives 
+
+∥∥∇h 
+
+> 0
+
+z∥∥L2(QT ) ≤ ∥∥∇h
+
+> +
+
+z∥∥L2((0 ,T )×Rd) .
+
+Therefore ∥∥∇h 
+
+> 0
+
+V hn
+
+∥∥L2(QT ) ≤ ∥∥∇h 
+
+> 0
+
+z∥∥L2(QT ) + ∥∥∇h 
+
+> 0
+
+B∥∥L2(QT )
+
+≤ ∥∥∇h
+
+> +
+
+z∥∥L2((0 ,T )×Rd) + ∥∥∇h 
+
+> 0
+
+B∥∥L2(QT ) .
+
+The first term is bounded by C/ √νh from the energy estimate, while the second is bounded by the collar trace norm. Hence 
+
+∥∥∇h 
+
+> 0
+
+V hn
+
+∥∥L2(QT ) ≤ C
+
+(
+
+1 + 1
+
+√νh
+
+)
+
+.
+
+This is (12). 
+
+D Proof of the one-step population error bound 
+
+Proof of Theorem 1. The proof separates three distinct effects: PINN residual and data mismatch, policy mismatch, and learned-model mismatch. Let ̂ Vn be the solution of the learned-dynamics evaluation problem with exact initial and exact collar data: 
+
+∂τ̂ Vn − ˜an · ∇ h
+
+> 0
+
+̂ Vn − uh∆ĥ Vn = L(x, ˜un) in QT , (37) 14 ̂Vn(0 , x ) = g(x),̂ Vn = gext ,n on (0 , T ) × Γext  
+
+> h
+
+.
+
+Decompose 
+
+˜Vn − V hn = Wn + Zn, Wn := ˜Vn −̂ Vn, Zn := ̂ Vn − V hn . (38) Subtract (37) from the learned residual equation (7) . Since both equations use the same learned drift ˜an, the same running cost L(x, ˜un), and the same viscosity, Wn satisfies 
+
+∂τ Wn − ˜an · ∇ h 
+
+> 0
+
+Wn − uh∆hWn = qn in QT . (39) Its initial and collar data are 
+
+Wn(0 , x ) = rn(x), Wn = bn + eext ,n on (0 , T ) × Γext  
+
+> h
+
+. (40) Applying Lemma 1 gives 
+
+∥Wn∥Yh ≤ C
+
+(
+
+∥rn∥L2(Ω) + ∥qn∥L2(QT ) + ∥bn + eext ,n ∥Th,ν h
+
+)
+
+. (41) Subtract the exact semi-discrete equation (2) from (37). Since ̂ Vn = Zn + V hn , we have 
+
+∂τ Zn − ˜an · ∇ h 
+
+> 0
+
+Zn − uh∆hZn
+
+= L(x, ˜un) − L(x, u n) + ( ˜an − an) · ∇ h 
+
+> 0
+
+V hn =: Ξ n.
+
+The initial and collar data for Zn are homogeneous because both ̂ Vn and V hn use g and gext ,n .Therefore Lemma 1 yields 
+
+∥Zn∥Yh ≤ C ∥Ξn∥L2(QT ) . (42) By Lipschitz continuity of L in the control variable, 
+
+∥L(·, ˜un) − L(·, u n)∥L2(QT ) ≤ KL ∥˜un − un∥L2(QT ) . (43) Using an = f (·, u n) and ˜an = ˜fϕ(·, ˜un),
+
+˜an − an = ˜fϕ(x, ˜un) − f (x, u n)= ˜fϕ(x, ˜un) − f (x, ˜un)
+
+︸ ︷︷ ︸
+
+> model error along learned policy
+
++ f (x, ˜un) − f (x, u n)
+
+︸ ︷︷ ︸
+
+> policy mismatch through true dynamics
+
+. (44) For the model-error term, Holder’s inequality and the definition of η(∞) 
+
+> n
+
+give 
+
+∥∥∥∇h 
+
+> 0
+
+V hn · [ ˜fϕ(x, ˜un) − f (x, ˜un)] 
+
+∥∥∥L2(QT )
+
+≤ ∥∥∇h 
+
+> 0
+
+V hn
+
+∥∥L2(QT )
+
+∥∥∥ ˜fϕ(·, ˜un) − f (·, ˜un)
+
+∥∥∥L∞(QT )
+
+≤ CG hη(∞) 
+
+> n
+
+, (45) where Gh = 1 + ν−1/2 
+
+> h
+
+and Lemma 2 was used. For the policy-mismatch part, Lipschitz continuity of f in u gives 
+
+∥∥∇h 
+
+> 0
+
+V hn · [f (x, ˜un) − f (x, u n)] ∥∥L2(QT )
+
+≤ ∥∥∇h 
+
+> 0
+
+V hn
+
+∥∥L2(QT ) Kf ∥˜un − un∥L∞(QT ) ≤ CG hKf ∥˜un − un∥L∞(QT ) . (46) Combining (43), (45), and (46), 
+
+∥Ξn∥L2(QT ) ≤ KL ∥˜un − un∥L2(QT )
+
++ CG h
+
+(
+
+Kf ∥˜un − un∥L∞(QT ) + η(∞)
+
+> n
+
+)
+
+. (47) By (38), the triangle inequality, (41), (42), and (47), 
+
+∥∥∥ ˜Vn − V hn
+
+∥∥∥Yh
+
+≤ C
+
+(
+
+∥rn∥L2(Ω) + ∥qn∥L2(QT ) + ∥bn + eext ,n ∥Th,ν h
+
++ KL ∥˜un − un∥L2(QT )
+
++ Gh
+
+[Kf ∥˜un − un∥L∞(QT ) + η(∞)
+
+> n
+
+])
+
+,
+
+which is the claimed estimate. 15 E Empirical certification of population residuals 
+
+Theorem 1 is deterministic and uses ∥qn∥L2(QT ). The empirical residual loss is a Monte Carlo proxy. If the sampling density ρQ satisfies 
+
+ρQ(τ, x ) ≥ ρmin > 0 for a.e. (τ, x ) ∈ QT ,
+
+then 
+
+∥qn∥2  
+
+> L2(QT)
+
+≤ ρ−1min ∥qn∥2   
+
+> L2
+> ρQ(QT)
+
+.
+
+Let 
+
+An = {(τ, x ) 7 → |R n,h [Vθ ]( τ, x )|2 : θ ∈ Θ} ,
+
+and assume 0 ≤ A ≤ M 2 
+
+> R
+
+for every A ∈ A n.
+
+Proposition 1 (Residual certification by random collocation) . With probability at least 
+
+1 − δ, uniformly over θ ∈ Θ,
+
+EρQ |R n,h [Vθ ]|2 ≤ 1
+
+NrNr∑
+
+> j=1
+
+|R n,h [Vθ ]( τj , x j )|2 + 2 RNr (An) + M 2
+
+> R
+
+√
+
+log(2 /δ )2Nr
+
+. (48) 
+
+Consequently, an empirical residual tolerance certifies the population residual in Theorem 1 up to the complexity term in (48) .
+
+This step is statistical rather than PDE-theoretic: it is the bridge from empirical random collocation to the population residual required by the deterministic stability theorem. 
+
+Proof. Let 
+
+P A := EρQ A(τ, x ), PN A := 1
+
+NrNr∑
+
+> j=1
+
+A(τj , x j ),
+
+where (τj , x j ) are i.i.d. from ρQ. By the standard symmetrization inequality, 
+
+E sup 
+
+> A∈A n
+
+|P A − PN A| ≤ 2RNr (An). (49) Since every A ∈ A n takes values in [0 , M 2
+
+> R
+
+], changing one sample changes sup A∈A n |P A −
+
+PN A| by at most M 2
+
+> R
+
+/N r . McDiarmid’s inequality therefore gives, with probability at least 
+
+1 − δ,
+
+sup 
+
+> A∈A n
+
+|P A − PN A| ≤ 2RNr (An) + M 2
+
+> R
+
+√
+
+log(2 /δ )2Nr
+
+. (50) Applying this to Aθ = |R n,h [Vθ ]|2 gives (48) . Finally, if qn = Rn,h [Vθn ], the density lower bound ρQ ≥ ρmin implies 
+
+∥qn∥2  
+
+> L2(QT)
+
+=
+
+∫
+
+> QT
+
+|qn|2 dτ dx ≤ ρ−1min 
+
+∫
+
+> QT
+
+|qn|2ρQ dτ dx = ρ−1min ∥qn∥2   
+
+> L2
+> ρQ(QT)
+
+.
+
+Thus the empirical residual controls the population residual up to the uniform deviation term. 
+
+F Greedy sensitivity and multi-step propagation 
+
+Lemma 7 (Greedy-map Lipschitz estimate) . Under Assumption 2, for any two gradients 
+
+p, ¯p with |p|, |¯p| ≤ P∗,
+
+|G f (x, p ) − G f (x, ¯p)| ≤ Ku
+
+μ |p − ¯p|. (51) 
+
+Moreover, 
+
+|G ˜fϕ
+
+(x, p ) − G f (x, p )| ≤ P∗
+
+μ
+
+∥∥∥∂u ˜fϕ − ∂uf
+
+∥∥∥L∞
+
+. (52) 16 Proof. Fix x. Define 
+
+Φf (u; p) := f (x, u ) · p + L(x, u ).
+
+Let u = Gf (x, p ) and ¯u = Gf (x, ¯p). Since U is convex and Φf (·; p) is μ-strongly convex, the variational inequalities for constrained minimizers imply 
+
+⟨∇ uΦf (u; p), ¯u − u⟩ ≥ 0, ⟨∇ uΦf (¯ u; ¯ p), u − ¯u⟩ ≥ 0.
+
+Strong monotonicity of ∇uΦf (·; p) gives 
+
+μ|u − ¯u|2 ≤ ⟨∇ uΦf (u; p) − ∇ uΦf (¯ u; p), u − ¯u⟩≤ ⟨∇ uΦf (¯ u; ¯ p) − ∇ uΦf (¯ u; p), u − ¯u⟩.
+
+But 
+
+∇uΦf (¯ u; ¯ p) − ∇ uΦf (¯ u; p) = ∂uf (x, ¯u)⊤(¯ p − p),
+
+so 
+
+μ|u − ¯u|2 ≤ Ku|p − ¯p| | u − ¯u|.
+
+If u̸ = ¯ u, division by |u − ¯u| proves (51); otherwise it is trivial. For (52) , compare the minimizers of Φ˜fϕ
+
+(·; p) and Φf (·; p). The same strong-monotonicity argument yields 
+
+μ|G ˜fϕ
+
+(x, p ) − G f (x, p )| ≤ sup 
+
+> u∈U
+
+|(∂u ˜fϕ(x, u ) − ∂uf (x, u )) ⊤p|,
+
+which is bounded by P∗
+
+∥∥∥∂u ˜fϕ − ∂uf
+
+∥∥∥L∞
+
+.
+
+Derivation of (14) . Let 
+
+p = ∇h 
+
+> 0
+
+V hn−1(τ, x ), ˜p = ∇h 
+
+> 0
+
+˜Vn−1(τ, x ).
+
+The exact and learned policies satisfy, up to the inexact greedy error, 
+
+un = Gf (x, p ), ˜un ≈ G ˜fϕ
+
+(x, ˜p).
+
+By the triangle inequality, 
+
+|˜un − un| ≤ | ˜un − G ˜fϕ
+
+(x, ˜p)| + |G ˜fϕ
+
+(x, ˜p) − G f (x, ˜p)| + |G f (x, ˜p) − G f (x, p )|≤ ρgreedy  
+
+> n
+
++ P∗
+
+μ η(∞) 
+
+> ∂u,n
+
++ Ku
+
+μ |˜p − p|.
+
+Taking the essential supremum over QT gives (14). 
+
+Proof of Corollary 1. From Theorem 1, and since ∥v∥L2(QT ) ≤ | QT |1/2 ∥v∥L∞(QT ), we have 
+
+En ≤ Cε n + C
+
+(
+
+|QT |1/2KL + GhKf
+
+)
+
+∥˜un − un∥L∞(QT ) . (53) Using (14) and the inverse estimate (15), 
+
+∥˜un − un∥L∞(QT ) ≤ Ku
+
+μ
+
+∥∥∥∇h 
+
+> 0
+
+( ˜Vn−1 − V hn−1)
+
+∥∥∥L∞(QT )
+
++ δgreedy 
+
+> n
+
+≤ Ku
+
+μ Cinv (h, F)En−1 + δgreedy  
+
+> n
+
+. (54) Substituting (54) into (53) gives 
+
+En ≤ Cε n + Λ hEn−1 + C(|QT |1/2KL + GhKf )δgreedy  
+
+> n
+
+,
+
+where 
+
+Λh = C(|QT |1/2KL + GhKf ) Ku
+
+μ Cinv (h, F).
+
+If Λh < 1, iterating this scalar recursion gives 
+
+En ≤ Λnh E0 + C
+
+> n
+
+∑
+
+> j=1
+
+Λn−jh
+
+[
+
+εj + ( |QT |1/2KL + GhKf )δgreedy 
+
+> j
+
+]
+
+.
+
+17 G Detailed Benchmark Settings 
+
+In this appendix, we provide a fully self-contained description of the benchmark environments used in our study. For each task, we specify the state-space dynamics, the objective functional (cost), and the corresponding Hamilton–Jacobi–Bellman (HJB) equation. All neural PDE evaluations utilize the semi-discrete shifted query operator ∇h 
+
+> 0
+
+and ∆h as defined in Section 3. 
+
+G.1 High-Dimensional LQR Scaling 
+
+To quantify scaling laws, we evaluate d ∈ { 4, 8, 16 , 32 , 64 }.
+
+Objective Function. We minimize the finite-horizon performance index: 
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+( 12 x⊤ 
+
+> s
+
+Qx s + 12 u⊤ 
+
+> s
+
+Ru s
+
+)
+
+ds + 12 x⊤ 
+
+> T
+
+Qf xT , (55) with T = 10 .0, Q = Id, R = Im, and Qf = 10 Id. Crucially, the control inputs are constrained to a compact set U = [ −k, k ]m. Due to these constraints, the value function is no longer a simple quadratic form, rendering the standard algebraic Riccati equation invalid. The resulting control saturation introduces non-smoothness, posing a significant challenge for traditional solvers. Instead of an analytic Riccati solution, we utilize an interior point method applied to the underlying trajectory optimization to obtain reference values for d ∈ { 4, 8, 16 }.These experiments demonstrate that the PINN residual qn remains stable even as d increases and saturation occurs, provided the artificial viscosity νh is scaled according to Theorem 1. 
+
+G.2 Controlled Duffing Oscillator 
+
+The Duffing oscillator is a classic nonlinear system used to model structural vibrations. We consider a controlled version with a cubic stiffness term. 
+
+Dynamics. The state x = ( x1, x 2)⊤ ∈ R2 evolves according to: 
+
+˙x = f (x, u ) = 
+
+( x2
+
+−x1 − αx 31
+
+)
+
++
+
+(01
+
+)
+
+u, (56) where we set the nonlinearity parameter α = 1 .0.
+
+Objective Function. We minimize the finite-horizon quadratic cost functional: 
+
+J(x, u ) = E
+
+[∫ T
+
+> 0
+
+( 12 x⊤ 
+
+> s
+
+Qx s + β
+
+2 u2
+
+> s
+
+)
+
+ds 
+
+]
+
+, (57) with T = 10 .0, Q = I2, terminal weight Qf = 5 I2, and control penalty β = 1 .
+
+HJB Equation. The value function V (τ, x ) satisfies: 
+
+∂τ V − Vx1 x2 − Vx2 (−x1 − αx 31) + 12β (Vx2 )2 − 12 x⊤Qx = 0 , (58) where V (0 , x ) = 12 x⊤Qf x. The semi-discrete solver evaluates (58) using queries at x ± he i.
+
+G.3 Spacecraft Rendezvous (Clohessy–Wiltshire) 
+
+This benchmark models the planar docking of a chaser spacecraft to a target in a circular orbit. 
+
+Relative Dynamics. The linearized dynamics in the relative frame are: 
+
+˙x = Ax + Bu, A =
+
+
+
+0 0 1 00 0 0 13ω2 0 0 2ω
+
+0 0 −2ω 0
+
+ , B =
+
+
+
+0 00 01 00 1
+
+ , (59) where ω = 0 .01 rad/s is the orbital angular velocity. 18 Objective Function. The objective is a docking maneuver with a heavy terminal penalty to ensure zero relative position and velocity at T = 10 :
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+( 12 x⊤ 
+
+> s
+
+Qx s + 12 u⊤ 
+
+> s
+
+Ru s
+
+)
+
+ds + 12 x⊤ 
+
+> T
+
+Qf xT , (60) with Q = I4, R = I2, and Qf = 10 I4.
+
+HJB Equation. The resulting reduced HJB equation is: 
+
+∂τ V − ∇ V · Ax + 12 ∇V ⊤BR −1B⊤∇V − 12 x⊤Qx = 0 , (61) with terminal condition V (0 , x ) = 12 x⊤Qf x.
+
+G.4 Inverted Pendulum Dynamics. The state is x = ( θ, ω )⊤ ∈ [−π, π ) × [−8, 8] , where θ is the pendulum angle and ω = ˙θ is the angular velocity. We use the continuous-time dynamics 
+
+˙θ = ω, ˙ω = 3g
+
+2ℓ sin θ + 3
+
+mℓ 2 u, (62) with g = 10 , m = 1 , ℓ = 1 , and a tanh-squashed torque bound |u| ≤ 2. This gives the experimental dimensions (d, m ) = (2 , 1) .
+
+Objective Function. The finite-horizon cost is 
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+[angle _normalize( θs)2 + 0 .1ω2 
+
+> s
+
++ 0 .001 u2
+
+> s
+
+] ds 
+
++ 12
+
+[angle _normalize( θT )2 + 0 .1ω2
+
+> T
+
+] ,
+
+(63) with T = 5 . The angle is normalized in both the environment state projection and the cost. For the value network, the angular coordinate is encoded using sine and cosine features. 
+
+HJB Equation. Let fpend denote the vector field in (62), and define 
+
+ℓpend (x, u ) = angle _normalize( θ)2 + 0 .1ω2 + 0 .001 u2. (64) In time-to-go coordinates τ = T − t, the semi-discrete HJB equation is 
+
+∂τ V − νh∆hV − min 
+
+> u∈[−2,2]
+
+{fpend (x, u ) · ∇ h 
+
+> 0
+
+V + ℓpend (x, u )} = 0 , (65) with initial condition 
+
+V (0 , x ) = 12
+
+[angle _normalize( θ)2 + 0 .1ω2] . (66) 
+
+G.5 Hopper: Learned Dynamics from MuJoCo Dynamics. The Hopper benchmark uses a smooth deterministic planar hopper surrogate with MuJoCo-style generalized coordinates. The state is 
+
+x = ( q, v ) ∈ R12 , q = ( xroot , z root , θ torso , q hip , q knee , q ankle ),
+
+where v = ˙ q. The action is 
+
+u = ( uhip , u knee , u ankle ) ∈ R3,
+
+with tanh-squashed bounds (200 , 200 , 100) . The dynamics are 
+
+˙q = v, ˙v = M −1 [Qpassive (q, v ) + Qcontact (q, v ) + Bu ] , (67) where M is diagonal, Qpassive contains damping, posture springs, and gravity, and Qcontact is a smooth toe-ground contact force. This gives the experimental dimensions (d, m ) = (12 , 3) .19 Objective Function. The finite-horizon objective is quadratic tracking: 
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+ℓhopper (xs, u s) ds + ghopper (xT ), T = 1 .5, (68) where 
+
+ℓhopper (x, u ) = ∑
+
+> i
+
+cq,i (qi − q⋆i )2 + ∑
+
+> i
+
+cv,i (vi − v⋆i )2 + ∑
+
+> j
+
+cu,j u2 
+
+> j
+
+. (69) The target state is 
+
+q⋆ = (1 , 1.15 , 0, 0.15 , −0.90 , 0.45) , v⋆ = (1 , 0, 0, 0, 0, 0) ,
+
+with 
+
+cq = (0 , 5, 2, 1, 1, 0.5) , cv = (0 .2, 0.5, 0.1, 0.05 , 0.05 , 0.05) , cu = (0 .01 , 0.01 , 0.02) .
+
+The terminal cost is 
+
+ghopper (x) = 12
+
+[∑
+
+> i
+
+qf,i (qi − q⋆i )2 + ∑
+
+> i
+
+vf,i (vi − v⋆i )2
+
+]
+
+. (70) 
+
+HJB Equation. With fhopper denoting the vector field in (67) , the semi-discrete HJB equation is 
+
+∂τ V − νh∆hV − min 
+
+> u∈U
+
+{fhopper (x, u ) · ∇ h 
+
+> 0
+
+V + ℓhopper (x, u )} = 0 , (71) with initial condition 
+
+V (0 , x ) = ghopper (x). (72) 
+
+G.6 3D Quadrotor Control Dynamics. For Quad3D, the state is 
+
+x = ( p, v, ϕ, θ, ψ ) ∈ R9, p ∈ R3, v ∈ R3,
+
+and the action is 
+
+u = ( uT , u ϕ, u θ , u ψ ) ∈ [−15 , 15] 4,
+
+where uT is thrust deviation around hover and the remaining controls are attitude-rate inputs. Defining 
+
+a(ϕ, θ ) = 
+
+( − sin θ
+
+cos θ sin ϕ
+
+cos θ cos ϕ
+
+)
+
+,
+
+the reduced dynamics are 
+
+˙p = v, ˙v = g a (ϕ, θ ) −
+
+(00
+
+g
+
+)
+
++ uT a(ϕ, θ ), ˙ϕ = uϕ, ˙θ = uθ , ˙ψ = uψ . (73) This gives the experimental dimensions (d, m ) = (9 , 4) for Quad3D. 
+
+Objective Function. Both quadrotor tasks use a zero-target quadratic cost in the chosen reduced coordinates: 
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+(x⊤ 
+
+> s
+
+Qx s + u⊤ 
+
+> s
+
+Ru s
+
+) ds + 12 x⊤ 
+
+> T
+
+Qf xT . (74) For Quad3D, 
+
+Q = 10 I9, Qf = 50 I9, R = I4.
+
+HJB Equation. Writing either quadrotor vector field as fquad (x, u ) and defining 
+
+ℓquad (x, u ) = x⊤Qx + u⊤Ru, (75) the semi-discrete HJB equation is 
+
+∂τ V − νh∆hV − min 
+
+> u∈U
+
+{fquad (x, u ) · ∇ h 
+
+> 0
+
+V + ℓquad (x, u )} = 0 , (76) with initial condition 
+
+V (0 , x ) = 12 x⊤Qf x. (77) 20 Table 4: Task specifications and evaluation protocol ( d: state dim, m: action dim).                                            
+
+> Task
+> (d, m )Time step Evaluation Initial States Reference Diagnostics LQR ( 4–64 )
+> (4 ,4) –(64 ,64)
+> T= 10 .0∆t= 0 .05 30 Gaussian rollouts (scale 1.0) Analytic + OSQP slices Duffing
+> (2 ,1)
+> T= 10 .0∆t= 0 .05 30 Gaussian rollouts (scale 1.0) Numerical value slices Spacecraft
+> (4 ,2)
+> T= 10 .0∆t= 0 .01 30 Gaussian rollouts (scale 1.0) Analytic + OSQP slices Pendulum
+> (2 ,1)
+> T= 5 .0∆t= 0 .05 30 Gaussian rollouts (scale 1.0) Numerical value slices Hopper
+> (12 ,3)
+> T= 1 .5∆t= 0 .02 5 Gaussian rollouts (scale 0.1, clipped) Monte-Carlo cost only Quad3D
+> (9 ,4)
+> T= 2 .0∆t= 0 .05 30 Gaussian rollouts (scale 0.3) Monte-Carlo cost only Allen–Cahn-10D
+> (1024 ,1024)
+> T= 1 .0∆t= 0 .01 1 Gaussian rollout (scale 0.02) Analytic reference Allen–Cahn-20D
+> (1024 ,128)
+> T= 1 .0∆t= 0 .01 30 Gaussian rollouts (scale 0.02) Analytic reference
+
+G.7 Allen–Cahn Control 
+
+The Allen–Cahn equation describes phase separation and is used here to test the numerical efficiency of the semi-discrete PINN in a distributed state-variable setting. 
+
+Dynamics. The resulting state x ∈ Rk follows a system of coupled ODEs: 
+
+˙x = Ax − 1
+
+ε2
+
+(x◦3 − x) + Bu, (78) where A ∈ Rk×k is the diffusion-scaled discrete Laplacian operator representing spatial diffusion, ε = 0 .1 determines the interface width, and B = Ik denotes distributed control. 
+
+Objective Function. The objective is to steer the system toward an analytic target phase profile xd(t) while minimizing control effort: 
+
+J(x, u ) = 
+
+∫ T
+
+> 0
+
+( 12 ∥xs − xd(s)∥2 + β
+
+2 ∥us∥2
+
+)
+
+ds, (79) with β = 0 .1 and T = 1 .
+
+HJB Equation. The value function V (τ, x ) is governed by a high-dimensional HJB equation. By leveraging the localized structure of the operator A, our solver evaluates the residual in time linear in the flattened state dimension dx through shifted neural network queries: 
+
+∂τ V − ∇ h 
+
+> 0
+
+V ·
+
+(
+
+Ax − 1
+
+ε2
+
+(x◦3 − x))
+
++ 12β
+
+∥∥B⊤∇h 
+
+> 0
+
+V ∥∥2 − 12 ∥x − xd∥2 = 0 . (80) This benchmark demonstrates that SDPI maintains stability even as the coupling between state variables becomes significant, effectively bypassing the curse of dimensionality inherent in grid-based solvers. 
+
+H Experiment settings 
+
+This appendix provides a comprehensive technical breakdown of the experimental config-urations. For complete reproducibility, machine-readable YAML configs and expanded Markdown documentation are available in the project repository. 
+
+Checkpointing and Monitoring. To ensure optimization stability, LQR experiments are checkpointed every 50 outer iterations, while nonlinear tasks are monitored every 10 iterations. This allows for granular tracking of the policy-evaluation residual and value-iterate convergence. 21 Table 5: SDPI value-learning configurations. For SPINN, (r, g ) denotes rank and group size. 
+
+Task Value Model Batch h/ν h LR Action Optimizer LQR (Known) Quadratic, (64 , 64) 8192 0.01 /0.01 5×10 −3 Analytic LQR (Unknown) TINN, (128 , 128) 8192 0.01 /0.01 3×10 −3 Numerical (5 steps) Duffing (Known) TINN, (64 , 64) 16384 0.005 /0.001 3×10 −3 Analytic Duffing (Unknown) TINN, (64 , 64) 16384 0.005 /0.001 3×10 −3 Adam-20 (lr 0.1) Spacecraft (Known) TINN, (128 , 128) 16384 0.005 /0.001 5×10 −3 Analytic Spacecraft (Unknown) TINN, (128 , 128) 16384 0.005 /0.001 5×10 −3 Adam-20 (lr 0.1) Pendulum (Known) MLP, (128 , 128 , 128) 
+
+with skip 16384 0.005 /0.001 3×10 −3 Analytic Pendulum (Unknown) MLP, (128 , 128 , 128) 
+
+with skip 16384 0.005 /0.001 3×10 −3 Adam-20 (lr 0.1) Hopper (Known) MLP, (256 , 256 , 256) 
+
+with skip 1024 0.005 /0.001 3×10 −3 Adam-10 (lr 0.1) Hopper (Unknown) MLP, (256 , 256 , 256) 
+
+with skip 1024 0.005 /0.001 3×10 −3 Adam-10 (lr 0.1) Quad3D (Known) MLP, (256 , 256 , 256) 
+
+with skip 16384 0.005 /0.001 3×10 −3 Analytic Quad3D (Unknown) MLP, (256 , 256 , 256) 
+
+with skip 16384 0.005 /0.001 3×10 −3 Adam-20 (lr 0.1) Allen–Cahn 10D (Known) SPINN, r = 16 , g = 64 1024 0.01 /0.001 1×10 −4 Analytic Allen–Cahn 10D (Unknown) SPINN, r = 16 , g = 64 128 0.01 /0.001 1×10 −4 Adam-1024 (lr 0.0025) Allen–Cahn 20D (Known) SPINN, r = 16 , g = 64 1024 0.01 /0 1.0×10 −4 Analytic Allen–Cahn 20D (Unknown) SPINN, r = 16 , g = 64 128 0.01 /0 1.0×10 −4 Adam-128 (lr 0.02) 
+
+Hardware specification. The experiments were conducted on a Linux server equipped with five NVIDIA RTX A5000 GPUs (24 GB each), two Intel Xeon Gold 6426Y CPUs (32 cores in total), and 503 GiB of RAM. The software environment used NVIDIA driver 535.154.05 and CUDA 12.2. 22

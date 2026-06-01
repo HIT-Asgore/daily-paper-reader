@@ -1,0 +1,824 @@
+Title: Distributionally Robust Control via Stein Variational Inference for Contact-Rich Manipulation
+
+URL Source: https://arxiv.org/pdf/2605.19029v1
+
+Published Time: Wed, 20 May 2026 00:23:55 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# Distributionally Robust Control via Stein Variational Inference for Contact-Rich Manipulation 
+
+Hrishikesh Sathyanarayan ∗, Victor Vantilborgh †, Harish Ravichandar ‡, Tom Lefebvre †, and Ian Abraham ∗§ ∗Yale University, † Ghent University, ‡Georgia Tech, §University of Sydney 
+
+Abstract —Reliable robotic manipulation requires control poli-cies that can accurately represent and adapt to uncertainty aris-ing from contact-rich interactions. Modern data-driven methods mitigate uncertainty through large-scale training and compu-tation, and degrade significantly in performance with limited number of training samples. By contrast, classical model-based controllers are computationally efficient and reliable, but their limited ability to represent task-relevant uncertainty can hinder performance in contact-rich interactions. In this work, we propose to expand the capabilities of model-based manipulation control through more flexible uncertainty modeling that retains performance while exactly adapting to uncertainty. Our approach casts the manipulation problem as a distributionally robust control optimization and proposes a novel deterministic formulation based on Stein variational in-ference that preserves performance while explicitly modeling task-sensitive parameter uncertainty. As a result, the derived controllers are more aware of task sensitivities to uncertainty, yielding high reliability without compromising performance. Experimental results demonstrate up to 3 × improved robustness across a range of contact-rich manipulation tasks under broad parametric uncertainty, outperforming existing model-based con-trol methods. 
+
+I. I NTRODUCTION 
+
+In-the-wild manipulation often requires reasoning in an environment filled with uncertainty. However, the reliability and success of robotic control for manipulation is contingent on the ability to appropriately exploit and adapt to uncertainty through interacting with their environment. Modern control approaches mitigate uncertainty through vast accumulation of data and compute [9, 39, 5, 8, 6], effectively aiming to cover all possible scenarios at the expense of precision and interpretability, and their performance rapidly degrades with a reducing number of samples [22, 7]. The unifying goal is to develop zero-shot manipulation controllers that actively adapt to physical uncertainty, without the loss of performance and robustness. Most prior work on uncertainty-aware manipulation control under parameter uncertainty spans data-driven methods and 
+
+∗H.S and I.A are with the Department of Mechanical Engineering, Yale University, New Haven, CT, USA, email: hrishi.sathyanarayan@yale.edu 
+
+†V.V and T.L are with the Department of Electromechanical, Systems and Metal Engineering, Ghent University, Belgium, email: { victor.vantilborgh, tom.lefebvre }@ugent.be 
+
+‡H.R. is with the School of Interactive Computing, Georgia Institute of Technology, Atlanta, GA, USA, email: harish.ravichandar@cc.gatech.edu 
+
+§I.A is with the Department of Electrical Engineering, University of Sydney, Australia, email: ian.abraham@sydney.edu.au Stein inferred trajectories Goal axis 
+
+Within-hand Dynamic Positioning w/ Param. uncertainty 
+
+> Stein DRO Planner
+> Initial Pose Final Pose
+
+Fig. 1: Within-hand dynamic positioning of a cup with unknown mass distribution and friction coefficient. Our proposed Stein Variational Distributionally Robust Optimizer (SV-DRO) applied to a within-hand positioning task via controlled sliding. The demon-stration shown requires the robot to slide an object with unknown physical parameters (inertia, mass, and friction coefficient) to a goal state located at the center of the tray. Our approach enables control policies to reason over uncertainty-sensitivity to task ensuring reliable performance. 
+
+classical adaptive control approaches, each expressing a dif-ferent facet on robust optimization [46, 15, 2]. Reinforcement learning (RL) and related policy optimization methods in [11, 30] have been extensively applied to contact-rich tasks, where the ability to implicitly learn from experience offers potential adaptability in uncertainty-filled environments. These methods, however, often necessitate high compute and data quality, and sufficient coverage over all possible parameter uncertainties for high-performance guarantees [42, 32, 35]. Other works presented in [1, 27, 28] leverage sampled trajec-tory ensembles to mitigate the effects of parametric uncertainty through optimizing controls over average performance. These sample-based ensemble approaches have limitations, however, in that they fail to adapt robustly to parameter uncertainty under a prohibited number of samples, and compute only 
+
+average performance that is highly dependent on the range of parameter uncertainty. Other, classical control methods 
+
+Robotics: Science and Systems 2026 Sydney, Australia, July 13-July 17, 2026 
+
+> arXiv:2605.19029v1 [cs.RO] 18 May 2026
+
+[25, 26, 38, 10] promise control policies from conservative, worst-case formulations that adapt to uncertainty via a Dis-tributionally Robust Optimization (DRO) formulation [18]. These methods compromise task performance in response to worst-case uncertainty modeling leading to worse overall performance in contact-rich settings due to the variability of object dynamics subject to contact. 
+
+Thus, the goal of this work is to expand the capabilities of model-based control for robotic manipulation through more flexible uncertainty modeling that retains performance while adapting to uncertainty in manipulation. 
+
+To achieve this goal, we formulate robotic control under parametric uncertainty as a Distributionally Robust Optimiza-tion problem and introduce a Stein variational inference-based controller [37, 24]. Rather than optimizing against a fixed ambiguity set, we use Stein variational gradient descent (SVGD) to evolve deterministic particles drawn from a prior into a task-aware parameter posterior. This provides a non-parametric, parallelizable approximation of how parameter uncertainty affects task performance [45, 23]. Fig. 1 illustrates this idea on within-hand manipulation, where an object with uncertain mass distribution and friction is reliably moved to the tray center. Overall, SV-DRO uses exact 1 Stein inference to identify uncertainty-sensitive actions critical to contact-rich manipulation. In practice, SV-DRO achieves strong task performance under broad parameter uncertainty and limited feedback com-pared with existing model-based baselines [1, 18]. The central distinction is philosophical: instead of planning for a globally worst-case model, SV-DRO reshapes uncertainty toward pa-rameter variations that most affect the current task and opti-mizes against those task-sensitive particles. We demonstrate this behavior on contact-rich manipulation tasks including within-hand dynamic positioning and bimanual Push-T. 
+
+To summarize, the contributions of this paper are the following:  
+
+> •
+
+Derivation of a Stein variational inference-based distri-butionally robust controller that accurately models uncer-tainty and generates control solutions that enhances task performance.  
+
+> •
+
+Demonstration of 3× improvement of our proposed method compared against existing DRO and ensemble worst-case manipulation controllers subject wide ranging parameter uncertainty.  
+
+> •
+
+Showcasing continually reliable within-hand manipula-tion on a rolling experimental setting. The remainder of this paper is structured as follows: Sec-tion II discusses prior relevant work. Section III overviews preliminary material on Distributionally Robust Control and Stein Variational Gradient Descent. Section IV outlines our proposed method that combines Stein Variational Inference with DRO, and details theoretical analyses on our method.          
+
+> 1SVGD can exactly match expectations of functions within aStein-induced function class and converges to the target distribution in the infinite-particle limit [24]; with finite particles, it gives an approximate posterior representation.
+
+And finally, Section V discusses experimental results, Section VI covers limitations, and Section VII proposes future research directions. II. R ELATED WORK 
+
+A. Distributionally Robust Optimization 
+
+Distributionally Robust Optimization (DRO) optimizes per-formance against worst-case probability distributions within an ambiguity set, providing robustness to uncertainty at the cost of potential conservatism [18, 34]. Prior work has made DRO tractable for control by using duality under Kullback– Leibler ambiguity sets, reducing the original min–max prob-lem to a single-level optimization [25, 38]. However, these ap-proaches typically require a parametric reference distribution estimated through maximum-likelihood or related data-driven procedures, so robustness is only guaranteed near a learned nominal uncertainty model. Wasserstein DRO formulations avoid explicit distribution fitting by using empirical uncer-tainty samples [26], but they assume direct access to samples from the uncertain process [26, 14, Assumption 6.3], which is restrictive when uncertainty corresponds to latent physical parameters such as mass, inertia, friction, or geometry. These assumptions are especially limiting in contact-rich manipulation, where latent parameters cannot usually be sam-pled directly, feedback may be sparse or indirect, and contact dynamics introduce discontinuous, mode-dependent behavior outside the smooth settings considered by many DRO meth-ods [25, 26]. Moreover, optimizing against all admissible perturbations can produce overly conservative behavior that sacrifices task performance. In this work, we extend DRO-based control by using Stein variational inference to evolve particles over latent physical parameters according to task-relevant sensitivity, rather than relying on a fixed reference distribution or a sampling oracle. This enables robust MPC for contact-dominated manipulation while focusing computation on uncertainty that directly affects task success. 
+
+B. Stein Variational Inference in Robot Control 
+
+Variational Inference (VI) approximates an intractable target distribution by optimizing a surrogate distribution to minimize the Kullback-Leibler divergence, but its effectiveness depends on choosing an expressive variational family [37], which is difficult in high-dimensional or multi-modal settings. Stein variational inference, or Stein variational gradient descent (SVGD), avoids this restriction by evolving a set of parti-cles through deterministic functional gradient descent in a reproducing kernel Hilbert space [24]. This particle-based update combines attraction toward high-probability regions with a kernel-induced repulsion term that preserves diversity, making SVGD well suited for representing complex uncer-tainty distributions in control. Prior work has used SVI in MPC to maintain multi-modal control particles [19], optimize constrained trajectory distributions [33], generate informative failures [12], perform task and motion planning [20], and jointly infer controls and dynamics parameters online [3]. Our use of SVI differs from estimation-driven Stein MPC methods [3] that update parameter particles from online state-transition measurements to recover a dynamics posterior [3]. Such approaches require sufficiently informative feedback, which can be sparse, low-frequency, noisy, or only indirectly related to latent contact parameters such as mass distribution, inertia, and friction in contact-rich manipulation. In contrast, we do not use SVGD to identify the true physical parameters through a measurement-likelihood, contact-aware maximum a-posteriori, or other contact-aware active learning objective [36, 43, 50]. Instead, we construct a task-aware parameter posterior induced by the optimality gap, transport particles toward regions where the planned trajectory is most sensitive to uncertainty, and embed the resulting particle set inside a distributionally robust MPC objective. This allows the con-troller to optimize against uncertainty that directly affects task success, rather than uncertainty that merely best explains recent state feedback. 
+
+C. Domain Randomization 
+
+Methods in reinforcement learning (RL) [47, 16] based on domain randomization [31, 41] aim to achieve robustness under parametric uncertainty by training policies over a distri-bution of system parameters sampled offline. In this setting, a policy is optimized to perform well in expectation across the randomized domain, implicitly learning adapting to variations in model dynamics or environmental scenery. While effective, such approaches typically require extensive data collection and training, and their performance depends critically on the choice and coverage of the parameter distribution used during training [48, 40]. Moreover, the resulting domain randomization pro-cess is inherently task-agnostic with respect to parameters with larger uncertainties, as the prior distribution used for sampling is fixed a priori and not adapted based on the specific control objective at execution time. In contrast, our approach performs online, task-aware adap-tation of the parameter distribution within a model predictive control (MPC) framework, eliminating the need for offline training or repeated system interaction. By leveraging SVI, the parameter distribution is iteratively reshaped according to the optimality gap, focusing computation on uncertainty directions that directly impact task performance. This enables zero-shot control under uncertainty while maintaining com-putational tractability, and yields policies that are both robust and dynamically responsive to task-specific sensitivities. As such, our method can be viewed as complementary to domain randomization, offering a more data-efficient alternative that emphasizes task-relevant uncertainty at test time rather than distributional coverage during training. III. P RELIMINARIES 
+
+A. Distributionally Robust Control 
+
+We now formalize the control problem under parametric uncertainty using a distributionally robust perspective. In this setting, the objective is to synthesize a trajectory that minimizes a task-dependent cost while remaining robust to parameter uncertainty. To do so, we first consider the following optimization problem, 
+
+min      
+
+> τ={(xk,u k,c k)∀k∈[0 ,t h]}
+
+Jθ (τ )
+
+s.t 
+
+
+
+x0 ∈ X (init. state) 
+
+xk+1 = fθ (xk, u k) (dynamical model) 
+
+ck+1 ∈ C (xk) (contact model) (1) where Jθ (·) : X × U × C × Θ → R is the task-relevant cost to minimize, τ = {(xk, u k, c k)∀k ∈ [t, t + th]} is a sequence of states x ∈ X , control inputs u ∈ U , and contact impulses 
+
+ck ∈ C , with t ∈ [0 , T ] being the current time iterate within 
+
+T total time iterations and th being the planning horizon, and 
+
+θ ∈ Θ are physics model parameters. The Lagrangian L :
+
+X × U × C × Θ → R of the above optimization problem can be written as, 
+
+L(τ, θ ) = Jθ (τ ) + λ⊤hθ (τ ) (2) where λ ∈ Rneq is a vector of Lagrange multipliers, and 
+
+hθ : X × U × C × Θ → Rneq is the vector of equality constraints from Eq. 1. In this paper, we implement Eq. 1 via forward rollouts under the surrogate model fθ (which we construct), which computes contact impulses using a spring-like contact model [21], and execute the first control input in a receding-horizon manner, avoiding the need to explicitly en-force equality constraints in practice. Distributionally Robust Optimization (DRO) seeks to optimize over the Lagrangian via a bi-level optimization problem, 
+
+min  
+
+> τ
+
+sup 
+
+> p∈P
+
+Eθ∼p(θ) [L(τ, θ )] (3) where p is a surrogate distribution over θ, and P is the following ambiguity set, 
+
+P = {p | DKL [p∥q] ≤ ϵ} (4) where q is true unknown target distribution. Since finding an ambiguity set P is challenging to find a-priori, the above DRO problem is commonly approximated as shown in [25] as, 
+
+min  
+
+> τ,β> 0
+
+βϵ + β log Eq
+
+"
+
+exp 
+
+ 1
+
+β L(τ, θ )
+
+#
+
+, (5) where β is a dual auxiliary variable. Optimizing the second term is more commonly known as the Risk-Averse Optimal Control Problem [44, 13]. Note that a similar objective was derived in [1] through the ensemble planning approach. For sufficiently large β, it holds true via second order Taylor Expansion that, 
+
+β log Eq
+
+"
+
+exp 
+
+ 1
+
+β L(τ, θ )
+
+#
+
+≈ Eq
+
+L(τ, θ ) + 121
+
+β Vq
+
+L(τ, θ )
+
+(6) 
+
+Assumption 1. (KL-ball ambiguity set)[25, 26] the surrogate distribution p exists in the ϵ-neighborhood of the target dis-tribution, where DKL (p∥q) ≤ ϵ given small ϵ > 0.To ensure that the above assumption holds, [25] first esti-mates the target distribution through a data-driven maximum-likelihood estimation approach prior to k-Nearest-Neighbor sampling from the resulting inferred distribution. The above assumption already holds if terms in Eq. 6 is approximated as, 
+
+Eq
+
+L(τ, θ ) ≈ L (τ, θ ) θ=¯θ
+
+Vq
+
+L(τ, θ ) ≈ ∇ θ L(τ, θ ) ⊤ 
+
+> θ=¯θ
+
+Σθθ ∇θ L(τ, θ ) θ=¯θ
+
+(7) where ¯θ is the parameter mean value, and Σθθ ∈ RΘ×Θ is the variance about the parameter. Note that Assumption 1 may not always be guaranteed in the general case, and is scarce in a variety of manipulation problems. Therefore, implementing standard DRO in a ma-nipulation setting filled with high uncertainty, our priors may not be strong enough to ensure that Assumption 1 holds. In this work, we develop a novel approach that extends DRO-based methods without the need of asserting Assumption 1 by exactly measuring uncertainty through a guided task-aware variational inference-based method. 
+
+B. Stein Variational Gradient Descent 
+
+Given a random variable θ ∈ Θ, the goal of variational inference is to minimize the Kullback-Leibler (KL) divergence measure over the target distribution q(θ) and surrogate p(θ),
+
+p∗(θ) = arg min  
+
+> p∈P
+
+{DKL (p∥q)
+
+≡ Eθ∼p(θ)
+
+ log p(θ) − Eθ∼p(θ)
+
+ log q(θ) + log z}
+
+(8) where z is a constant and thus ignored in the optimization. Stein Variational Gradient Descent (SVGD) [24] offers a so-lution through kernel and gradient descent methods that avoids committing to a parametric variational family P entirely. SVGD initializes a set of points {θi
+
+> 0
+
+}Ni=1 from a prior dis-tribution p(θ) = N (ˆθ, Σθ ) in θ. The points evolve according to the one-to-one mapping, 
+
+θit+1 ← θit + α ϕ ∗ 
+
+> p,q
+
+(θit) (9) where ϕ∗ 
+
+> p,q
+
+(θit) is a smooth function that captures the steepest descent direction that minimizes the KL-divergence measure at the tth step, with T being the total number of SVGD iterations, and α > 0 is a sufficiently small perturbation magnitude. We consider ϕ∗ 
+
+> p,q
+
+to be the solution to the steepest descent problem, 
+
+ϕ∗ 
+
+> p,q
+
+(·) = arg min 
+
+> ϕ∈H d
+
+{−∇ θ DKL (p∥q) | ∥ ϕ∥Hd ≤ 1}
+
+= Eθt∼q
+
+Aq k(θt, ·) (10) where Aq (·) : Θ → S Θ is Stein’s identity computed for a universal positive definite kernel function k : Θ × Θ → R
+
+operating in a dense Hd in the space of continuous functions 
+
+C(Θ , Rd), where Hd is the corresponding Reproducing Kernel Hilbert Space (RKHS). The closed form solution to Eq. 10 is computed to be, 
+
+ϕ∗ 
+
+> p,q
+
+(·) = Eθt∼p
+
+k(θt, ·)∇θ log q(θt) + ∇θ k(θt, ·) (11) In practice, it is common to approximate the steepest descent direction ϕ∗ 
+
+> p,q
+
+using Monte-Carlo sampling over random vari-ables θ,
+
+ϕ∗ 
+
+> p,q
+
+(·) ≈ 1
+
+N
+
+> N
+
+X
+
+> t=1
+
+k(θit, ·)∇θ log q(θit) + ∇θ k(θit, ·). (12) Over sufficient number of iterations of SVGD and number of samples N , the sampled parameters become a sufficient approximation of the target q(θ). In this work, we utilize SVGD as a guiding method to evolve parameter points initially sampled from a prior based on task-aware posterior gradients in order to deterministically model the parameter distribution subject to task-sensitivities and robustly solve contact-rich manipulation tasks. Note that while contact-based control problems are non-smooth in nature, we utilize a Lagrangian function that is smooth to take gradients over via SVGD. IV. S TEIN VARIATIONAL DISTRIBUTIONALLY ROBUST 
+
+CONTROL 
+
+In this section, we derive the main contribution of this work that formulates the Distributionally Robust Control problem via Stein variational inference. 
+
+A. Variational Approximation of Task-Dependent Parameter Posterior 
+
+We first formulate the parameter posterior distribution via SVI. Given a set of randomly drawn parameter points 
+
+{θ}Ni=1 ∼ p(θ), where p(θ) is a prior distribution, we approxi-mate the task-dependent parameter posterior given a likelihood output O as, 
+
+p(O | θ) = exp  δL(τ ∗, θ ) (13) where τ ∗ is the solved optimal trajectory, and the likelihood posterior p(O | θ) relates to the target q∗(θ) as, 
+
+q∗(θ) = arg min  
+
+> q∈Q
+
+DKL 
+
+
+
+q(θ) || p(O| θ)
+
+
+
+. (14) Here, δL = L(τ ∗, θ ) − L (τ ∗, θ ∗) denotes the optimality gap, where θ∗ is the true parameter and τ ∗ is the solved trajectory. Since θ∗ is unavailable, we use the particle mean 
+
+θ∗ ≈ 1
+
+> N
+
+PNi=1 θi as a stable, low-variance reference for evalu-ating optimality, which is a standard and consistent estimator that provides stable low-variance reference for defining the op-timality gap. The key idea is not to recover the true parameter, but to infer a task-consistent posterior whose particles capture the parameter variations that matter for producing a single robust control action under uncertainty. The likelihood output 
+
+O encodes parameter-dependent outcomes in task optimality. The posterior is then calculated as a parameter-conditioned optimality gap distribution, 
+
+p′(θ) = p(O| θ)p(θ)
+
+z = exp  δL(τ ∗, θ ) p(θ)
+
+z (15) where z = R 
+
+> Θ
+
+p(O| ν)p(ν)dν which reveals the following log posterior, 
+
+log p′(θ) = log p(θ) + δL(τ, θ ) + * constant 
+
+log z. (16) t=0s t=2.5s t=5s   
+
+> block goal end effector Fig. 2: Illustrative Example of SV-DRO. We visualize SV-DRO on the bimanual Push-T task, where two end effectors move a block to a goal under uncertain block–ground friction μ. Each translucent trajectory is a rollout induced by a different friction particle, initially sampled from the prior and then transported by SVGD using the task optimality gap. Rather than identifying friction before control or optimizing against a fixed worst case, SV-DRO reshapes uncertainty online toward parameter realizations most consequential for task success.
+
+We now seek to utilize the posterior distribution to evolve the tth sampled set of estimators {θit}Ni=1 drawn from a prior 
+
+p(θ) by evaluating the steepest descent direction ϕ∗ : Θ →SΘ using Stein’s identity. Given a prior p(θ) and a universal positive definite kernel k : Θ × Θ → R, the resulting SVGD steepest descent solution to Eq. 10 is, 
+
+ϕ∗(·) = Eθ∼p(θ)
+
+k(θi, ·)∇θ log p′(θi) + ∇θ k(θi, ·)
+
+≈ 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+k(θit, ·)∇θ log p′(θit) + ∇θ k(θit, ·) (17) where k(θ, ˆθ) = exp( −∥ θ − ˆθ∥2/h ) is chosen as a Radial Basis Function (RBF) kernel [49]. Because the true physics model parameters θ∗ are unknown and inestimable, we require a method that expands on existing DRO formulations [18, 25, 26] by diversifying the parametric inferences θ ∼ p(θ) through an evolving task-aware surrogate posterior that exactly adapts to the uncertainty present. The benefit of performing SVGD for parametric inference is that we can compute varied, diverse parameter-sensitive gradients to the task across a wide range θ, thus reasoning over the manipulation task over an ensemble of sampled parameter estimates that accurately estimates the task-aware posterior. By utilizing SVI, we focus limited computational resources 
+
+on task-critical uncertainties. By iteratively shaping the un-certainty distribution toward high-risk regions, we derive a robust controller that avoids the conservatism of worst-case methods while maintaining the sample efficiency of model-based approaches. 
+
+B. Stein Variational DRO Formulation 
+
+Our goal in using Stein variational inference is to eliminate the restrictive Assumption 1 which is not necessarily guaran-teed for a weak prior p(θ). We therefore require a more robust method to optimize a control sequence u∗ that reasons about 
+
+variations of task sensitivities given that θ∗ is unknown. To do so, we adopt the Stein-Variational approach [24] in the DRO formulation on the perturbed set of evolving estimators 
+
+{θit}Ni=1 ∀t ∈ [0 , T ], where T is the total number of time steps. We first define the evolving estimators ˆθ to follow the SVGD perturbation update, 
+
+θit+1 ← θit + αϕ ∗(θit) (18) where α > 0 is the Stein evolve rate and kernel k(θ, ˆθ) is an RBF (commonly used in Stein Variational inference [19, 3]), and ∇θ log p′(θ) is the score of the log posterior in Eq. (16). The estimators are then implemented to solve the following optimization problem that extends Eq. 5, 
+
+min     
+
+> τ={(xk,u k,c k)∀k∈[t,t +th]}
+
+Eq
+
+L(τ, θ ) ≈ 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+L(τ, θ i)= L(τ, θ ) θ=¯θ + γ 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+δL(τ, θ it)
+
+(19) where ¯θ is the empirically averaged parameter value given the current parameter points, and L : T → R where T × Θ ⊂X × U × C θ is the Lagrangian defined in Eq. 2. Here, tuning parameter γ ∈ (0 , 1] is included in order to control the trade-off between optimizing over the nominal parameters versus parameter variations. When γ = 1 , the above formulation equates to the true Monte-Carlo approximation, but can be altered for numerical stability. When the auxiliary variable 
+
+β in Eq. 5 is sufficiently large , the variance term becomes negligible, yielding the approximation in Eq. 6 where the objective reduces to the expectation term, which recovers Eq. 19 under δL(τ, θ ) ≈ L (τ ∗, θ ) − L (τ ∗, ¯θ). We approximate 
+
+Eθ∼p(θ)[L(τ, θ )] empirically, as this term captures the gap in task-dependent optimality with respect to parameter uncer-tainty, which we aim to minimize. The core idea is to evaluate task-aware sensitivity gradients across parameter particles {θit}Ni=1 , yielding a particle set that better represents variations that enlarge the optimality gap δL(τ, θ ). Alg. 1 reflects the limited-feedback setting considered here: instead of replanning and updating particles after every control input, the controller executes the first HEnd effectors Block Stein-inferred trajectories t = 0.0 s t = 12.6 s t = 25.2 s t = 37.8 s Fig. 3: Bimanual manipulation of Push-T with unknown mass distribution. Here, we demonstrate a control solution to the bimanual push-T task using our proposed SV-DRO. We observe that despite high uncertainty in mass, the bimanual end-effectors are able to successfully manipulate the T-block to the desired position while avoiding task-sensitive actions as a function of the uncertain parameters. 
+
+Success % / Time to Completion (s) Bimanual Push-T Within-Hand Dynamic Positioning Method ≤ 10 cm ≤ 1 cm ≤ 10 cm ≤ 1 cm 
+
+SV-DRO (Ours) 93.25% / 16.45 ± 2.45 84.38% / 14.21 ± 2.22 100% / 12.00 ± 4.78 100% / 12.00 ± 4.78 
+
+DuST-MPC [3] 71.88% / 14.41 ± 3.58 59.38% / 13.32 ± 2.67 84.38% / 20.21 ± 5.62 46.88% / 20.18 ± 1.24 EMPPI [1] 43.75% / 18.88 ± 6.29 31.25% / 14.89 ± 3.12 59.38% / 22.44 ± 3.22 40.63% / 21.78 ± 3.43 MPC 28.13% / 19.56 ± 6.21 18.75% / 16.56 ± 2.21 31.25% / 18.40 ± 5.60 25% / 16.80 ± 5.14 DRO [18] 3.13% / 19.12 ± 3.13 0% / ⋆ 34.38% / 17.79 ± 5.00 28.13% / 18.55 ± 5.15 
+
+TABLE I: Simulated performance comparison over 32 trials of the bimanual Push-T and within-hand dynamic positioning experiments under unknown bounded uniform parameter distribution prior initialization. Results report success rate and completion time as mean ± standard deviation. ⋆ denotes insufficient completed trials to obtain completion-time statistics. 
+
+controls, receives a new measured state ˜x from the measured dynamics ˜f , and then resolves Eq. 5. Thus, SVGD updates occur only at the lower feedback frequency, unlike estimation-driven Stein MPC methods that require continuous state-transition measurements for online system identification; here, particles evolve from task-sensitive optimality-gap gradients and must remain robust between intermittent measurements. Fig. 2 illustrates this mechanism on bimanual Push-T. Each translucent rollout is a predicted object trajectory induced by a different friction particle, with SVGD transporting broad prior samples toward parameter regions that expose large task optimality gaps. The central principle of SV-DRO is therefore to reshape uncertainty online into a task-sensitive particle set, rather than fully identifying physical parameters before control. V. R ESULTS 
+
+In this section, we demonstrate and analyze the efficacy of our proposed approach on a variety of contact-based control problems. To do so, we aim to address the following research questions: Q1) Can our proposed approach improve task success rate for manipulation tasks under broad parameter uncertainty? Q2) How does Stein variational inference impact the conver-gence of the DRO problem? Q3) Does the task-aware parameter inference via Stein Vari-ational DRO benefit over existing uncertainty mitigating approaches? Q4) How does the choice of kernel affect the performance of Stein Variational DRO? 
+
+Algorithm 1 Stein Variational Distributionally Robust Control (SV-DRO) 
+
+Require: planning horizon th, parameter prior p(θ), N parti-cles, step size α, samples {θi
+
+> 0
+
+}Ni=1 ∼ p(θ), parameterized surrogate model fθ (xk, u k), time duration T , control execution window H. 
+
+> 1:
+
+t = 0  
+
+> 2:
+
+while t < T do  
+
+> 3:
+
+τ ∗ ← arg min τ L(τ, θ ) θ=¯θ + γ 1
+
+> N
+
+PNi=1 δL(τ, θ it) 
+
+> 4:
+
+for h = 0 , . . . , H − 1 do  
+
+> 5:
+
+Apply u∗ 
+
+> t+h
+
+to the system  
+
+> 6:
+
+˜xt+h+1 ← ˜f (˜ xt+h, u ∗
+
+> t+h
+
+) 
+
+> 7:
+
+end for  
+
+> 8:
+
+xt+H ← measured state after H executed controls  
+
+> 9:
+
+Update SVI using the current task-aware posterior  
+
+> 10:
+
+{θit+H }Ni=1 ← SVGD( {θit}Ni=1 ) ▷ Eq. 18  
+
+> 11:
+
+t ← t + H 
+
+> 12:
+
+end while 
+
+Q5) What is the computation scaling for our Stein variational DRO approach with respect to particle parameter size and planning horizon? We specifically answer the above questions through implemen-tations of our approach in the following contact-based control problems:  
+
+> •
+
+Bimanual Push-T. A bimanual manipulator is tasked with moving a T-shaped block with unknown mass and inertia to a goal pose through non-prehensile interactions.  
+
+> •
+
+Dynamic Within-Hand Positioning. A robot manip-Fig. 4: Continual within-hand dynamic object positioning. SV-DRO repeatedly positions a cup with unknown mass distribution and tray friction over a continuous 3.5-minute run using AprilTag pose feedback [29]. After each successful placement within 1.5 cm of the goal axis, the cup is randomly perturbed without stopping the experiment. SV-DRO achieves the desired tolerance in approximately 100% of trials, demonstrating reliable dynamic sliding under persistent physical uncertainty. 
+
+ulates an object with unknown mass distribution (mass and inertia) and friction coefficient to another goal state within its tray hand. A reference diagram is shown in Fig. 1. Implementation details for each control problem is detailed in Appendix B. We compare our approach to four following baselines: 1) Ensemble Model Predictive Control (EMPPI) [1, 27], 2) Dual Stein Variational control (DuST-MPC) [3] 3) Conventional DRO [18, 25, 26], 4) and a naive MPC using the prior mean. The key distinction between Stein-DRO and EMPPI lies in sample evolution, where Stein-DRO adaptively updates parameter particles via SVI shown in Eq. 18 using task-aware sensitivities, and EMPPI relies on static sampling from the prior distribution. DuSt-MPC uses SVGD primarily to perform online Bayesian system identification over dynamics parameters and controls from repeated state-feedback mea-surements. We address the above questions in this section with corresponding answers ‘A(-)’. We evaluate our experiments by initializing the algorithm’s starting parameters from a bounded uniform distribution (more details in Appendix B). For EMPPI and DRO, the sampled parameters are resampled after every new plan executed by the MPC controller as defined in Eq. 5. Our method initially samples randomly from this parameter prior distribution, followed by subsequent SVGD evolution of the samples. 
+
+A1. Improved Performance Under Uncertainty 
+
+As shown in Table I, SV-DRO achieves the highest success across bimanual Push-T and within-hand positioning while improving completion times. Success is measured by final object distance to the goal, matching the task costs used by each controller. Fig. 3 shows SV-DRO coordinating two end effectors un-der uncertain physical parameters, while Fig. 4 demonstrates reliable within-hand positioning under uncertain cup mass distribution and tray friction. These tasks rely on intermittent contact and sliding, making them highly sensitive to latent dynamics and difficult for methods that require persistent state feedback for system identification, such as DuSt-MPC. SV-DRO instead transports particles toward parameters that expose high optimality-gap sensitivity, allowing control to adapt to task-relevant uncertainty rather than merely fitting recent measurements. Although our theoretical convergence guarantees (see Appendix A for details) assumes stationary latent parameters, we also evaluate a discrete parameter shift in Fig. 5. The robot first approaches a goal with a top-heavy wine glass of unknown mass distribution, then the glass is filled with water, abruptly changing its dynamics before the robot serves it to a second goal. SV-DRO adapts to this sudden posterior shift and successfully completes the serving task, empirically demonstrating robustness beyond fixed-parameter settings. 
+
+A2. SVI Improves Task-Aware Convergence t = 0s t = 12s t = 16s t = 25s t = 41s t = 34.8s t = 34s t = 27s goal frame object frame Approach phase Pouring phase  
+
+> Serving phase Fig. 5: Hardware demonstration of within-hand dynamic serving with a top-heavy object. The robot moves a wine glass to a goal pose and then serves it to a second goal after the glass is abruptly filled with water, inducing a sudden shift in its mass distribution. SV-DRO adapts to this posterior shift by using task-aware Stein variational gradients, enabling robust manipulation under changing physical uncertainty. Object Position Error (cm)
+
+## Solver Iterations DRO EMPPI SV-DRO (Ours)  
+
+> Fig. 6: Controller convergence based on prior distribution for Within-hand Positioning. The number of parameter samples, plan-ning horizon, and prior distributions, are fixed. The results of this plot are evaluated over 5 trials per method with 5 random seeds. SV-DRO has improved reliability due to Stein inference.
+
+We analyze the convergence properties of our approach in solving the DRO problem to characterize the impact of SVI on the within-hand dynamic object positioning task. Our focus is only on solving the trajectory optimization component in Alg. 1 until convergence, given an initialization according to a range of parameter priors drawn from a uniform bounded distribution. We repeat this process over a set of 16 samples. The results of the DRO objective convergence are shown in Fig. 6 in comparison to the baseline methods. We find that our approach has significantly less variance due to the deterministic evolution of the SVGD leading to consistent and reliable controllers despite the variability in parameter prior initialization. In contrast, the EMPPI approach experiences high variations of loss over solver iterations due to high stochasticity in the task-agnostic random sampling process itself, which is significantly more unreliable. The DRO ap-proach converges to a worse-performing controller due to its risk averse nature. 
+
+A3. Task-Aware Inference Improves Manipulation 
+
+We show the effect on the parameter inference technique on the overall success of solving a manipulation task. Our                             
+
+> Kernel Success Rate %(<1cm) Completion Time (s) RBF 100 .0% 12 .93 ±4.78
+> k= 1 100 .0% 16 .54 ±2.12
+> IMQ 100 .0% 8.78 ±1.34
+> TABLE II: Effect of kernel choice on SV-DRO performance over 32 trials for within-hand object positioning problem. We compare the standard RBF kernel, a constant kernel, and the inverse multiquadric (IMQ) kernel. The IMQ kernel achieves the fastest completion time, suggesting that its heavier-tailed distribution better preserves particle diversity over task-sensitive regions of the posterior and avoids premature mode collapse of Stein particles.
+
+proposed method diversifies the initially sampled parameters based on a task-aware posterior distribution via SVGD, which contributes to higher success rates indicated in Table I. How-ever, what is the exact relationship between the discrepancy of the evolved samples to the unknown true parameters and the success rate of the manipulation task at hand? We address this question by showing the initially sampled points from the parameter prior/posterior and their relationship to the respective performance of the within-hand dynamic object positioning experiment. Fig. 7 relates parameter dis-crepancy (object distance to goal) to task error for the within-hand positioning experiment. SV-DRO achieves consistently lower error across a wide range of discrepancies, showing that successful control does not require particles to converge to the true parameter θ∗. Instead, even with limited sensor feedback, SVGD transports particles toward task-relevant regions that expose high-sensitivity optimality-gap directions. In contrast, DRO and EMPPI degrade as the prior mean moves away from the true parameter, since their uncertainty representations remain conservative or task-agnostic rather than task-adaptive. 
+
+A4. Choice of Kernel for SV-DRO 
+
+We evaluate how the SVGD kernel affects SV-DRO per-formance. The kernel determines particle interaction during posterior transport, balancing attraction toward task-sensitive regions with repulsion that preserves diversity. As shown in Table II, all kernels achieve 100% success, indicating that final task completion is not highly kernel-sensitive in this experiment. However, completion time varies substantially: the Position Error (m)  Parameter Discrepancy vs Position Error Prior Posterior         
+
+> DRO EMPPI SV-DRO (Ours) Fig. 7: Position Error over Parameter Samples. Here, we demonstrate the relationship between the performance (measured as the distance to the goal state) and the initial parameter mean discrepancy for the within-hand object positioning experiment. Our approach adapts to task-sensitive parameter uncertainty leading to lower error despite the discrepancy. We see weaker success rates for the samples from the EMPPI and DRO samples due to their task-agnostic posterior samples.
+
+constant kernel, which removes distance-dependent repulsion, is slowest at ∼ 16 .54 s, suggesting that task-aware gradients alone can solve the task but less efficiently without geometry-aware particle diversity. The IMQ kernel achieves the fastest completion time at 
+
+∼ 8.78 s, outperforming the RBF kernel at ∼ 12 .93 s. This suggests that stronger long-range particle interactions help maintain diversity over separated task-sensitive regions and avoid premature particle collapse. Thus, kernel choice primarily affects the efficiency, rather than feasibility, of SV-DRO; heavier-tailed kernels such as IMQ may be preferable in contact-rich tasks where uncertainty-sensitive modes are distributed across parameter space. 
+
+A5. Computational Scaling of SVI 
+
+Last, we investigate the computational complexity of the proposed SV-DRO approach for the within-hand dynamic positioning experiment. We evaluate the computational time scaling with respect to the parameter sample size N and the planning horizon th. All initial conditions, including random seeds and system state, are fixed. In evaluating over the pa-rameter sample, we fix the planning horizon to 0.375 seconds to be constant for all computations, and vice versa. The results shown in Fig. 8 demonstrate improved computational performance with GPU parallelization (NVIDIA GeForce RTX 3080) compared to the CPU (AMD Ryzen Threadripper 3960X 24-Core Processor). VI. L IMITATIONS 
+
+Model Error from Overlooked Parameters A fundamental limitation of our proposed work is its model-based nature. We require that the parameter uncertainty class be known in advance which has the risk of overlooked model parameters. In particular, inaccurate modeling, like a contact-model that is unable to capture the relevant frictional forces may have an adverse effect on the overall performance. 
+
+Model Complexity A limitation of our approach, and gen-erally model-based approaches, is the need to construct a reduced-order model to avoid mitigating computational com-plexity. In more general open-world settings, the need to Comp. Time (ms) +- std param. sample size planning horizon length cpu gpu              
+
+> Fig. 8: Computational Analysis over Parameter Samples of SV-DRO. Here, we demonstrate the computational scaling of the proposed SV-DRO gradient step as a function of the parameter sample size N(left) and planning horizon th(right). With the CPU (AMD Ryzen Threadripper 3960X 24-Core Processor), we observe linear scaling with an increase of sample size, and with the GPU (NVIDIA GeForce RTX 3080), we observe constant computational scaling (about 77 μs). For change in planning horizon length, we observe linear scaling with the CPU and sublinear scaling with GPU due to added parallelization.
+
+build such models could become a bottleneck, especially when one needs to accurately characterize uncertainty. Model-free approaches excel in these scenarios but lack any form of interpretability. An open challenge is bridging the gap between these classes of methods, especially when reliability and robust performance is necessary. Future work will consider using the flexibility of Stein variational inference under less model-based restrictions. 
+
+Sensitivity to Informative Priors As shown in Eq. 16, the prior score ∇θ log p(θ) enters every SVGD update, with the task-aware optimality-gap gradient in Alg. 1. Our bounded uniform prior has zero interior score, allowing task sensitivity to dominate particle transport. More informative priors, such as Gaussians centered at nominal estimates, can persistently pull particles toward the prior mean and suppress exploration of task-critical uncertainty directions. Future work will study structured priors to characterize this tradeoff. VII. C ONCLUSION 
+
+In summary, we present an approach that enables robots to reliably complete manipulation tasks under broad parameter uncertainty. Our approach combines Stein variational inference and Distributionally Robust Optimization to accurately model uncertainty in parameters and synthesize control solutions that enhance task performance. We demonstrate accurate modeling of task-aware posterior via Stein variational inference and show significant improvements in contact-rich manipulation problems. Last, we showcase the reliability of our approach in real-world settings via a continually running within-hand manipulation experiment. VIII. A CKNOWLEDGEMENTS 
+
+This work is supported by the National Science Foundation under award NSF FRR 2238066. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the authors and do not necessarily reflect the views of the National Science Foundation. REFERENCES 
+
+[1] Ian Abraham, Ankur Handa, Nathan Ratliff, Kendall Lowrey, Todd D. Murphey, and Dieter Fox. Model-based generalization under parameter uncertainty using path integral control. IEEE Robotics and Automation Letters , 5(2):2864–2871, April 2020. ISSN 2377-3774. doi: 10.1109/lra.2020.2972836. URL http://dx.doi.org/ 10.1109/LRA.2020.2972836. [2] Bo Ai, Stephen Tian, Haochen Shi, Yixuan Wang, To-bias Pfaff, Cheston Tan, Henrik I. Christensen, Hao Su, Jiajun Wu, and Yunzhu Li. A review of learning-based dynamics models for robotic manipulation. Sci-ence Robotics , 10(106):eadt1497, 2025. doi: 10.1126/ scirobotics.adt1497. URL https://www.science.org/doi/ abs/10.1126/scirobotics.adt1497. [3] Lucas Barcelos, Alexander Lambert, Rafael Oliveira, Paulo Borges, Byron Boots, and Fabio Ramos. Dual on-line stein variational inference for control and dynamics, 2021. URL https://arxiv.org/abs/2103.12890. [4] Patrick Billingsley. Convergence of probability measures .Wiley Series in Probability and Statistics: Probability and Statistics. John Wiley & Sons Inc., New York, second edition, 1999. ISBN 0-471-19745-9. A Wiley-Interscience Publication. [5] Cheng Chi, Zhenjia Xu, Siyuan Feng, Eric Cousineau, Yilun Du, Benjamin Burchfiel, Russ Tedrake, and Shuran Song. Diffusion policy: Visuomotor policy learning via action diffusion, 2024. URL https://arxiv.org/abs/2303. 04137. [6] Embodiment Collaboration and Abby O’Neill et al. Open x-embodiment: Robotic learning datasets and rt-x mod-els, 2025. URL https://arxiv.org/abs/2310.08864. [7] Gabriel Dulac-Arnold, Nir Levine, Daniel J. Mankowitz, Jerry Li, Cosmin Paduraru, Sven Gowal, and Todd Hes-ter. An empirical investigation of the challenges of real-world reinforcement learning, 2021. URL https: //arxiv.org/abs/2003.11881. [8] Rishi Bommasani et. al. On the opportunities and risks of foundation models, 2022. URL https://arxiv.org/abs/ 2108.07258. [9] Christian Fiedler, Carsten W. Scherer, and Sebastian Trimpe. Learning-enhanced robust controller synthesis with rigorous statistical and control-theoretic guarantees, 2021. URL https://arxiv.org/abs/2105.03397. [10] Astghik Hakobyan and Insoon Yang. Distribution-ally robust optimization with unscented transform for learning-based motion control in dynamic environments. In 2023 IEEE International Conference on Robotics and Automation (ICRA) , pages 3225–3232, 2023. doi: 10.1109/ICRA48891.2023.10161246. [11] Nicolas Heess, Greg Wayne, David Silver, Timothy Lil-licrap, Yuval Tassa, and Tom Erez. Learning continuous control policies by stochastic value gradients, 2015. URL https://arxiv.org/abs/1510.09142. [12] Yixuan Huang, Novella Alvina, Mohanraj Devendran Shanthi, and Tucker Hermans. Fail2progress: Learning from real-world robot failures with stein variational in-ference, 2025. URL https://arxiv.org/abs/2509.01746. [13] Ian, Rhodes, and David H. Jacobson. Optimal stochastic linear systems with exponential performance criteria and their relation to deterministic differential games. IEEE Transactions on Automatic Control , 18:124–131, 1973. URL https://api.semanticscholar.org/CorpusID:478053. [14] Michael G. Kapteyn, Karen E. Willcox, and Andy Philpott. A Distributionally Robust Approach to Black-Box Optimization . doi: 10.2514/6.2018-0666. URL https://arc.aiaa.org/doi/abs/10.2514/6.2018-0666. [15] Jaywant P. Kolhe, Md Shaheed, T.S. Chandar, and S.E. Talole. Robust control of robot manipulators based on uncertainty and disturbance estimation. International Journal of Robust and Nonlinear Control , 23(1):104– 122, 2013. doi: https://doi.org/10.1002/rnc.1823. URL https://onlinelibrary.wiley.com/doi/abs/10.1002/rnc.1823. [16] Vijay Konda and John Tsitsiklis. Actor-critic algorithms. In S. Solla, T. Leen, and K. M¨ uller, editors, Advances in Neural Information Processing Systems , volume 12. MIT Press, 1999. URL https://proceedings.neurips.cc/paper files/paper/1999/ file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf. [17] Anna Korba, Adil Salim, Michael Arbel, Giulia Luise, and Arthur Gretton. A non-asymptotic analysis for stein variational gradient descent, 2021. URL https://arxiv.org/ abs/2006.09797. [18] Daniel Kuhn, Soroosh Shafiee, and Wolfram Wiesemann. Distributionally robust optimization, 2025. URL https: //arxiv.org/abs/2411.02549. [19] Alexander Lambert, Adam Fishman, Dieter Fox, Byron Boots, and Fabio Ramos. Stein variational model predic-tive control, 2021. URL https://arxiv.org/abs/2011.07641. [20] Yewon Lee, Andrew Z. Li, Philip Huang, Eric Heiden, Krishna Murthy Jatavallabhula, Fabian Damken, Kevin Smith, Derek Nowrouzezahrai, Fabio Ramos, and Florian Shkurti. Stamp: Differentiable task and motion planning via stein variational gradient descent, 2024. URL https: //arxiv.org/abs/2310.01775. [21] Yong-Hoon Lee, Keuntae Kim, Jaehyun Park, Chung Hyuk Park, and Hae-Won Park. Soft contact model for robust locomotion of legged robots. [22] Sergey Levine, Chelsea Finn, Trevor Darrell, and Pieter Abbeel. End-to-end training of deep visuomotor policies, 2016. URL https://arxiv.org/abs/1504.00702. [23] Lei Li, Yingzhou Li, Jian-Guo Liu, Zibu Liu, and Jianfeng Lu. A stochastic version of stein variational gradient descent for efficient sampling. Communica-tions in Applied Mathematics and Computational Sci-ence , 15(1):37–63, June 2020. ISSN 1559-3940. doi: 10.2140/camcos.2020.15.37. URL http://dx.doi.org/10. 2140/camcos.2020.15.37. [24] Qiang Liu and Dilin Wang. Stein variational gradient descent: A general purpose bayesian inference algorithm, 2019. URL https://arxiv.org/abs/1608.04471. [25] Rui Liu, Guangyao Shi, and Pratap Tokekar. Data-driven distributionally robust optimal control with state-dependent noise, 2025. URL https://arxiv.org/abs/2303. 02293. [26] Kehan Long, Yinzhuang Yi, Zhirui Dai, Sylvia Herbert, Jorge Cort´ es, and Nikolay Atanasov. Sensor-based dis-tributionally robust control for safe robot navigation in dynamic environments, 2025. URL https://arxiv.org/abs/ 2405.18251. [27] Kendall Lowrey, Aravind Rajeswaran, Sham Kakade, Emanuel Todorov, and Igor Mordatch. Plan online, learn offline: Efficient learning and exploration via model-based control, 2019. URL https://arxiv.org/abs/1811. 01848. [28] Igor Mordatch, Kendall Lowrey, and Emanuel Todorov. Ensemble-cio: Full-body dynamic motion planning that transfers to physical humanoids. In 2015 IEEE/RSJ In-ternational Conference on Intelligent Robots and Systems (IROS) , pages 5307–5314, 2015. doi: 10.1109/IROS. 2015.7354126. [29] Edwin Olson. Apriltag: A robust and flexible visual fiducial system. In 2011 IEEE International Conference on Robotics and Automation , pages 3400–3407, 2011. doi: 10.1109/ICRA.2011.5979561. [30] OpenAI, Marcin Andrychowicz, Bowen Baker, Maciek Chociej, Rafal Jozefowicz, Bob McGrew, Jakub Pa-chocki, Arthur Petron, Matthias Plappert, Glenn Powell, Alex Ray, Jonas Schneider, Szymon Sidor, Josh Tobin, Peter Welinder, Lilian Weng, and Wojciech Zaremba. Learning dexterous in-hand manipulation, 2019. URL https://arxiv.org/abs/1808.00177. [31] Xue Bin Peng, Marcin Andrychowicz, Wojciech Zaremba, and Pieter Abbeel. Sim-to-real transfer of robotic control with dynamics randomization. In 2018 IEEE International Conference on Robotics and Automa-tion (ICRA) , pages 3803–3810, 2018. doi: 10.1109/ ICRA.2018.8460528. [32] Xue Bin Peng, Marcin Andrychowicz, Wojciech Zaremba, and Pieter Abbeel. Sim-to-real transfer of robotic control with dynamics randomization. In 2018 IEEE International Conference on Robotics and Automa-tion (ICRA) , page 3803–3810. IEEE, May 2018. doi: 10.1109/icra.2018.8460528. URL http://dx.doi.org/10. 1109/ICRA.2018.8460528. [33] Thomas Power and Dmitry Berenson. Constrained stein variational trajectory optimization, 2024. URL https:// arxiv.org/abs/2308.12110. [34] Hamed Rahimian and Sanjay Mehrotra. Frameworks and results in distributionally robust optimization. Open Jour-nal of Mathematical Optimization , 3:1–85, July 2022. ISSN 2777-5860. doi: 10.5802/ojmo.15. URL http: //dx.doi.org/10.5802/ojmo.15. [35] Aravind Rajeswaran, Sarvjeet Ghotra, Balaraman Ravin-dran, and Sergey Levine. Epopt: Learning robust neural network policies using model ensembles, 2017. URL https://arxiv.org/abs/1610.01283. [36] Hrishikesh Sathyanarayan and Ian Abraham. Behavior synthesis via contact-aware fisher information maximiza-tion, 2025. URL https://arxiv.org/abs/2505.12214. [37] Charles Stein, Persi Diaconis, Susan Holmes, and Gesine Reinert. Use of exchangeable pairs in the analysis of sim-ulations. 46, 01 2004. doi: 10.1214/lnms/1196283797. [38] Tyler Summers. Distributionally robust sampling-based motion planning under uncertainty. In 2018 IEEE/RSJ In-ternational Conference on Intelligent Robots and Systems (IROS) , pages 6518–6523, 2018. doi: 10.1109/IROS. 2018.8593893. [39] TRI LBM Team and Jose Barreiros et. al. A careful examination of large behavior models for multitask dex-terous manipulation, 2025. URL https://arxiv.org/abs/ 2507.05331. [40] Gabriele Tiboni, Pascal Klink, Jan Peters, Tatiana Tom-masi, Carlo D’Eramo, and Georgia Chalvatzaki. Domain randomization via entropy maximization, 2024. URL https://arxiv.org/abs/2311.01885. [41] Josh Tobin, Rachel Fong, Alex Ray, Jonas Schneider, Wojciech Zaremba, and Pieter Abbeel. Domain random-ization for transferring deep neural networks from simu-lation to the real world. In 2017 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) ,pages 23–30, 2017. doi: 10.1109/IROS.2017.8202133. [42] Josh Tobin, Rachel Fong, Alex Ray, Jonas Schneider, Wojciech Zaremba, and Pieter Abbeel. Domain ran-domization for transferring deep neural networks from simulation to the real world, 2017. URL https://arxiv. org/abs/1703.06907. [43] Victor Vantilborgh, Hrishikesh Sathyanarayan, Guil-laume Crevecoeur, Ian Abraham, and Tom Lefebvre. Dual control reference generation for optimal pick-and-place execution under payload uncertainty, 2025. URL https://arxiv.org/abs/2510.20483. [44] P. Whittle. Risk-sensitive linear/quadratic/gaussian con-trol. Advances in Applied Probability , 13(4):764–777, 1981. doi: 10.2307/1426972. [45] Liang Yan and Tao Zhou. Stein variational gradient descent with local approximations. Computer Methods in Applied Mechanics and Engineering , 386:114087, 2021. ISSN 0045-7825. doi: https://doi.org/10.1016/j. cma.2021.114087. URL https://www.sciencedirect.com/ science/article/pii/S0045782521004187. [46] Dan Zhang and Bin Wei. A review on model refer-ence adaptive control of robotic manipulators. Annual Reviews in Control , 43:188–198, 2017. ISSN 1367-5788. doi: https://doi.org/10.1016/j.arcontrol.2017.02. 002. URL https://www.sciencedirect.com/science/article/ pii/S1367578816301110. [47] Junzi Zhang, Jongho Kim, Brendan O’Donoghue, and Stephen Boyd. Sample efficient reinforcement learning with reinforce, 2020. URL https://arxiv.org/abs/2010. 11364. [48] Wenshuai Zhao, Jorge Pe˜ na Queralta, and Tomi Wester-lund. Sim-to-real transfer in deep reinforcement learning for robotics: a survey. In 2020 IEEE Symposium Series on Computational Intelligence (SSCI) , pages 737–744, 2020. doi: 10.1109/SSCI47803.2020.9308468. [49] Jingwei Zhuo, Chang Liu, Jiaxin Shi, Jun Zhu, Ning Chen, and Bo Zhang. Message passing stein variational gradient descent, 2018. URL https://arxiv.org/abs/1711. 04425. [50] Nadina O. Zweifel, Nicholas E. Bush, Ian Abraham, Todd D. Murphey, and Mitra J. Z. Hartmann. A dynami-cal model for generating synthetic data to quantify active tactile sensing behavior in the rat. Proceedings of the National Academy of Sciences , 118(27):e2011905118, 2021. doi: 10.1073/pnas.2011905118. URL https://www. pnas.org/doi/abs/10.1073/pnas.2011905118. APPENDIX APROOFS 
+
+SVGD Convergence in Θ
+
+Here we overview the theoretical guarantees of convergence of evolving parameters {θit}Ni=1 in Θ. Similar to [24] using [17, Corollary 6] shows that SVGD converges to the true posterior distribution with enough samples. 
+
+Theorem 1 (SVGD Convergence) . Let p′(θ) = exp   − V (θ)
+
+be the posterior in Θ where V (θ) = −δL − log p(θ) is the L-Lipschitz smooth potential function with smooth prior p, k be the universal RBF kernel over Θ with corresponding RKHS H,and KSD p′ (μθ ) = ∥ϕ∗(μ)∥2 
+
+> HΘ
+
+is the Kernel Stein Discrepancy (KSD) over the posterior. Then, ∃ζ > 0 such that, 
+
+1
+
+N
+
+> N
+
+X
+
+> i=1
+
+KSD p′ (μi) ≤ DKL (p∥p′)
+
+N c ζ
+
+(20) 
+
+where cζ is a parametrized term defined in [17, Corollary 6]. Proof: To prove the inequality in Eq. 20, we show that three conditions outlined in [17, Section 5] are met. We first show that ∥k(θ, ·)∥HΘ ≤ B since k(θ, ·) is a continuous RBF kernel over the bounded domain Θ. Next, we show that the potential function is L-Lipschitz smooth, 
+
+∥∇ θ V (θ1) − ∇ θ V (θ2)∥ ≤ L∥θ2 − θ1∥ ∀θ1, θ 2 ∈ Θ (21) since prior p is smooth in Θ and the contact impulses em-bedded within the potential function V are modeled to be L-smooth. Finally, we show that KSD p′ (μ) ≤ M∀ t ∈ [0 , N ]
+
+by observing the sufficient condition of probability measure μ
+
+over bounded Θ,
+
+sup 
+
+> t
+
+Z
+
+> Θ
+
+∥θt∥dμ (θt) < ∞ (22) thus concluding the proof. Note the proof alters a key assumption of the Hessian 
+
+∇2V (θ) from [17, Corollary 6] by accounting for L-Lipschitz smooth potential functions due to the presence of contact. Contact-implicit interactions are especially challenging in that they pose non-smooth, non-differentiable constraints to the optimization problem. To provide guarantees that an interac-tion is L-smooth, this work models contact impulses using a softplus/softmax contact model [21]. Additionally, it is worth noting that the above remains valid for the primary setting of fixed physical parameter targets (e.g., mass and inertia), while the waiter-serving task shown in Fig. 5 with changing mass distribution lies outside its assumptions but still demonstrates strong empirical performance. Theoret-ical guarantees of convergence of moving parameter targets will be explored further in future work. 
+
+Optimizing for Parameter-Sensitive Actions 
+
+It is possible to show that our approach in Eq. 19 results in provably uncertainty-aware actions for optimal task comple-tion. 
+
+Lemma 1 (Existence of Optima) . Let ˜L(τ, θ ) : T × Θ → R
+
+be the objective function from Eq. 19. Then, ∃τ such that 
+
+τ ∗ = arg min  
+
+> τ∈T
+
+˜L(τ, θ ) (23) 
+
+Proof: Because T and Θ are compact, and ˜Lθ is contin-uous and at least once-differentiable, then τ ∗ exists and is a minimizer to ˜Lθ by Weierstrass Extreme Value Theorem. With the above lemma showing existence of minimizer τ ∗,we can now show resulting bounded uncertainty-aware actions with our proposed method. 
+
+Convergence of Optimality Gap 
+
+Assumption 2 (Lipschitz-smooth parameterized dynamics) .
+
+Let X ⊂ Rnx , U ⊂ Rnu , and Θ ⊂ Rnθ be compact. For every fixed u ∈ U , the dynamics 
+
+xt+1 = fθ (xt, u t) (24) 
+
+are differentiable in (X , Θ) , and there exist constants 
+
+Lx, L θ > 0 such that for all x, x ′ ∈ X , u ∈ U , and θ, θ ′ ∈ Θ,
+
+∥fθ (x, u ) − fθ′ (x′, u )∥ ≤ Lx∥x − x′∥ + Lθ ∥θ − θ′∥. (25) 
+
+Moreover, the stage cost ℓ(x, u, θ ) and terminal cost ℓT (x, θ )
+
+are Lx and Lθ smooth in (X , Θ) .
+
+Theorem 2 (Convergence of the optimality gap) . Let q ∈P(Θ) denote the target posterior distribution over parameters, and let {μM }M ≥1 denote the empirical measures induced by Stein particles generated via SVGD. Suppose that 
+
+μM ⇒ q as M → ∞ , (26) 
+
+i.e., μM converges weakly to q.Fix an initial condition x0 ∈ X and a control sequence 
+
+u0: T −1 ∈ U T . Let the rollout be defined recursively by 
+
+xt+1 (θ) = fθ (xt(θ), u t), (27) 
+
+and define the trajectory-dependent Lagrangian 
+
+F (θ) := L(x0: T (θ), u 0: T −1, θ ). (28) 
+
+Then F is bounded and continuous on Θ. Consequently, for every ε > 0, there exists Mε ∈ Z+ such that for all M ≥ Mε,
+
+|Eθ∼q [F (θ)] − Eθ∼μM [F (θ)] | ≤ ε. (29) Fig. 9: Convergence of Parameters towards Task Completion. We demonstrate a single within-hand dynamic positioning experiment for our approach and two comparative baselines. Five samples are drawn from an initial parameter prior uniform distribution and are subsequently evolved via SVGD (our approach) or through random uniform sampling in-the-loop. Our approach demonstrates improved convergence of parameters that collectively minimize the distance between the object and the goal pose. This outcome is due to the approach’s task-aware nature that guides the initial samples towards a parameter posterior that explicitly reasons over task-relevant parameter uncertainty. This is in contrast to the other task agnostic approaches, which fail to converge their parameters towards optimizing for the task. 
+
+Furthermore, defining the optimality gap 
+
+δL (θ) = L(x0: T (θ), u 0: T −1, θ )−L(x0: T (¯θ), u 0: T −1, ¯θ), (30) 
+
+for any fixed θ ∈ Θ, we have 
+
+|Eθ∼q [δL (θ)] − Eθ∼μM [δL (θ)] | ≤ ε (31) 
+
+for all sufficiently large M .Proof: We first show that the rollout map θ 7 → xt(θ) is Lipschitz continuous. For t = 0 , x0 is fixed and independent of θ. For t ≥ 0, using Assumption 1, 
+
+∥xt+1 (θ) − xt+1 (θ′)∥ = ∥fθ (xt(θ), u t) − fθ′ (xt(θ′), u t)∥≤ Lx∥xt(θ) − xt(θ′)∥ + Lθ ∥θ − θ′∥.
+
+(32) Applying this recursively yields 
+
+∥xt(θ) − xt(θ′)∥ ≤ Lθt−1X
+
+> s=0
+
+Lsx∥θ − θ′∥. (33) Since T is finite and Θ is compact, this implies that θ 7 →
+
+x0: T (θ) is Lipschitz continuous. By Assumption 2, the cost terms are continuous and Lips-chitz in their arguments. Therefore, 
+
+F (θ) = L(x0: T (θ), u 0: T −1, θ ) (34) is continuous in θ. Since Θ is compact, F is bounded. By weak convergence μM ⇒ q, and since F is bounded and continuous, Portmanteau theorem [4] implies 
+
+Z
+
+> Θ
+
+F (θ) dμ M (θ) →
+
+Z
+
+> Θ
+
+F (θ) dq (θ). (35) Thus, for every ε > 0, there exists Mε such that for all M ≥
+
+Mε,
+
+|Eθ∼q [F (θ)] − Eθ∼μM [F (θ)] | ≤ ε. (36) Finally, note that 
+
+δL (θ) = F (θ) − F (¯θ), (37) where F (¯θ) is constant in θ. Therefore, 
+
+Eq [δL ] − EμM [δL ] = Eq [F ] − EμM [F ], (38) and the same convergence bound applies. APPENDIX BIMPLEMENTATION DETAILS 
+
+Control Formulation 
+
+Here, we write the optimal control formulation for the prob-lem settings discussed in the paper. Let τ = {(xk, u k, c k)∀k ∈
+
+[t, t + th]} be the trajectory for time t ∈ [0 , T ], where 
+
+x ∈ X = Rne as the system state and u ∈ U = Rnu as the control input, and c ∈ C θ as the contact impulses. The task of finding an optimal control sequence u∗ is the solution to the following optimization for each planning cycle, 
+
+min      
+
+> τ={(xk,u k,c k)∀k∈[t,t +th]}
+
+m(xth , u th , c th ) + 
+
+> t+th
+
+X
+
+> k=t
+
+ℓ(xk, u k, c k)
+
+s.t. 
+
+(
+
+x0 ∈ X (init. state) 
+
+xk+1 = fθ (xk, u k, c k) (dynamical model) (39) where the terminal m(·) and running cost ℓ(·) are written as, 
+
+ℓ(xk, u k, c k) = ( xk, obj. − x∗
+
+> obj.
+
+)⊤Q(xk, obj. − x∗
+
+> obj.
+
+)+ u⊤ 
+
+> k
+
+Ruk + c⊤ 
+
+> k
+
+Nck
+
+m(xk, u k, c k) = ( xth,obj. − x∗
+
+> obj.
+
+)⊤Qf (xth,obj. − x∗
+
+> obj.
+
+)
+
+(40) where ‘obj.’ is the object of interest to optimize (e.g. T-block), and Q, Qf ∈ Rne×ne , R ∈ Rnu×nu , and N ∈ Rnc×nc
+
+are weight matrices along spatial, controllable, and contact dimensions, respectively. Additionally, the bimanual push-T has an additional cost function to penalize the end-effector to block signed distance function, ϕn defined as, 
+
+ℓϕ(xk, u k) = ϕnk
+
+> ⊤
+
+ϕnk . (41) Term Bimanual Push-T Within-Hand Dynamic Positioning robot pose [( xee1 , y ee1 )
+
+| {z }
+
+> end effector 1
+
+, (xee2 , y ee2 )
+
+| {z }
+
+> end effector 2
+
+, (xblock , y block , θ block )
+
+| {z }
+
+> T block
+
+]⊤ [( xtray , y tray , θ tray )
+
+| {z }
+
+> tray
+
+, (xobject , y object , θ object )
+
+| {z }
+
+> object
+
+]⊤
+
+control (torque) [( ux, ee1 , u y, ee1 ), (ux, ee2 , u y, ee2 )] ⊤ [ux, tray , u y, tray , u θ, tray ]⊤
+
+proprioceptive sensor noise 0.001 m 0.01 m 
+
+uniform sampling bounds of params. 
+
+mass: (−1e-4, 10 .0) kg mass: (5 e-2, 1.0) kg inertia: (−1e-4, 10 .0) kg m 2 inertia: (−1e-4, 1.0) kg m 2
+
+— xCoM : (−1.2e-2, 1.2e-2) m(⋆)
+
+— yCoM : (−2.5e-2, 2.5e-2) m(⋆)
+
+planning horizon 0.375 seconds 0.375 seconds 
+
+total time 10 seconds 12.5 seconds 
+
+spatial bounds -0.75 m × 0.75 m -0.125 m × 0.125 m 
+
+control (torque) bounds [u min , umax ] [(-1.0, -1.0), (1.0, 1.0)] N [(-5.0, -0.2, -0.5), (5.0, 0.2, 0.5)] N 
+
+object dimensions (Theight , T width , T thickness ) = (0 .5, 0.6, 0.2) 
+
+m
+
+(radius obj. , height obj. ) = (0 .05 , 0.25) m
+
+MPC tuning weights 
+
+diag( Q) = [5.0, 5.0, 2.0, 0.0, 0.0, 0.0] diag( Q) = [15.0, 0.0, 5.0, 0.01, 0.01, 0.1, 0.0, 0.0, 5.0, 0.01, 0.01, 0.1] diag( R) = [0.0001, 0.0001] diag( R) = [15.0, 20.0, 20.0] diag( N) = [0.1, 0.1] diag( N) = [0.001, 0.001] diag( Qf ) = [5.0, 5.0, 2.0, 0.5, 0.5, 0.5] diag( Qf ) = [15.0, 0.0, 5.0, 0.01, 0.01, 0.1, 0.0, 0.0, 5.0, 0.01, 0.01, 0.1] 
+
+θ Particle Count 5 5
+
+SVGD Step Size 0.0001 0.0001 
+
+RBF Kernel bandwidth h 0.75 0.75 
+
+num. control steps per planning cycle H 10 10 
+
+TABLE III: Experiment Parameters. Here we outline the experiment details for both the Bimanual push-T and the Within-Hand Dynamic Positioning experiments. We outline the state-control space of each experiment as well as uncertain model parameters. Each parameter of interest is sampled from a uniform distribution with indicated bounds. ⋆ indicates that the boundaries for the sample space is with respect to the object body coordinates, not world coordinates. 
+
+Experiment Details 
+
+This section outlines the experimental setup for the biman-ual push-T and the within-hand dynamic positioning problem. Additional experiment parameters are detailed in Table III. Note that the above table indicates experiment details for the simulation experiments. For the hardware implementation of the within-hand dynamic waiter, proprioception of the object and tray states are measured using April Tags [29]. The dimensions of the unknown object are roughly 5 cm in diameter and 11 cm in height. 
+
+Convergence of Inferred Parameters 
+
+Here, we empirically show that the Stein-inferred param-eters converge towards near optimal task completion for a single within-hand dynamic positioning experiment. Results are shown in Fig. 9. Five parameter samples are initialized from a uniform prior distribution, and the samples are evolved online via SVGD for our approach, or are randomly sampled from the prior for the EMPPI and DRO approaches. Our SV-DRO approach not only demonstrates improved performance over time, but we also observe that the initial samples are later evolved and collapse towards values that minimize the distance of the object to the goal state. Our approach benefits from                 
+
+> Method Wall-Clock / Step (s) SV-DRO (Ours) 0.130 ±0.008
+> DuST-MPC 0.151 ±0.009
+> EMPPI 0.087 ±0.007
+> MPC 0.068 ±0.011
+> DRO 0.123 ±0.008
+
+TABLE IV: Compute parity across baselines for a single MPC loop. All methods are evaluated under the same compute setting with an MPC planning horizon of 0.375 s on an NVIDIA GeForce RTX 3080 GPU, and particle-based methods use N = 5 parameter particles. SV-DRO has a wall-clock time of 0.130 ± 0.008 s per step, which is comparable to DRO and remains below the MPC planning horizon despite the additional SVGD posterior update. 
+
+such outcomes due to the evolved samples being computed by a task-aware posterior distribution that explicitly considers parameter uncertainty with respect to the manipulation task. In contrast, the baseline approaches not only fail to achieve comparative optimal performance due to their higher distance to goal, but also fail to converge their random samples toward minimizing the task objective due to their stochastic, task-agnostic nature. Additional Computational Results 
+
+We report additional compute-parity results across all base-lines to clarify that the performance gains in Table I are not obtained from substantially larger computation budgets. All methods are evaluated on the same hardware configuration using an NVIDIA GeForce RTX 3080 GPU, with an MPC planning horizon of 0.375 s and N = 5 parameter particles for particle-based methods. These results are consistent with the computational scaling analysis in Table IV, where the proposed SV-DRO gradient step benefits from GPU parallelization over parameter particles and planning horizon. Importantly, instead of static prior sampling or purely estimation-driven parameter updates, SV-DRO transports particles toward task-sensitive regions of the optimality-gap posterior and embeds them in the robust MPC objective. This supports the central claim that task-aware particle evolution improves robustness under limited feedback while maintaining practical online computation.
