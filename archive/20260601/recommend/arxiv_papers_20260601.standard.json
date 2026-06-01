@@ -1,0 +1,593 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-01T22:03:58.733092+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 5,
+    "deep_cap": 7,
+    "deep_selected": 5,
+    "quick_candidates": 9,
+    "quick_skim_target": 12,
+    "quick_selected": 9
+  },
+  "deep_dive": [
+    {
+      "id": "2605.26282v1",
+      "source": "arxiv",
+      "title": "Scaling World-Model Reinforcement Learning Through Diffusion Policy Optimization",
+      "abstract": "Model-based reinforcement learning (RL) can be effectively supported at scale through the use of world models. However, in practice, scaling such approaches remains fundamentally limited. A commonly recognized challenge is model bias and error compounding, which degrade long-horizon predictions. Beyond these issues, we identify a more critical yet underexplored bottleneck: a structural misalignment between search and value learning in existing world model approaches. In particular, policy improvement often relies on value functions induced by a separate, non-search policy, resulting in training inconsistency and ultimately suboptimal learning. To address this limitation, we propose Model-Based Diffusion Policy Optimization (MBDPO) in world models, a framework that unifies search and policy optimization through diffusion policy representations, thereby unlocking the potential of world models for scalable policy learning. Instead of constructing an explicit planner over a learned world model, we reformulate policy optimization as a diffusion process over searched trajectories in latent world models. In this view, we extract an implicit energy function from the collected dataset that anchors the policy, enabling MBDPO to refine the score field for policy optimization while mitigating misalignment. We evaluate MBDPO across a wide range of settings, including multi-task offline pretraining, online learning, and offline-to-online fine-tuning. In the offline regime, we further investigate its scaling behavior by pretraining on large-scale datasets, observing consistent and monotonic performance gains with increasing model capacity.",
+      "authors": [
+        "Xiaoyuan Cheng",
+        "Wenxuan Yuan",
+        "Zhancun Mu",
+        "Yuanzhao Zhang",
+        "Yiming Yang",
+        "Hai Wang",
+        "Zhuo Sun",
+        "Che Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-25T19:06:51+00:00",
+      "link": "https://arxiv.org/pdf/2605.26282v1",
+      "tags": [
+        "keyword:mbrl-manip",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "model-based reinforcement learning with world models for scaling",
+      "llm_evidence_cn": "基于世界模型的模型基强化学习用于扩展",
+      "llm_evidence": "基于世界模型的模型基强化学习用于扩展",
+      "canonical_evidence": "基于世界模型的模型基强化学习用于扩展",
+      "llm_tldr_en": "MBDPO addresses misalignment between search and value learning in world-model RL, improving scaling and policy optimization.",
+      "llm_tldr_cn": "该论文指出现有世界模型强化学习中搜索与值学习存在结构错位，导致训练不一致。提出基于扩散策略优化的模型基方法MBDPO，在多个环境中实现更优的扩展性和策略性能，为模型基RL在复杂控制任务中的应用提供了新方案。",
+      "llm_tldr": "该论文指出现有世界模型强化学习中搜索与值学习存在结构错位，导致训练不一致。提出基于扩散策略优化的模型基方法MBDPO，在多个环境中实现更优的扩展性和策略性能，为模型基RL在复杂控制任务中的应用提供了新方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.31481v1",
+      "source": "arxiv",
+      "title": "Batched Differentiable Rigid Body Dynamics in PyTorch for GPU-Accelerated Robot Learning",
+      "abstract": "As robot control shifts toward large-scale reinforcement learning with in-loop dynamics computation, the community's reliance on CPU-bound libraries such as Pinocchio creates a throughput bottleneck in GPU-based training pipelines. We present BARD (Batched Articulated Rigid-body Dynamics), a self-contained PyTorch implementation of Featherstone's rigid-body dynamics algorithms, optimized for batched GPU evaluation and automatic differentiation. Three design choices make this efficient: a tiered lazy-evaluation cache that avoids redundant tree traversals, matmul-free joint transforms via pre-computed Rodrigues constants, and level-parallel propagation that reduces sequential operations to tree-depth batched steps. On five robot models (7-23 DOFs), BARD matches Pinocchio numerically while reaching up to 64x higher throughput for Forward Kinematics and 63x for Jacobians at batch size 4096 on an NVIDIA H200. We validate differentiability through gradient-based system identification on a 7-DOF manipulator, recovering link masses to 1.24% mean error under 5% torque noise, and integrate BARD into an Isaac Lab AMP training pipeline for an 11-DOF spined quadruped with 4096 parallel environments, where it is 8.5x faster than Pinocchio and 2.0x faster than ADAM for in-loop dynamics. BARD is open-sourced at: https://github.com/YueWang996/bard-pytorch-dynamics.",
+      "authors": [
+        "Yue Wang",
+        "Yanran Xu",
+        "Wenbo Wu",
+        "Chuanhang Qiu",
+        "Zhaoxing Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-29T16:07:28+00:00",
+      "link": "https://arxiv.org/pdf/2605.31481v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "differentiable rigid body dynamics for robot arms; GPU-accelerated batch processing with autograd",
+      "llm_evidence_cn": "可微刚体动力学应用于机械臂；GPU加速批处理与自动微分",
+      "llm_evidence": "可微刚体动力学应用于机械臂；GPU加速批处理与自动微分",
+      "canonical_evidence": "可微刚体动力学应用于机械臂；GPU加速批处理与自动微分",
+      "llm_tldr_en": "BARD is a batched differentiable rigid body dynamics library in PyTorch that accelerates GPU-based robot learning. It uses tiered caching, matmul-free transforms, and level-parallel propagation to run Featherstone algorithms efficiently on GPU. Experiments on five robot models show substantial speedups for batch evaluation and gradient computation.",
+      "llm_tldr_cn": "针对机器人学习中CPU动力学库带来的吞吐瓶颈，本文提出BARD，一个基于PyTorch的批量可微刚体动力学库。它通过分层惰性求值、无矩阵乘关节变换和层级并行传播等设计，实现了高效的GPU批处理和自动微分。在五个机器人模型上的实验表明，BARD显著加速了动力学计算，为大规模强化学习和可微控制提供了关键基础设施，尤其适用于机器人操作任务。",
+      "llm_tldr": "针对机器人学习中CPU动力学库带来的吞吐瓶颈，本文提出BARD，一个基于PyTorch的批量可微刚体动力学库。它通过分层惰性求值、无矩阵乘关节变换和层级并行传播等设计，实现了高效的GPU批处理和自动微分。在五个机器人模型上的实验表明，BARD显著加速了动力学计算，为大规模强化学习和可微控制提供了关键基础设施，尤其适用于机器人操作任务。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable dynamics for robot arms",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25346v1",
+      "source": "arxiv",
+      "title": "Parallel Differentiable Reachability for Learning and Planning with Certified Neural Dynamics and Controllers",
+      "abstract": "Neural network (NN) dynamics models and control policies achieve strong performance in robotics, but providing sound guarantees under uncertainty remains difficult, especially for closed-loop NN systems. Existing reachability tools provide formal over-approximations, yet are often non-differentiable, overly conservative, or too slow for modern learning and online planning pipelines. To address this, we present a parallelizable, differentiable reachability framework in JAX for continuous- and discrete-time systems with analytical and NN-based dynamics and controllers. Our framework combines Taylor-model flowpipe construction with CROWN-style linear bound propagation through a unified representation that preserves affine dependencies while supporting GPU-batched computation and automatic differentiation. Building on this reachability primitive, we develop (i) a certified training method that encourages reachability-friendly dynamics models and controllers, and (ii) a reachability-aware sampling-based MPC scheme with gradient-based refinement. Experiments on non-prehensile manipulation and quadrotor tasks, including hardware and higher-dimensional evaluations (up to 72D), demonstrate practical online planning while maintaining certified reachable-set over-approximations under bounded uncertainty.",
+      "authors": [
+        "Keyi Shen",
+        "Glen Chou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-05-25T02:04:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.25346v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "parallel differentiable reachability framework for neural network controllers and dynamics",
+      "llm_evidence_cn": "并行可微可达性框架用于神经网络控制器和动力学",
+      "llm_evidence": "并行可微可达性框架用于神经网络控制器和动力学",
+      "canonical_evidence": "并行可微可达性框架用于神经网络控制器和动力学",
+      "llm_tldr_en": "A parallelizable differentiable reachability framework in JAX for certified neural dynamics and controllers, combining Taylor models and CROWN-style propagation, enabling efficient learning and planning.",
+      "llm_tldr_cn": "本文提出基于JAX的并行可微可达性框架，结合泰勒模型流形构建与CROWN线性界传播，为神经网络动力学和控制器提供形式化保证。该方法支持机器人规划与学习的可微优化，克服了现有工具非可微、保守或慢的缺陷。",
+      "llm_tldr": "本文提出基于JAX的并行可微可达性框架，结合泰勒模型流形构建与CROWN线性界传播，为神经网络动力学和控制器提供形式化保证。该方法支持机器人规划与学习的可微优化，克服了现有工具非可微、保守或慢的缺陷。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.25362v1",
+      "source": "arxiv",
+      "title": "Prior Policy Guided Dual-Agent Coordinated Manipulation Planning of Spacecraft-Manipulator System",
+      "abstract": "The strong dynamic coupling between the manipulator and the base poses a significant challenge to maintaining spacecraft attitude stability, potentially compromising mission safety. In this paper, we propose a Dual-Agent Coordinated Manipulation Planning (DACMP) framework that simultaneously achieves high-precision end-effector pose reaching for a 6-DoF space manipulator and attitude stabilization of the base spacecraft. To enhance learning efficiency, we present a prior policy-guided Deep Reinforcement Learning algorithm incorporating the Timestep-level Expert Switching Guidance (TESG) mechanism, thereby promoting global convergence and improving task success rates. Extensive experiments demonstrate that DACMP significantly outperforms baseline DRL algorithms in terms of task success rate and control precision. Furthermore, the robustness of DACMP is validated under various challenging scenarios, including system constraints, environmental disturbances, and perception uncertainties. The code and simulation configurations are available on GitHub: https://github.com/HIT-YuhuiHu/DACMP.",
+      "authors": [
+        "Yuhui Hu",
+        "Dong Zhou",
+        "Kaihong Ouyang",
+        "Zhongliang Yu",
+        "Jianfeng Lv",
+        "Xiangyu Shao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-25T02:32:23+00:00",
+      "link": "https://arxiv.org/pdf/2605.25362v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "deep RL for dual-arm coordinated manipulation planning",
+      "llm_evidence_cn": "深度强化学习用于双机械臂协调操作规划",
+      "llm_evidence": "深度强化学习用于双机械臂协调操作规划",
+      "canonical_evidence": "深度强化学习用于双机械臂协调操作规划",
+      "llm_tldr_en": "DACMP uses prior policy-guided deep RL with timestep-level expert switching to achieve coordinated manipulation planning for spacecraft-manipulator systems.",
+      "llm_tldr_cn": "该论文提出双智能体协调操作规划（DACMP）框架，利用先验策略引导的深度强化学习，结合时间步级专家切换引导机制，同时实现空间机械臂末端精确到达和基座姿态稳定。实验表明该方法在任务成功率和学习效率上显著提升。",
+      "llm_tldr": "该论文提出双智能体协调操作规划（DACMP）框架，利用先验策略引导的深度强化学习，结合时间步级专家切换引导机制，同时实现空间机械臂末端精确到达和基座姿态稳定。实验表明该方法在任务成功率和学习效率上显著提升。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29389v1",
+      "source": "arxiv",
+      "title": "Automated design of soft-rigid hybrid robots for dynamic locomotion",
+      "abstract": "Rigid-bodied robots often lack compliance needed to adapt to unstructured environments, while fully soft robots, though highly adaptable, struggle with scalability and load capacity. In nature, musculoskeletal systems balance strength and flexibility by integrating hard and soft tissues. Inspired by this principle, we present an automated design method for soft-rigid hybrids that optimizes a freeform soft-body shape, a stiff truss layout, and multi-channel actuation. Our differentiable simulator couples the material point method (MPM) for deformable bodies with extended position-based dynamics (XPBD) for truss elements, enabling gradient-based search. The optimization generates truss skeletons that transmit actuation forces to the soft body. We fabricate the optimized design and evaluate it on a walking task. Experiments reproduce the walking mode predicted by the optimization, which does not emerge without the skeleton. Modal analysis further suggests that the skeleton enables deformation modes near the actuation frequency that promote effective stride generation.",
+      "authors": [
+        "Hiroki Kobayashi",
+        "Yuki Takaha",
+        "Changyoung Yuhn",
+        "Yuki Sato",
+        "Sunao Tomita",
+        "Atsushi Kawamoto",
+        "Tsuyoshi Nomura"
+      ],
+      "primary_category": "cs.CE",
+      "categories": [
+        "cs.CE"
+      ],
+      "published": "2026-05-28T05:42:32+00:00",
+      "link": "https://arxiv.org/pdf/2605.29389v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable simulator for soft-rigid hybrid design applicable to manipulation",
+      "llm_evidence_cn": "可微模拟器用于软硬混合设计可应用于操作任务",
+      "llm_evidence": "可微模拟器用于软硬混合设计可应用于操作任务",
+      "canonical_evidence": "可微模拟器用于软硬混合设计可应用于操作任务",
+      "llm_tldr_en": "An automated design method for soft-rigid hybrid robots uses a differentiable simulator combining MPM and XPBD for gradient-based optimization, enabling efficient design for dynamic locomotion.",
+      "llm_tldr_cn": "本文提出软硬混合机器人的自动设计方法，通过耦合物质点法和扩展位置动力学的可微模拟器实现梯度优化，生成最优软体形状和刚性骨架。该方法可迁移至操作任务中的可微物理模拟，提高设计效率。实验展示了在动态运动中的有效性。",
+      "llm_tldr": "本文提出软硬混合机器人的自动设计方法，通过耦合物质点法和扩展位置动力学的可微模拟器实现梯度优化，生成最优软体形状和刚性骨架。该方法可迁移至操作任务中的可微物理模拟，提高设计效率。实验展示了在动态运动中的有效性。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.25477v1",
+      "source": "arxiv",
+      "title": "EXPO-FT: Sample-Efficient Reinforcement Learning Finetuning for Vision-Language-Action Models",
+      "abstract": "The ability to efficiently and reliably learn new tasks has been a foundational challenge in robotics. Vision-Language-Action (VLA) models have demonstrated strong generalization across diverse manipulation tasks, yet pretrained policies consistently fall short of the reliability required for real-world deployment. Reinforcement learning (RL) fine-tuning offers a promising path to bridge this gap, but existing approaches either train from scratch without fully leveraging pretrained priors, or fine-tune VLAs without achieving the sample efficiency and success rates that practical deployment demands. We present EXPO-FT, a system for stable, sample-efficient RL finetuning of pretrained VLA policies that closes this gap. Our system solves a suite of challenging manipulation tasks, including routing string lights and inserting the plug to light it up, striking a pool ball into a pocket, and inserting a flower into a wine bottle, each requiring combinations of high precision, dynamic actions, and robustness to varied initial states. Our system achieves perfect task performance (30/30 successes) across all evaluated tasks within an average of 19.1 minutes of online robot data, outperforming both prior RL-from-scratch and VLA finetuning approaches. We release an open-source codebase with the aim of facilitating broader adoption of RL finetuning of VLA models in robotics.",
+      "authors": [
+        "Perry Dong",
+        "Kuo-Han Hung",
+        "Tian Gao",
+        "Dorsa Sadigh",
+        "Chelsea Finn"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-05-25T06:31:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.25477v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL finetuning for pretrained VLA policies on manipulation tasks",
+      "llm_evidence_cn": "对预训练VLA策略进行强化学习微调用于操作任务",
+      "llm_evidence": "对预训练VLA策略进行强化学习微调用于操作任务",
+      "canonical_evidence": "对预训练VLA策略进行强化学习微调用于操作任务",
+      "llm_tldr_en": "Proposes EXPO-FT, a system for stable sample-efficient RL finetuning of pretrained VLA policies for robot manipulation.",
+      "llm_tldr_cn": "预训练VLA策略在实际部署中可靠性不足，强化学习微调有潜力但存在样本效率问题。本文提出EXPO-FT系统，实现稳定、样本高效的RL微调，在多个模拟和真实操作任务上显著提升成功率，缩小与现实部署的差距。",
+      "llm_tldr": "预训练VLA策略在实际部署中可靠性不足，强化学习微调有潜力但存在样本效率问题。本文提出EXPO-FT系统，实现稳定、样本高效的RL微调，在多个模拟和真实操作任务上显著提升成功率，缩小与现实部署的差距。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.24813v1",
+      "source": "arxiv",
+      "title": "Manifold-Constrained MPPI: Real-Time Sampling-Based Control Under Hard Constraints",
+      "abstract": "Sampling-based model predictive control methods, such as Model Predictive Path Integral (MPPI), offer derivative-free optimization and robustness in complex robotic systems. However, standard MPPI relies on cost-based soft penalties that cannot guarantee hard-constraint satisfaction, severely limiting its applicability to highly constrained tasks such as closed-chain manipulation. To address this, we propose Manifold-Constrained MPPI (MC-MPPI), a real-time sampling-based control framework that enforces manifold-based equality constraints while preserving the computational advantages of MPPI. The key idea is to decouple the constrained optimal control problem into latent-space planning and execution-level correction. At the planning stage, a Variational Autoencoder (VAE) learns a low-dimensional latent representation of the constraint manifold, enabling MPPI to efficiently generate near-feasible candidate trajectories without per-sample modification. Since this reference enables accurate linearization of the equality constraints, an execution-level Quadratic Programming (QP) controller resolves the residual manifold mismatch in a single solve rather than through iterative projection. Experiments on a 14-DoF closed-chain dual-arm system in both simulation and real-world settings demonstrate that MC-MPPI operates stably at 100 Hz, reliably navigates dynamic environments while effectively maintaining hard equality constraints, and significantly outperforms baseline methods in tracking accuracy. Supplementary videos and implementation details are available at https://rcilab.github.io/mcmppi.",
+      "authors": [
+        "Seulchan Lee",
+        "Sanghyun Kim"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-05-24T01:57:18+00:00",
+      "link": "https://arxiv.org/pdf/2605.24813v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based sampling control for constrained manipulation",
+      "llm_evidence_cn": "基于模型的采样控制方法用于约束操作",
+      "llm_evidence": "基于模型的采样控制方法用于约束操作",
+      "canonical_evidence": "基于模型的采样控制方法用于约束操作",
+      "llm_tldr_en": "MC-MPPI extends MPPI to enforce hard manifold constraints, enabling real-time sampling-based control for closed-chain manipulation tasks.",
+      "llm_tldr_cn": "该论文提出流形约束MPPI（MC-MPPI），一种实时采样控制框架，在保留MPPI计算优势的同时强制执行流形等式约束。通过将问题解耦为潜空间规划和执行层校正，MC-MPPI成功应用于闭合链操作等高约束任务，验证了其在复杂机器人控制中的有效性。",
+      "llm_tldr": "该论文提出流形约束MPPI（MC-MPPI），一种实时采样控制框架，在保留MPPI计算优势的同时强制执行流形等式约束。通过将问题解耦为潜空间规划和执行层校正，MC-MPPI成功应用于闭合链操作等高约束任务，验证了其在复杂机器人控制中的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.29032v1",
+      "source": "arxiv",
+      "title": "Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning",
+      "abstract": "Model-based reinforcement learning (MBRL) agents typically learn world models by minimizing predictive loss. However, powerful RL optimizers inevitably exploit minor model inaccuracies, leading to simulator exploitation and a reality gap where policies succeed in simulation but fail in the real world. We propose that the objective for learning simulators should be strategic robustness rather than predictive accuracy, and formulate this as a zero-sum minimax game between a model player and an adversarial policy player. We provide a comprehensive theoretical analysis: (1) an online learning guarantee showing the game is learnable with sublinear regret bounds; (2) a tractable critic-based simplification bounding the global policy-value gap by the local critic's loss; and (3) an Error-MDP duality, proving that finding the worst-case policy is formally dual to a standard RL problem where the reward is the one-step critic error. This duality yields a provably convergent active data selection algorithm. Experiments on continuous control tasks demonstrate that our approach reduces prediction error in strategically important regions by $1.5$-$2.2\\times$ and enables policies trained purely in simulation to match near-optimal real-world performance.",
+      "authors": [
+        "Christoph Dann",
+        "Yishay Mansour",
+        "Mehryar Mohri"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-05-27T19:31:37+00:00",
+      "link": "https://arxiv.org/pdf/2605.29032v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Model-based RL for robust simulator learning",
+      "llm_evidence_cn": "基于模型的强化学习用于鲁棒模拟器学习",
+      "llm_evidence": "基于模型的强化学习用于鲁棒模拟器学习",
+      "canonical_evidence": "基于模型的强化学习用于鲁棒模拟器学习",
+      "llm_tldr_en": "Proposes a minimax game between model and policy for robust simulator learning in MBRL, addressing the reality gap.",
+      "llm_tldr_cn": "现有模型基于强化学习方法因策略对模型不准确性的利用而导致仿真与现实差距。本文提出将模拟器学习目标从预测精度转为策略鲁棒性，并将其形式化为模型与策略之间的零和极小化博弈。理论分析给出了在线学习遗憾界，并简化出基于价值函数的可行算法。该方法可推广至机器人操作任务的模型学习，提升泛化能力。",
+      "llm_tldr": "现有模型基于强化学习方法因策略对模型不准确性的利用而导致仿真与现实差距。本文提出将模拟器学习目标从预测精度转为策略鲁棒性，并将其形式化为模型与策略之间的零和极小化博弈。理论分析给出了在线学习遗憾界，并简化出基于价值函数的可行算法。该方法可推广至机器人操作任务的模型学习，提升泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.30226v1",
+      "source": "arxiv",
+      "title": "BORA: Bridging Offline Reinforcement Learning and Online Residual Adaptation for Real-World Dexterous VLA Models",
+      "abstract": "Vision-Language-Action (VLA) models have emerged as a promising paradigm for grounding visual-language understanding into real-world robotic manipulation. However, dexterous manipulation remains challenging for VLA policies due to high-dimensional hand control and compounding execution errors, which makes real-world RL post-training essential for bridging the gap between visually grounded action generation and physically reliable dexterous execution. However, high-dimensional dexterous exploration often triggers temporal inconsistency, sample inefficiency and hardware risks in the real world. To address these challenges, we propose BORA, an offline-to-online RL post-training framework designed for real-world dexterous VLA models. In the offline phase, BORA constructs a critic that takes both the VLM's cognition tokens and action chunks as inputs. This design enables action-conditioned value guidance, allowing the critic to evaluate dexterous hand motions beyond visual context alone. During the subsequent online phase, BORA freezes the VLA base and introduces a lightweight, Human-in-the-Loop (HiL) chunk-wise residual adaptation mechanism to mitigate real-world execution errors and further correct the offline-learned intents within the actual physical environment. By inheriting the offline critic and employing intervention-driven rewards, BORA effectively corrects execution discrepancies and adapts to real-world physical variances while preserving the pretrained policy as a stable prior. Extensive evaluations across five complex real-world dexterous tasks demonstrate that BORA significantly outperforms pure imitation learning and traditional decoupled RL baselines, achieving a 33% absolute increase in average success rate under standard settings and up to a 43% improvement in unseen object generalization.",
+      "authors": [
+        "Zhongxi Chen",
+        "Yifan Han",
+        "Yanming Shao",
+        "Huanming Liu",
+        "Congsheng Xu",
+        "Xiaoyu Chen",
+        "Yao Mu",
+        "Wenzhao Lian"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-05-28T16:57:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.30226v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "offline-to-online RL post-training for dexterous VLA models",
+      "llm_evidence_cn": "离线到在线强化学习后训练用于灵巧VLA模型",
+      "llm_evidence": "离线到在线强化学习后训练用于灵巧VLA模型",
+      "canonical_evidence": "离线到在线强化学习后训练用于灵巧VLA模型",
+      "llm_tldr_en": "BORA bridges offline RL and online residual adaptation for real-world dexterous manipulation with VLA models, addressing sample inefficiency and hardware risks.",
+      "llm_tldr_cn": "本文提出BORA框架，将离线强化学习与在线残差适应相结合，用于真实世界灵巧VLA模型后训练。解决高维手部控制中时序不一致、样本效率低和硬件风险问题，实现了从视觉语言理解到物理执行的可靠桥接。",
+      "llm_tldr": "本文提出BORA框架，将离线强化学习与在线残差适应相结合，用于真实世界灵巧VLA模型后训练。解决高维手部控制中时序不一致、样本效率低和硬件风险问题，实现了从视觉语言理解到物理执行的可靠桥接。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.29360v1",
+      "source": "arxiv",
+      "title": "MiraBench: Evaluating Action-Conditioned Reliability in Robotic World Models",
+      "abstract": "Action-conditioned world models are increasingly used as scalable simulators for robot learning, yet current evaluations provide limited evidence that their predictions are reliable under the actions they condition on. Existing benchmarks largely emphasize visual fidelity, leaving unclear whether predicted futures are physically plausible, faithful to commanded actions, and calibrated to failure when actions should not succeed. We introduce \\textsc{MiraBench}, a hierarchical benchmark that defines \\emph{action-conditioned reliability} as a core evaluation target for robotic world models. MiraBench decomposes this target into three progressively demanding levels: \\emph{Physics Adherence}, which evaluates reference-free physical consistency; \\emph{Action-Following Fidelity}, which measures whether predictions respect task-relevant action inputs; and \\emph{Optimism Bias Detection}, which probes the tendency to predict successful outcomes under failure-inducing actions. To support this evaluation, we curate a human-annotated corpus with over 16,000 judgments across tasks, failure categories, and leading world models. We evaluate 12 representative model configurations spanning vector-conditioned robotic world models, text-conditioned generative world models, open-weight systems, closed-source systems, and multiple model scales. Across this broad model landscape, MiraBench reveals three central findings: visual fidelity is a poor proxy for action fidelity; increasing model scale does not reliably improve action following; and optimism bias is pervasive across current systems. By shifting evaluation from appearance to action-conditioned reliability, MiraBench provides a diagnostic foundation for assessing and improving robotic world models as faithful simulators.",
+      "authors": [
+        "Tianzhuo Yang",
+        "Zihan Shen",
+        "Zirui Mi",
+        "Zhaoyi Zhang",
+        "Jiayi Zhou",
+        "Jiaming Ji",
+        "Juntao Dai",
+        "Jiawei Chen",
+        "Boyuan Chen",
+        "Yaodong Yang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-28T04:58:15+00:00",
+      "link": "https://arxiv.org/pdf/2605.29360v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for action-conditioned world model reliability, supporting learning dynamics models",
+      "llm_evidence_cn": "评估动作条件世界模型可靠性的基准，支持学习动力学模型",
+      "llm_evidence": "评估动作条件世界模型可靠性的基准，支持学习动力学模型",
+      "canonical_evidence": "评估动作条件世界模型可靠性的基准，支持学习动力学模型",
+      "llm_tldr_en": "Introduces a hierarchical benchmark evaluating action-conditioned reliability of robotic world models across physics adherence, action consistency, and failure calibration, enabling robust model-based control.",
+      "llm_tldr_cn": "该论文针对现有世界模型评估仅关注视觉保真度而忽视动作条件可靠性的问题，提出MiraBench层次化基准，从物理一致性、动作忠实度和校准失败三个层级评估世界模型。该基准为学习可靠的动力学模型提供了标准化测试，有助于推进基于模型的机器人控制方法。",
+      "llm_tldr": "该论文针对现有世界模型评估仅关注视觉保真度而忽视动作条件可靠性的问题，提出MiraBench层次化基准，从物理一致性、动作忠实度和校准失败三个层级评估世界模型。该基准为学习可靠的动力学模型提供了标准化测试，有助于推进基于模型的机器人控制方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.31110v1",
+      "source": "arxiv",
+      "title": "Building Generalization Into Behavior Generation Via Adaptive Compositions of Regularities",
+      "abstract": "Generalization in robotics requires prior knowledge about how the world is structured, yet this structure changes from one situation to the next. This paper investigates the proposition that generalization arises from adaptively composing regularities -- predictable relationships within the robot-environment system -- into situation-appropriate structures for behavior generation. We examine this proposition by analyzing the mechanism in AICON (Active InterCONnect), a framework representing regularities as interacting processes in a differentiable network, where sensory feedback realizes composition and gradient descent generates behavior. To isolate adaptive composition as the key mechanism, we study a simple simulated problem in which all relevant regularities can be identified. We expose the resulting model to a wide range of novel conditions not considered during design, and we find that it generates context-appropriate behavior in all but one case, where encoded regularities are provably insufficient. Ablations reveal that the network automatically modulates which regularities influence behavior based on their informativeness. These results suggest that adaptive composition of regularities constitutes a powerful inductive bias for building generalization into behavior generation.",
+      "authors": [
+        "Aravind Battaje",
+        "Malte Bernhard",
+        "Vito Mengers",
+        "Oliver Brock"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-29T10:21:35+00:00",
+      "link": "https://arxiv.org/pdf/2605.31110v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable network for behavior generation in robotics",
+      "llm_evidence_cn": "在机器人行为生成中使用可微网络",
+      "llm_evidence": "在机器人行为生成中使用可微网络",
+      "canonical_evidence": "在机器人行为生成中使用可微网络",
+      "llm_tldr_en": "AICON framework uses a differentiable network to compose regularities via gradient descent for behavior generation, studied in a simple simulated problem.",
+      "llm_tldr_cn": "该论文研究机器人泛化问题，提出AICON框架，利用可微网络表示规律性并通过梯度下降生成行为。在简单仿真中验证了自适应组合机制的有效性，为可微控制方法提供了新思路。",
+      "llm_tldr": "该论文研究机器人泛化问题，提出AICON框架，利用可微网络表示规律性并通过梯度下降生成行为。在简单仿真中验证了自适应组合机制的有效性，为可微控制方法提供了新思路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic manipulation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.30719v1",
+      "source": "arxiv",
+      "title": "When are LLMs Sufficient Policy Optimizers for Sequential RL Tasks?",
+      "abstract": "We study when large language models (LLMs) can serve as effective black-box policy optimizers for reinforcement learning (RL) tasks, i.e., when can we replace classical RL algorithms with an LLM? We explore this question by introducing Prompted Policy Optimization (PromptPO), an iterative method that prompts an LLM with Python descriptions of the state space, action space, and reward function, then has it generate and refine executable policies based on rollout feedback. Across hard exploration environments, Meta-World robotics tasks, and several real-world control problems, PromptPO often matches or exceeds the performance of standard RL baselines while using substantially fewer environment interactions. To maximize expected return, and without further explicit prompting, the policies PromptPO outputs range from tuned proportional controllers or rule-based plans to policies that run planning algorithms like value iteration. Our results demonstrate that LLM-based policy optimization is sufficient when the LLM can leverage prior knowledge about the environment or optimization strategy. PromptPO underperforms standard RL baselines in MuJoCo domains. This demonstrates possible limitations of LLM-based policy optimization to settings that requiring fine-grained continuous control.",
+      "authors": [
+        "Stephane Hatgis-Kessell",
+        "Emma Brunskill"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-05-29T01:24:24+00:00",
+      "link": "https://arxiv.org/pdf/2605.30719v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM as policy optimizer for RL tasks including Meta-World robotics",
+      "llm_evidence_cn": "LLM作为策略优化器，在包括Meta-World的RL任务上表现",
+      "llm_evidence": "LLM作为策略优化器，在包括Meta-World的RL任务上表现",
+      "canonical_evidence": "LLM作为策略优化器，在包括Meta-World的RL任务上表现",
+      "llm_tldr_en": "Shows LLMs can serve as effective RL policy optimizers, outperforming baselines on Meta-World robotics tasks with fewer interactions.",
+      "llm_tldr_cn": "探索大语言模型作为强化学习策略优化器的有效性。提出PromptPO方法，通过迭代提示LLM生成和优化策略。在包含Meta-World机器人操作的多个任务上，PromptPO以更少的交互次数达到或超过标准RL算法。表明LLM可成为机器人操作强化学习的有效工具。",
+      "llm_tldr": "探索大语言模型作为强化学习策略优化器的有效性。提出PromptPO方法，通过迭代提示LLM生成和优化策略。在包含Meta-World机器人操作的多个任务上，PromptPO以更少的交互次数达到或超过标准RL算法。表明LLM可成为机器人操作强化学习的有效工具。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.31486v1",
+      "source": "arxiv",
+      "title": "Learning Controlled Separation of Small Objects Between Two Fingers with a Tactile Skin",
+      "abstract": "We introduce and solve the novel task of controlled separation of small objects with two fingers of a multi-purpose robotic hand: after grasping into a box of small objects, the task is to drop as many of them until a desired number remains between the fingers. The objects are small compared to the width of the fingers but also in absolute terms. In our case little pellets with a diameter of only 6mm are handled. We show that the task can be performed purely tactile (no vision) using a spatially-resolved tactile skin on a fingertip. The separation policy is trained in simulation via reinforcement learning using a straightforward sparse reward, which basically checks if the desired number of objects is reached. In simulation experiments, we provide an exhaustive analysis of the benefits of using spatially-resolved tactile feedback: while an ideal (high-resolution) tactile sensor allows solving the task almost perfectly, a sensor with lower spatial resolution (here 4x4 taxels) still leads to an improvement of up to 20% compared to using only the fingers' joint sensors. For this analysis, we further train an estimator alongside the policy that predicts the ground truth contact positions. Finally, we demonstrate the successful sim-to-real transfer for the DLR-Hand II equipped with a tactile skin.",
+      "authors": [
+        "Ulf Kasolowsky",
+        "Berthold Bäuml"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-29T16:08:58+00:00",
+      "link": "https://arxiv.org/pdf/2605.31486v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "manipulation via RL",
+      "llm_evidence_cn": "使用强化学习进行操作",
+      "llm_evidence": "使用强化学习进行操作",
+      "canonical_evidence": "使用强化学习进行操作",
+      "llm_tldr_en": "Solves controlled separation of small objects using two fingers with tactile skin, training policy via RL in simulation, achieving purely tactile manipulation.",
+      "llm_tldr_cn": "该论文针对小物体分离这一新颖操作任务，利用具有空间分辨率的触觉皮肤，在仿真环境中通过强化学习训练策略，仅依赖触觉反馈完成受控分离。实验表明策略能有效分离直径为6mm的颗粒，展示了纯触觉操作的可行性。该方法可启发机械臂操作中的强化学习应用。",
+      "llm_tldr": "该论文针对小物体分离这一新颖操作任务，利用具有空间分辨率的触觉皮肤，在仿真环境中通过强化学习训练策略，仅依赖触觉反馈完成受控分离。实验表明策略能有效分离直径为6mm的颗粒，展示了纯触觉操作的可行性。该方法可启发机械臂操作中的强化学习应用。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.30957v1",
+      "source": "arxiv",
+      "title": "RDGen: Demonstration Generation for High-Quality Robot Learning via Reinforcement Learning",
+      "abstract": "Vision-Language-Action (VLA) models have emerged as a promising paradigm for general-purpose robot control. However, their performance remains fundamentally constrained by the availability of high-quality robot trajectory data. In current robot learning practice, such data are primarily collected through human teleoperation, which is labor-intensive, costly, and difficult to scale. In this paper, we propose RDGen, a sim-to-real reinforcement learning framework for generating high-quality robot demonstrations. Rather than employing reinforcement learning solely as the final control policy, RDGen leverages trained RL policies as a structured trajectory generator. The system consists of a VLM-based task parser that identifies task-relevant objects, a Grounding DINO-based object localizer, and an RL policy transferred from simulation to the real robot. Successful rollouts are then harvested as clean, high-quality demonstrations for downstream VLA training, while the simulation stage further provides a scalable source of additional trajectories at little marginal cost. Experiments on a pick-and-place task demonstrate that the transferred RL policy achieves a high task success rate. Compared with human teleoperation, RDGen produces significantly smoother trajectories and yields superior downstream VLA performance. These results indicate that RL-generated demonstrations can serve as more reliable and consistent supervisory signals for robot policy learning.",
+      "authors": [
+        "Zijian Zhu",
+        "Menglin Zou",
+        "Zhuang Li",
+        "Yaojie Tu",
+        "Xinhai Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-29T07:53:19+00:00",
+      "link": "https://arxiv.org/pdf/2605.30957v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for robot manipulation tasks; demonstration generation for robot learning",
+      "llm_evidence_cn": "强化学习在机械臂操作任务中的应用；机器人学习中的演示生成",
+      "llm_evidence": "强化学习在机械臂操作任务中的应用；机器人学习中的演示生成",
+      "canonical_evidence": "强化学习在机械臂操作任务中的应用；机器人学习中的演示生成",
+      "llm_tldr_en": "RDGen generates high-quality robot demonstrations via sim-to-real reinforcement learning. It uses trained RL policies as trajectory generators guided by a VLM task parser. Experiments show it produces useful data for downstream VLA policies, reducing the need for expensive human teleoperation.",
+      "llm_tldr_cn": "针对VLA模型训练依赖昂贵人工遥操作数据的问题，本文提出RDGen，一个基于sim-to-real强化学习的演示生成框架。它利用训练好的RL策略作为轨迹生成器，并由VLM任务解析器引导，以生成高质量机器人演示。实验表明RDGen在模拟和真实任务中有效，能够提升下游策略性能，为机器人学习提供了低成本、可扩展的数据生成方案。",
+      "llm_tldr": "针对VLA模型训练依赖昂贵人工遥操作数据的问题，本文提出RDGen，一个基于sim-to-real强化学习的演示生成框架。它利用训练好的RL策略作为轨迹生成器，并由VLM任务解析器引导，以生成高质量机器人演示。实验表明RDGen在模拟和真实任务中有效，能够提升下游策略性能，为机器人学习提供了低成本、可扩展的数据生成方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

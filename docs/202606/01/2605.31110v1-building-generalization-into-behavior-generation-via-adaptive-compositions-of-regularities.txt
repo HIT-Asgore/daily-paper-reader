@@ -1,0 +1,609 @@
+Title: Building Generalization Into Behavior Generation Via Adaptive Compositions of Regularities
+
+URL Source: https://arxiv.org/pdf/2605.31110v1
+
+Published Time: Mon, 01 Jun 2026 01:01:34 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Building Generalization Into Behavior Generation Via Adaptive Compositions of Regularities 
+
+Aravind Battaje 1,2 Malte Bernhard 1 Vito Mengers 1,2 Oliver Brock 1,2,3 
+
+> 1
+
+Robotics and Biology Laboratory, Technische Universit¨ at Berlin, Germany 
+
+> 2
+
+Science of Intelligence, Research Cluster of Excellence, Berlin, Germany 
+
+> 3
+
+Robotics Institute Germany 
+
+Abstract —Generalization in robotics requires prior knowledge about how the world is structured, yet this structure changes from one situation to the next. This paper investigates the proposition that generalization arises from adaptively composing regularities —predictable relationships within the robot-environment system— into situation-appropriate structures for behavior generation. We examine this proposition by analyzing the mechanism in AICON (Active InterCONnect), a framework representing regularities as interacting processes in a differentiable network, where sensory feedback realizes composition and gradient descent generates behavior. To isolate adaptive composition as the key mechanism, we study a simple simulated problem in which all relevant regularities can be identified. We expose the resulting model to a wide range of novel conditions not considered during design, and we find that it generates context-appropriate behavior in all but one case, where encoded regularities are provably insufficient. Ablations reveal that the network automatically modulates which regularities influence behavior based on their informativeness. These results suggest that adaptive composition of regularities constitutes a powerful inductive bias for building generalization into behavior generation. 
+
+I. I NTRODUCTION 
+
+Generalization is perhaps the central challenge in robotics. Every paradigm, from control and planning to learning, ulti-mately strives toward it. Solving generalization would, in a sense, mean solving robotics itself. But there is an obvious yet fundamental problem: a robot that generalizes must respond appropriately to a vast, possibly infinite space of situations. No designer could explicitly anticipate them all. Yet this is not insurmountable. The world, despite its complexity, is not arbitrary. Its structure arises from separable factors [1]–[5] that combine in different ways across situations. A robot equipped with representations of these factors can re-combine them to handle situations never explicitly encountered. This is the essence of generalization through composition [6]– [9], which raises two questions: what are the relevant factors, and how should they be combined? Many approaches attempt to discover such factors from data [10,11]. In robotics, however, the relevant factors are typically not latent variables but physical relationships we already understand: inertia, kinematics, geometric constraints, and so on. We call these predictable relationships regularities .Each regularity constrains how part of the world evolves. To-gether, they define a structured space of valid robot-environment configurations within which all feasible behaviors reside. The challenge is not identifying regularities but combining Stati 
+
+> Composition
+> AdaptivY
+> Composition
+> ProjectivY Geometry
+> Camera Model
+> Dynamics
+> Objec} Kinematics
+> Friction
+> Contac} Physics
+> Robo} Kinematics
+> Through engineering according to anticipated conditions
+> Through training on! pre-collected data
+
+Model Creation 
+
+> OR
+> Condition
+> Input
+> xx
+> x
+> x
+> c
+> c
+> c
+> 11
+> 2
+> 3
+> 11
+> 2
+> 3
+> Output
+> y
+> y
+> y
+> 11
+> 2
+> 3
+> Through regularities of the world
+> Behavior
+> b
+> b
+> b
+> 11
+> 2
+> 3
+
+Behavior Across Scenarios 
+
+> Robust in a ¨xed space
+> But fails! outside covered space
+> Adapts according to encountered world state to cover novel situations
+
+Fig. 1. Adaptive composition enables generalization by reconfiguring regularities to match each situation. (Top) Whether learned from data or engineered for anticipated conditions, traditional approaches yield static compositions that cover only a bounded region—the training distribution or the set of designed-for conditions—and fail outside it (red crosses). (Bottom) 
+
+Adaptive composition represents regularities (dynamics, kinematics, geometry, etc.) as interacting components that recombine based on sensory feedback. As the world state changes, the composition reconfigures, extending coverage to novel situations that no single fixed arrangement could handle. 
+
+them appropriately. But this problem contains its own solution: as the world changes, so does the relevant combination of regularities—and this change is observable through sensory feedback. A representation of regularities can therefore adapt its combination continuously. We call this an adaptive composition 
+
+of regularities (see Fig. 1). An adaptive composition is not a serial chain of functions, but a network of interacting influences that reflects how regularities couple in the physical world. As sensory feedback flows through this network, the influence of each regularity adapts to its momentary informativeness. Such an adaptive composition need only be specified once at the level of regularities, rather than redesigned for each case. We examine adaptive composition using AICON (for Active 
+
+Inter con nect) [12]–[15], a framework that encodes regularities as interacting processes in a differentiable network. Gradients through this network identify effective actions [13], enabling complex behavior without explicit search or switching. Earlier applications have demonstrated AICON’s effectiveness across diverse robotics problems. Here, we examine its underlying 
+
+> arXiv:2605.31110v1 [cs.RO] 29 May 2026
+
+mechanism and how it enables generalization. To isolate adaptive composition as the key mechanism, we study a problem in which all relevant regularities can be identified. We then expose the resulting AICON model to conditions never considered during design, including moving targets, obstacles, sensorimotor disturbances, and modified sensing and actuation, as well as combinations of these. AICON generates context-appropriate behavior in 16 of 17 scenarios, automatically modulating which regularities dominate based on their informativeness. The single failure occurs when the encoded regularities are provably insufficient: acceleration control without velocity measurements leaves the integration constant unobservable. These results suggest that adaptive composition of regularities offers a practical path to building generalization into robot behavior. II. R ELATED WORK 
+
+To situate adaptive composition as implemented in AICON within prior work, we invoke the concept of inductive bias :the assumptions a model makes to enable generalization [16, 17]. Different behavior-generation paradigms embody different inductive biases, leading to distinct capabilities and limitations. We review these paradigms and contrast their assumptions with those of AICON. 
+
+Planning approaches [18]–[23] assume that task-relevant structure can be captured through explicit state spaces and transition models, reducing behavior generation to path search. This bias works well in domains with stable, long-horizon structure—chess, logistics, geometric planning—but becomes brittle when robot-environment dynamics are context-dependent or long-term prediction is unreliable [13,24]. These methods rely on a largely static composition : the decomposition into states, actions, constraints, and dynamics is fixed at design time. Extensions such as belief-space [25]–[27] or contingency planning [28] relax uncertainty assumptions, but still operate over a predefined set of model compositions. AICON performs continuous estimation through dense sensing and local updates. This allows the influence of regularities to adapt online and reduces reliance on prediction or hand-designed abstractions. 
+
+Model-based control shares with AICON the assumption that observations map to actions through models of the robot-environment relationship. Traditional approaches encode this relationship through direct mappings [29], monolithic state-based models [30]–[32], or model-predictive control over a unified forward model [33,34]. Even when multiple models or constraints are present, their interaction is typically fixed or manually scheduled, yielding a static composition. AICON instead encodes the robot-environment relationship as a factorized network of multiple regularities, deriving behavior from this model using gradient descent. This bears surface resemblance to one-step MPC, in that both select actions by gradient-based optimization of a one-step objective. But the substantive difference is structural. AICON’s gradient aggregates contributions from multiple pathways rather than from a single forward model, so the relative influence of each regularity adapts online. Producing comparable context-sensitivity from a unified MPC model would require explicit switching logic or sufficiently long prediction horizons. Further, states in AICON are estimated recursively and history retained in beliefs, supporting robust integration across modalities and helping resolve perceptual aliasing. 
+
+Learning approaches similarly assume observation-to-action mappings but often impose minimal inductive bias beyond generic architectural constraints. Across imitation [35,36], rein-forcement [37]–[39], and predictive model learning [40]–[42], structure is largely inferred from data. Recent work emphasizes composition through disentangled representations [3]. But without strong inductive biases, learned decompositions often fail to support compositional generalization [2,43]. The result is interpolation within the training distribution [16] and failure under novel conditions [44]. AICON takes a different approach: by explicitly encoding regularities at an abstraction amenable to adaptive composition, it builds in an inductive bias that better supports robot behavior generation. The combination of regularities is then resolved online through interaction, which has yielded robustness across diverse applications [12]–[15]. 
+
+Structural biases cut across paradigms and shape gen-eralization. Recurrent structures—recursive estimators [45], smoothers [46], recurrent neural networks [47]—assume tem-poral smoothness. Relational structures—probabilistic graphical models [48], factor graphs [49], Bayesian networks [50], relational networks [51,52], graph neural networks [53]— assume decomposable dependencies among components. These biases support compositional inference, but typically assume fixed interaction patterns. AICON combines recurrent and relational structure while allowing the effective composition of regularities to adapt continuously through feedback. In summary, existing approaches either fix the composition of structure at design time or leave it to be discovered from data. AICON occupies a middle ground: it encodes regularities explicitly but allows their composition to adapt online. III. A DAPTIVE COMPOSITION OF REGULARITIES 
+
+In this section, we provide a geometric intuition for adaptive composition of regularities and their role in generalization. We begin by making our key terms precise. A regularity is a reproducible and predictable physical relationship between quantities in the robot-environment system. A system generalizes if it produces task-appropriate behavior under conditions not considered during design or training, without redesign or retraining. Regularities describe structure in the world. Inertia maintains the velocity of a rolling ball, gravity accelerates falling objects, and robot kinematics determine the position of its end-effector. Each regularity defines a manifold along which a part of the world evolves. For example, inertia constrains a rolling ball to a straight-line trajectory. When a robot needs to act, it can utilize the structure these manifolds provide. Intercepting a rolling ball means finding a path that brings the end-effector to the same point in space-time as the ball’s trajectory. This can be seen as linking two manifolds—ball dynamics and manipulator kinematics—and finding a suitable path through their intersection. Robustness follows naturally: minor disturbances shift the manifolds slightly, but valid paths persist. Generalization, however, demands more than robustness. Different situations require different arrangements of manifolds. Intercepting a rolling ball, a falling ball, or a ball on an incline each requires a different combination of regularities. A system that generalizes must navigate through these dynamic arrange-ments. Moreover, the relevance of individual regularities shifts with context. If an obstacle partially blocks the interception path, collision-avoidance constraints suddenly dominate—but when the path is clear, this regularity contributes nothing. The composition must adapt, emphasizing whichever regularities are most informative at each moment. This is what we mean by 
+
+adaptive composition : not a fixed combination of regularities, but one that reconfigures as sensory feedback reveals which relationships currently govern the situation. This perspective also clarifies a limit: a system can generalize only within the scope of its encoded regularities. Given such regularities, how does one implement an adaptive composition? AICON provides an answer as we describe next. IV. AICON: A F RAMEWORK FOR ADAPTIVE COMPOSITION 
+
+The previous section described adaptive composition geo-metrically: regularities define manifolds, and behavior emerges from navigating arrangements of manifolds that shift with context. AICON (Active Interconnect) [12,13] implements this idea by representing regularities as interacting processes in a differentiable network. Sensory feedback realizes adaptive composition, while gradient descent generates behavior. Here, we describe AICON’s core features (for details, see [13]): first, two types of regularities (Sec. IV-A ); then their expression in AICON’s structural components (Sec. IV-B ); and finally how behavior is generated through gradient descent (Sec. IV-C). 
+
+A. Two Types of Regularities 
+
+Section III described regularities as manifolds. In AICON, these manifolds are expressed as constraints, with two types distinguished by what they constrain and implemented in distinct structural components. 
+
+Temporal regularities describe how quantities evolve, e.g., how object positions change consistent with velocities. These constraints specify trajectories through time. 
+
+Cross-variable regularities describe instantaneous relation-ships, e.g., how a rigid link dictates poses of successive joints. These constraints specify which combinations of variables are mutually consistent at each moment. 
+
+B. Structural Components Recursive Estimators: These encode temporal regularities. Each estimator maintains a belief over some state variable and updates it according to a differentiable dynamics model: 
+
+f (xt−1; c1, c2, . . . , cN ) = xt (1) where xt is the state at time t, f specifies how it evolves, and optional priors c1, . . . , cN constrain the estimate. In our implementation, extended Kalman filters serve as recursive esti-mators, though other schemes (e.g., particle filters or categorical beliefs) are equally compatible [54]. Each estimator enforces temporal consistency, which computationally corresponds to constraining trajectories along a temporal manifold. 
+
+Active Interconnections: These encode cross-variable regu-larities. Each interconnection expresses a lawful relationship among multiple state variables and sensorimotor signals: 
+
+c(x1, x2, . . . , xM ) = 0 (2) where c captures a predictable dependency. Active intercon-nections propagate information bidirectionally: the constraint mediates information exchange across all connected variables. Together, recursive estimators and active interconnections form a differentiable network that continuously adapts the effective combination of regularities based on sensory feedback. This network does more than estimate state: it embodies the compositional structure of the robot-environment relationship and makes it available for action selection. 
+
+C. Generating Behavior Through Gradient Descent 
+
+The differentiable structure of AICON exposes how actions propagate through the network to affect task-relevant quantities. This enables a direct approach to behavior generation: define a goal function g over state variables, and compute its gradient with respect to motor commands a:
+
+at+1 = at − k · ∇g(at ) (3) where k is a gain parameter 1. The gradient ∇g(at ) captures how small changes in action would affect the goal, accounting for all encoded regularities simultaneously. This is where the consequence of adaptive composition becomes most discernible. The gradient aggregates contribu-tions from all active interconnections and recursive estimators, weighted by their current informativeness. When a regularity is highly informative, it contributes strongly to the gradient. When a regularity is uninformative or irrelevant to the current situa-tion, its contribution diminishes. This yields context-sensitive behavior that emerges naturally from the network’s adaptive composition, without requiring hand-designed switching rules, even for sequential and partially observable tasks [13]. 
+
+D. Summary and Preview 
+
+AICON realizes adaptive composition through three mecha-nisms: recursive estimators that enforce temporal consistency, active interconnections that enforce cross-variable relationships, and gradient descent that translates these regularities into action. The framework requires specifying which regularities govern a problem, but not how to combine them—that emerges automatically from the network’s response to sensory feedback. This raises an empirical question: does adaptive composition actually enable generalization? In the next section, we describe 
+
+> 1See Sec. II for comparison with one-step MPC.
+
+a controlled experimental setup designed to test this. We select a problem simple enough that all relevant regularities can be identified, construct an AICON model encoding those regularities, and then systematically expose it to conditions never considered during design. V. A T ESTBED FOR ADAPTIVE COMPOSITION 
+
+To understand how adaptive composition enables generaliza-tion, we require a problem in which all relevant regularities can be identified with confidence. This makes the mechanism visible: if the model generalizes, it must be because regularities combine appropriately, not because some unidentified regularity incidentally covers the new situation. We therefore select a deliberately simple problem: a robot maintaining a fixed distance from a target using only visual measurements. Our aim here is to understand, but not to benchmark. Prior work has demonstrated AICON’s capability on physical robots and other domains [12]–[15]. 
+
+A. Base Problem and Governing Regularities 
+
+We consider a simulated 2D environment in which a velocity-controlled holonomic robot equipped with a 360 ◦ visual sensor must maintain a desired distance from a stationary target. Crucially, the robot has no direct measurement of distance. It must infer distance from visual information alone. The robot receives measurements of its own velocity in the local frame, 
+
+zvel = [ vx, vy, ω]T , and object-related visual measurements including the visual offset (bearing) θ , visual size φ , and their time derivatives: ztarget = [ θ , φ , ˙θ , ˙φ ]T .This problem is governed by four regularities that together capture all relevant physical relationships: 
+
+R1 – Constant Velocity : Over short intervals, both robot and object velocities can be assumed to be constant. 
+
+R2 – Reference Frame Consistency : When the robot moves in some direction, a static object appears to move in the opposite direction by the same amount in the robot’s reference frame. 
+
+R3 – Motion Parallax : Lateral robot motions cause predictable changes in visual offset ˙θ (See Fig. 2, top). Nearby objects shift more rapidly than distant ones. 
+
+R4 – Visual Divergence : Longitudinal robot motions cause predictable changes in visual size ˙φ (See Fig. 2, bottom). Approaching an object makes it appear larger at a rate inversely proportional to distance. These four regularities are sufficient for the problem: R1 –R2 
+
+capture the rigid-body dynamics of robot and target, and R3 –
+
+R4 make distance observable from visual measurements given known robot velocity. Together they reveal the actual distance to the target, which can then be used to move to a specified distance—a strategy our hand-designed baseline controllers exploit explicitly (Sec. V-C). 
+
+B. Implementation in AICON 
+
+The regularities R1 –R4 map to AICON’s structural compo-nents as follows. A schematic is provided in Fig. 4 (top-left). Motio Paralla (R3)           
+
+> Visua Divergenc (R4)
+> Motion in7 Bird’s-Eye View
+> y
+> x
+> Motion i' Robot’s View Regularity
+> Fig. 2. Two regularities enable distance estimation from visual measurements alone. (Top) When the robot moves laterally, nearby objects shift more in the visual field than distant ones—the rate of change in visual offset ˙θis inversely proportional to distance. (Bottom) When the robot moves longitudinally, nearby objects grow faster than distant ones—the rate of change in visual size ˙φis inversely proportional to distance. Left column shows bird’s-eye view of robot motion; middle column shows resulting visual changes from the robot’s perspective; right column shows the mathematical relationships (full relationships given in Eqs. (6) and (7)).
+
+1) Recursive Estimators: Two recursive estimators capture the temporal regularities. Based on R1 , one estimator tracks the robot’s velocity xrobot  
+
+> t
+
+= [ vx,t , vy,t , ωt ]T given actions at :
+
+f R1 (xrobot  
+
+> t
+
+, at ) = xrobot  
+
+> t+1
+
+. (4) Based on R1 and R2 , the other estimator tracks xtarget  
+
+> t
+
+=[θ target  
+
+> t
+
+, dtarget  
+
+> t
+
+, vtarget  
+
+> x,t
+
+, vtarget  
+
+> y,t
+
+, rtarget  
+
+> t
+
+]T , representing the target’s visual offset, distance, velocities, and size in the robot’s frame: 
+
+f R2 (xtarget  
+
+> t
+
+; xrobot  
+
+> t
+
+) = xtarget  
+
+> t+1
+
+. (5) 
+
+2) Active Interconnections: According to R3 , the robot velocity xrobot  
+
+> t
+
+, the target distance dtarget  
+
+> t
+
+(from xtarget  
+
+> t
+
+), and the observed change in visual offset ˙θt (from ztarget  
+
+> t
+
+) form a predictable relationship encoded in an active interconnection: 
+
+cR3 (xrobot  
+
+> t
+
+, xtarget  
+
+> t
+
+, ztarget  
+
+> t
+
+) = ˙θt + vlat 
+
+> t
+
+dtarget 
+
+> t
+
+− ωrobot  
+
+> t
+
+= 0, (6) where ωrobot  
+
+> t
+
+is the robot’s rotational velocity (from xrobot  
+
+> t
+
+) and 
+
+vlat  
+
+> t
+
+is the lateral component of the relative velocity, obtained by rotating the robot and target velocity estimates by the estimated target visual offset θ target  
+
+> t
+
+.Following R4 , robot motion xrobot  
+
+> t
+
+also relates to changes in visual size ˙φt (from ztarget  
+
+> t
+
+) through the target’s size and distance rtarget  
+
+> t
+
+, dtarget  
+
+> t
+
+(from xtarget  
+
+> t
+
+), encoded in another active interconnection: 
+
+cR4 (xrobot  
+
+> t
+
+, xtarget  
+
+> t
+
+, ztarget  
+
+> t
+
+) = ˙φt − 2ηt
+
+p1 − η2
+
+> t
+
+vlon 
+
+> t
+
+dtarget 
+
+> t
+
+= 0, (7) where vlon  
+
+> t
+
+is the longitudinal component of the relative velocity, obtained by rotating the robot and target velocity estimates by the estimated target visual offset θ target  
+
+> t
+
+(from xtarget  
+
+> t
+
+), and 
+
+ηt = rtarget  
+
+> t
+
+/dtarget  
+
+> t
+
+.Direct measurements, such as robot velocity zvel  
+
+> t
+
+, visual offset 
+
+θt (from ztarget  
+
+> t
+
+) and size φt (from ztarget  
+
+> t
+
+), are integrated into the respective estimators using simple one-to-one constraints. 3) Goal Function and Behavior Generation: To maintain a desired distance ddesired from the target, we define a cost function on the target distance dtarget  
+
+> t
+
+(from xtarget  
+
+> t
+
+): 
+
+g(xtarget  
+
+> t
+
+) = E
+
+
+
+dtarget  
+
+> t
+
+− ddesired 2
+
+. (8) Behavior is generated by minimizing this cost using gradient descent with respect to motor commands at through the adaptive composition, as described in Sec. IV-C. 
+
+C. Baseline Controllers 
+
+We compare AICON against four baselines: two hand-designed policies that use the same regularities (isolating the contribution of adaptive composition) and two policies learned end-to-end with reinforcement learning (contrasting structured composition with direct policy learning): 
+
+Parallax-Only : Uses R1 -R3 to estimate distance through mo-tion parallax. When target-distance uncertainty ( σ target ) is high, lateral velocity is proportionally adjusted to reduce uncertainty. Longitudinal velocity is adjusted inversely proportional to uncertainty and proportional to distance error ( dtarget − ddesired ). This implements an explicit explore-exploit strategy. 
+
+Fixed-Strategy : Uses full estimation ( R1 –R4 ) with the same hand-crafted policy as above. This tests whether the regularities suffice for estimation and whether gradient-based action selection offers additional benefit. 
+
+RL (PPO) : A feed-forward policy trained with proximal policy optimization [37] using dense rewards derived from the goal function (Eq. (8)). The model uses two-hidden-layer MLP with 16 units per layer ( ∼ 870 trainable parameters total). Training uses only the stationary-target condition, but validation is done on both stationary and moving conditions. This tests whether learning a direct mapping from observations to actions matches structured composition. 
+
+RL (RecurrentPPO) : Same training setup with an LSTM-based recurrent policy (single LSTM layer of 8 hidden units feeding the same 16 × 16 MLP head; ∼ 2,000 trainable parameters total, ∼ 2.3× the feed-forward PPO), providing substantially more model capacity and temporal memory. This tests whether additional capacity and adding an inductive bias to model temporal evolution closes any remaining gap. 
+
+D. Systematic Variations 
+
+The base problem (Sec. V-A ) tests whether AICON can compose regularities appropriately for a single scenario. To test generalization more thoroughly, we introduce systematic variations that stress different aspects of the composition. Each variation modifies or extends the regularities R1 –R4 , requiring corresponding adjustments to the AICON model. Importantly, we do not redesign behavior for each variation—we only update the structural components to reflect the changed regularities and let behavior emerge through gradient descent. 
+
+E1 – Acceleration Control : The robot is controlled via accelerations instead of velocities. The estimator for the robot’s velocity is modified to account for accelerations 
+
+at = [ aaction x,t , aaction y,t , ˙ωaction t ]T , which are integrated to update robot velocity under a constant-acceleration assumption. This tests whether composition handles altered actuation dynamics. 
+
+E2 – Differential-Drive Robot : The robot uses differential-drive rather than holonomic motion. Actions at = [ vl,t , vr,t ]T
+
+correspond to left and right wheel velocities, mapped to overall motion through forward kinematics. This tests composition under constrained actuation. 
+
+E3 – Target Velocity Measurements : The robot receives velocity measurements from the target—as in drone-to-person tracking with IMU-equipped targets—but loses measurements of its own velocity. This tests whether composition can exploit alternative information sources. 
+
+E4 – Restricted Field-of-View (FOV) : The 360 ◦ visual sensor is replaced with a limited FOV sensor. When the target falls outside the FOV, no measurements are received. Following [13, Sec. V], a scalar visibility likelihood pvisible is estimated and incorporated into the active interconnections. When the target is not visible, the corresponding active interconnections are temporarily nonoperational. This tests composition under interrupted observability. 
+
+E5 – Camera-like Visual Measurements : The 360 ◦ visual sensor functions like LIDAR, but camera-based measurements couple the measurements of change in visual offset and visual size, even for 180 ◦ fish-eye cameras stitched for 360 ◦ view. We address this by combining the two active interconnections cR3 
+
+and cR4 into a single interconnection that preserves the original regularities while integrating the coupled visual measurements. This tests composition with altered sensor characteristics. 
+
+E6 – Obstacles in the Environment : To incorporate possible obstacles, we add one recursive estimator and correspond-ing active interconnections per obstacle, analogous to the target estimator and its active interconnections. Measurements correspond to each obstacle’s position and size. The goal function is modified to maintain a safe distance g(x obstacle  
+
+> i,t
+
+) = 
+
+E
+
+h
+
+min (0, d safety − d obstacle  
+
+> i,t
+
+)2
+
+i
+
+, which enforces a safety margin 
+
+d safety without affecting distant obstacles. This tests whether composition scales with more interacting constraints. These variations span actuation ( E1 , E2 ), sensing ( E3 , E4 ,
+
+E5 ), and environmental complexity ( E6 ). None were considered during original model design. Success across these variations would demonstrate that adaptive composition—rather than problem-specific engineering—drives generalization. VI. E MPIRICAL RESULTS 
+
+We now examine whether adaptive composition of regulari-ties enables generalization. Our experiments demonstrate three findings of increasing scope: (A) composition enables the task and generalizes beyond design conditions; (B) composition adapts automatically, modulating regularity influence based on informativeness; and (C) generalization persists even when regularities must change, failing only when they become fundamentally insufficient. 
+
+A. Composition Enables the Task 
+
+We first test the AICON model against baselines under two conditions: stationary targets (matching design assumptions) stationary moving AICON RL (PPO) Fixed-Strategy RL (RecurrentPPO) Parallax-Only 0           
+
+> 2
+> 4
+> 6
+> 8
+> 10
+> Task Error
+> 0246810 12 14
+> Time [ s]
+> 0
+> 2
+> 4
+> 6
+> 8
+> Estimation Error Fig. 3. AICON generalizes to moving targets despite being designed only for stationary ones. (Top) Task error (distance from desired position) over time: For stationary targets (solid lines), all methods converge. For moving targets (dotted lines), AICON maintains low error through adaptive composition that continuously rebalances exploration and exploitation. RecurrentPPO matches AICON’s performance asymptotically using substantially more model capacity, while PPO drops to Fixed-Strategy levels and Parallax-Only diverges. (Bottom)
+> Estimation error over time, shown for estimator-based methods (RL baselines are end-to-end policies and have no explicit estimator): AICON and Fixed-Strategy maintain accurate estimates in both conditions, but Parallax-Only diverges for moving targets—its fixed explore-then-exploit strategy cannot adapt to the changing situation. Shaded regions indicate 99% confidence intervals across 100 trials.
+
+and moving targets (violating them). For each of ten test cases (five models × two conditions), we run 100 experiments with randomized initial positions, each lasting 300 timesteps, sufficient for baseline controllers to converge. The moving target condition reveals the key finding: nothing in the AICON model explicitly encodes for a moving target, yet AICON maintains low task error (Fig. 3, top, dotted lines). The hand-crafted baselines fail to adapt—Parallax-Only diverges and Fixed-Strategy plateaus at higher error. The learned baselines reveal a complementary picture: PPO trained only on stationary targets drops to Fixed-Strategy levels when the target moves, while RecurrentPPO, with substantially more model capacity, asymptotically matches AICON. AICON’s gradient-based action selection that uses only four regularities automatically rebalances exploration and exploitation based on current estimation quality (Fig. 3, bottom): zero-shot generalization arises because its structure mirrors the regularities governing the problem, rather than from training on hundreds of episodes using far greater number of parameters. Fig. 4 illustrates a sample of the generated behavior and shows that the same unmodified model handles sensorimotor disturbances and target manipulations by generating movement patterns suited to each condition. These results establish that adaptive composition not only enables the task but provides both robustness to sensorimotor disturbances and generalization to novel target manipulations— capabilities that extend beyond the initial design conditions. 
+
+B. Composition Adapts Automatically 
+
+A stronger test asks whether the network automatically recalibrates when its structure changes. We investigate this by ablating the active interconnections encoding R3 and R4 .When we remove the motion parallax interconnection ( R3 ), the network can no longer reduce distance uncertainty through lateral motion. The model automatically compensates by producing longitudinal motion that exploits visual divergence (R4 ) instead. The converse occurs when we ablate visual divergence: the model shifts to lateral motion exploiting motion parallax. Neither compensatory strategy was designed—both emerge from gradient descent through the modified network. Fig. 5 visualizes this adaptation by plotting the gradient of distance uncertainty with respect to actions 2. The full model (Fig. 5a) shows how different actions lead to different uncertainty outcomes. When we ablate regularities (Fig. 5b), the gradient landscape shifts: removing R4 creates a preference for lateral motion, while removing R3 favors longitudinal motion. A surprising finding emerged when we varied target size with-out ablation (Fig. 5c). Small targets produce gradient landscapes resembling the R4 -ablated case, while large targets resemble the 
+
+R3 -ablated case. Intermediate sizes show continuous transitions. This makes physical sense: approaching a large object produces greater change in visual angle than approaching a small one, making visual divergence more informative for large targets and motion parallax more informative for small ones. We did not anticipate this behavior during design—it emerges entirely from the interactions between regularities. These results demonstrate that adaptive composition is not merely a static encoding of regularities but a dynamic process that automatically modulates the influence of each regularity based on its current utility. 
+
+C. Generalization Persists Under Modified Regularities 
+
+The strongest test of generalization is when some of the regularities themselves are modified while others remain static. We carry this out using six extensions ( E1 –E6 , Sec. V-D). Fig. 6 presents the results across all extensions. We observe that the generated behaviors are remarkably well-suited to the conditions. For instance, when the robot actuation is changed to differential-drive, it compensates for the lack of lateral movement by rotating the target to one side, moving forward, and then reorienting toward the target as needed. Combinations of extensions (e.g., differential-drive with obstacles, restricted FOV with camera-like measurements) also produce appropriate behavior without any additional engineering.               
+
+> 2The goal function (Eq. (8)) decomposes into two terms: g(xtarget
+> t) =
+> 
+> dtarget
+> t−ddesired 2
+> +σtarget
+> t. A least-squares distance term—for which the optimal action is simply to move toward or away from the target—and an uncertainty term σtarget
+> twhere both R3 and R4 contribute. We visualize only the latter to highlight the more interesting behavioral consequences. VisiblR Likelihood
+
+Model and Base Scenario  
+
+> Scenario
+> Velocity-controlled holonomic robot with 360° FOV vision and a stationary target object.
+> Goal
+> ObstaclR Properties
+> Motio^ Parallax
+> Visuaq Divergence
+> Action
+> Robo Velocity
+> Motio^ Parallax
+> Opti Flow
+> Visuad Divergence
+> Targe Visibility
+> Targe Properties Goal
+> [Target size: 1 m]
+> Ex ampl e Tra jec tor y
+> Behavior  Robot approaches the target object and orbits it at the set target distance, with deviations along the circular path¢
+
+Sensorimotor Disturbances and Target Manipulations           
+
+> Expl ana tion
+> Model adapts composition to use visual divergence (forward motion )and motion parallax (lateral motion )to infer distance, selecting the combination of strategies that best reduces uncertainty.
+> Ex ampl e Tra jec tor yScenario
+> Sensor Failure 
+> No robot velocit .
+> measurements
+> Increase
+> sensor noise
+> Additionaq biased sensor noise Un-modeled movement of target object
+> Behavior Expl ana tion
+> “W ind ”
+> Additional (0.5, 0.5 )m/s to action in global frame.
+> Changing target size: oscillates 0.5 -2.5 m with a period of 3s
+> Decreased target size: 0.2 m
+> Increased target size: 2 m
+> 5x , 5x , 0.1+ 5x 0.1+5x
+> Robot follows the target reliably irrespective of the type of motion.
+> Increased use of visual divergence for distance inference.
+> Increased use of motion parallax for distance inference.
+> Increased use of motion parallax for distance inference.
+> Robot approaches the target object, but deviates from the set target distance more strongly than the base case.
+> The model adjusts target velocity estimates to remain consistent with sensory observations, and dynamically adapts the composition ë
+> to reduce uncertainty Õ
+> as in the base case.
+> Larger objects provide more reliable information for visual divergence than smaller objects. The model automatically increases the in »uence of visual divergence relative to motion parallax in this case, and reverses this balance for smaller objects.
+> Disturbances are rejected through the encoded regularities, but uncertainty in the state estimate increases. In response, the composition adapts to emphasize uncertainty-reducing actions.
+> Target Trajectory Speci sed Distance Robot Trajectory
+
+Fig. 4. Adaptive composition generates appropriate behavior across diverse conditions without model modification. (Top left) The AICON model composes regularities R1 –R4 through two recursive estimators (Robot Velocity, Target Properties) linked by active interconnections (Motion Parallax, Visual Divergence). Grayed-out components indicate extensions described in Sec. V-D , and are not useful to interpret the results in this figure. (Top right) In the base scenario, the robot approaches and maintains the desired distance from a stationary target, balancing exploration (lateral motion for distance estimation) with goal pursuit (longitudinal motion). (Bottom) Under sensorimotor disturbances (left four panels) and target manipulations (right four panels), the same unmodified model generates situation-appropriate behavior. Disturbances increase estimation uncertainty, producing stronger corrective actions; target size variations automatically shift the balance between motion parallax and visual divergence strategies (see Sec. VI-B). 
+
+When Composition Fails: One condition produced failure: acceleration control ( E1 ) without robot velocity measurements. Integrating acceleration alone cannot determine absolute ve-locity, as the integration constant remains unspecified. Conse-quently, estimation becomes ungrounded, and behavior fails. This failure is instructive: it occurs not because of a limitation in the composition mechanism, but because the encoded regularities are fundamentally insufficient. No amount of adaptive recombination can recover unavailable information. Generalization succeeds when regularities capture the relevant structure, and fails when they do not. 
+
+D. Results Summary 
+
+Across 17 tested scenarios, AICON generates context-appropriate behavior in all but one case. This success stems from how adaptive composition exploits whatever regularities remain informative in each situation. The ablation and target-size experiments reveal the mechanism: both manipulations produce identical shifts in behavioral strategy because both alter which regularities carry useful information. The single failure— acceleration control without velocity measurements—confirms the boundary: adaptive composition cannot compensate when regularities lack the information needed for the task. VII. D ISCUSSION & C ONCLUSION 
+
+Our empirical study set out to test a specific proposition: that adaptive composition of regularities enables generalization. The results show that it works across a wide range of conditions. More importantly, our experiments reveal why this works. Regularities reliably describe the structure of robot-environment relationships. Adaptive composition determines how they combine in each situation. This means that the designer specifies the regularities, and how they combine emerges from the network’s response to sensory feedback. The target size experiment illustrates this clearly. We encoded motion parallax and visual divergence without knowing that target size would affect their relative utility. Yet the composition leveraged this structure automatically. The designer’s task thus shifts from crafting solutions to characterizing structure. 
+
+Toward Compositional Learning: Most regularities govern-ing robot-environment interactions are physical relationships we already understand. But understanding does not always yield closed-form expressions. Consider non-rigid body dynamics: we understand the underlying physics well enough to simulate Fig. 5. Adaptive composition automatically modulates which regularities influence behavior based on their current informativeness. (a) Left plot shows how different robot action velocities (relative to target) lead to different distance uncertainties. Right plot shows the gradient of uncertainty, with arrows indicating directions of increasing uncertainty. This gradient directly specifies what action minimizes uncertainty for any configuration. (b) Ablating visual divergence ( R4 )or motion parallax ( R3 ) shifts behavioral preferences toward lateral or longitudinal motion, as the model exploits “remaining” regularities. Model configurations are shown for each condition. Find full model schematic in Fig. 4 (top). (c) Target size variations produce similar patterns on a continuum: small targets favor lateral motion (motion parallax more informative) while large targets favor longitudinal approaches (visual divergence more informative). All analyses use identical robot-target configurations except for action and target size (panel c). 
+
+fabric, yet characterizing its behavior in compact form remains elusive. Such regularities could be learned from data, and nothing in our results precludes this. Learning regularities individually and embedding them within a compositional architecture could enable efficient acquisition of complex behaviors. This would proceed regularity-by-regularity rather than end-to-end , retaining the generalization benefits observed here while reducing manual engineering. Identifying which regularities to encode is itself an open problem, distinct from expressing them once chosen or learning them. Ongoing work points in two directions. Recursive estimators with outlier-detection mechanisms can reveal when the current composition is insufficient. A recurring outlier characterizes the conditions under which the composition does not capture the world structure. This can in turn indicate where a new active interconnection or estimator should be placed, through a mix of manual analysis and automated discovery. Separately, an AICON network can act as a structured prior over task dynamics for reinforcement and supervised learning, capturing structure these methods would otherwise have to learn from scratch and bootstrapping them from a stronger starting point. 
+
+Toward Generalization in Robotics: Generalization remains the central challenge in robotics. Our results suggest that adap-tive composition of regularities offers a promising path forward and constitutes a valuable inductive bias for behavior generation. This insight need not be tied to AICON specifically. What matters is that the world’s structure arises from regularities that combine differently across situations. Systems that mirror this structure can therefore generalize in a principled way. In this paper, we studied a single simulated domain in depth so the mechanism of adaptive composition could be examined under controlled conditions. Increased confidence in the versatility of adaptive composition will require testing across other domains. Prior work has applied AICON to physical robots [13], collective estimation [14], and modeling in psychology [12,15], though without explicitly testing for generalization. Given those results alongside ours, we expect adaptive composition to yield similar benefits in other behavior generation problems. More broadly, this perspective could reshape how robotics problems are approached: any problem can be framed by asking what regularities govern it and how they should compose. Advances in generalization may then come not from larger models or more data, but from better understanding of the structure we aim to capture. Such understanding offers a foundation for building robotic systems that generalize not by memorizing situations, but by understanding the regularities that generate them. ACKNOWLEDGMENTS 
+
+We gratefully acknowledge funding by the Deutsche Forschungsgemeinschaft (DFG, German Research Foundation) under Germany’s Excellence Strategy – EXC 2002/1 “Science of Intelligence” – project number 390523135. This work has been partially supported by the German Federal Ministry of Research, Technology and Space (BMFTR) under the Robotics Institute Germany (RIG). Model Example Trajectory Scenario  Acceleration sensing and control instead of velocity control 
+
+Variations in Actuation, Sensors, and Environment States 
+
+> Coupled sensory measurements related to parallax and divergence, simulatin\ optical Bow.
+> Robot successfully keeps the target at goal distance but with slightly larger deviations.
+> Stationary obstacles requiring additional obstacle estimators, structurally identical to the target estimator.
+> Robot successfully evades obstacles while approaching and maintaining the goal distance.
+> Behavior  Robot moves to target and orbits around it at a distance larger than the goal.
+> Same as to the left, but also without robot velocity measurements
+> Failure in maintaining a ¡xed distance
+> The model is unable to converge on a correct state estimate because of the lack of grounded sensory information about the target’s and robot’s velocity.
+> Target velocity measurements instead of robot velocity measurements
+> Di~erential drive actuation, forward model changed accordingly
+> Robot successfully approaches target and remains close to goal distance.
+> Robot approaches target and with limited but chaotic deviations from the goal distance.
+> Model utili zes target velocity information to infer un-measured robot velocity through regularities, and produces appropriate behavior.
+> Model integrates adapted robot velocity forward model to generate good behavior in changed action space.
+> Robot Tra jectory
+> Limited Field-of-View (FOV=90°)
+> Robot utili zes rotation and lateral motion to maintain it in its FOV.
+> Model links visibility estimate to target state uncertainty, producing actions to maintain visibility.
+> Model adaptively uses the information within the single interconnection, to decouple the overlapping information.
+> Target Tra jectory
+> When new estimators and interconnections are added to the model, the component adapt their inBuences upon the network automatically, adapting behavior to satisfy multiple goals simultaneously.
+> Obstacle Tra jectory
+> Target “Bees” from robot while a moving obstacle “chases” it
+> Explanation  The model’s balancing of longitudinal and lateral acceleration to reduce uncertainty creates an orbit, maintaining a control error.
+> Speci¡ed Distance
+
+Fig. 6. Generalization persists when regularities are modified, and fails precisely when they become insufficient. Each column shows a variation ( E1 –E6 and combinations) requiring changes to the model structure (top row, model components as shown in Fig. 4 but modified (red outline) or dis-/enabled (opacity)). Despite these changes to the network, appropriate behavior emerges: the differential-drive robot compensates for lost lateral motion through rotation; the restricted-FOV robot actively maintains target visibility; the obstacle scenario balances approach and avoidance. The single failure (second column, red background) occurs when acceleration control is combined with removal of velocity measurements—here, the regularities are fundamentally insufficient because integrating acceleration cannot determine absolute velocity without a reference. This failure confirms our proposition: composition enables generalization exactly to the extent that the encoded regularities capture the relevant structure. 
+
+REFERENCES [1] Y. Bengio, A. Courville, and P. Vincent, “Representation Learning: A Review and New Perspectives,” IEEE Transactions on Pattern Analysis and Machine Intelligence , vol. 35, no. 8, pp. 1798–1828, 2013. [2] F. Locatello, S. Bauer, M. Lucic et al. , “Challenging common assump-tions in the unsupervised learning of disentangled representations,” in 
+
+International Conference on Machine Learning , 2019, pp. 4114–4124. [3] I. Higgins, L. Matthey, A. Pal et al. , “ β -VAE: Learning basic visual concepts with a constrained variational framework,” in International Conference on Learning Representations , 2017, art. no. 5. [4] Y.-R. Liu, B. Huang, Z. Zhu et al. , “Learning World Models with Identifiable Factorization,” Advances in Neural Information Processing Systems , pp. 31 831–31 864, 2023. [5] S. Zhou, Y. Du, J. Chen et al. , “RoboDreamer: Learning Compositional World Models for Robot Imagination,” in International Conference on Machine Learning , 2024, pp. 61 885–61 896. [6] B. Lake and M. Baroni, “Generalization without Systematicity: On the Compositional Skills of Sequence-to-Sequence Recurrent Networks,” in 
+
+International Conference on Machine Learning , 2018, pp. 2873–2882. [7] R. Brooks, “A robust layered control system for a mobile robot,” IEEE Journal on Robotics and Automation , vol. 2, no. 1, pp. 14–23, 1986. [8] A. J. Ijspeert, J. Nakanishi, H. Hoffmann, P. Pastor, and S. Schaal, “Dynamical Movement Primitives: Learning Attractor Models for Motor Behaviors,” Neural Computation , vol. 25, no. 2, pp. 328–373, 2013. [9] T. Wiedemer, P. Mayilvahanan, M. Bethge, and W. Brendel, “Com-positional generalization from first principles,” Advances in Neural Information Processing Systems , pp. 6941–6960, 2023. [10] D. P. Kingma and M. Welling, “Auto-Encoding Variational Bayes,” in 
+
+International Conference on Learning Representations , 2014, art. no. 16. [11] S. A. Sontakke, A. Mehrjou, L. Itti, and B. Sch ¨olkopf, “Causal Curiosity: RL Agents Discovering Self-supervised Experiments for Causal Representation Learning,” in International Conference on Machine Learning , 2021, pp. 9848–9858. [12] A. Battaje, A. Godinez, N. M. Hanning, M. Rolfs, and O. Brock, “An Information Processing Pattern from Robotics Predicts Properties of the Human Visual System,” 2024, bioRxiv:2024.06.20.599814. [13] V. Mengers and O. Brock, “No Plan but Everything Under Control: Robustly Solving Sequential Tasks with Dynamically Composed Gradient Descent,” in IEEE International Conference on Robotics and Automation ,2025, pp. 90–96. [14] V. Mengers, M. Raoufi, O. Brock, H. Hamann, and P. Romanczuk, “Lever-aging Uncertainty in Collective Opinion Dynamics with Heterogeneity,” 
+
+Scientific Reports , vol. 14, art. no. 27314, 2024. [15] V. Mengers, N. Roth, O. Brock, K. Obermayer, and M. Rolfs, “A Robotics-Inspired Scanpath Model Reveals the Importance of Uncertainty and Semantic Object Cues for Gaze Guidance in Dynamic Scenes,” Journal of Vision , vol. 25, no. 2, art. no. 6, 2025. [16] T. M. Mitchell, “The Need for Biases in Learning Generalizations,” 1980, Technical Report 00571, Rutgers University. [17] T. Mitchell, Machine Learning , 1st ed. McGraw-Hill, Inc., 1997. [18] R. E. Fikes and N. J. Nilsson, “STRIPS: A New Approach to the Appli-cation of Theorem Proving to Problem Solving,” Artificial Intelligence ,vol. 2, no. 3, pp. 189–208, 1971. [19] S. LaValle, Planning Algorithms . Cambridge University Press, 2006. [20] M. Elbanhawi and M. Simic, “Sampling-Based Robot Motion Planning: A Review,” IEEE Access , vol. 2, pp. 56–77, 2014. [21] S. Li, D. Park, Y. Sung, J. A. Shah, and N. Roy, “Reactive Task and Motion Planning under Temporal Logic Specifications,” in IEEE International Conference on Robotics and Automation , 2021, pp. 12 618– 12 624. [22] X. Zhang, Y. Zhu, Y. Ding et al. , “Symbolic State Space Optimization for Long Horizon Mobile Manipulation Planning,” in IEEE/RSJ International Conference on Intelligent Robots and Systems , 2023, pp. 866–872. [23] T. Pan, R. Shome, and L. E. Kavraki, “Task and Motion Planning for Execution in the Real,” IEEE Transactions on Robotics , vol. 40, pp. 3356–3371, 2024. [24] M. Baum and O. Brock, “The World Is Its Own Best Model: Robust Real-World Manipulation Through Online Behavior Selection,” in IEEE International Conference on Robotics and Automation , 2022, pp. 1499– 1505. [25] L. P. Kaelbling, M. Littman, and A. Cassandra, “Planning and acting in partially observable stochastic domains,” Artificial Intelligence , vol. 101, pp. 99–134, 1998. [26] L. P. Kaelbling and T. Lozano-Perez, “Integrated task and motion planning in belief space,” The International Journal of Robotics Research , vol. 32, no. 9-10, pp. 1194–1227, 2013. [27] R. Platt, R. Tedrake, L. Kaelbling, and T. Lozano-Perez, “Belief space planning assuming maximum likelihood observations,” in Robotics: Science and Systems , 2010, pp. 291–299. [28] N. Rhinehart, J. He, C. Packer et al. , “Contingencies from Observations: Tractable Contingency Planning with Learned Behavior Models,” in 
+
+IEEE International Conference on Robotics and Automation , 2021, pp. 13 663–13 669. [29] S. Hutchinson, G. D. Hager, and P. I. Corke, “A Tutorial on Visual Servo Control,” IEEE Transactions on Robotics and Automation , vol. 12, no. 5, pp. 651–670, 1996. [30] O. Khatib, “Real-time obstacle avoidance for manipulators and mobile robots,” The International Journal of Robotics Research , vol. 5, no. 1, pp. 90–98, 1986. [31] Y. Zhao and C. Cheah, “Hybrid Vision-force Control for Robot with Uncertainties,” in IEEE International Conference on Robotics and Automation , vol. 1, 2004, pp. 261–266 Vol.1. [32] W. Yao, H. G. de Marina, B. Lin, and M. Cao, “Singularity-free Guiding Vector Field for Robot Navigation,” IEEE Transactions on Robotics ,vol. 37, no. 4, pp. 1206–1221, 2021. [33] D. Q. Mayne, “Model predictive control: Recent developments and future promise,” Automatica , vol. 50, no. 12, pp. 2967–2986, 2014. [34] M. Bhardwaj, B. Sundaralingam, A. Mousavian et al. , “STORM: An Integrated Framework for Fast Joint-Space Model-Predictive Control for Reactive Manipulation,” arXiv:2104.13542 [cs] , 2021. [35] A. Fishman, A. Walsman, M. Bhardwaj et al. , “Avoid Everything: Model-Free Collision Avoidance with Expert-Guided Fine-Tuning,” in 
+
+Conference on Robot Learning , 2025, pp. 1925–1948. [36] C. Chi, Z. Xu, S. Feng et al. , “Diffusion policy: Visuomotor policy learning via action diffusion,” The International Journal of Robotics Research , vol. 44, no. 10-11, pp. 1684–1704, 2025. [37] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Proximal Policy Optimization Algorithms,” 2017, arXiv:1707.06347. [38] A. Nagabandi, G. Kahn, R. S. Fearing, and S. Levine, “Neural Network Dynamics for Model-Based Deep Reinforcement Learning with Model-Free Fine-Tuning,” in IEEE International Conference on Robotics and Automation , 2018, pp. 7559–7566. [39] J. Ibarz, J. Tan, C. Finn et al. , “How to train your robot with deep reinforcement learning: lessons we have learned,” The International Journal of Robotics Research , vol. 40, no. 4-5, pp. 698–721, 2021. [40] M. Deisenroth and C. E. Rasmussen, “PILCO: A Model-Based and Data-Efficient Approach to Policy Search,” in International Conference on Machine Learning , 2011, pp. 465–472. [41] A. Byravan, F. Leeb, F. Meier, and D. Fox, “SE3-Pose-Nets: Structured Deep Dynamics Models for Visuomotor Control,” in IEEE International Conference on Robotics and Automation , 2018, pp. 3339–3346. [42] O. Groth, C.-M. Hung, A. Vedaldi, and I. Posner, “Goal-Conditioned End-to-End Visuomotor Control for Versatile Skill Primitives,” in IEEE International Conference on Robotics and Automation , 2021, pp. 1319– 1325. [43] M. L. Montero, J. S. Bowers, R. P. Costa, C. J. Ludwig, and G. Malhotra, “Lost in latent space: Disentangled models and the challenge of com-binatorial generalisation,” Advances in Neural Information Processing Systems , pp. 10 136–1049, 2022. [44] C. He, X. Liu, G. S. Camps, G. Sartoretti, and M. Schwager, “Demysti-fying Diffusion Policies: Action Memorization and Simple Lookup Table Alternatives,” 2025, arXiv:2505.05787. [45] S. Thrun, W. Burgard, and D. Fox, Probablistic Robotics . MIT Press, 2005. [46] B. Yi, M. A. Lee, A. Kloss, R. Mart ´ın-Mart ´ın, and J. Bohg, “Differentiable Factor Graph Optimization for Learning Smoothers,” in IEEE/RSJ International Conference on Intelligent Robots and Systems , 2021, pp. 1339–1345. [47] L. Feng, F. Tung, M. O. Ahmed, Y. Bengio, and H. Hajimirsadegh, “Were RNNs All We Needed?” 2024, arXiv:2410.01201. [48] D. Koller and N. Friedman, Probabilistic Graphical Models: Principles and Techniques . MIT Press, 2009. [49] F. Dellaert and M. Kaess, “Factor Graphs for Robot Perception,” 
+
+Foundations and Trends in Robotics , vol. 6, no. 1-2, pp. 1–139, 2017. [50] J. S. Yedidia, W. T. Freeman, and Y. Weiss, “Understanding Belief Propagation and its Generalizations,” in Exploring Artificial Intelligence in the New Millennium , 2003, pp. 239–269. [51] M. Cook, L. Gugelmann, F. Jug, C. Krautz, and A. Steger, “Interacting Maps for Fast Visual Interpretation,” in IEEE International Joint Conference on Neural Networks , 2011, pp. 770–776. [52] J. N. P. Martel, M. Chau, P. Dudek, and M. Cook, “Toward Joint Approximate Inference of Visual Quantities on Cellular Processor Arrays,” in IEEE International Symposium on Circuits and Systems , 2015, pp. 2061–2064. [53] A. Sanchez-Gonzalez, J. Godwin, T. Pfaff et al. , “Learning to Simulate Complex Physics with Graph Networks,” in International Conference on Machine Learning , 2020, pp. 8459–8468. [54] V. Mengers, A. Battaje, M. Baum, and O. Brock, “Combining Motion and Appearance for Robust Probabilistic Object Segmentation in Real Time,” in IEEE International Conference on Robotics and Automation ,2023, pp. 683–689.
