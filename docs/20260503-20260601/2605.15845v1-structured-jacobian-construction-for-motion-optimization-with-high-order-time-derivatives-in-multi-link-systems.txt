@@ -1,0 +1,2575 @@
+Title: Structured Jacobian Construction for Motion Optimization with High-Order Time Derivatives in Multi-Link Systems
+
+URL Source: https://arxiv.org/pdf/2605.15845v1
+
+Published Time: Mon, 18 May 2026 00:52:17 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Structured Jacobian Construction for Motion Optimization with High-Order Time Derivatives in Multi-Link Systems 
+
+Taiki Ishigaki Tokyo University of Science 
+
+taiki.ishigaki@rs.tus.ac.jp 
+
+Ko Ayusawa National Institute of Advanced Industrial Science and Technology Eiichi Yoshida Tokyo University of Science 
+
+# Abstract 
+
+This paper presents a novel framework for Jacobian computation in motion optimization problems involving multi-link systems, where physical quantities are represented using higher-order time derivatives. In motion optimization of robots and humans, cost functions may incorporate higher-order time derivatives, such as jerk or the time variation of forces, to capture smoothness and perceptual characteristics, particularly in the analysis of motion skills and expressive behaviors, thereby necessitating Jacobian computations involving these quantities. However, such Jacobians are typically computed using numerical or automatic differentiation without explicitly exploiting the underlying multi-link structure, which can lead to increased computational cost and potential numerical instability. To address this limitation, we propose a structured Jacobian formulation for motion optimization, based on the comprehensive motion computation framework, in which physical quantities and their higher-order time derivatives are systematically represented along the multi-link structure. The proposed method systematically derives analytical expressions for Jacobians of kinematic and dynamic quantities, including momentum, forces, and joint torques, with respect to generalized coordinates and their higher-order deriva-tives. The resulting framework is applicable to both direct and inverse optimization. Through numerical experiments, we demonstrate that the proposed method improves computational efficiency compared to numerical and automatic differen-tiation, while achieving comparable accuracy. Furthermore, we demonstrate its effectiveness in inverse optimization by recovering cost function weights from motion data. Together, these results indicate that the proposed formulation pro-vides a scalable and structured computational foundation for motion optimization involving higher-order time derivatives in multi-link systems. 
+
+# 1 Introduction 
+
+Robot motion computation, which deals with the motion of systems with physical bodies, has significantly contributed to the field of biomechanics [27]. A representative example is the use of motion capture to measure human motion and estimate joint and muscle loads using computational human models [10, 26]. In parallel, considerable research has been conducted in robotics to understand how humans control their own bodies [1, 13]. These studies are typically based on the hypothesis that human motion is governed by an un-derlying movement principle (i.e., a cost function), and at-tempt to infer this principle from observed motion data. To estimate such movement principles, inverse optimal control methods from systems engineering [19] have been widely applied [24, 18, 4, 32]. Unlike learning-based ap-proaches such as reinforcement learning, these methods ex-plicitly handle interpretable cost functions, making them suitable for understanding and predicting human motion. The inverse optimal control problem assumes that a sys-tem operates according to optimal control, and seeks to in-fer the cost function or control inputs that reproduce ob-served motion trajectories. Several efficient solution meth-ods have been proposed, including the inverse-KKT ap-proach [11]. Although these problems are traditionally studied within the framework of optimal control, closely related formulations also arise in broader optimization con-texts. In this paper, we adopt the terminology of direct and inverse optimization to refer to these problems. In conventional formulations for dynamical systems, the cost function typically consists of physical quantities such as position, velocity, acceleration, and force. However, when modeling human motion, it is often necessary to con-sider additional criteria such as smoothness and percep-tual qualities. As a result, recent studies have incorpo-rated higher-order time derivatives, such as jerk and snap, into the cost function to better capture these characteristics [32, 5, 22, 9]. Despite their importance, the systematic computation of Jacobians involving higher-order time-derivative quantities in a structure-aware manner remains limited in conventional robot motion computation. In practice, numerical differen-tiation, automatic differentiation, or analytical derivatives of dynamics algorithms are commonly used. While these approaches are effective in many cases, their application to optimization problems involving higher-order time deriva-1
+
+> arXiv:2605.15845v1 [cs.RO] 15 May 2026
+
+Direct & Inverse Optimization Comprehensive motion computation  
+
+> Section 5
+> [V.Samy, et. al. 2021]
+> Jacobian for time derivative of physical quantity
+> Eq. (30) Eq. (48) General coordinate Joint space Link space Kinematics Dynamics Eq. (31) Eq. (47) Eq. (52) Eq. (50) Eq. (53)
+
+Structured Jacobian Construction        
+
+> Section 7 Jacobian for variation of physical quantity
+> Generalized
+> coordinate Joint velocity Tangent vector of CMTM in the joint space Tangent vector of CMTM in the link space Link velocity Link momentum in the local frame Link momentum in the world frame Lemma 1 Lemma 2 (step 1) Joint momentum in the world frame Joint momentum in the local frame Joint force Generalized force Lemma 2 (step 2) Lemma 2 (step 3) Lemma 3 Lemma 4 (step 1.b) Lemma 4 (step 1.c) Lemma 4 (step 2) Lemma 4 (step 3.b) Lemma 4 (step 3.c) Lemma 5.b Lemma 5.c Lemma 6
+> Optimal value Direct optimization Inverse Optimization Cost weight Estimated cost weight Variation Section 8
+
+Figure 1: Overview of the structured variation of motion computation. tives, particularly in inverse optimization, has not been fully explored. Consequently, many existing studies focus on low-dimensional problems such as center-of-mass motion [22, 9], and their extension to complex multi-link systems involving higher-order time-derivative quantities remains limited. On the other hand, recent advances in motion optimiza-tion theory have introduced efficient computational frame-works for differentiating the equations of motion with re-spect to generalized coordinates, velocities, and accelera-tions [3, 7, 33]. In addition, methods for deriving higher-order time derivatives of motion trajectories and forces have been proposed [31, 21, 25]. While these methods successfully enable the computation of higher-order time-derivative quantities, they primarily focus on the forward generation of such derivatives. However, in optimization, what is required is the computation of Jacobians with re-spect to these higher-order time-derivative variables, which is not explicitly addressed in existing approaches. As a result, Jacobians involving higher-order quantities are of-ten computed using numerical or automatic differentiation, without fully leveraging the underlying multi-link structure. In particular, existing approaches do not provide a structure Jacobian computational framework that systematically in-tegrates higher-order time-derivative modeling, multi-link structure, and Jacobian computation for optimization. In this paper, we propose a structured Jacobian formu-lation for motion optimization in multi-link systems, based on a comprehensive motion computation framework. In the proposed formulation, physical quantities and their higher-order time derivatives are systematically represented and propagated along the multi-link structure via a composition of mappings, enabling direct and structured Jacobian com-putation with respect to higher-order time-derivative vari-ables in both direct and inverse optimization. Figure 1 pro-vides an overview of the proposed framework, illustrating how Jacobians arise from structured variations of motion. 
+
+# 2 Related Work 
+
+The computation of derivatives of kinematic and dynamic quantities has been extensively studied in robotics, partic-ularly in the context of optimization-based motion genera-tion. In addition to the evaluation of forward and inverse dynamics, many applications require derivatives of these quantities with respect to joint states, including Jacobians, their time derivatives, and Jacobians of dynamic equations, which are defined over the multi-link structure of articulated systems. A major line of research focuses on the analytical dif-ferentiation of rigid-body dynamics algorithms. In this ap-proach, classical recursive algorithms such as the recursive Newton–Euler algorithm (RNEA) and the articulated-body algorithm (ABA) are explicitly differentiated to obtain Ja-cobians of dynamic quantities with respect to joint posi-tions, velocities, and accelerations. Several works have developed systematic formulations for differentiating these algorithms by exploiting their recursive structure, sparsity, and spatial algebra representations [7, 29, 33]. These ap-proaches enable efficient derivative computation with linear complexity in the number of degrees of freedom and have been implemented in software libraries such as Pinocchio [8]. Beyond direct differentiation of recursive algorithms, re-lated analytical approaches have been developed from var-ious perspectives, including spatial operator algebra [17], geometric formulations on Lie groups [6], and sensitivity analysis methods [37]. These approaches provide struc-tured representations of linearized dynamics and enable ef-ficient recursive or adjoint-based computation of derivatives of dynamic quantities. More recently, such analytical formulations have been extended to higher-order derivatives, enabling the use of second-order optimization methods such as DDP and SQP [34]. In contrast to approaches based on direct differentiation, another line of work introduces unified representations that embed differential kinematics and dynamics within an ex-tended formulation. In particular, [3] proposed a com-prehensive motion transformation matrix (CMTM), which extends conventional spatial transformations to simulta-neously represent positions, velocities, and accelerations within a single matrix framework. This formulation enables differential kinematics and dynamics to be expressed as compositions of mappings, allowing analytical computation of derivatives of various physical quantities in a structured manner. Building upon this formulation, [31] extended the representation to higher-order time derivatives and derived analytical Jacobians of higher-order time-derivative quan-tities. However, these Jacobians are primarily designed to 2evaluate the time derivatives of physical quantities them-selves, and are not directly formulated for systematic Jaco-bian computation in optimization pipelines. Higher-order time derivatives of motion and dynamics have also been studied in various contexts, particularly for applications requiring smooth trajectories or higher-order dynamic consistency. From an optimization perspective, such derivatives appear in cost functions involving jerk, snap, or higher-order quantities. While existing approaches enable the computation of these quantities or their local derivatives, they are typically developed for specific formu-lations and do not explicitly address their structured inte-gration within Jacobian computation for optimization. In parallel, automatic differentiation and differentiable simulation frameworks have been widely adopted to com-pute derivatives of kinematic and dynamic quantities in a generic manner [28]. These approaches provide flexibil-ity and ease of implementation, allowing arbitrary mod-els to be differentiated without deriving analytical expres-sions. However, they do not explicitly exploit the underly-ing multi-link structure, which can lead to increased compu-tational cost and reduced numerical robustness, particularly for higher-order derivatives. Overall, existing research has addressed individual as-pects of derivative computation, including analytical dif-ferentiation of dynamics algorithms, unified representations of differential quantities, and higher-order time-derivative modeling. However, a systematic computational frame-work that integrates these aspects to enable structured and efficient Jacobian computation for optimization involving higher-order time-derivative physical quantities over multi-link systems remains limited. 
+
+# 3 Direct / Inverse Optimization 
+
+The direct optimization problem is formulated as finding the optimization variable x that minimizes the following objective function 
+
+min  
+
+> x
+
+f (x). (1) In this paper, the objective function f is expressed as a linear combination of predefined sub-cost functions ci and their associated weights wi, as follows 
+
+f (x) = f (x, w) = wTc(x) = X
+
+> i
+
+wici(x). (2) Here, the vectors w and c(x) denote the stacked represen-tations of the weights and the sub-cost functions, respec-tively. The necessary condition for the optimal solution of (1) is given by the Karush–Kuhn–Tucker (KKT) conditions as follows 
+
+∂f (x, w)
+
+∂x = 0. (3) On the other hand, assuming that the observed variable x
+
+is a solution to the direct optimization problem, the task of estimating the underlying objective function is referred to as the inverse optimization problem. In most cases, the sub-cost functions c are assumed to be known, and the problem is formulated as estimating the weight vector w. In par-ticular, when the observed variable x is assumed to satisfy the KKT conditions in (3), the method for estimating the weights w is called the inverse-KKT method [11]. Here, the left-hand side of (3) can be rewritten as follows 
+
+∂f (x, w)
+
+∂x = X
+
+> i
+
+wi
+
+∂c i(x)
+
+∂x = wT ∂c
+
+∂x = wTC (4) where C denotes the matrix whose columns consist of the Jacobian vectors of the sub-cost functions ci. In the inverse-KKT method, the weight vector w is estimated so that it sat-isfies the KKT condition in (3). Substituting the expression of the Jacobian, this condition can be written as 
+
+wTC = 0. (5) The weight vector w is then obtained by solving this homo-geneous linear equation under normalization and nonnega-tivity constraints as find w s.t. wTC = 0, w ≥ 0, wT1 = 1 . (6) When a human or a robot is modeled as a multi-link sys-tem, the optimization problem for motion typically treats the variable x as a time series of joint angles (general-ized coordinates). The cost functions are then designed as 
+
+c(y(x)) , where y(x) denotes the dynamical variables such as link positions and orientations, spatial velocities, spatial accelerations, and joint torques. Consequently, the com-putation of the Jacobian matrix C requires evaluating the Jacobians of the dynamic variables with respect to the gen-eralized coordinate trajectory, i.e., ∂y/∂ x. The method for computing such Jacobians of general dynamic variables ap-pearing in the equations of motion of multi-link systems is described in [3]. However, in cost functions commonly used for human motion analysis [22], higher-order time-derivative vari-ables—such as jerk of the link motion or the time variation of joint torques are included in addition to the dynamical variables described above, in order to evaluate smoothness and perceptual quality of motion. The computation of higher-order time-derivative vari-ables in multi-link systems has been derived in [31, 21]. These methods obtain variables of arbitrary order by repeat-edly applying time differentiation. However, the Jacobians required in optimization are mathematical Jacobians with respect to higher-order time-derivative variables, and can-not be obtained directly through such repeated differenti-ation. In particular, the formulations in [31, 21] focus on generating higher-order derivatives themselves, rather than providing the corresponding Jacobian mappings needed for optimization. In the following sections, we describe the theory of higher-order time-derivative computations for multi-link systems, and in Section 7, we provide derivations of the mathematical Jacobians of representative variables y with respect to generalized coordinates and their higher-order time derivatives. 34 Mathematical Preliminary 
+
+4.1 Matrix representation for vector opera-tor 
+
+For an arbitrary three-dimensional vector u ∈ R3, [u×3]
+
+denotes the corresponding skew-symmetric matrix repre-senting the cross product. For an arbitrary six-dimensional vector u = [ vT 
+
+> 0
+
+vT 
+
+> 1
+
+]T ∈ R6 (v0, v1 ∈ R3), we define six-dimensional matrix operator 
+
+[u×6] := 
+
+[v0×3] O3
+
+[v1×3] [v0×3]
+
+
+
+∈ R6×6. (7) To generalize the above operation, we construct a vector obtained by stacking k + 1 arbitrary m-dimensional vec-tors as follows. For u = [ uT 
+
+> 0
+
+· · · uT
+
+> k
+
+]T ∈ Rm(k+1) with 
+
+(u0, . . . , uk ∈ Rm), we define 
+
+[u×m·k] := 
+
+
+
+[u0×m] O · · · O
+
+[u1×m] [u0×m] . . . ...... . . . . . . ...
+
+[uk×m] [uk−1×m] · · · [u0×m]
+
+ .
+
+(8) In the special case where m = 3 and k = 1 , we define 
+
+[u×6] := [ u×3·1].For all operators [∗× n] in this paper, we define a corre-sponding operator [∗ ˆ×n] such that 
+
+[x ˆ×n]y = [ y×n]x. (9) 
+
+4.2 Derivative operator for vectors and ma-trices 
+
+For any vector a ∈ Rm, we define a mapping i-th derivative of a in a given direction u as follows 
+
+∂(i|u)(a) := ∂(i)
+
+∂u a. (10) 
+
+u can be any direction, such as time or space. We denote an expression obtained by dividing ∂(i|u)(a) by i! as follows 
+
+∂(i|u!) (a) := ∂(i|u)(a)
+
+i! . (11) Furthermore, using a(i|u!) , we define a mapping d(k|u)(a),which maps a to a vector collecting derivatives up to order 
+
+k, as follows 
+
+d(k|u)(a) (12) 
+
+:= 
+
+h
+
+∂(0 |u!) (a)T, ∂(1 |u!) (a)T, · · · , ∂(k|u!) (a)TiT
+
+.
+
+Similarly, for a matrix A ∈ Rm×m, we define a mapping 
+
+D(k|u)(A) to a lower block triangular matrix as follows 
+
+D(k|u)(A) (13) 
+
+=
+
+
+
+∂(0 |u!) (A) O · · · O
+
+∂(1 |u!) (A) ∂(0 |u!) (A) . . . ...... . . . . . . ...
+
+∂(k|u!) (A) · · · ∂(1 |u!) (A) ∂(0 |u!) (A)
+
+ .
+
+Here, when the direction of differentiation |u is omitted and the notation is written as d(k)(a) or D(k)(A), it denotes dif-ferentiation with respect to the time direction t. Moreover, when the order of differentiation is omitted and the notation is written as d(a) or D(A), it denotes differentiation up to order k. When a vector is defined as 
+
+a(k) := d(k)(a), (14) the subscript (k) is omitted when it is clear from the context, and we simply write a.The first-order derivative of d(k|u)(a) with respect to u
+
+can be represented using d(k+1 |u)(a), whose derivative or-ders are shifted by one, together with the coefficient matrix 
+
+B(1: k+1) , as 
+
+∂∂u d(k|u)(a) = Om(k+1) ×m B(1: k+1) 
+
+ d(k+1 |u)(a),
+
+(15) 
+
+B(1: k+1) := 
+
+
+
+Em Om · · · Om
+
+Om 2Em
+
+. . . ...... . . . . . . ...
+
+Om · · · Om (k + 1) Em
+
+ . (16) 
+
+4.3 Variable explanation 
+
+Variables used in this section are summarized in Table 1. Six-dimensional spatial quantities, represented using spa-tial transformation matrices, are denoted in boldface. The comprehensive representations, which collect derivatives of a physical quantity from order 0 to k based on the compre-hensive motion transformation matrix, are denoted in Frak-tur (German) typeface. Additional notations are summa-rized in Table 2. The index or its sets used to describe the tree structure are summarized in Table 3. Let L i denote the index of the i-th link. Let J i denote the index of the joint connecting link p(i)
+
+and link i. Here, p(Li) denotes the parent index of link i,while P(Li) represents the set of its ancestors (toward the root). Similarly, c(Li) denotes the set of children indices of link i, and C(Li) represents the set of its descendants (toward the leaves). The sets bP(Li) and ˆC(Li) include link 
+
+i itself. Let ♯i denote either the joint index Ji or the link index Li.
+
+# 5 Comprehensive Motion Computa-tion 
+
+Figure 2 illustrates the overall structure of the comprehen-sive motion computation described in this section. The computation is organized across generalized coordinates, joint space, and link space, covering both kinematic and dynamic quantities. 
+
+5.1 Kinematics motion computation 
+
+First, we review the kinematics computation developed in the field of robotics. The position and orientation of each 4Quantity 6D spatial Comprehensive transformation matrix A X
+
+velocity ν v
+
+joint angle q q
+
+joint angular velocity y y
+
+momentum h h
+
+force f f
+
+torque τ t
+
+tangent vector δa δx
+
+inertia matrix I I
+
+selection matrix S S
+
+Jacobian matrix J J
+
+Table 1: Notation for spatial and comprehensive variables Description Symbol zero matrix O
+
+j-th unit vector ej
+
+identity matrix E
+
+rotation matrix R
+
+position vector p
+
+Table 2: Basic notation link composing a robot can be represented using a spatial transformation matrix defined as follows [12] 
+
+A := 
+
+ R O
+
+[p×3]R R
+
+
+
+∈ SE (3) . (17) where, p ∈ R3 denotes a position vector, and R ∈ SO (3) 
+
+denotes a rotation matrix. Using the spatial transformation matrix, the forward kinematics of the robot can be com-puted to obtain the position and orientation of each link from the base link to the end-effector, as expressed by the following equation 
+
+ALi = Ap(Li)p(Li)ALi . (18) The tangent vector of the spatial transformation matrix with respect to time is defined as follows 
+
+[ν×6] := A−1 ∂A
+
+∂t . (19) where ν is referred to as the spatial velocity [12]. By tak-ing the time derivative of both sides of (18), the following relation is obtained 
+
+νLi = Li Ap(Li)νp(Li) + νJi (20) where νJi represents the spatial velocity generated by the joint motion. It can be computed using the selection matrix 
+
+S, and the joint velocity y, as expressed below 
+
+νJi = SJi yJi . (21) where the selection matrix SJi is defined by the joint type, 
+
+SJi := 
+
+ eT 
+
+> j
+
+0T T ∈ R6×1 (revolute) 
+
+ 0T eT
+
+> j
+
+T ∈ R6×1 (prismatic) 
+
+ E O T ∈ R6×3 (spherical) 
+
+E ∈ R6×6 (floating) .
+
+(22) Description Symbol index of link i Li                          
+
+> index of joint iJi
+> parent index of link ip(Li)
+> ancestor indices of link iP(Li)
+> ancestors of iincluding ibP(Li) := P(Li)∪ { Li}
+> children indices of link ic(Li)
+> descendant indices of link iC(Li)
+> descendants of iincluding iˆC(Li) := C(Li)∪ { Li}
+> the joint index Jior the link index Li#i
+
+Table 3: Notation for tree-structured index sets Eq. (30) Eq. (48) General coordinate Joint space Link space Kinematics Dynamics Eq. (31) Eq. (47) Eq. (52) Eq. (50) Eq. (53) 
+
+Figure 2: Structure of comprehensive motion computation. The figure illustrates the computation flow of kinematic and dynamic quantities in multi-link systems, including gener-alized coordinates, joint space, and link space, as described in Section 5. From (20) and (21), the basic Jacobian matrix [20] for link 
+
+i can be computed as follows 
+
+νLi = JLi y = X 
+
+> j∈bP(Li)
+
+J(i,j )yJj , (23a) 
+
+J(i,j ) := Li ALj SJj . (23b) Since ν cannot be obtained directly as the time derivative of a six-dimensional vector, the matrix J here is referred to as the basic Jacobian rather than a Jacobian matrix. Note that the basic Jacobian in [20] is defined for world-frame velocity, rather than the local spatial velocity used here. In the following, most of the matrices that appear are Jacobian matrices, while some include the basic Jacobian as well. For simplicity, however, we refer to all of them collectively as Jacobian matrices. 
+
+5.2 Comprehensive kinematics computation 
+
+When attempting to derive not only (18) and (20) but also higher-order differential forward-kinematics equations, the number of terms increases rapidly with the order of differ-entiation. To address this issue, the comprehensive motion transformation matrix, which enables the description of mo-tion transformations up to arbitrary orders of time differen-tiation, has been proposed [3, 31]. For the spatial transformation matrix A, the comprehen-sive motion transformation matrix (CMTM) X is defined as 5follows 
+
+X := 
+
+
+
+X0 O · · · OX1 X0
+
+. . . ...... . . . . . . ...
+
+Xk Xk−1 · · · X0
+
+ = D(k|t)(A), (24) 
+
+(
+
+X0 = AXℓ+1 = 1
+
+> ℓ+1
+
+Pℓm=0 Xℓ−m[ν(m|t!) ×6] (25) Since the CMTM can be represented by the mapping in (13), its elements can be expressed in terms of the time derivatives of the spatial transformation matrix A. How-ever, as shown in (25), it can also be computed recursively. Moreover, as with other transformation matrices, CMTM also satisfies the chain rule 
+
+XLi = Xp(Li)p(Li)XLi . (26) As proposed in [31], forward kinematic computations can be performed not only for velocity but also for higher-order time derivatives. In addition, the comprehensive spatial velocity v, which aggregates the spatial velocity and its derivatives up to order k, is defined as follows: 
+
+v(k) := 
+
+h 10!  
+
+> ∂(0)
+> ∂t
+
+νT · · · 1 
+
+> k!
+> ∂(k)
+> ∂t
+
+νT
+
+iT
+
+= d(k|t)(ν). (27) This representation can be naturally extended to other phys-ical quantities. In this paper, the stacked representation of a physical quantity and its higher-order time derivatives is re-ferred to as its comprehensive representation , and the term 
+
+comprehensive is used in this sense throughout. In the following, when the notation v is used without an explicit order index, it refers to v(k). Moreover, as in (19), 
+
+v(k) can be calculated as 
+
+[v×6·k] = X−1 ∂X
+
+∂t . (28) Therefore, by multiplying both sides of (28) by X, ∂X 
+
+> ∂t
+
+can be obtained as follows: 
+
+∂X
+
+∂t = X[v×6·k]. (29) For the comprehensive spatial velocity v, an expression analogous to (20) for spatial velocity ν holds, as given be-low 
+
+vLi = Li Xp(Li)vp(Li) + vJi . (30) where, vJi can be computed using comprehensive joint an-gular velocity y(k) := d(k)(y) as follows 
+
+vJi = SJi yJi (31) 
+
+SJi := diag (SJi · · · SJi
+
+). (32) As in (23a), the computation of the basic Jacobian matrix can be applied in the same manner 
+
+vLi = JBL i y = X 
+
+> j∈bP(Li)
+
+JB(i,j )yJj , (33a) 
+
+JB(i,j ) := Li XLj SJj . (33b) 
+
+5.3 Dynamics computation 
+
+We next describe the dynamic computation. For a given link 
+
+i, the spatial momentum hLi is given by 
+
+hLi = ILi νLi (34) where ILi is spatial inertia. We define the transformation matrix for spatial forces and moments as 
+
+A∗ := 
+
+R [p×3]RO R
+
+
+
+= A−T. (35) The spatial momentum of link i is further propagated to its parent link through the following relation: 
+
+hJi = hLi + X 
+
+> j∈c(Li)
+> Li
+
+A∗ 
+
+> Lj
+
+hJj . (36) The spatial momentum hLi is expressed in the local coor-dinate frame. Other representations include the momentum about the local-frame origin expressed in the world frame, and the momentum about the world-frame origin expressed in the world frame. Let ehLi denote the momentum about the world-frame origin expressed in the world frame. The relationship between hLi and ehLi is given by 
+
+ehLi = wA∗ 
+
+> Li
+
+hLi . (37) The spatial force in the world frame is given by 
+
+efLi = ∂∂t ehLi . (38) Since the same transformation holds for forces, 
+
+efLi = wA∗ 
+
+> Li
+
+fLi . (39) Left-multiplying (39) by wA∗−1 
+
+> Li
+
+, and using (38) and (37), we obtain 
+
+fLi = wA∗−1
+
+> Li
+
+efLi = wA∗−1
+
+> Li
+
+∂∂t 
+
+wA∗ 
+
+> Li
+
+hLi
+
+
+
+= ∂hLi
+
+∂t + [ νLi ×∗
+
+> 6
+
+]hLi . (40) For the transmitted force from link p(i) to link i, the transformation between the world-frame force efJi and the local-frame force fJi is given by 
+
+efJi = wA∗ 
+
+> Li
+
+fJi , (41) 
+
+efJi satisfies a relation similar to (38): 
+
+efJi = ∂∂t ehJi . (42) The relationship between fJi and hJi is derived analo-gously as 
+
+fJi = wA∗−1
+
+> Li
+
+efJi = wA∗−1
+
+> Li
+
+∂∂t 
+
+wA∗ 
+
+> Li
+
+hJi
+
+
+
+= ∂hJi
+
+∂t + [ νLi ×∗
+
+> 6
+
+]hJi . (43) Note that, also in this case, the second term involves 
+
+[νLi ×∗
+
+> 6
+
+], as in (40), which was derived in [31]. This fol-lows from the time derivative of the transformation matrix 
+
+> w
+
+A∗ 
+
+> Li
+
+.Finally, the joint torque τJi is obtained as 
+
+τJi = STJi fJi . (44) 65.4 Comprehensive dynamics computation 
+
+The comprehensive link momentum and the corresponding block-diagonal inertia matrix are given as 
+
+h(k) := d(k)(h), (45) 
+
+I := diag([ I · · · I]) . (46) In this case, analogous to (34), the following expression can be obtained 
+
+hLi = ILi vLi . (47) Furthermore, in the same manner as (36), the following ex-pression can be obtained 
+
+hJi = hLi + X 
+
+> j∈c(Li)
+> Li
+
+X∗ 
+
+> Lj
+
+hJj . (48) Here, X∗ is the comprehensive motion transformation ma-trix corresponding to A∗, and is defined as follows 
+
+X∗ := 
+
+
+
+X∗ 
+
+> 0
+
+O · · · OX∗ 
+
+> 1
+
+X∗
+
+> 0
+
+. . . ...... . . . . . . ...
+
+X∗ 
+
+> k
+
+X∗ 
+
+> k−1
+
+· · · X∗
+
+> 0
+
+ = D(k|t)(A∗), (49) 
+
+(
+
+X∗ 
+
+> 0
+
+= A∗,
+
+X∗ 
+
+> l+1
+
+= 1
+
+> l+1
+
+Plm=0 X∗
+
+> l−m
+
+[ν(m|t!) ×∗
+
+> 6
+
+].
+
+The comprehensive link force fLi (k) := d(k)(fLi ) can be computed in the same manner as (40) as follows 
+
+fLi (k) = wX∗ 
+
+> Li
+> −1
+
+∂∂t 
+
+wX∗ 
+
+> Li
+
+hLi (k)
+
+
+
+= ∂∂t hLi (k) + [ vLi (k)×∗
+
+> 6·k
+
+]hLi (k) (50) where [×∗
+
+> 6·k
+
+] is defined as an operator given by the follow-ing expression 
+
+[vLi (k)×∗
+
+> 6·k
+
+] = [  d(k|t)(νLi )×∗
+
+> 6·k
+
+] = D(k|t)([ νLi ×∗
+
+> 6
+
+]) .
+
+(51) The comprehensive force from link p(i) to link i, fJi (k) := 
+
+d(k)(fJi ) can be computed in the same manner 
+
+fJi (k) = wX∗ 
+
+> Li
+> −1
+
+∂∂t 
+
+wX∗ 
+
+> Li
+
+hJi (k)
+
+
+
+= ∂∂t hJi (k) + [ vLi (k)×∗
+
+> 6·k
+
+]hJi (k). (52) The comprehensive joint torque t(k) := d(k)(τ ) satisfies 
+
+tJi = STJi fJi . (53) As described in Appendix C, it is also possible to perform whole-body motion computation in a unified manner by stacking the link- and joint-level variables introduced in the comprehensive motion formulation into a single vector. 
+
+# 6 Elemental Relations for High-Order Jacobian Computation 
+
+In this section, we present a set of elemental relations re-quired for computing higher-order time derivatives in op-timization. These relations describe fundamental transfor-mations and identities that serve as building blocks for the structured Jacobian computation developed in the subse-quent sections. 
+
+6.1 Recursive structure and closed-form ex-pansion on multi-link tree graphs 
+
+As in the computation of the basic Jacobian matrix de-scribed in Eqs. (23a) and (33a), the computation of Jaco-bian matrices in multi-link systems reduces to solving re-cursive linear equations defined over a tree-structured graph 
+
+xi = yi + X
+
+> j∈λ(i)
+> i
+
+Xj xj , (54a) 
+
+> i
+
+Xj := X−1 
+
+> i
+
+Xj , (54b) 
+
+x, y ∈ Rn, (54c) 
+
+X ∈ G ⊂ Rn×n, (54d) 
+
+i / ∈ λk(i), ∀i, ∀k ≥ 1, (54e) where (54b) defines the relative transformation from coordi-nate i to coordinate j, G is a matrix Lie group, and λk(i) de-notes the k-times application of λ to i. The condition (54e) implies that the dependency relation defined through λ(i)
+
+forms a tree-structured (acyclic) graph. Typical choices of 
+
+λ(i) include parent and child index sets, denoted for exam-ple by p(i) and c(i).Under the above assumptions, the recursive equation (54a) admits the following closed-form expansion due to the acyclic structure of λ(i):
+
+xi = X 
+
+> j∈ˆΛ( i)
+> i
+
+Xj yj , (55a) 
+
+Λ( i) = [
+
+> k≥1
+
+λk(i), (55b) 
+
+ˆΛ( i) = {i} ∪ Λ( i). (55c) Similarly, in Eqs. (36) and (48), since A∗ and X∗ sat-isfy the conditions in (54b) and (54d), and C(i) satisfies the same structural conditions as λ(i) in (54e), the correspond-ing quantities can be computed in the same manner. 
+
+6.2 Variant of comprehensive motion trans-formation matrix 
+
+The tangent vector associated with the variation of the com-prehensive motion transformation matrix is defined as fol-7lows 
+
+[δx(k)×6·k] = X−1δX =
+
+
+
+δu0 O · · · O
+
+δu1 δu0
+
+. . . ...... . . . . . . ...
+
+δuk δuk−1 · · · δu0
+
+ ,
+
+(56) 
+
+(δu0 = [ δa×6] := A−1δA
+
+δul+1 = 1
+
+> l+1
+
+
+
+δ∂ (l|t!) (ν) + Plm=0 [δum×6]∂(l−m|t!) (ν)
+
+
+
+.
+
+Similarly to (30), the following equation holds for δx
+
+δxLi = Li Xp(Li)δxp(Li) + δxJi . (57) By multiplying X on both sides of (56), we can obtain a variant of X similar to (29) as follows: 
+
+δX = X[δx×6·k]. (58) We obtain a variant of X acting on an arbitrary vector x as follows: 
+
+δXx = X[δx×6·k]x = X[x b×6·k]δx. (59) 
+
+6.3 Relationship between different type of derivative 
+
+In motion optimization, the optimization variables consist of the joint velocities and their higher-order time deriva-tives. Accordingly, we establish the correspondence be-tween the tangent vector of the comprehensive motion transformation matrix in (56) and the variations of the spa-tial velocity and its higher-order time derivatives. Since time differentiation and variation are interchange-able, the following relation holds: 
+
+∂∂t δX = δ ∂X
+
+∂t . (60) Using (58), the left-hand side of (60) is given by 
+
+∂∂t δX = ∂∂t (X[δx×6·k]) = ∂X
+
+∂t [δx×6·k] + X ∂[δx×6·k]
+
+∂t 
+
+= X[v×6·k][ δx×6·k] + X[ ∂δ x
+
+∂t ×6·k]. (61) Similarly, using (29), the right-hand side is 
+
+δ ∂∂t X = δ(X[v×6·k]) = δX[v×6·k] + Xδ[v×6·k]= X[δx×6·k][ v×6·k] + X[δv×6·k]. (62) Substituting (61) and (62) into (60), left-multiplying by X−1, and using the identity [a×6·k][ b×6·k] −
+
+[b×6·k][ a×6·k] = [([ a×6·k]b)×6·k], we obtain 
+
+δv(k) = [ v(k)×6·k]δx(k) + ∂∂t δx(k). (63) Using (15), we obtain 
+
+∂δ x(k)
+
+∂t = Om(k+1) ×m B(1: k+1) 
+
+ δx(k+1) . (64) By using (64), Eq. (63) can be regarded as the following linear transformation 
+
+δv(k) = U([ v(k)×6·k]) δx(k+1) , (65) 
+
+U([ v(k)×6·k]) := 
+
+  [v(k)×6·k] O6( k+1) ×6
+
+ + O6( k+1) ×6 B(1: k+1) 
+
+ .
+
+We newly define the vector δu by concatenating δa and 
+
+δv(k) as 
+
+δu(k) := 
+
+ δa
+
+δv(k)
+
+
+
+. (66) By adding the identity δa = δa to (65), the following ex-pression is obtained 
+
+δu(k) = W(k+1) δx(k+1) , (67) 
+
+W(k+1) := 
+
+ E6 O6×6( k+1) 
+
+
+
+U([ v(k)×6·k]) 
+
+
+
+(68) 
+
+=
+
+O6×6( k+1) O6
+
+[v(k)×6·k] O6( k+1) ×6
+
+
+
++
+
+ E6 O6×6( k+1) 
+
+O6( k+1) ×6 B(1: k+1) 
+
+
+
+.
+
+The explicit forms of W(k+1) and its inverse are given in Appendix B.2. 
+
+6.4 Coordinate transformation of force and moment variations 
+
+As discussed in Section 6.1, the recursive computation of the momentum in (48) satisfies the conditions in (54a). However, when considering its variation, the variation of X
+
+is involved, and the resulting expression no longer satisfies the conditions in (54a). To address this issue, we reformulate the recursion us-ing the comprehensive momentum expressed in the world frame, 
+
+eh#i := wX∗ 
+
+> Li
+
+h#i (# = L or J ). (69) In this representation, (48) can be written as 
+
+ehJi = ehLi + X
+
+> j∈c(i)
+
+ehJj . (70) Its variation is then given by 
+
+δehJi = δehLi + X
+
+> j∈c(i)
+
+δehJj . (71) In this form, ehJi can be interpreted as being premultiplied by the identity matrix, resulting in a linear propagation structure. A similar linear relationship is also employed in [17]. This simplification arises because, in the world frame, the propagation of momentum between links is expressed as a direct summation, eliminating the need for relative co-ordinate transformations. Since the identity matrix satisfies the conditions in (54b) and (54d), the same recursive for-mulation applies without modification. From (50) and (52), it can be observed that the subscripts of the comprehensive spatial velocity appearing before the moment correspond not to relative velocities, but to veloci-ties of each frame with respect to the world coordinate sys-tem. This is because, in the transformation from moment 8to force, both the joint space and the link space are first mapped into the world coordinate system (69), and the re-sulting form arises from taking the time derivative in that representation. The transformation from moment to force can be writ-ten in a unified manner for both joint space and link space. Using (15), similarly to (65), (50) can be expressed as the following matrix mapping from moment to force 
+
+fLi (k) = U([ vLi (k)×∗
+
+> 6·k
+
+]) hLi (k+1) . (72) The comprehensive force from link p(i) to link i, fJi (k), can be computed in the same manner 
+
+fJi (k) = U([ vLi (k)×∗
+
+> 6·k
+
+]) hJi (k+1) . (73) 
+
+# 7 Structured Jacobian Construction for High-Order Time Derivative Systems 
+
+In this section, we construct Jacobians of physical quanti-ties with respect to generalized coordinates and their higher-order derivatives. Building upon the equations introduced in Section 5, whose variations are considered in this sec-tion, and the elemental relations presented in Section 6, the Jacobian computation is formulated as a composition of lin-ear mappings aligned with the computational structure. Figure 2 summarizes the forward computation of physi-cal quantities. Figure 3 illustrates the corresponding prop-agation of variations. The latter is derived from the varia-tion of the former, where each operation is replaced by its associated linear mapping. This correspondence enables a unified and structured construction of Jacobians. 
+
+7.1 Structured Jacobian propagation 
+
+As illustrated in Fig. 3, the propagation of variations across physical quantities forms a chain of transformations. Each transformation defines a linear mapping, and the overall Ja-cobian is obtained by composing these mappings along the chain. Specifically, the variation is propagated through the fol-lowing stages, as shown in Fig. 2. Each stage defines a linear mapping between variations of physical quantities, represented by its Jacobian. We first consider the propagation to the comprehensive link spatial velocity. The variation is given by 
+
+δvLi = JvLi ←qJ δq(k), (74) where JvLi ←qJ denotes the corresponding Jacobian. Here, 
+
+qJi (k) is defined by the concatenation of qJi and yJi as 
+
+qJi (k) := 
+
+ qJi
+
+yJi (k)
+
+
+
+(75) By collecting all joint components, qJ is defined as follows: 
+
+qJ = qTJ0 · · · qTJn
+
+T . (76) The same structure applies to all other physical quanti-ties. Accordingly, their variations can be expressed in a unified form as 
+
+δz = Jz←qJ δqJ(k), (77) where z represents spatial velocity, momentum, force, or torque, and Jz←qJ denotes the Jacobian associated with z.A summary of the Jacobians and their associated physi-cal quantities is provided in Table 4. Each row corresponds to a specific quantity and its Jacobian, explicitly showing the mapping from variations of generalized coordinates to variations of the quantity. To construct these Jacobians in a structured manner, we first introduce a set of fundamen-tal Jacobian mappings as lemmas. Each lemma describes a linear mapping between variations of intermediate physical quantities, which serve as building blocks for the overall Ja-cobian construction. The lemmas presented in this section are derived by integrating the variation of the comprehen-sive motion computation introduced in Section 5 (Fig. 2) with the elemental mappings defined in Section 6. By com-posing these mappings, the Jacobians associated with target physical quantities can be systematically constructed within a unified framework. 
+
+7.2 Elemental Jacobian mappings 
+
+The following lemmas are derived as variational forms of the comprehensive motion computations introduced in Sec-tion 5. Table 5 summarizes the corresponding comprehen-sive motion computation equations and the related expres-sions associated with each lemma. 
+
+Lemma 1. The Jacobian mapping from variations of gen-eralized coordinates to variations of joint spatial velocity is given by 
+
+δuJi (k) = JδuJi ←qJi
+
+δqJi (k), (78a) 
+
+JδuJi ←qJi
+
+= SJi . (78b) 
+
+Proof. This result follows directly from the variation of (31). 
+
+Lemma 2. The Jacobian mapping from joint spatial veloc-ity to link spatial velocity is given by the following sequence of linear mappings: 
+
+• Step 1: Tangent transformation. Map the variation to the tangent space at the joint: 
+
+δxJi (k+1) = JδxJi ←δuJi δuJi (k), (79a) 
+
+JδxJi ←δuJi = W−1(k+1) (79b) • Step 2: Kinematic propagation. Propagate the tan-gent vector along the kinematic chain: 
+
+δxLi = X 
+
+> j∈bP(i)
+
+JδxLi ←δxJj
+
+δxJj , (80a) 
+
+JδxLi ←δxJj
+
+= Li XLp(Ji) . (80b) 9Generalized        
+
+> coordinate Joint velocity Tangent vector of CMTM in the joint space Tangent vector of CMTM in the link space Link velocity Link momentum in the local frame Link momentum in the world frame Lemma 1 Lemma 2 (step 1) Joint momentum in the world frame Joint momentum in the local frame Joint force Generalized force Lemma 2 (step 2) Lemma 2 (step 3) Lemma 3 Lemma 4 (step 1.b) Lemma 4 (step 1.c) Lemma 4 (step 2) Lemma 4 (step 3.b) Lemma 4 (step 3.c) Lemma 5.b Lemma 5.c Lemma 6
+
+Figure 3: Schematic illustration of the Jacobian computation as a chain of transformations. Each node represents a phys-ical quantity, and each edge denotes a linear mapping between variations.The overall Jacobian is obtained by composing these mappings along the chain. Table 4: Summary of Jacobians and their associated physical quantities. Each Jacobian maps variations of generalized coordinates to variations of the corresponding quantity in the structured propagation framework. Quantity Quantity symbol δz Jacobian Jz←q Eq. Derived from Joint velocity δuJi JδuJi ←qJi
+
+(94) Lemma 1 (78a) Joint tangent δxJi JδxJi ←qJi
+
+(94) Lemma 2 (Step 1) (79a) Link tangent δxLi JδxLi ←qJ (95) Lemma 2 (Step 2) (80a) Link velocity δvLi JvLi ←qJ (97) Lemma 2 (Step 3) (81a) Link momentum δhLi JhLi ←qJ (98) Lemma 3 (82a) Link momentum (world) δehLi JehLi ←qJ
+
+(99) Lemma 4 (Step 1) (83a) Joint momentum (world) δehJi JehJi ←qJ
+
+(100) Lemma 4 (Step 2) (84a) Joint momentum δhJi JhJi ←qJ (101) Lemma 4 (Step 3) (85a) Link force δfLi JfLi ←qJ (102) Lemma 5 (90a) Joint force δfJi JfJi ←qJ (103) Lemma 5 (90a) Joint torque δtJi JtJi ←qJ (104) Lemma 6 (93a) 10 • Step 3: Velocity recovery. Recover the spatial velocity variation at the link: 
+
+δvLi (k) = JvLi ←δxLi
+
+δxLi (k+1) , (81a) 
+
+JvLi ←δxLi
+
+= U([ vLi (k)×6·k]) . (81b) 
+
+Proof. Steps 1 and 3 are obtained by reorganizing the pre-viously derived relations in (67) and (65). Step 2 is obtained by applying the closed-form expansion (55), since (57) has the same recursive structure as (54a), allowing the propa-gation to be expressed as a summation over the ancestral joints. 
+
+Lemma 3. The Jacobian mapping from variations of spa-tial velocity to variations of momentum in link space is given by 
+
+δhLi = ILi δvLi , (82a) 
+
+JhLi ←vLi = ILi . (82b) 
+
+Proof. This follows from the variation of (47), noting that 
+
+ILi is constant. 
+
+Lemma 4. mapping from variation of link momentum to variation of joint momentum is given by the following se-quence of linear mappings: 
+
+• Step 1: World transformation. Transform the varia-tion of link momentum to the world frame: 
+
+δehLi = JehLi ←hLi
+
+δhLi + JehLi ←δxLi
+
+δxLi , (83a) 
+
+JehLi ←hLi
+
+= wX∗ 
+
+> Li
+
+, (83b) 
+
+JehLi ←δxLi
+
+= wX∗ 
+
+> Li
+
+[hLi b×∗
+
+> 6k
+
+]. (83c) • Step 2: Momentum propagation. Propagate the transformed world momentum variations from link space to joint space over the child links: 
+
+δehJi = X 
+
+> j∈ˆC(i)
+
+JehJi ←ehLj
+
+δehLj , (84a) 
+
+JehJi ←ehLj
+
+= E. (84b) • Step 3: Local recovery. Recover the local frame rep-resentation: 
+
+δhJi = JhJi ←ehJi
+
+δehJi + JhJi ←δxLi
+
+δxLi , (85a) 
+
+JhJi ←ehJi
+
+= wX∗−1 
+
+> Ji
+
+, (85b) 
+
+JhJi ←δxLi
+
+= −[( wX∗−1
+
+> Ji
+
+ehJi )×∗
+
+> 6·k
+
+]. (85c) 
+
+Proof. This mapping is constructed by taking the variation of the momentum transformations across coordinate frames and their accumulation in the world frame. 
+
+Step 1 (World transformation). We begin with the vari-ation of the transformation from the link frame to the world frame in (69): 
+
+δehLi = δ  wX∗
+
+> Li
+
+ hLi + wX∗ 
+
+> Li
+
+δhLi . (86) Applying (59), the first term becomes 
+
+δ  wX∗
+
+> Li
+
+ hLi = wX∗ 
+
+> Li
+
+[hLi b×∗
+
+> 6·k
+
+]δxLi . (87) Substituting (87) into (86), we obtain the first mapping in Lemma 4. 
+
+Step 2 (Momentum propagation). Next, the second mapping in Lemma 4 is derived by considering the accu-mulation of the variation of the moment in the world frame, as expressed in (71), and applying (55). 
+
+Step 3 (Local recovery). Finally, we recover the local joint momentum from its world representation. This is de-rived from the inverse transformation hJi = ( wX∗ 
+
+> Li
+
+)−1 ehJi .Taking its variation yields 
+
+δhJi = wX∗−1 
+
+> Li
+
+δehJi + δwX∗−1
+
+> Li
+
+ehJi . (88) The second term represents the variation of the inverse transformation. Applying (59) and (110) in Appendix A.1, we obtain 
+
+δwX∗−1
+
+> Li
+
+ehJi = −[( wX∗ 
+
+> Li
+> −1
+
+ehJi ) ˆ ×∗
+
+> 6·k
+
+]δxLi . (89) Substituting this into (88) directly yields the third mapping in Lemma 4. 
+
+Lemma 5. The Jacobian mapping from δh#i and δvLi to 
+
+δf#i is given by 
+
+δf#i (k) = Jf#i ←h#i
+
+δh#i (k+1) + Jf#i ←vLi δvLi (k+1) ,
+
+(90a) 
+
+Jf#i ←h#i
+
+= U([ vLi (k)×∗
+
+> 6·k
+
+]) , (90b) 
+
+Jf#i ←vLi =
+
+h
+
+[h#i (k) b×∗
+
+> 6k
+
+] O6( k+1) ×6
+
+i
+
+. (90c) 
+
+Proof. This expression is obtained by taking the variation of the relationship between momentum and force. Specifi-cally, the variation of (72) is given as follows 
+
+δf#i (k) = U([ vLi (k)×∗
+
+> 6·k
+
+]) δh#i (k+1) 
+
++ δU([ vLi (k)×∗
+
+> 6·k
+
+]) h#i (k+1) . (91) The term δU([ vLi (k)×∗
+
+> 6·k
+
+]) in the second term of (91) can be computed as follows. 
+
+δU([ vLi (k)×∗
+
+> 6·k
+
+]) h#i (k+1) 
+
+= [δvLi (k)×∗
+
+> 6·k
+
+] O6( k+1) ×6
+
+ h#i (k+1) 
+
+=
+
+h
+
+[h#i (k) b×∗
+
+> 6k
+
+] O6( k+1) ×6
+
+i
+
+δvLi (k+1) (92) By substituting (92) to (91), we obtain (90a) on Lemma 5. 
+
+Lemma 6. The Jacobian mapping from δfJi to δtJi is given by 
+
+δtJi = JtJi ←fJi
+
+δfJi , (93a) 
+
+JtJi ←fJi
+
+= STJi (93b) 
+
+Proof. This result follows directly from the variation of (53). 11 Table 5: Relationship between each lemma, the variation of the equations leading to Section 5, and the elemental rela-tion in Section 6. Lemma Description Variation (Sec. 5) Relation (Sec. 6) Lemma 1 Joint velocity mapping (31) (direct mapping) Lemma 2 Step 1: Tangent mapping (30) (67) Step 2: Kinematic propagation (57) and (55) Step 3: Velocity recovery (65) Lemma 3 Inertia mapping (47) (direct mapping) Lemma 4 Step 1: World transformation (48) (69) and (59) Step 2: Momentum propagation (71) and (55) Step 3: Local recovery (69), (59) and (110) Lemma 5 Force mapping (50) (72) Lemma 6 Torque extraction (53) (direct mapping) 
+
+7.3 Jacobian construction via composition 
+
+The Jacobians are constructed in a hierarchical manner, fol-lowing the dependency structure of physical quantities. 
+
+Joint velocity Jacobian. The comprehensive joint veloc-ity can already be derived from Lemma 1. The Jacobian associated with the comprehensive link spatial velocity is obtained by composing the mappings in Lemma 2. 
+
+Joint tangent vector Jacobian. (Construction of 
+
+JδxJi ←qJi
+
+) First, the tangent vector at the joint is expressed as 
+
+δxJi (k+1) = JδxJi ←qJi
+
+δqJi (k), (94) where JδxJi ←qJi
+
+is defined by 
+
+JδxJi ←qJi
+
+:= JδxJi ←δuJi JδuJi ←qJi
+
+.
+
+This mapping is obtained by applying the expression in (79a) of Lemma 2 to the mapping toward δuJi defined in (78a). 
+
+Joint tangent vector Jacobian. (Construction of 
+
+JδxL ←qJ ) Next, the tangent vector is propagated to the link as 
+
+δxLi (k+1) = JδxLi ←qJ δqJ(k) = X 
+
+> j∈bP(i)
+
+JδxLi ←qJj
+
+δqJj (k)
+
+(95) where JδxLi ←qJj
+
+is defined by 
+
+JδxLi ←qJj
+
+:= JδxLi ←δxJi
+
+JδxJj ←qJj
+
+(96) This mapping is obtained by applying the expression in (80a) of Lemma 2 to the mapping toward δxJi defined in (94). 
+
+Joint spatial velocity Jacobian. (Construction of 
+
+JvL ←qJ ) Finally, the variation of the spatial velocity is recovered as 
+
+δvLi (k) = JvLi ←qJ δqJ(k), (97) where JvLi ←qJ is defined by 
+
+JvLi ←qJ := JvLi ←δxLi
+
+JδxLi ←qJ.
+
+This mapping is obtained by applying the expression in (81a) of Lemma 2 to the mapping toward δxLi defined in (95). The comprehensive spatial velocity vLi can be expressed as a function of the generalized coordinates via (26), i.e., 
+
+vLi = f (q), and its Jacobian is given by JvLi ←qJ = ∂f 
+
+> ∂q
+
+.On the other hand, the matrix JB in (33a) does not coincide with this Jacobian, i.e., JB̸ = ∂f (q) 
+
+> ∂q
+
+. However, it satisfies 
+
+JB ∂q 
+
+> ∂t
+
+= JvLi ←qJ 
+
+> ∂q
+> ∂t
+
+. Despite this equality, JB is not the true derivative of f (q) and therefore cannot be used for op-timization. 
+
+Link momentum Jacobian. (Construction of JhL ←qJ )
+
+We next construct the Jacobian associated with momentum by applying the inertia mapping to the velocity Jacobian. By applying Lemma 3, the Jacobian associated with the comprehensive link momentum is obtained by composing the inertia mapping with the Jacobian of spatial velocity: 
+
+δhLi = JhLi ←qJ δqJ, (98) where JhLi ←qJ is defined by 
+
+JhLi ←qJ := JhLi ←vLi JvLi ←qJ .
+
+This expression shows that the Jacobian of momentum is constructed by applying a linear transformation to the Jaco-bian of spatial velocity, preserving the underlying structured propagation. 
+
+Link world momentum Jacobian. (Construction of 
+
+JehL ←qJ
+
+) We then extend the construction to the world-frame momentum by incorporating the transformation and propagation mappings in Lemma 4. Specifically, by sub-stituting the link momentum Jacobian (98) and the tangent propagation (95) into the world frame transformation (84a) on Lemma 4, we obtain 
+
+δehLi = JehLi ←qJ
+
+δqJ, (99) where JehLi ←qJ
+
+is defined by 
+
+JehLi ←qJ
+
+:= JehLi ←hLi
+
+JhLi ←qJ + JehLi ←δxLi
+
+JδxLi ←qJ .
+
+This expression shows that the Jacobian is obtained by com-bining two components: the transformed momentum Jaco-bian and the correction term arising from the variation of the transformation. 
+
+Joint world momentum Jacobian. (Construction of 
+
+JehJi ←qJ
+
+) By applying the closed-form expansion of the re-cursive relation in (54a), as expressed in (54), to the world-frame momentum propagation (83a) on Lemma 4, we ob-tain the accumulated world-frame joint momentum varia-tion as 
+
+δehJi = JehJi ←qJ
+
+δqJ, (100) 12 where JehJi ←qJ
+
+is defined by 
+
+JehJi ←qJ
+
+:= X 
+
+> j∈ˆC(i)
+
+JehJi ←ehLj
+
+JehLj ←qJ
+
+.
+
+Joint momentum Jacobian. (Construction of JhJ ←qJ )
+
+Finally, the Jacobian of joint momentum is obtained by transforming the accumulated world-frame momentum back to the local frame. By substituting the world joint mo-mentum Jacobian (100) and the tangent propagation (95) into the local frame transformation (85a) on Lemma 4, we obtain 
+
+δhJi = JhJi ←qJ δqJ, (101) where JhJi ←qJ is defined by 
+
+JhJi ←qJ := JhJi ←ehJi
+
+JehJi ←qJ
+
++ JhJi ←δxLi
+
+JδxLi ←qJ.
+
+Link force Jacobian. (Construction of JfL ←qJ ) The Ja-cobian of force is constructed by combining the momen-tum and velocity Jacobians through the mapping defined in Lemma 5. By substituting the link momentum Jaco-bian (98) and the link spatial velocity Jacobian (97) into the world frame transformation (90a) on Lemma 5, we obtain 
+
+δfLi (k) = JfLi ←qJ δqJ(k+1) , (102) where JfLi ←qJ is defined by 
+
+JfLi ←qJ := JfLi ←hLi
+
+JhLi ←qJ + JfLi ←vLi JvLi ←qJ .
+
+Joint force Jacobian. (Construction of JfJ ←qJ ) Simi-larly, by applying the joint moment Jacobian into (90a), we obtain 
+
+δfJi (k) = JfJi ←qJ δqJ(k+1) , (103) where JfJi ←qJ is defined by 
+
+JfJi ←qJ := JfJi ←hJi
+
+JhJi ←qJ + JfJi ←vJi JvLi ←qJ .
+
+Joint torque Jacobian. (Construction of JtJ ←qJ ) Finally, the Jacobian of torque is obtained by applying the selection mapping to the joint force Jacobian. By substituting (103) into (93a) on Lemma 6, we obtain 
+
+δtJi (k) = JtJi ←qJ δqJ(k+1) , (104) where JtJi ←qJ is defined by 
+
+JtJi ←qJ := JtJi ←fJi
+
+JfJi ←qJ .
+
+# 8 Numerical verification 
+
+8.1 Experimental setup 
+
+Robot models 
+
+Two robot models are used in the experiments. The first model is a simple serial-link robot arm used to evaluate scalability with respect to the number of degrees of free-dom. Each link has a length of 1 m , a mass of 5 kg , a center of mass located at the geometric center of the link, and a spatial inertia vector given by a rotational inertia tensor represented by Ixx Iyy Izz Ixy Ixz Iyz 
+
+ =0.1 0.1 0.1 0 0 0. The number of links is in-creased to generate robots with different degrees of free-dom. The second model is a 7-DoF robot arm based on the [14] model. The robot has a total weight of approximately 18 kg 
+
+and a maximum reach of 855 mm .Figure 1 (right) shows the 3-DoF version of the simple robot model and the 7-DoF robot arm used in the experi-ments. 
+
+Trajectory optimization 
+
+Joint trajectories are parameterized using B-splines in order to ensure smooth representations of higher-order time-derivative quantities while maintaining a compact parametrization [2, 35]. The optimization variables are de-fined as the control points of the spline representation. By stacking all control points into a parameter vector θJi ,the joint trajectory and its higher-order time derivatives can be represented as linear functions of θJi :
+
+∂(k|t)(qJi (t)) = ∂(k|t)(Dp(t)) θJi . (105) The recursive definition of the B-spline basis functions and their higher-order derivatives are summarized in (168) Appendix D. In practical trajectory optimization problems, the opti-mization is performed under equality and inequality con-straints associated with the robot motion and physical fea-sibility. In this study, the joint trajectories were parame-terized using the B-spline representation introduced above, and the optimization variables were defined as the spline pa-rameter vector θJ, where the subscript J denotes the stacked representation associated with all joints. Accordingly, the optimization problem introduced in (1) was solved as the following constrained nonlinear problem: 
+
+min 
+
+> θJ
+
+f (θJ) s.t. g(θJ) = 0, h(θJ) ≥ 0, (106) where f (θJ) denotes the stacked weighted residual vector corresponding to the trajectory cost terms, while g(θJ) and 
+
+h(θJ) represent equality and inequality constraints, respec-tively. The constraints were handled using a penalty method, where constraint violations were incorporated into the ob-jective function as additional penalty terms with weights approximately 10 12 times larger than those of the nominal trajectory cost terms. As a result, the constrained optimiza-tion problem was approximately transformed into an uncon-strained nonlinear least-squares problem while strongly dis-couraging constraint violations. The resulting optimization problem was solved using a damped Gauss–Newton method with backtracking line search. A fixed damping coefficient of λ = 10 −8 was used throughout the optimization. The op-timization was terminated when the norm of the optimiza-tion value update became smaller than 10 −12 , or when the number of iterations reached the maximum iteration count of 500 .13 Table 6: Maximum absolute differences of each element be-tween the Jacobians computed by numerical differentiation and those obtained analytically, evaluated up to the fourth derivative in 7-DOF manipulator.                                                                                                                                 
+
+> k= 0 k= 1 k= 3 k= 4
+> JvLi←qJ8.99 ×10 −91.34 ×10 −81.33 ×10 −81.48 ×10 −8
+> JhLi←qJ1.23 ×10 −81.91 ×10 −82.71 ×10 −81.74 ×10 −7
+> JehLi←qJ
+> 1.72 ×10 −81.91 ×10 −73.67 ×10 −71.30 ×10 −7
+> JehJi←qJ
+> 4.06 ×10 −86.14 ×10 −87.53 ×10 −81.49 ×10 −7
+> JhJi←qJ3.88 ×10 −85.76 ×10 −87.30 ×10 −82.11 ×10 −7
+> JfLi←qJ1.61 ×10 −84.26 ×10 −82.75 ×10 −72.72 ×10 −7
+> JfJi←qJ6.94 ×10 −87.34 ×10 −82.75 ×10 −72.63 ×10 −7
+> JtJi←qJ7.55 ×10 −81.28 ×10 −72.04 ×10 −74.77 ×10 −710 16
+> 10 14
+> 10 12
+> 10 10
+> 10 8
+> max( | J|)/max( |Jref |) Acceleration Jacobian
+> 2021222324252627
+> DOF
+> 10 15
+> 10 13
+> 10 11
+> 10 9
+> 10 7
+> max( | J|)/max( |Jref |) Jerk Jacobian
+> DOF vs Jacobian Error Comparison
+> Analytic vs Numerical Analytic vs Autodiff Numerical vs Autodiff
+
+Figure 4: Comparison of gradient computation proposed analytical method, numerical difference and automatic dif-ference. 
+
+Computation environment 
+
+All experiments were conducted on a laptop equipped with an AMD Ryzen 9 7940HS CPU (8 cores, 16 threads, up to 5.2 GHz) and 32 GB RAM running Ubuntu 24.04 LTS. 
+
+8.2 Comparative analysis of Jacobian calcu-lation 
+
+To evaluate the proposed Jacobian computation method, we compare it with numerical differentiation and automatic dif-ferentiation. We consider a serial-link robot and compute the Jacobians with respect to the generalized coordinates. First, we evaluate the accuracy of the proposed analytical Jacobians. The discrepancy between two Jacobians is eval-uated using the normalized maximum absolute element-wise difference to account for the scale of the Jacobian en-tries, 
+
+eJ =max i,j (Jproposed )ij − (Jref )ij 
+
+max i,j (Jref )ij 
+
+, (107) where Jref denotes the Jacobian obtained by either numeri-cal differentiation or automatic differentiation. Figure 4 evaluates the accuracy of the proposed method by comparing the norms of Jacobians associated with the variations of velocity and acceleration. We consider sim-ple serial-link robots and increase the number of degrees of freedom up to 27 = 128 . The horizontal axis represents the number of degrees of freedom, while the vertical axis shows the discrepancy between Jacobians. The proposed analyt-ical Jacobians closely match those obtained by automatic differentiation across all tested configurations. For a 128-DoF system, the discrepancy is 9.61 × 10 −14 for velocity variations and 1.21 × 10 −13 for acceleration variations. In contrast, when compared with numerical differentiation, the discrepancies are significantly larger. At 128 DoF, the er-rors are 1.07 ×10 −7 for velocity variations and 1.33 ×10 −7
+
+for acceleration variations, reflecting the approximation er-rors inherent in numerical differentiation. We also evalu-ated the discrepancy between numerical differentiation and automatic differentiation. This discrepancy exhibits nearly identical values to those observed between numerical dif-ferentiation and the proposed analytical method, resulting in overlapping curves in the figure. This indicates that the difference between the analytical and automatic differenti-ation results is negligible, and that the dominant source of error arises from numerical differentiation. To further assess the accuracy for higher-order deriva-tives, we conduct experiments on a 7-DoF robot manipula-tor ([14]) and compare the analytical Jacobians with those obtained by numerical differentiation, as summarized in Ta-ble 6. In this setting, automatic differentiation for higher-order derivatives is not employed, and numerical differenti-ation is used as a reference for comparison. As the deriva-tive order and the complexity of the underlying computa-tions increase, the discrepancies become more pronounced. Nevertheless, the discrepancies remain within the order of 
+
+10 −7 even for higher-order derivatives, suggesting that the analytical Jacobians are computed consistently. The in-crease in discrepancy is likely related to the accumulation of numerical errors in the comparison process. Next, we evaluate the computational efficiency. Figure 5a shows both the norm of the difference between gradient ma-trices and the computation time as functions of the number of robot degrees of freedom. The proposed analytical Jaco-bian achieves significantly faster computation than numer-ical differentiation and is also competitive with automatic differentiation. This is because automatic differentiation in-volves a non-negligible construction cost for building the computational graph, in addition to the evaluation cost. For example, for a system with 128 degrees of freedom, the an-alytical method requires on the order of 10 2 ms, whereas numerical differentiation requires on the order of 10 4 ms. After post-processing, automatic differentiation provides faster evaluation than the proposed analytical Jacobian. However, both methods exhibit similar computational scal-ing, as evidenced by the parallel trends in Figure 5b. 
+
+8.3 Verification of direct and inverse optimal calculations through simulation 
+
+We validate the proposed higher-order Jacobian formulation through robot motion optimization based on the direct and inverse optimization framework described in Section 3. 14 10 0           
+
+> 10 1
+> 10 2
+> 10 3
+> 10 4
+> time [ms]
+> Acceleration Jacobian
+> Analytic Numerical Autodiff
+> 2021222324252627
+> DOF
+> 10 0
+> 10 1
+> 10 2
+> 10 3
+> 10 4
+> time [ms]
+> Jerk Jacobian
+> Analytic Numerical Autodiff
+> DOF vs Computation Time
+
+(a) Computation time comparison of Jacobian matrices. Analyt-ical, numerical, and automatic differentiation methods are com-pared. 10 1          
+
+> 10 0
+> 10 1
+> 10 2
+> time [ms]
+> Acceleration Jacobian
+> Analytic Autodiff(w.o. post-process)
+> 2021222324252627
+> DOF
+> 10 1
+> 10 0
+> 10 1
+> 10 2
+> time [ms]
+> Jerk Jacobian
+> Analytic Autodiff(w.o. post-process)
+> Analytic vs Autodiff(w.o. post-process) Computation Time
+
+(b) Evaluation time comparison after post-processing. Analytical and automatic differentiation exhibit similar computational scal-ing. 
+
+Figure 5: Computational performance of Jacobian evaluation methods. (Left) Overall computation time comparison including numerical differentiation. (Right) Evaluation time comparison between analytical and automatic differentiation after post-processing. 0.0 s 0.4 s 0.8 s 1.2 s 1.6 s 2.0 s (a) (b) 
+
+(c) 
+
+Figure 6: Snapshot of simulation in case (a), (b), (c) First, we consider a 3-DoF simple robot arm and perform direct motion optimization under different cost functions. The motion is generated over a trajectory duration of 2.0 s, discretized into 200 samples with a time step of 0.01 s. The joint trajectories are represented using fifth-order B-splines (p = 5 ) with nc = 50 control points, providing sufficient smoothness for computing higher-order motion quantities such as jerk and torque rates. All joint angles are con-strained to move from 1.57 rad to −1.57 rad, while the joint velocities at both the initial and terminal times are fixed to zero. In addition, joint limit constraints were imposed as in-equality constraints for all joints within the range [−π, π ].The optimization is performed under different combina-tions of motion-related cost terms introduced in (1), includ-ing joint velocity, acceleration, jerk, torque, and torque-rate costs. We consider three cost function settings: (a) a cost function including joint velocity, acceleration, and jerk; (b) the cost function in (a) with an additional joint torque term; and (c) the cost function in (b) further augmented with the first derivative of joint torque. The optimization is car-ried out over joint trajectories, and the corresponding joint torques are computed from the resulting trajectories using inverse dynamics. Based on the optimized trajectories, we then estimate the cost weights by solving the inverse prob-lem formulated in (6), where the weight vector w is re-quired to satisfy the KKT condition wTC = 0.Figure 7 shows the optimized joint angle trajectories along with the corresponding joint torques computed from them. Compared to Figure 7 (a), Figure 7 (b) demonstrates that including joint torque in the cost function reduces the magnitude of joint torques. Furthermore, Figure 7 (c) shows that incorporating the derivative of joint torque leads to smoother torque profiles with reduced variation. Table 7 summarizes the comparison between the true cost weights and those estimated via the inverse formulation in (6). The results show that the estimated weights closely match the ground-truth values, with errors on the order of 10 −8 to 
+
+10 −6. Although the estimation error slightly increases as the number of cost terms grows, the overall accuracy re-mains high, demonstrating that the proposed method can reliably recover the underlying cost weights. Simulation snapshots for cases (a)–(c) are shown in Figure 6. To further validate the proposed framework, we con-ducted a simulation study on a 7-DoF robot manipulator 15 Table 7: Comparison between the true cost weights and those estimated via inverse optimal control for different systems and cost settings. System Case Cost True cost weights w Estimated cost weights west L1 error ∥w − west ∥1
+
+3-DoF (a) ν, ˙ν, ¨ν [0.333333, 0.333333, 0.333333] [0.333333, 0.333333, 0.333333] 2.56 × 10 −8
+
+3-DoF (b) ν, ˙ν, ¨ν, τ [0.25, 0.25, 0.25, 0.25] [0.25, 0.25, 0.25, 0.25] 6.87 × 10 −7
+
+3-DoF (c) ν, ˙ν, ¨ν, τ , ˙τ [0.2, 0.2, 0.2, 0.2, 0.2] [0.199998, 0.200001, 0.2, 0.2, 0.2] 3.89 × 10 −6
+
+7-DoF – ν, ˙ν, ¨ν, τ [0.332226, 0.332226, 0.332226, 0.003322] [0.332226, 0.332226, 0.332226, 0.003322] 1.07 × 10 −7
+
+([14]). In this experiment, direct optimization was per-formed by defining a cost function composed of multiple physical quantities, including joint velocity, acceleration, jerk, and torque. As in the 3-DoF case, the joint trajectories are parameterized using B-spline curves, and the optimiza-tion is carried out with respect to the corresponding con-trol points. The same boundary conditions are imposed at 
+
+t = 0 .0 s and t = 2 .0 s, where the joint angles are specified from 1.57 to −1.57 and the joint velocities are set to zero at both endpoints. The optimization yields a joint trajectory that satisfies these criteria, and the resulting joint angles and joint torques over time are shown in Figure 9. The gener-ated motion exhibits smooth transitions in both kinematic and dynamic quantities, reflecting the influence of higher-order derivative terms in the cost function. As in the 3-link simple robot case, assigning identical weights to all cost terms caused the torque-related cost to dominate, leading to unstable optimization. To address this, the weights were scaled by a factor of 1/100, based on the approximate mag-nitude of the robot weight (mass times gravitational acceler-ation). To evaluate the consistency of the proposed frame-work in inverse optimization, we applied the inverse opti-mization method to the generated trajectory. The estimated cost weights are summarized in Table 7, together with the ground-truth weights used in the direct optimization. The results show that the estimated weights closely match the original ones, with an estimation error of 1.07 × 10 −7,demonstrating that the proposed structured gradient com-putation enables reliable recovery of cost function parame-ters even when higher-order time derivatives are included. The resulting robot motion obtained from the optimization is shown in Figure 8. These results collectively validate that the proposed framework enables direct motion optimization involving higher-order time-derivative variables. The experiments also demonstrate that variations in cost functions defined on higher-order physical quantities lead to distinct changes in the resulting motion. Furthermore, the inverse optimal control results confirm that the underlying cost weights can be accurately recovered from the optimized trajectories. 
+
+# 9 Conclusion 
+
+In this paper, we achieved the following contributions: 1. In this paper, we presented a structured formulation for Jacobian computation in motion optimization in-volving higher-order time derivatives in multi-link sys-tems. The main theoretical components of the pro-posed framework are summarized as follows: • Higher-order kinematic and dynamic quanti-2            
+
+> 1
+> 0
+> 1
+> 2
+> Joint angle [rad]  Joint angle [0] Joint angle [1] Joint angle [2]
+> 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+> Time [s]
+> 600
+> 400
+> 200
+> 0
+> 200
+> 400
+> 600
+> Joint torque [N m]  Joint torque [0] Joint torque [1] Joint torque [2]
+
+(a) Condition Minimization of joint velocity, acceleration, and jerk. 2            
+
+> 1
+> 0
+> 1
+> 2
+> Joint angle [rad]  Joint angle [0] Joint angle [1] Joint angle [2]
+> 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+> Time [s]
+> 600
+> 400
+> 200
+> 0
+> 200
+> 400
+> 600
+> Joint torque [N m]  Joint torque [0] Joint torque [1] Joint torque [2]
+
+(b) Condition (a) with additional torque minimization. 2            
+
+> 1
+> 0
+> 1
+> 2
+> Joint angle [rad]  Joint angle [0] Joint angle [1] Joint angle [2]
+> 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+> Time [s]
+> 600
+> 400
+> 200
+> 0
+> 200
+> 400
+> 600
+> Joint torque [N m]  Joint torque [0] Joint torque [1] Joint torque [2]
+
+(c) Condition (b) with additional minimization of torque rate. 
+
+Figure 7: Motion optimization results for a 3-DOF planar robot under progressively augmented cost functions. 16 0.0 s 0.4 s 0.8 s 1.2 s 1.6 s 2.0 s Figure 8: Snapshots of the simulation for the 7-DoF robot. 1.5         
+
+> 1.0
+> 0.5
+> 0.0
+> 0.5
+> 1.0
+> 1.5
+> Joint angle [rad]
+> Joint angle [0]
+> Joint angle [1]
+> Joint angle [2]
+> Joint angle [3]
+> Joint angle [4]
+> Joint angle [5]
+> Joint angle [6]
+> 0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+> Time [s]
+> 80
+> 60
+> 40
+> 20
+> 0
+> 20
+> 40
+> 60
+> 80
+> Joint torque [N m]
+> Joint torque [0]
+> Joint torque [1]
+> Joint torque [2]
+> Joint torque [3]
+> Joint torque [4]
+> Joint torque [5]
+> Joint torque [6]
+
+Figure 9: Motion optimization results for a 7-DOF robot. ties were systematically represented using the comprehensive motion transformation matrix (CMTM), enabling unified treatment of quanti-ties and their time derivatives along the multi-link structure. • Tangent representations of CMTM were intro-duced to formulate the relationship between higher-order time derivatives and variations. • Structured variational relations were formulated for physical quantities ranging from generalized coordinates to generalized forces through propa-gations over both the multi-link structure and the dependency relations among physical quantities. • Jacobian computation was formulated as a struc-tured propagation of variations through composi-tions of linear mappings associated with depen-dencies among physical quantities. • We constructed a structured optimization frame-work for motion optimization involving higher-order time-derivative physical quantities in multi-link systems, and demonstrated its appli-cability to both direct and inverse optimization problems. 2. The proposed analytical Jacobian framework was eval-uated through both numerical validation of analytical Jacobians and applications to direct and inverse motion optimization problems involving higher-order time-derivative quantities. The main experimental findings are summarized as follows: • The proposed analytical Jacobians achieved ac-curacy comparable to automatic differentiation across various robot configurations, while main-taining discrepancies with respect to numerical differentiation within the order of 10 −9 to 10 −7
+
+depending on the derivative order. The results further indicated that the dominant source of dis-crepancy originates from numerical differentia-tion rather than from the proposed analytical for-mulation itself. • The proposed framework was applied to direct and inverse motion optimization problems on 3-DoF and 7-DoF robot arms using kinematic and dynamic cost functions involving velocities, ac-celerations, jerks, torques, and torque rates. • Successful inverse optimal control was demon-strated using the proposed analytical Jacobians, recovering cost weights with estimation errors on the order of 10 −8–10 −6.These results demonstrate that the proposed framework provides an efficient and reliable foundation for motion op-timization involving higher-order dynamics. In particular, by explicitly exploiting the multi-link structure and the de-pendency among physical quantities, the proposed formu-lation enables systematic propagation of Jacobians across kinematic and dynamic variables, which is not directly achieved by conventional differentiation-based approaches. 17 The proposed framework also opens up several directions for future work. First, the structured Jacobian formula-tion can be integrated with learning-based methods, such as neural networks, enabling hybrid approaches that combine model-based optimization with data-driven representations. Second, the framework can be extended to more complex systems involving contact, closed-loop kinematics, or flex-ible bodies. In particular, extensions to flexible rod models and their associated differentiation and optimization prob-lems, as studied in [15, 16, 23], are promising directions, where higher-order consistency and structured computation play a crucial role. Finally, the proposed formulation pro-vides a basis for scalable optimization in high-dimensional systems, suggesting its applicability to whole-body control and large-scale robotic systems. 
+
+# Funding 
+
+This work was supported by JSPS KAKENHI Grant Num-bers JP22H05002, JP25K21310. 
+
+# References 
+
+[1] R. McN. Alexander. The gaits of bipedal and quadrupedal animals. IJRR , 3(2):49–59, 1984. [2] Ko Ayusawa, Wael Suleiman, and Eiichi Yoshida. Pre-dictive inverse kinematics: optimizing future trajec-tory through implicit time integration and future ja-cobian estimation. In 2019 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) ,pages 566–573. IEEE, 2019. [3] Ko Ayusawa and Eiichi Yoshida. Comprehensive theory of differential kinematics and dynamics to-wards extensive motion optimization framework. The International Journal of Robotics Research , 37(13-14):1554–1572, 2018. [4] F. Beˇ canovi´ c, V. Bonnet, and et. al. Force sharing problem during gait using inverse optimal control. 
+
+IEEE RAL , 8(2):872–879, 2022. [5] B. Berret, E. Chiovetto, F. Nori, and T. Pozzo. Evi-dence for composite cost functions in arm movement planning: an inverse optimal control approach. PLoS computational biology , 7(10):e1002183, 2011. [6] Martijn Bos, Silvio Traversaro, Daniele Pucci, and Alessandro Saccon. Efficient geometric linearization of moving-base rigid robot dynamics. Journal of Ge-ometric Mechanics , 14(4):507–543, 2022. [7] Justin Carpentier and Nicolas Mansard. Analytical derivatives of rigid body dynamics algorithms. In 
+
+Robotics: Science and systems (RSS 2018) , 2018. [8] Justin Carpentier, Guilhem Saurel, Gabriele Buon-donno, Joseph Mirabel, Florent Lamiraux, Olivier Stasse, and Nicolas Mansard. The pinocchio c++ library: A fast and flexible implementation of rigid body dynamics algorithms and their analytical deriva-tives. In 2019 IEEE/SICE International Symposium on System Integration (SII) , pages 614–619. IEEE, 2019. [9] P. Carreno-Medrano, T. Harada, and et. al. Analysis of affective human motion during functional task per-formance: An inverse optimal control approach. In 
+
+IEEE-RAS Humanoids , pages 461–468, 2019. [10] S. L. Delp, F. C. Anderson, and et. al. Opensim: open-source software to create and analyze dynamic simula-tions of movement. IEEE transactions on biomedical engineering , 54(11):1940–1950, 2007. [11] P. Englert and et. al. Inverse KKT: Learning cost functions of manipulation tasks from demonstrations. 
+
+IJRR , 36(13-14):1474–1488, 2017. [12] R. Featherstone. Rigid body dynamics algorithms .Springer, 2014. [13] T. Flash and N. Hogan. The coordination of arm movements: an experimentally confirmed mathemati-cal model. J. Neurosci. , 5(7):1688–1703, 1985. [14] Franka Robotics. Franka research 3. https:// franka.de , 2022. [15] Taiki Ishigaki, Ko Ayusawa, and Ko Yamamoto. Com-prehensive gradient computation framework of pcs model for soft robot simulation. IEEE Robotics and Automation Letters , 9(6):5990–5997, 2024. [16] Taiki Ishigaki, Ko Ayusawa, and Ko Yamamoto. Uni-fied framework of gradient computation for hybrid-link system and its dynamical simulation by implicit method. IEEE Robotics and Automation Letters ,2025. [17] Abhinandan Jain and Guillermo Rodriguez. Lin-earization of manipulator dynamics using spatial op-erators. IEEE transactions on Systems, Man, and Cy-bernetics , 23(1):239–248, 1993. [18] W. Jin, D. Kuli´ c, S. Mou, and S. Hirche. Inverse op-timal control from incomplete trajectory observations. 
+
+IJRR , 40(6-7):848–865, 2021. [19] R. E. Kalman. When is a linear control system opti-mal? 1964. [20] O. Khatib. A unified approach for motion and force control of robot manipulators: The operational space formulation. IJRA , 3(1):43–53, 1987. [21] Shivesh Kumar and Andreas M¨ uller. Nth order ana-lytical time derivatives of inverse dynamics in recur-sive and closed forms. In 2021 IEEE International conference on robotics and automation (ICRA) , pages 1918–1924. IEEE, 2021. [22] J. F. S. Lin and et. al. Human motion segmentation us-ing cost weights recovered from inverse optimal con-trol. In IEEE-RAS Humanoids , pages 1107–1113. IEEE, 2016. 18 [23] Anup Teejo Mathew, Frederic Boyer, Vincent Lebas-tard, and Federico Renda. Analytical derivatives of strain-based dynamic model for hybrid soft-rigid robots. The International Journal of Robotics Re-search , 45(1):128–158, 2025. [24] K. Mombaur, A. Truong, and J. P. Laumond. From human to humanoid locomotion—an inverse opti-mal control approach. Auton. robots , 28(3):369–383, 2010. [25] Andreas M¨ uller and Shivesh Kumar. Closed-form time derivatives of the equations of motion of rigid body systems. Multibody System Dynamics ,53(3):257–273, 2021. [26] A. Murai, K. Kurosaki, K. Yamane, and Y. Nakamura. Musculoskeletal-see-through mirror: Computational modeling and algorithm for whole-body muscle activ-ity visualization in real time. Progress in biophysics and molecular biology , 103(2-3):310–317, 2010. [27] Y. Nakamura and et. al. Somatosensory computa-tion for man-machine interface from motion-capture data and musculoskeletal human model. IEEE TRO ,21(1):58–66, 2005. [28] Rhys Newbury, Jack Collins, Kerry He, Jiahe Pan, In-gmar Posner, David Howard, and Akansel Cosgun. A review of differentiable simulators. IEEE Access ,12:97581–97604, 2024. [29] Alvaro Paz and Gustavo Arechavaleta. Analytical dif-ferentiation of the articulated-body algorithm: a ge-ometric multilinear approach. Multibody System Dy-namics , 60(3):347–373, 2024. [30] Les Piegl and Wayne Tiller. The NURBS Book .Springer, 1997. [31] Vincent Samy, Ko Ayusawa, and Eiichi Yoshida. Gen-eralized comprehensive motion theory for high-order differential dynamics. In Robotics: Science and Sys-tems , 2021. [32] S. Shimizu, K. Ayusawa, and G. Venture. Fast direct optimal control for humanoids based on dynamics rep-resentation in fpc latent space. IEEE RAL , 9(4), 2024. [33] Shubham Singh, Ryan P Russell, and Patrick M Wens-ing. Efficient analytical derivatives of rigid-body dy-namics using spatial vector algebra. IEEE Robotics and Automation Letters , 7(2):1776–1783, 2022. [34] Shubham Singh, Ryan P Russell, and Patrick M Wens-ing. On second-order derivatives of rigid-body dy-namics: Theory and implementation. IEEE Transac-tions on Robotics , 40:2233–2253, 2024. [35] Wael Suleiman, Fumio Kanehiro, Eiichi Yoshida, Jean-Paul Laumond, and Andr´ e Monin. Time param-eterization of humanoid-robot paths. IEEE Transac-tions on Robotics , 26(3):458–468, 2010. [36] Wael Suleiman, Eiichi Yoshida, Fumio Kanehiro, Jean-Paul Laumond, and Andr´ e Monin. On human motion imitation by humanoid robot. In 2008 IEEE International Conference on robotics and automa-tion. , pages CD–Rom, 2008. [37] Altay Zhakatayev, Yuriy Rogovchenko, and Matthias P¨ atzold. Recursive inverse dynamics sensitivity anal-ysis of open-tree-type multibody systems. Nonlinear Dynamics , 111(12):11297–11313, 2023. 
+
+# A Mathematical Foundations 
+
+A.1 Calculation of inverse variation 
+
+Variation of the inverse matrix. For a Lie group matrix 
+
+X, the variation of its inverse is given by 
+
+δX−1 = −X−1δXX −1, (108) which is obtained by taking the variation of XX −1 = E
+
+as 
+
+δXX −1 + XδX−1 = O, (109) and solving for δX−1.
+
+Variation of transformed vector. The variation of the transformation X−1 applied to a vector v is given by 
+
+(δX−1)v = −X−1δXX −1v = −[( X−1v) ˆ ×]δx,
+
+(110) where δX = X[δx×] is used. 
+
+A.2 Numerical derivative of Lie group ma-trix 
+
+Consider the mapping 
+
+y(x) = X(x)v, (111) where X(x) ∈ G is parameterized by Lie algebra coordi-nates x ∈ Rn, and v is fixed. At x = 0, we have 
+
+y(0) = Xv . (112) For a small perturbation δx, the group element is approx-imated as 
+
+X(δx) ≈ X(I + [ δx×]) . (113) Thus, the perturbed output becomes 
+
+y(δx) = X(δx)v (114) 
+
+≈ X(I + [ δx×]) v = Xv + X[δx×]v. (115) Therefore, the variation is given by 
+
+δy = y(δx) − y(0) = X[δx×]v. (116) 19 To compute the Jacobian numerically, we evaluate this variation along each basis direction. Let ei denote the i-th basis vector and set 
+
+δx = ϵei, (117) where ϵ is a small scalar. Substituting this into the variation yields 
+
+δyi = X[ϵei×]v. (118) The i-th column of the Jacobian is then approximated by 
+
+∂y
+
+∂x i
+
+≈ δyi
+
+ϵ = X[ei×]v. (119) Finally, by stacking these column vectors, the Jacobian matrix is obtained as 
+
+∂y
+
+∂x =
+
+ ∂y
+
+∂x 1
+
+∂y
+
+∂x 2
+
+· · · ∂y
+
+∂x n
+
+
+
+≈ X[e1×]v X[e2×]v · · · X[en×]v . (120) 
+
+# B Properties of CMTM and Tangent Mapping 
+
+B.1 Inverse of CMTM 
+
+The inverse of the CMTM can be computed as follows 
+
+X−1 := 
+
+
+
+X− 
+
+> 0
+
+O · · · OX− 
+
+> 1
+
+X−
+
+> 0
+
+. . . ...... . . . . . . ...
+
+X− 
+
+> k
+
+X− 
+
+> k−1
+
+· · · X−
+
+> 0
+
+ , (121) 
+
+(
+
+X− 
+
+> 0
+
+= A−1
+
+X− 
+
+> ℓ+1
+
+= −1
+
+> ℓ+1
+
+Pℓm=0 [ν(m|t!) ×6]X−
+
+> ℓ−m
+
+. (122) As a property of the inverse matrix X−1, the following re-lation holds: 
+
+XX −1 = X−1X = E. (123) On the other hand, it should be noted that the following relation holds when k̸ = 0 ,
+
+X− 
+
+> k
+
+Xk̸ = E, (124a) 
+
+XkX−
+
+> k
+
+̸ = E, (124b) 
+
+XkX−
+
+> k
+
+̸ = X− 
+
+> k
+
+Xk. (124c) 
+
+B.2 CMTM Tangent Matrix 
+
+The explicit form of W is given as follows 
+
+W(k) =
+
+
+
+W00 O6 · · · 
+
+W10 W11 O6 · · · 
+
+... ... . . .
+
+Wk0 Wk1 · · · Wkk 
+
+ (125) 
+
+=
+
+
+
+E6 O6 · · · 
+
+[ν(0) ×6] E6 O6 · · · 
+
+[ν(1) ×6] [ν(0) ×6] 2E6 O6 · · · 
+
+... ... . . . . . . . . .
+
+[ν(k)×6] [ν(k−1) ×6] · · · [ν(0) ×6] kE6
+
+
+
+,
+
+
+
+W00 = E6
+
+Wℓℓ = ℓE6
+
+Wℓm = [ ν(ℓ−m)×6]
+
+. (126) Since W is a lower block triangular matrix and admits an inverse, W−1 can be computed recursively as follows 
+
+W−1 =
+
+
+
+W− 
+
+> 00
+
+O6 · · · 
+
+W− 
+
+> 10
+
+W− 
+
+> 11
+
+O6 · · · 
+
+... ... . . .
+
+W− 
+
+> k0
+
+W− 
+
+> k1
+
+· · · W−
+
+> kk
+
+ . (127) This structure reflects the causal dependency of higher-order tangent quantities on lower-order ones, allowing the inverse mapping to be constructed in a forward substitution manner 
+
+W− 
+
+> ℓℓ
+
+= W−1 
+
+> ℓℓ
+
+, (128) 
+
+W− 
+
+> ℓm
+
+= −W−1
+
+> ℓℓ ℓ−1
+
+X
+
+> n=m
+
+Wℓn W−
+
+> nm
+
+= − 1
+
+l
+
+> ℓ−1
+
+X
+
+> n=m
+
+[ν(ℓ−n−1) ×6]W−
+
+> nm
+
+. (129) Each block W− 
+
+> ℓm
+
+represents the contribution of the m-th or-der variation to the ℓ-th order tangent component. Using this inverse mapping, the stacked tangent vector up to or-der (k + 1) can be recovered from the variation of the base quantities 
+
+δx(k+1) = W−1(k)
+
+ δa
+
+δv(k)
+
+
+
+. (130) 
+
+# C Whole-body comprehensive mo-tion computation 
+
+We formulate a unified linear structure that describes the re-lationships among whole-body quantities, including spatial velocities, momenta, forces, and joint torques. These quan-tities are represented as stacked vectors over all links and joints, and their relationships are expressed through struc-tured block matrices induced by the kinematic tree. This formulation reveals that all physical quantities can be com-puted through a sequence of linear mappings sharing a com-mon sparsity pattern. 20 Here, n denotes the number of links. The vectors ob-tained by collecting a physical quantity x associated with each link and each joint are expressed as follows 
+
+xL = xTL0 · · · xTLn
+
+T , (131) 
+
+xJ = xTJ0 · · · xTJn
+
+T . (132) The matrix JXL encodes the local kinematic dependencies between parent and child links into a global linear operator. Each row corresponds to a joint, and is constructed only from its own link and its parent link, resulting in a sparse block structure. The relationship among the spatial velocities of all links and joints in the robot can be expressed as follows 
+
+vJ = JXLvL. (133) Here, an element JXL{i,j } of JXL is expressed as follows 
+
+> J
+
+XL{i,j } := 
+
+
+
+E (i = j)
+
+−iXj (j = p(i)) 
+
+O otherwise .
+
+(134) 
+
+p(i) denotes the index of the parent link of link i. In the case of a serial-link system, (133) take the form as 
+
+
+
+vJ0
+
+vJ1
+
+vJ2
+
+...
+
+vJn
+
+| {z } 
+
+> vJ
+
+=
+
+
+
+E O · · · −1X0 E O · · · 
+
+O −2X1 E O · · · 
+
+... . . . . . . . . . . . .
+
+O · · · O −nXn−1 E
+
+| {z }
+
+> JXL
+
+
+
+vL0
+
+vL1
+
+vL2
+
+...
+
+vLn
+
+| {z } 
+
+> vL
+
+.
+
+(135) An element of inverse mapping of JXL, denoted by 
+
+> L
+
+XJ{i,j }, is expressed as follows, 
+
+> L
+
+XJ{i,j } := 
+
+
+
+E (i = j)
+
+−iXj (j = P(i)) 
+
+O otherwise .
+
+(136) Same as (135), in the case of a serial-link system without branching, inverse relationship of (133) can be explicitly expressed as follows 
+
+
+
+vL0
+
+vL1
+
+vL2
+
+...
+
+vLn
+
+| {z } 
+
+> vL
+
+=
+
+
+
+E O · · · 
+
+> 1
+
+X0 E O · · · 
+
+> 2
+
+X0 2X1 E O · · · 
+
+... ... . . . . . .
+
+> n
+
+X0 nX1 · · · nX1 E
+
+| {z }
+
+> LXJ
+
+
+
+vJ0
+
+vJ1
+
+vJ2
+
+...
+
+vJn
+
+| {z } 
+
+> vJ
+
+.
+
+(137) Similarly to (47), the relationship between hL and vL can be expressed as follows 
+
+hL = ILvL, (138) 
+
+IL := diag (I0 · · · In
+
+). (139) From (48), the moment can also be expressed as follows 
+
+hL = LX∗ 
+
+> J
+
+hJ, (140) 
+
+> L
+
+X∗  
+
+> J{i,j }
+
+:= 
+
+
+
+E (i = j)
+
+−iX∗ 
+
+> j
+
+(j = c(i)) 
+
+O otherwise .
+
+(141) 
+
+c(i) denotes the index of the child link of link i. As a con-crete example for a serial-link system, this relationship can be expressed as 
+
+
+
+hL0
+
+hL1
+
+...
+
+hLn−1
+
+hLn
+
+| {z }
+
+> hL
+
+=
+
+
+
+E −0X∗ 
+
+> 1
+
+O · · · 
+
+O E −1X∗ 
+
+> 2
+
+O · · · 
+
+... . . . . . . . . . . . .
+
+O · · · O E −n−1X∗
+
+> n
+
+O · · · O E
+
+| {z }
+
+> LX∗
+> J
+
+
+
+hJ0
+
+hJ1
+
+...
+
+hJn−1
+
+hJn
+
+| {z }
+
+> hJ
+
+.
+
+(142) Its inverse mapping is given as follows 
+
+> J
+
+X∗ 
+
+> L{i,j }
+
+:= 
+
+
+
+E (i = j)
+
+> i
+
+X∗ 
+
+> j
+
+(j = C(i)) 
+
+O otherwise .
+
+(143) In the case of serial-link system, inverse relationship of (140) as follows 
+
+
+
+hJ0
+
+hJ1
+
+...
+
+hJn−1
+
+hJn
+
+| {z }
+
+> hJ
+
+=
+
+
+
+E 0X∗ 
+
+> 1
+
+· · · 0X∗ 
+
+> n−10
+
+X∗
+
+> n
+
+O E 1X∗ 
+
+> 2
+
+· · · 1X∗
+
+> n
+
+... . . . . . . . . . ...
+
+O · · · O E n−1X∗
+
+> n
+
+O · · · O E
+
+| {z }
+
+> JX∗
+> L
+
+
+
+hL0
+
+hL1
+
+...
+
+hLn−1
+
+hLn
+
+| {z }
+
+> hL
+
+.
+
+(144) With respect to the moment expressed in the world coor-dinate frame, it can be formulated as follows based on (70) 
+
+ehL = L eX∗ 
+
+> J
+
+ehJ, (145)  
+
+> L
+
+eX∗  
+
+> J{i,j }
+
+:= 
+
+
+
+E (i = j)
+
+−E (j = C(i)) 
+
+O otherwise .
+
+(146) Since (70) is expressed as a simple summation, L eX∗ 
+
+> J{i,j }
+
+is composed of identity matrices and zero matrices. In the world coordinate representation, the transformation matri-ces are further simplified into combinations of identity and zero matrices. This eliminates dependency on local coordi-nate transformations and results in a purely additive struc-ture, which is particularly advantageous for differentiation and optimization. As a concrete example for a serial-link 21 system, this relationship is as 
+
+ehL0
+
+ehL1
+
+...
+
+ehLn−1
+
+ehLn
+
+| {z }
+
+> ehL
+
+=
+
+
+
+E −E O · · · 
+
+O E −E O · · · 
+
+... . . . . . . . . . . . .
+
+O · · · O E −EO · · · O E
+
+| {z } 
+
+> LeXJ
+
+ehJ0
+
+ehJ1
+
+...
+
+ehJn−1
+
+ehJn
+
+| {z }
+
+> ehJ
+
+,
+
+(147) and the inverse relationship is as 
+
+ehJ0
+
+ehJ1
+
+...
+
+ehJn−1
+
+ehJn
+
+| {z }
+
+> ehJ
+
+=
+
+
+
+E E · · · · · · EO E E · · · E
+
+... . . . . . . . . . ...
+
+O · · · O E EO · · · O E
+
+| {z } 
+
+> JeXL
+
+ehL0
+
+ehL1
+
+...
+
+ehLn−1
+
+ehLn
+
+| {z }
+
+> ehL
+
+.
+
+(148) The transformation between the local coordinate frame and the world coordinate frame is given by the following equations 
+
+ehL = wX∗
+
+> L
+
+hL, (149) 
+
+> w
+
+XL := diag (XL0 · · · XLn
+
+), (150) 
+
+ehJ = wX∗ 
+
+> J
+
+hJ, (151) 
+
+> w
+
+XJ := diag (XJ0 · · · XJn
+
+). (152) By using (145) and (149), the following equation, which is equivalent to (140), is obtained 
+
+hL = wX∗
+
+> L
+> −1
+
+(L eX∗ 
+
+> J
+
+)wX∗ 
+
+> J
+
+hJ. (153) That is, by comparing (140) and (153), the following rela-tionship holds 
+
+> L
+
+X∗ 
+
+> J
+
+= wX∗
+
+> L
+> −1
+
+(L eX∗ 
+
+> J
+
+)wX∗ 
+
+> J
+
+. (154) (153) expresses the transformation matrix in terms of the composite motion transformation matrices of each link ob-served from the world coordinate frame, together with iden-tity and zero matrices. This representation facilitates the subsequent differentiation required for optimization. Similarly, the transformation from momentum to force described in (50), (72), and (73) can be computed as follows 
+
+fL(k) = BL(k)hL(k+1) , (155) 
+
+fJ(k) = BJ(k)hJ(k+1) , (156) 
+
+BL(k) := diag (U([ vL0 (k)×∗
+
+> 6·k
+
+]) · · · U([ vLn (k)×∗
+
+> 6·k
+
+]) ),
+
+(157) 
+
+BJ(k) := diag (U([ vL0 (k)×∗
+
+> 6·k
+
+]) · · · U([ vLn (k)×∗
+
+> 6·k
+
+])  .
+
+(158) The following equation also holds for the joint torques. 
+
+tJ = STJ fJ, (159) 
+
+SJ := diag (SJ0 · · · SJn
+
+). (160) All subsequent quantities, including momentum, force, and joint torque, can be derived using the same structured linear mappings. The differences lie only in the choice of transformation operators, while the underlying compu-tational structure remains identical. 
+
+# D B-spline Trajectory Representa-tion 
+
+In motion optimization involving higher-order time-derivative physical quantities, joint trajectories are often represented using B-splines in order to ensure smoothness of the trajectory and its higher-order derivatives while main-taining a compact parametrization [2, 36]. The optimization variables are defined as the control points of the spline rep-resentation. 
+
+D.1 B-spline Basis Functions 
+
+Let the joint trajectory be represented as 
+
+q(t) = 
+
+> nc−1
+
+X
+
+> i=0
+
+bi,p (t)mi, (161) where bi,p (t) ∈ R denotes the p-th degree B-spline basis function, mi ∈ Rnq is the i-th control point, nc is the num-ber of control points, and nq is the number of generalized coordinates. The B-spline basis functions are recursively defined us-ing the Cox–de Boor formula: 
+
+bi, 0(t) = 
+
+(
+
+1 (ui ≤ t < u i+1 ),
+
+0 otherwise , (162) 
+
+bi,p (t) = t − ui
+
+ui+p − ui
+
+bi,p −1(t) + ui+p+1 − tui+p+1 − ui+1 
+
+bi+1 ,p −1(t),
+
+(163) where {ui} denotes the knot vector. 
+
+D.2 Higher-Order Derivatives 
+
+The derivatives of the B-spline basis functions can also be computed recursively [30]: 
+
+∂∂t bi,p (t) = pui+p − ui
+
+bi,p −1(t) − pui+p+1 − ui+1 
+
+bi+1 ,p −1(t).
+
+(164) Higher-order derivatives are obtained recursively by re-peated application of the derivative relation: 
+
+∂(k|t)(bi,p (t)) = pui+p − ui
+
+∂(k−1|t)(bi,p −1(t)) 
+
+− pui+p+1 − ui+1 
+
+∂(k−1|t)(bi+1 ,p −1(t)) .
+
+(165) Assuming simple knots, a p-th degree B-spline guaran-tees Cp−1 continuity. Therefore, trajectories whose k-th derivatives remain continuous require a spline degree satis-fying p ≥ k + 1 . This property enables smooth representa-tions of higher-order time-derivative quantities. 22 D.3 Linear Parameterization 
+
+By stacking all control points into a parameter vector 
+
+θ = m⊤ 
+
+> 0
+
+m⊤ 
+
+> 1
+
+· · · m⊤
+
+> nc−1
+
+⊤ , (166) the joint trajectory and its higher-order derivatives can be written as linear functions of the spline parameters: 
+
+∂(k|t)(q(t)) = ∂(k|t)(Dp(t)) θ, (167) where ∂(k|t)(Dp(t)) denotes the basis matrix associated with the k-th derivatives of the B-spline basis functions: 
+
+∂(k|t)(Dp) = (168) 
+
+∂(k|t)(b0,p )E ∂(k|t)(b1,p )E · · · ∂(k|t)(bnc−1,p )E .
+
+This linear representation enables efficient evaluation of higher-order time-derivative quantities in motion optimiza-tion while preserving continuity properties of the trajec-tory. 23

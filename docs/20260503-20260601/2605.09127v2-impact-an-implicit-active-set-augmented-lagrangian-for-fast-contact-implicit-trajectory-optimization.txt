@@ -1,0 +1,1322 @@
+Title: IMPACT: An Implicit Active-Set Augmented Lagrangian for Fast Contact-Implicit Trajectory Optimization
+
+URL Source: https://arxiv.org/pdf/2605.09127v2
+
+Published Time: Wed, 13 May 2026 01:42:26 GMT
+
+Number of Pages: 26
+
+Markdown Content:
+# IMPACT: An Implicit Active-Set Augmented Lagrangian for Fast Contact-Implicit Trajectory Optimization 
+
+Jiayun Li 1,2 Dejian Gong 1 Georgia Chalvatzaki 1,2,31PEARL Lab, Dept. of Computer Science, TU Darmstadt, Germany 
+
+2Hessian.AI, Darmstadt, Germany, 3Robotics Institute Germany (RIG) 
+
+Abstract —Contact-implicit trajectory optimization (CITO) has attracted growing attention as a unified framework for planning and control in contact-rich robotic tasks. Recent approaches have demonstrated promising results in manipulation and locomotion without requiring a prescribed contact-mode schedule. It is well known that the underlying mathematical programs with complementarity constraints (MPCCs) remain numerically ill-conditioned, and systematic, scalable solution strategies for CITO remain an active area of research. More efficient and principled solvers that can handle contact constraints are therefore essential to broaden the applicability of CITO. In this work, we develop an augmented-Lagrangian approach to CITO for solving MPCC-based CITO with stationarity guarantees. The method can be interpreted as identifying the implicit contact-mode branches on the fly during the trajectory optimization (TO) iterations; we call this approach IMPACT ( IMPlicit contact ACtive-set Trajectory optimization ). We provide an efficient C++ implementation tai-lored to trajectory-optimization workloads and evaluate it on the open-source CITO and contact-implicit model predictive control 
+
+(CI-MPC) benchmarks. On CITO, IMPACT achieves 2.9×–
+
+70 × speedups over strong baselines (geometric mean 13 .8×). On CI-MPC, we show improved control quality for contact-rich trajectories on dexterous manipulation tasks in simulation. Finally, we demonstrate the proposed method on real robotic hardware on a T-shaped object pushing task. 
+
+I. I NTRODUCTION 
+
+Optimal motion planning in contact-rich manipulation set-tings remains one of the major challenges in robotics. The planner must reason not only about continuous dynamics, but also about discrete events in which contacts are established, maintained, and broken to perform tasks such as underactuated manipulation and legged locomotion [1, 2]. This hybrid, nonsmooth structure makes it difficult to cast the problem as a well-defined continuous TO problem. A common workaround is to prescribe the contact mode sequence (contact schedule) a priori; conditioned on this discrete choice, the resulting TO problem can often be formulated as a smooth nonlinear programming (NLP) and solved efficiently using existing continuous optimization methods [3, 4]. By contrast, when the contact schedule is not fixed, the problem is typically posed as CITO. While CITO is promising for autonomously inferring contact modes in complex tasks, it is generally more challenging to solve due to nonsmooth contact dynamics and the combinatorics of mode changes [5, 6, 7]. 
+
+Project page is available at https://jonaspflaume.github.io/impact info/. 
+
+Fig. 1: IMPACT demonstrations in simulation and hardware. 
+
+Top: Allegro Hand reorients a rubber duck in simulation. 
+
+Bottom: a Panda robot pushes a T-shaped block to a target pose in real-robot experiments; the red curve indicates the trajectory of the block’s coordinate origin during the push. CITO commonly relies on contact models with a comple-mentarity structure to capture the on/off nature of contact and frictional interaction, and the exact form depends on the chosen contact model (e.g., rigid vs. compliant, Coulomb vs. regularized friction) [8]. This yields a fundamentally nonsmooth optimization problem that is naturally cast as MPCCs [9]. At feasible points, complementarity induces de-generacy and violates the regularity assumptions required by standard smooth NLP constraint qualifications (CQs); conse-quently, standard constraint qualifications such as the Linear Independence Constraint Qualification and the Mangasarian– Fromovitz Constraint Qualification typically fail, and the asso-ciated Lagrange multipliers may become unbounded, render-ing the Karush–Kuhn–Tucker (KKT) conditions invalid [9, 10]. Consequently, off-the-shelf NLP solvers based on standard KKT/CQ theory are often numerically brittle for MPCCs: large initial complementarity violations make convergence highly initialization-sensitive and unreliable at TO scale [11]. 
+
+> arXiv:2605.09127v2 [cs.RO] 12 May 2026
+
+Due to the nonsmooth and degenerate nature of contact-implicit formulations, a variety of practical treatments have been explored to improve numerical robustness. Broadly, ex-isting methods modify the original complementarity structure through smoothing or relaxation, or by introducing (exact) penalty terms to better fit standard solvers and their con-vergence assumptions [12, 13, 14]. While these treatments often improve numerical behavior, they can degrade control quality and introduce additional heuristic update parameters that strongly affect efficiency. Moreover, as these modifica-tions are tightened to more closely approximate the original complementarity conditions, degeneracy and ill-conditioning can re-emerge, limiting reliability at TO tasks. In this work, we propose IMPACT (IMP licit contact AC tive-set Trajectory optimization), an implicit complementarity/contact-branch selection method for solving MPCC-based CITO, with stationarity guarantee for feasible accumulation points under standard assumptions from recent augmented Lagrangian (AuLa) theory [15, 16, 17, 18]. Instead of smoothing or relaxing complementarity constraints, IMPACT retains the original nonsmooth contact constraints and handles them through the AuLa subproblems. Across these subproblems, the approximate Lagrange multipliers and penalty strength guide the selection of the active complementarity branch (contact vs. no-contact), enabling an implicit contact-mode discovery without a prescribed homotopy schedule. Fig. 2 conceptually contrasts relaxation, penalty, and IMPACT on a toy complementarity example. Moreover, this AuLa treatment prevents the multiplier blow-up typically seen in vanilla AuLa formulations for MPCCs. As a result, IMPACT provides a principled alternative to penalty-only methods. Combined with our proposed block coordinate descent (BCD) solver for the AuLa subproblems, IMPACT achieves substantially faster convergence than strong baselines in our experiments while maintaining competitive performance. On standard benchmarks, this translates to an order-of-magnitude speedup. Our contributions are summarized as follows.  
+
+> •
+
+Algorithm. We introduce IMPACT, an efficient CITO method based on an AuLa scheme for MPCCs, and establish its stationarity guarantee.  
+
+> •
+
+Implementation. We provide C++ implementations of IMPACT and the evaluation baselines, with an interface designed specifically for CITO/CI-MPC workloads.  
+
+> •
+
+Validation. We benchmark IMPACT against representa-tive baselines on open-source suites: (i) a CITO bench-mark and (ii) a MuJoCo dexterous-manipulation bench-mark for Allegro-Hand CI-MPC. We further demonstrate the method on real robotic hardware in a Push-T manip-ulation task. II. R ELATED WORK 
+
+This section reviews CITO and CI-MPC methods from two perspectives: (a) approaches that soften contact logic to obtain smooth gradients for planning/MPC, and (b) approaches that 
+
+retain nonsmooth contact logic and solve more directly. 
+
+A. Smooth / Relaxed Contact Models for Planning and MPC 
+
+Many CITO/CI-MPC pipelines replace rigid complemen-tarity with smooth or relaxed surrogates to enable gradient-based optimization, which can improve numerical behavior but may affect gradient accuracy and closed-loop performance. A common approach modifies the forward contact model 
+
+(e.g., compliant or differentiable contact), yielding smoother derivatives at the expense of strict rigid-contact fidelity [6, 2, 19, 13, 12]. Another line keeps forward simulation rigid but targets differentiable optimization by regularizing the sensitivity/KKT systems used to compute gradients through contact, enabling fast CI-MPC and relaxed-complementarity DDP variants [20, 21, 22]. Beyond local smoothing, global convex relaxations have been explored for CITO, emphasizing geometric reasoning and contact sequencing [23]. In contrast, our method adopts a nonsmooth AuLa view-point: we update relaxation via safeguarded multiplier/penalty rules and solve nonsmooth subproblems that explicitly enforce complementarity, aiming to preserve mode transitions and implicitly identify the contact mode. 
+
+B. Direct Nonsmooth Treatments of Contact Complementarity 
+
+A second class handles contact complementarity more 
+
+directly , reflecting the inherent nonsmoothness of con-tact (make/break; stick/slide). Two common strategies are penalty/continuation methods and operator-splitting schemes. Early CITO work introduces elastic (slack) variables and penalizes complementarity violations so that contacts can be “discovered” during optimization [5]. Later pipelines improve reliability via continuation strategies or automatic penalty-update rules [24, 11], and related penalty reformulations also appear in quadratic programs with complementarity con-straints (QPCC) solvers such as LCQPow [25]. Despite their widespread use, penalty/continuation methods can become numerically stiff and brittle under large penalties, and heuristic schedules may slow convergence [11]. These is-sues motivate safeguarded AuLa schemes for general MPCCs; among penalty-based CITO planners, CRISP is closest to our approach [11]. 
+
+Operator splitting / ADMM exploits CI-MPC structure by alternating trajectory updates with projections onto contact-feasible sets. The C3 family formulates CI-MPC in a con-sensus ADMM form with simple, parallelizable subproblems, scaling well to many-contact settings such as planar pushing and multi-contact manipulation [26, 27]. Extensions improve robustness via residual learning [28] and sampling guidance [29], while C3+ accelerates planar pushing through more efficient projections [30]. While C3+ is reminiscent of our emphasis on fast inner solves, it targets an ADMM projection setting that differs from IMPACT. The ADMM-based methods above typically operate on linearized contact/dynamics. They often produce task-space commands, leading to QPCC-style problems and, in many implementations, an additional task-space tracking layer is required for execution [26, 30]. A recent preprint by M´ enager et al. [31], released after the initial submission of IMPACT, 0.0                                                             
+
+> 0.5
+> 1.0
+> 1.5
+> 2.0
+> 2.5
+> x2
+> t= 0.8
+> t= 0.3
+> t= 0.08
+> t0+
+> (a) Scholtes Relaxation
+> 0.1
+> 0.3
+> 0.6
+> 0.6
+> 1.0
+> 1.5
+> 2.5
+> Relaxed boundary
+> Optimizer path
+> Limit point
+> 1
+> 2
+> 3
+> min
+> xf(x)s.t. x1x2t
+> (b) Penalty Method
+> Contour: = 80.0
+> Trajectory
+> Limit point
+> 0
+> 1
+> 2
+> 34567
+> min
+> xf(x)+ ( x1x2)2
+> 0.0 0.5 1.0 1.5 2.0 2.5
+> x1
+> 0.0
+> 0.5
+> 1.0
+> 1.5
+> 2.0
+> 2.5
+> x2
+> x1=x2
+> Mode switch!
+> (c) IMPACT: Primal Update
+> 0.1
+> 0.3
+> 0.6
+> 0.6
+> 1.0
+> 1.5
+> 2.5
+> Primal trajectory X(j)
+> Slack (Y(j),Z(j))
+> Slack regularization
+> Limit point 0
+> 123K
+> 0
+> 1
+> 2
+> 3
+> 4
+> K
+> X(j+ 1) = arg min
+> Xk(X,Y(j),Z(j))
+> 0.0 0.5 1.0 1.5 2.0 2.5
+> x1
+> x1=x2
+> (d) IMPACT: Slack Update
+> Current (G,H)
+> Dual shift /h
+> Shifted target
+> Closed-form (Y,Z)update
+> Slack (Y,Z)
+> 0
+> 1
+> 2
+> 3
+> K
+> 0
+> 123K
+> /h
+> target = ( G,H) + / h
+> (Y,Z)+=(target)
+
+Fig. 2: Comparison of complementarity-handling methods on a 2D toy objective. Top row: Scholtes relaxation and squared-penalty method. Bottom row: IMPACT, split into the primal update and the slack update. Objective contours are shown in blue and the complementarity-feasible set is shown in green. In IMPACT, the slack variables act as anchors that regularize the next primal update, while the slack update is obtained from a dual-shifted target projected onto the complementarity set. also uses an AuLa and alternating-minimization/BCD scheme for contact-implicit QPCCs in one-step inverse dynamics. In contrast, IMPACT targets temporally coupled TO and CI-MPC settings with general MPCC-based CITO formulations. We use an MPCC-tailored safeguarded AuLa scheme with complementarity-enforcing inner subproblems. This induces an implicit contact-mode selection behavior as slack is driven tight. III. P ROBLEM DEFINITION 
+
+In this work, we formulate both CITO and CI-MPC in a uni-fied optimization framework in generalized coordinates, given in problem (1). We use X = [ xt]1: T to denote the trajectory of decision variables (e.g., state, control, and contact forces) over time steps t = 1 , . . . , T . We use r(xt), h(xt, x t+1 ), and 
+
+g(xt) to denote the residual function, equality constraints, and inequality constraints, respectively. h(xt, x t+1 ) consists of the standard equality constraints at time steps t and t + 1 , together with the system dynamics that couple consecutive time steps. The G(xt) and H(xt) denote the complementarity functions at time step t. The complementarity condition 0 ≤ G(xt) ⊥
+
+H(xt) ≥ 0 encodes a logical exclusivity: component-wise, at least one of G(xt) or H(xt) must be zero, so they cannot be simultaneously strictly positive. Algebraically, it is equivalent to G(xt) ≥ 0, H(xt) ≥ 0, and the element-wise product constraint G(xt) ◦ H(xt) = 0 . Consequently, the problem is inherently nonconvex and nonsmooth. We focus on nonlinear sum-of-squares (SOS) objectives, which capture many task-space motion-planning costs. It is particularly convenient under the AuLa formulation in Section IV, since both the penalty terms and Lagrangian terms can be absorbed into the nonlinear least-squares residual, yielding an efficient Gauss-Newton scheme. 
+
+min 
+
+> X
+
+12
+
+> T
+
+X
+
+> t=1
+
+r(xt)⊤r(xt) (1a) s.t. h(xt, x t+1 ) = 0 , t ∈ 1, . . . , T − 1, (1b) 
+
+g(xt) ≤ 0, t ∈ 1, . . . , T , (1c) 
+
+0 ≤ G(xt) ⊥ H(xt) ≥ 0, t ∈ 1, . . . , T . (1d) Problem (1) defines a general MPCC, with different dis-cretizations and contact models recovered as special cases. For example, the template accommodates multiple friction models. With a polyhedral approximation of the friction cone, the per-step contact complementarity conditions can be written as a linear complementarity problem (LCP). In this case, once the contact Jacobians are fixed at each step (e.g., via a standard linearization or a “frozen Jacobian” approximation), the resulting G(xt) and H(xt) are typically affine in the decision variables. If instead friction is enforced using asecond-order cone representation, the contact conditions lead to a conic complementarity formulation; this still fits within the same MPCC template, but is generally nonlinear and more challenging to solve. In particular, our CI-MPC experiments in VI-C adopt the LCP contact model following [13] and use a time-stepping impulse-velocity formulation in the spirit of Anitescu [32]. We directly adopt the KKT system of the primal problem of the Anitescu quadratic program in [13] (Eq. (7)) and incorporate it into the IMPACT formulation: 
+
+Qv t −  b(ut) + ˜J⊤ 
+
+> i
+
+βt
+
+/h = 0 , (2a) 
+
+0 ≤ βt ⊥ ˜Jivt + ϕi/h ≥ 0. (2b) This system describes the contact dynamics at time step t,where the first line gives the discrete-time dynamics, relating the generalized velocity vt through the system mass moment 
+
+Q to the actuation/external term b(ut) and the contact-force variable βt through the contact Jacobian ˜Ji for the ith detected contact, including the friction-polyhedral approximation and the step size h. The second line imposes complementarity between the contact force βt and the velocity-level contact residual ˜Jivt + ϕi/h . Componentwise, a contact-force com-ponent can be positive only when the corresponding contact constraint is active, where ϕi denotes the normal distance for the ith contact. The generalized velocity vt is then related to the generalized coordinate using time integration, possibly involving quaternion integration. IV. A S AFEGUARDED AULA FOR MPCC S
+
+We next describe the safeguarded AuLa outer loop used in IMPACT. This outer loop updates penalty parameters and Lagrange multipliers while keeping complementarity enforced explicitly, and provides a stationarity-guaranteed wrapper for our BCD inner solver. For algorithmic convenience, we rewrite Problem (1) in 
+
+vertical form [10] by introducing auxiliary (slack) variables 
+
+Y and Z. This moves nonlinearities from the complementarity set into smooth equality constraints: we enforce G(xt) = yt
+
+and H(xt) = zt, and impose complementarity directly on the variables via 0 ≤ yt ⊥ zt ≥ 0. While this increases the dimension and adds equality constraints, it yields a simple complementarity set that is well-suited to our inner solver design. The resulting vertical form is: 
+
+min 
+
+> X,Y,Z
+
+12
+
+> T
+
+X
+
+> t=1
+
+r(xt)⊤r(xt) (3a) s.t. h(xt, x t+1 ) = 0 , t ∈ 1, . . . , T − 1, (3b) 
+
+g(xt) ≤ 0, t ∈ 1, . . . , T , (3c) 
+
+G(xt) = yt, t ∈ 1, . . . , T , (3d) 
+
+H(xt) = zt, t ∈ 1, . . . , T , (3e) 
+
+0 ≤ yt ⊥ zt ≥ 0, t ∈ 1, . . . , T . (3f) 
+
+Remark 1. The vertical reformulation is equivalent to the orig-inal MPCC: at any feasible point, (yt, z t) = ( G(xt), H (xt)) ,so enforcing 0 ≤ yt ⊥ zt ≥ 0 is equivalent to 0 ≤
+
+G(xt) ⊥ H(xt) ≥ 0. We adopt this split because AuLa handles the resulting smooth equalities G(xt) − yt = 0 and 
+
+H(xt)−zt = 0 effectively in TO settings [33], while our inner solver exploits the resulting variable-wise complementarity structure via closed-form update (Section V). We follow a safeguarded AuLa scheme for MPCCs in which complementarity constraints are not absorbed into the augmented Lagrangian function; instead, they are enforced explicitly in each inner solve. Concretely, we handle the smooth equality and inequality constraints via an AuLa treat-ment, while keeping the complementarity constraints as hard constraints in the inner subproblem. This separation preserves the MPCC structure and avoids the pathological multiplier growth that can arise when complementarity conditions are penalized directly [16, 15]. The resulting AuLa subproblem, with objective denoted by Φ( X, Y, Z ), is 
+
+min 
+
+> X,Y,Z
+
+12
+
+> T
+
+X
+
+> t=1
+
+r⊤ 
+
+> t
+
+rt + ρ¯h
+
+2 ¯ht + κt
+
+> ρ¯h
+> 2
+
++ ρg
+
+2 (gt + μt 
+
+> ρg
+
+)+
+
+> 2
+
+(4a) s.t. 0 ≤ yt ⊥ zt ≥ 0, t ∈ { 1, . . . , T }. (4b) For brevity, we omit explicit dependence on the variables and stack the equality constraints in (3) at time step t as 
+
+¯ht(xt+1 , x t, y t, z t) := [ h(xt, x t+1 ); G(xt) − yt; H(xt) − zt ].At the terminal time step t = T , h(xt, x t+1 ) reduces to h(xt),as no dynamics constraint is imposed beyond the terminal state. The operator (·)+ denotes the element-wise positive part, 
+
+(x)+ := max( x, 0) . We use ρ¯h and ρg as penalty factors for the equality and inequality constraints, with corresponding multipliers κt and μt. The resulting subproblem (4) is a 
+
+Algorithm 1 Safeguarded AuLa outer loop for MPCCs 
+
+Require: Initial multipliers (κ0, μ 0), penalties (ρ0¯h, ρ 0 
+
+> g
+
+), safe-guard bounds μmax > 0 and κmin < κmax , penalty increase factor γ > 1, constraints violation factor η ∈
+
+[0 , 1] , inner problem tolerances {εk} ↓ 0, outer problem tolerances ϵw, ϵg , ϵ¯h. 
+
+> 1:
+
+Initialize w0 
+
+> 2:
+
+Set k ← 0. Initial variable-change || ∆w0|| ∞ ← ∞ . 
+
+> 3:
+
+while ||△ wk|| ∞ ≥ ϵw or || (g(Xk)) +|| ∞ ≥ ϵg or 
+
+|| ¯h(wk)|| ∞ ≥ ϵ¯h do  
+
+> 4:
+
+Safeguard multipliers: 
+
+¯κk ← Π[κmin ,κ max ](κk), ¯μk ← Π[0 ,μ max ](μk),
+
+where Π denotes component-wise clipping.  
+
+> 5:
+
+Inner solve: approximately solve the AuLa sub-problem (4) with ¯μk, ¯κk and obtain wk+1 =(Xk+1 , Y k+1 , Z k+1 ) such that the inner stationary resid-ual is below εk. 
+
+> 6:
+
+Evaluate ¯ht, gt using wk+1 , △wk ← wk+1 − wk 
+
+> 7:
+
+Multiplier update: 
+
+κk+1 ← ¯κk + ρk 
+
+> ¯h
+
+¯ht, μk+1  
+
+> t
+
+←  ¯μkt + ρkg gt
+
+
+
+> +
+
+, 
+
+> 8:
+
+ζk+1  
+
+> t
+
+← min  μk+1  
+
+> t
+
+, −gt
+
+ 
+
+> 9:
+
+Penalty update:  
+
+> 10:
+
+if k = 0 or max {∥ ζk+1 ∥∞, ∥¯h(wk+1 )∥∞} ≤
+
+η max {∥ ζk∥∞, ∥¯h(wk)∥∞} then  
+
+> 11:
+
+ρk+1 ¯h ← ρk
+
+> ¯h
+
+; ρk+1  
+
+> g
+
+← ρkg . 
+
+> 12:
+
+else  
+
+> 13:
+
+ρk+1 ¯h ← γ ρ k
+
+> ¯h
+
+; ρk+1  
+
+> g
+
+← γ ρ kg . 
+
+> 14:
+
+end if  
+
+> 15:
+
+k ← k + 1 . 
+
+> 16:
+
+end while 
+
+nonlinear least-squares problem with simple complementarity constraints. To promote global convergence of the outer loop, we use the safeguarded multiplier and penalty updates in Algorithm 1. Updates are applied component-wise across all time steps, and multipliers are clipped to fixed safeguard bounds to ensure they remain bounded. Lines 8–14 implement a standard safeguard for penalty updates: we monitor the decrease of the equality-feasibility residual ∥¯h(wk+1 )∥∞ and an inequality complementarity/KKT residual ∥ζk+1 ∥∞ computed after the multiplier update; if the combined violation does not decrease sufficiently, we increase the penalty parameters. This is one possible safeguard design, and other update rules that enforce a comparable sufficient-decrease condition can be used as well. The accuracy of each inner solve directly affects the con-vergence behavior of the AuLa outer loop. To formalize this connection, we introduce a computable KKT residual for the AuLa subproblem (4) and use it as the inner-solve accuracy criterion in line 5 of Algorithm 1. This residual verifies: (i) stationarity of the augmented objective, (ii) feasibility of the complementarity set 0 ≤ Y ⊥ Z ≥ 0, and (iii) consistency of the complementarity multipliers with the limiting normal cone of this set. The full definition of the KKT residual is given in Appendix A. 
+
+Definition 2 (ϵ-stationarity) . At outer iteration k, let Φk denote the AuLa objective in (4) with safeguarded multipliers and penalty factors. We say wk = ( Xk, Y k, Z k) is ϵ-stationary 
+
+for (4) if 
+
+rin (wk) .
+
+= inf   
+
+> (u,v )∈M M(wk)
+
+rin (wk; u, v ) ≤ ϵ, 
+
+where rin is computed with respect to Φk, and MM (wk) is the branch-dependent multiplier set defined in Appendix A. The residual rin is chosen so that the inner and outer ac-curacy criteria are consistent. It gives a computable certificate for the AuLa subproblem and is compatible with the gradient-mapping measure controlled by the inner solver introduced later in Section V. Therefore, the condition rin ≤ ε is both the accuracy requirement used by the safeguarded AuLa analysis and a natural stopping measure for the inner routine. The formal statement and assumptions are deferred to Appendix B. We rephrase the global convergence/stationarity result of [16, Thm. 3] (and the closely related statement in [15, Cor. 4.4]) in terms of the KKT residual: 
+
+Theorem 3 (Global convergence of safeguarded AuLa under vanishing inner residual) . Let {wk} be the sequence generated by Algorithm 1. Assume that the safeguarded multipliers 
+
+(¯ κk, ¯μk) remain bounded (e.g., line 4 of Algorithm 1). Suppose the AuLa subproblem (4) is solved inexactly in the sense that, for each k, there exist (uk, v k) such that 
+
+rin (wk; uk, v k) ≤ εk, εk ↓ 0.
+
+Let w⋆ be a feasible accumulation point of {wk} for (3) (equivalently, for (1)). If the MPCC regularity condition as-sumed in [16, Thm. 3] holds at w⋆, then w⋆ is a first-order stationary point of the MPCC (in the sense of [16, Thm. 3]). Therefore, to ensure the attainability of stationarity, we de-sign an inner solver to meet the Definition 2 for any prescribed tolerance ε > 0 within finitely many inner iterations. We present such a solver in the next section. V. A BCD I NNER SOLVER FOR AULA SUBPROBLEMS 
+
+We solve the AuLa inner subproblem (4) with a two-block coordinate descent (BCD) scheme. Each BCD iteration alternates between updating the trajectory variables X and updating the auxiliary complementarity variables (Y, Z ). The 
+
+X-update is carried out by a Gauss-Newton update with globalization, and the (Y, Z )-update admits a closed-form solution under the complementarity constraints. 
+
+a) Block 1: X-update (Gauss–Newton with globaliza-tion): With (Y, Z ) fixed, the inner objective reduces to a smooth nonlinear least-squares problem in X. We solve it using a damped Gauss–Newton method with an Armijo back-tracking line search to ensure sufficient decrease of the inner objective Φk.
+
+b) Block 2: (Y, Z )-update (closed-form minimization over a union of cones): With X fixed, the (Y, Z )-subproblem decouples across time steps and complementary pairs. For ith scalar pair at time t: (yt,i , z t,i ) subject to 0 ≤ yt,i ⊥ zt,i ≥ 0,the feasible set is the union of two convex cones, C = {(y, 0) |
+
+y ≥ 0} ∪ { (0 , z ) | z ≥ 0}. Thus we evaluate two closed-form candidates and select the one yielding the smaller quadratic penalty contribution in (4). With the safeguarded multipliers at outer iteration k and current penalty factor ρ¯h:
+
+Case 1 (zt,i = 0 ): 
+
+y⋆t,i = max 
+
+
+
+0, G i(xt) + 1
+
+> ρ¯h
+
+κG,t,i 
+
+
+
+, z⋆t,i = 0 . (5) 
+
+Case 2 (yt,i = 0 ): 
+
+z⋆t,i = max 
+
+
+
+0, H i(xt) + 1
+
+> ρ¯h
+
+κH,t,i 
+
+
+
+, y⋆t,i = 0 . (6) We then pick between (5) and (6) by comparing their re-sulting objective values (equivalently, their quadratic penalty contributions). This step is an exact minimization over the complementarity set for fixed X and hence never increases Φk.We summarize the BCD approach as Algorithm 2. A graphical depiction of the algorithm is shown in Fig. 2. 
+
+Remark 4 (Why this differs from the ADMM projection in [30]) . The ADMM projection in [30] is primarily feasibility-driven in consensus step: it directly projects the copied variable onto the complementarity-feasible set. In contrast, our closed-form update corresponds to a shifted mapping induced by the current approximate Lagrange multipliers and penalty weights. Unlike an ADMM consensus update, this step does not introduce copied variables; it is obtained by directly minimizing the AuLa subproblem with respect to the slack variables. This mapping injects the influence of the current multiplier/penalty into the slack variables, acting like a spring force that regularizes the primal update. As illustrated in Fig. 2, IMPACT therefore provides more than a pure feasibility projection and can yield substantially faster progress. 
+
+Theorem 5 (Attainability of ε-stationarity by the BCD inner solver) . Fix an outer iteration k and consider the BCD inner iterates {w(j)} = {(X(j), Y (j), Z (j))} generated by Algo-rithm 2. Assume: (i) Φk is continuously differentiable, ∇Φk
+
+is Lipschitz on the bounded set visited by the iterates and 
+
+Φk is bounded below on {(X, Y, Z ) : ( Y, Z ) ∈ C} ; (ii) the 
+
+X-update is globalized and achieves sufficient decrease (e.g., damped GN with Armijo line search); and (iii) the (Y, Z )-update is an exact minimization over the complementarity set for fixed X (as in (5)–(6)). Then, for any tolerance εk > 0,there exists a finite inner iteration index jk and multipliers 
+
+(u(jk ), v (jk )) such that 
+
+rin 
+
+ w(jk ); u(jk ), v (jk ) ≤ εk.
+
+In particular, the inner BCD loop can be terminated after finitely many iterations with an output wk that is εk-stationary in the sense of Definition 2. Algorithm 2 Inner Solver: BCD for the AuLa subproblem (4) 
+
+Require: Outer index k, safeguarded multipliers (¯ κk, ¯μk),penalties (ρk
+
+> ¯h
+
+, ρ kg ), initial (X(0) , Y (0) , Z (0) ), stagnation tolerance τk 
+
+> 1:
+
+Set w(0) ← (X(0) , Y (0) , Z (0) ) and evaluate Φk(w(0) ). 
+
+> 2:
+
+for j = 0 , 1, 2, . . . do  
+
+> 3:
+
+X-update: compute a damped GN update on 
+
+Φk(·, Y (j), Z (j)) with backtracking line search; obtain 
+
+X(j+1) . 
+
+> 4:
+
+(Y, Z )-update: for each (t, i ), compute candidates (5) and (6) and select the one with smaller objective; obtain 
+
+(Y (j+1) , Z (j+1) ). 
+
+> 5:
+
+Set w(j+1) ← (X(j+1) , Y (j+1) , Z (j+1) ) and evaluate 
+
+Φk(w(j+1) ). 
+
+> 6:
+
+Practical stopping: if |Φk(w(j)) − Φk(w(j+1) )| ≤ τk, 
+
+> 7:
+
+return wk ← w(j+1) . 
+
+> 8:
+
+end for 
+
+The proof is given in Appendix B: sufficient decrease makes the X-block residual attainable, and exact (Y, Z )-minimization eliminates the complementarity-block part of the KKT residual. 
+
+Inner-solver guarantee and practical stopping. The inner optimizer is not intended to certify global optimality of the nonconvex subproblem. For the purpose of outer-loop conver-gence analysis , we adopt an attainability interface: for any tolerance ε > 0, the inner procedure can produce (in finitely many iterations) an iterate whose stationarity measure is below 
+
+ε under suitable multipliers (Theorem 5). Our implementation, however, uses an inexact/budgeted inner solve: we do not explicitly test stationarity and instead stop when the inner augmented objective stagnates, |Φk(w(j))−Φk(w(j+1) )| ≤ τk.Empirically, this criterion consistently yields sufficiently small constraint and complementarity residuals and stable outer-loop progress on all benchmarks; see Appendix B for definitions and additional diagnostics. VI. E XPERIMENTS 
+
+In this section, we evaluate our planner on two open-source benchmarks. For long-horizon planning, we use the CITO benchmark from CRISP [11]. For dexterous manipulation under multi-contact dynamics, we use the CI-MPC benchmark from [13]. All experiments are run on a desktop PC with an AMD Ryzen 9 7950X3D CPU, with no GPU acceleration. Our IMPACT implementation uses no explicit multi-threading (e.g., OpenMP/TBB). It links against BLAS/LAPACK, uses Eigen’s sparse LDLT factorization for linear solves, and up-dates slack pairs using Eigen’s SIMD-vectorized operations. We use CasADi’s C++ interface for modeling and symbolic differentiation [34]. CasADi CodeGen is disabled for both CITO and CI-MPC. 
+
+A. Long Horizon CITO Benchmark 
+
+The CRISP CITO benchmark comprises six nonlinear, hybrid-dynamics, contact-rich problems for long-horizon plan-ning. The CRISP paper compares standard NLP solvers on four tasks. We exclude the one task that requires a manually specified initial guess, which is outside our scope, and evaluate on three tasks: Push Box, Cart Transport, and Push T. Rather than comparing against generic NLP solvers that do not explicitly handle complementarity constraints and are often brittle on MPCCs (e.g., SNOPT and PROXNLP [11]), we compare against solution strategies that are known to perform well in practice: Scholtes relaxation (SR) , the square penalty method (PM) , and CRISP . To handle the long planning horizons in these benchmarks, we formulate all evaluated methods using multiple shooting. We implement SR and PM using the IPOPT C++ interface [35], with symbolic automatic differentiation provided by the CasADi C++ interface. For 
+
+CRISP , we directly use the released C++ implementation provided by the authors, which is specialized to the benchmark problems. For SR , we enforce the nonnegativity constraints G(x) ≥ 0
+
+and H(x) ≥ 0 explicitly as inequalities, which IPOPT handles reliably, and relax complementarity via G(x)H(x) ≤ t. We then solve a sequence of relaxed problems, initialized with 
+
+t = 1 .0 and reducing t by a factor of 10 at each outer iteration until t = 10 −10 . In our experiments, this continuation schedule provides a robust trade-off between numerical stability and runtime. The outer loop terminates early when the comple-mentarity residual falls below a prescribed tolerance. For efficiency, we warm-start IPOPT using the previous iterate’s primal and dual variables. For PM , we keep G(x) ≥ 0 and H(x) ≥ 0 as explicit inequality constraints and penalize complementarity using a squared penalty term with a relatively large penalty weight. Empirically, this configuration is stable and often more effi-cient than starting from a small penalty and gradually increas-ing it. While a large penalty can make the inner NLP more ill-conditioned, we find IPOPT remains effective in this regime and can be more efficient than an iterative NLP scheme. The benchmark problems are shown in Fig. 3, and we provide detailed descriptions in Appendix C. We remark that these tasks require forward integration of nonlinear dynamics and include general equality and inequality constraints, so they are not directly cast as LCPs solvable by standard LCP solvers. We report problem sizes in terms of decision variables, complementarity pairs, and constraint counts: Push Box has 453 variables, 500 complementarity pairs, and 150 dynamics constraints. Push T has 1353 variables, 2150 complementarity pairs, 150 dynamics constraints, 350 equality constraints, and 200 inequality constraints. Cart Transport has 2404 variables, 900 complementarity pairs, 1200 dynamics constraints, 300 equality constraints, and 1200 inequality constraints. 
+
+Solver Settings and Performance Metrics: We use an all-zero initialization for every solver on all tasks, following the standardized CRISP comparison setup. This choice avoids task-specific initial guesses and makes the comparison repro-ducible across methods. We note, however, that warm-started initialization is common in practical TO/MPC pipelines, and the relative advantage of IMPACT may differ in such settings. Fig. 3: IMPACT planning demos on three CITO tasks. The green dashed box marks the start pose and the orange dashed box marks the goal pose. Purple arrows visualize contact forces, and the solid green line traces the object-origin tra-jectory. Color indicates time from early (light blue) to late (dark orange). For each task, all methods (SR/PM/IMPACT and CRISP) are synchronized to solve the same optimization problem with identical objective-function weights. For Push Box and Push T, we use a horizon of T = 50 with ∆t = 0 .05 ; for Cart Transport , we use T = 300 with ∆t = 0 .02 . For Push Box 
+
+and Push T , we randomly sample 50 goal poses, and for Cart Transport , we randomly sample 50 start-goal pairs. We run each planner until it satisfies a common set of termination criteria. Specifically, we require all constraint violations to be below 10 −5, including (for example) the complementarity violation ∥G(x) ◦ H(x)∥∞ ≤ 10 −5. A run is declared a failure if (i) it reaches the maximum iteration limit (2000 in our experiments) while still violating either stopping criterion, or (ii) the resulting trajectory fails to reach the goal (e.g., becoming stuck in an intermediate configuration), a fail-ure mode also reported in the CRISP paper. Otherwise, the run is counted as successful. We report success rate, total tracking error, iteration count, and wall-clock runtime in Table I. We report total tracking error as an end-to-end task metric; lower values typically indicate trajectories that reach the goal sooner and maintain better tracking, which often correlates with more efficient contact-mode progress. For IMPACT, we report the number of BCD sweeps, where one sweep corresponds to a full pass over all blocks. For CRISP, we report the total number of QP solves (including those from second-order corrections) as the subproblem-count metric. The MPCC formulations and all solver hyperparameters are provided in Appendix C. Table I shows a quality-speed trade-off across solvers. In terms of mode/trajectory quality (total tracking error), SR is best on Push Box and Push T , while CRISP is best on 
+
+Cart Transport . IMPACT remains competitive: it is second-best on Push Box and Cart Transport , and close to CRISP TABLE I: CITO benchmark results reported as mean ± 95% confidence interval (CI). For each task and metric, the best method is highlighted in red and the second best in blue .                                                                                                                               
+
+> Task Solver Success (%) Track. Err. ↓Iters ↓Time (s) ↓
+> Box
+> SR 100 .019 .46 ±2.30 164 ±12 1.27 ±0.10
+> PM 98 .058 .00 ±5.11 66 ±13 0.85 ±0.17
+> CRISP 100 .051 .90 ±4.08 641 ±358 2.52 ±1.34
+> IMPACT 100 .026 .99 ±2.81 219 ±49 0.15 ±0.03
+> T
+> SR 100 .01.24 ±0.13 202 ±11 5.50 ±0.38
+> PM 90 .021 .99 ±2.57 117 ±14 2.96 ±0.39
+> CRISP 100 .08.03 ±0.71 1243 ±407 25 .73 ±6.92
+> IMPACT 100 .08.48 ±1.94 606 ±225 1.03 ±0.44
+> Cart
+> SR 100 .0433 .08 ±44 .92 261 ±22 5.63 ±0.57
+> PM 100 .0408 .65 ±42 .32 87 ±14 2.00 ±0.32
+> CRISP 100 .0235 .10 ±21 .70 501 ±381 2.72 ±2.05
+> IMPACT 100 .0381 .89 ±32 .35 101 ±15 0.08 ±0.01
+
+on Push T . In contrast, PM yields the largest tracking er-rors and is also less robust, with failures on Push T (90% success) and Push Box (98% success). In terms of efficiency ,IMPACT provides a dominant runtime advantage. Despite PM having fewer iterations, the penalized subproblems can be ill-conditioned, so wall-clock time does not scale with iteration count. We find that driving the complementarity violation down to the 10 −5 level typically requires multiple continu-ation iterations in CRISP, leading to increased runtime. SR also remains comparatively expensive, as we find that warm-starting does not substantially reduce the iteration count in practice. Quantitatively, IMPACT is 16 .8×, 25 .0×, and 34 .0×
+
+faster than CRISP on Box , T, and Cart , respectively (geometric mean 24 .3×). Even relative to the fastest baseline in time (PM), IMPACT achieves 5.7×, 2.9×, and 25 .0× speedups (geometric mean 7.4×). Across all baseline comparisons in Table I, this corresponds to a 2.9×–70 × speedup range with a geometric mean of 13 .8×.
+
+B. Real-Robot Push-T Demonstration 
+
+To evaluate IMPACT beyond simulation, we deploy it on a real robotic pushing setup for the Push-T task as a qualitative hardware demonstration (Fig. 1). We first solve a full-horizon TO problem to obtain a reference pushing trajectory, and then execute it on the robot by commanding the end-effector to emulate the pusher and track the reference. If the object deviates too much from the nominal trajectory, we replan online. To improve sim-to-real fidelity, we tune the rotational contact-radius constraint in the contact model based on observed rollouts. We run 10 trials with different initial object configurations; IMPACT reaches the target in all trials, achieving a 100% success rate. Additional videos are provided in the supplementary material. 
+
+C. Multi-contact High Dimensional CI-MPC Benchmark 
+
+To evaluate the scalability of IMPACT in a realistic CI-MPC setting, we use the Allegro Hand meshable-object re-orientation benchmark introduced in [13]. Following [13], we refer to the overall evaluation setup under their framework as IMPACT 80 100 90 100 90 100 80 100 100 100 100 90 100 30 100 100 100 91.8±4.1 C-Free (0.1) 90 70 100 100 50 100 100 100 90 100 100 100 100 50 100 100 100 91.2±4.2 C-Free (0.2) 100 80 100 100 60 100 90 100 90 100 100 100 90 70 100 100 100 92.9±3.9 Success (%) IMPACT 1.97 1.49 1.59 1.16 1.78 1.49 1.53 1.29 1.36 1.58 1.66 1.96 1.69 1.63 1.27 1.79 1.08 1.55±0.13 C-Free (0.1) 2.60 2.47 2.32 1.90 2.26 1.50 2.28 1.77 2.24 1.85 2.20 2.34 2.45 2.46 2.47 2.44 1.09 2.16±0.21 C-Free (0.2) 5.28 4.62 5.15 3.35 5.00 3.03 4.62 4.75 4.78 3.75 3.76 5.50 5.15 5.65 4.51 4.50 2.11 4.44±0.49 Ctrl Var IMPACT 0.045 0.027 0.032 0.018 0.035 0.022 0.028 0.015 0.024 0.032 0.034 0.042 0.034 0.031 0.022 0.039 0.018 0.029±0.004 C-Free (0.1) 0.060 0.046 0.045 0.045 0.036 0.018 0.051 0.026 0.046 0.033 0.037 0.043 0.051 0.051 0.070 0.071 0.014 0.044±0.008 C-Free (0.2) 0.109 0.121 0.106 0.072 0.077 0.045 0.099 0.108 0.103 0.067 0.067 0.097 0.086 0.090 0.112 0.097 0.035 0.088±0.012 Smooth IMPACT 4.8 4.0 1.7 1.7 2.3 2.6 6.0 1.6 2.0 4.1 2.0 1.9 1.6 8.7 1.7 3.5 1.2 3.0±1.0 C-Free (0.1) 6.3 5.7 2.0 2.1 12.5 4.5 5.7 2.0 2.4 1.8 3.4 6.4 3.6 15.2 2.1 3.7 1.4 4.8±2.0 C-Free (0.2) 9.5 3.2 6.3 3.3 12.2 10.3 17.9 4.6 3.5 3.0 4.0 5.0 6.7 40.4 3.4 4.2 1.9 8.2±4.8 Eff ort                  
+
+> Air pl Binoc Bowl Bunny Camer Can Cube Cup Eleph Foamb Mug Piggy Rubbe Stick Teapo Torus Water Avg
+
+Fig. 4: Allegro-Hand CI-MPC benchmark results on 17 objects. We compare IMPACT against cfree (0.1) and cfree (0.2), which use control bounds [−0.1, 0.1] and [−0.2, 0.2] , respectively. Reported metrics include success rate (Success ) and control-quality measures: control variance ( Ctrl Var ), control smoothness ( Smooth ), and control effort ( Effort ). Table columns use these abbreviations. For each object, the best value for each metric is highlighted, and the final column reports the aggregate results with a 95% confidence region across all 17 objects. 
+
+cfree in the remainder of the paper. As a point of reference, the 
+
+cfree pipeline relies on smoothing-based contact modeling to-gether with the interior-point NLP solver IPOPT, and achieves a 50 -60 Hz CI-MPC on our test PC. However, smoothing-based CI-MPC can exhibit undesired closed-loop behavior: smoothed contact transitions may degrade control smoothness and induce oscillations during execution. In contrast, our goal in this experiment is to demonstrate that IMPACT scales to this benchmark and achieves a practically useful control rate of around 10 Hz on the same hardware. Importantly, this rate is achieved while directly solving a multi-contact, nonsmooth, MPCC-based MPC problem without smoothing or relaxation. Such problems are widely considered challenging for real-time control due to the combinatorial mode structure and nonsmooth contact dynamics. The cfree benchmark includes 17 objects spanning a wide range of surface curvatures and shapes; see Fig. 4 for the object set. The Allegro-hand setup can involve up to 20 simul-taneous detected contact points; the contact complementarity conditions below are instantiated for each detected contact. We adhere closely to the cfree setup and keep all hyperparameters unchanged, including (but not limited to) the simulation time step, friction coefficients, and inertial parameters. The full list of parameters is provided in Appendix C. In IMPACT, we optimize over the generalized velocities 
+
+vt, contact forces βt and control ut; given the relatively short MPC horizon, we use a single-shooting formulation and eliminate the position states by forward integration. The MPC horizon matches cfree and is set to 4. Following cfree , we compute the contact Jacobian only at the MPC initial state and hold it fixed over the prediction horizon. We keep the same objective structure as cfree , but replace its quaternion inner-product term with a log-map rotation residual in R3, yielding a standard nonlinear least-squares form that better matches our Gauss–Newton pipeline. To keep the relative influence of the rotation terms comparable, we increase its weight accordingly. To improve closed-loop damping, we additionally include a small penalty on object velocity; in contrast, cfree primarily introduces damping via penalties on contact forces expressed in the contact frame. We do not perform per-object tuning: as in cfree , we use a single shared set of control parameters across all 17 objects. For initialization, we follow the same strategy as cfree by adding small random perturbations to the object’s start and goal poses in hand. We also adopt the same success criteria as cfree :a squared position-norm error below 0.02 and a quaternion inner-product error below 0.04 . Each object is evaluated over 10 trials. The total simulation horizon is 1000 time steps with a time step of 0.1 s. One key difference from the default cfree 
+
+setup is the control bound: we use [−0.1, 0.1] to promote a locally stable contact mode. For comparison, we also report 
+
+cfree results with control bounds [−0.1, 0.1] and [−0.2, 0.2] .Our IMPACT experiments use MuJoCo’s C API via a C++ interface to match our optimizer implementation, whereas we run cfree using its released Python implementation. The experimental results are reported in Fig. 4. Besides the success rate, we report three control-quality metrics. Control variance is defined as 1
+
+> d
+
+Pdi=1 Var( bi), where d is the dimension of the control signal. Control smoothness is computed as  
+
+> 1
+> T−2
+
+PT −2 
+
+> t=1
+
+∥ut+1 − ut∥22, and control effort as PT −1 
+
+> t=1
+
+∥ut∥22,where T is the trial length. Fig. 4 summarizes performance across the 17 objects. IMPACT achieves a success rate comparable to cfree (avg. 
+
+91 .8% ±4.1 vs. 91 .2% ±4.2 for cfree (0.1) and 92 .9% ±3.9 for 
+
+cfree (0.2)), while consistently improving control quality: vari-ance 1.55 ±0.13 (vs. 2.16 ±0.21 and 4.44 ±0.49 ), smoothness 
+
+0.029 ±0.004 (vs. 0.044 ±0.008 and 0.088 ±0.012 ), and effort 
+
+3.0 ± 1.0 (vs. 4.8 ± 2.0 and 8.2 ± 4.8) for cfree (0.1/0.2) [13]. Increasing cfree ’s control bound from [−0.1, 0.1] to [−0.2, 0.2] 
+
+preserves success rate but substantially worsens these control-quality metrics, consistent with more oscillatory closed-loop behavior under aggressive inputs. The stick object is a no-table outlier where IMPACT performs worse; we attribute this to the heightened sensitivity of long, slender geometries to LCP-based contact modeling, which can induce frequent mode switching. In terms of efficiency, IMPACT completes successful trials in 66 .5 ± 10 .9 MPC steps, comparable to 
+
+cfree (0.1) 71 .4 ± 13 .5 and cfree (0.2) 57 .8 ± 14 .6, but runs at a lower control rate of 9.53 ± 0.36 Hz (vs. 50 .6 ± 0.86 and 
+
+54 .0 ± 1.30 Hz). VII. L IMITATIONS 
+
+a) Contact-mode stability under limited compute: In the Allegro-hand CI-MPC experiments, we observe a tran-sient regime before contact is firmly established in which the optimizer may switch between nearby contact sets. This behavior is most pronounced under tight real-time compute budgets, where only coarse inner solves are feasible and the contact-branch selections can vary across iterations. Despite this, IMPACT scales well to high-dimensional MPCC-based CI-MPC and achieves strong aggregate performance on the benchmark. Incorporating additional stabilization mechanisms (e.g., trust-region [36] or hysteresis on mode updates) is a promising direction to further reduce contact-set switching in this regime. 
+
+b) Local planning and dependence on contact-encouraging costs: Under a limited compute budget, IMPACT in the Allegro-hand setup operates as a local planner. While it is effective and yields smooth behavior in many cases, it can be sensitive to local minima and depends on a contact-encouraging cost adopted from [13]. This limitation is most visible on the stick object, where slender geometry makes contact maintenance highly sensitive. Such heuristic contact terms can increase sensitivity to hyperparameters and contribute to residual oscillations; the smoother Push-T results suggest that global geometric encodings can reduce this reliance. Promising directions include incorporating offline reinforcement learning to provide global guidance and reduce reliance on hand-crafted contact costs, as well as exploring object representations beyond local parameterizations to improve robustness. We leave these directions to future work. VIII. C ONCLUSION 
+
+We presented IMPACT, an implicit contact active-set aug-mented Lagrangian method for fast contact-implicit trajectory optimization. IMPACT combines a safeguarded AuLa outer loop for MPCCs with a structured block coordinate descent inner solver, enabling efficient contact-mode discovery without a prescribed continuation schedule while retaining the original nonsmooth complementarity structure. We implemented IMPACT in C++ and evaluated it on two open-source benchmarks. On the CRISP long-horizon CITO suite, IMPACT achieves substantial runtime gains over strong baselines, with speedups ranging from 2.9× to 70 × (geometric mean 13 .8×). In particular, compared with CRISP, IMPACT is 16 .8×, 25 .0×, and 34 .0× faster on Push Box, Push T, and Cart Transport, respectively (geometric mean 24 .3×), while maintaining competitive task-level tracking performance under the same feasibility/stationarity termination criteria. On the high-dimensional multi-contact CI-MPC benchmark for dexterous manipulation, we demonstrate that the pro-posed IMPACT architecture scales beyond offline planning to closed-loop control. IMPACT scales to multi-contact dynam-ics in generalized coordinates and, at comparable success rates to the baseline, yields improved control-quality metrics (lower control variance/smoothness/effort). Finally, we demonstrate the proposed method on real robotic hardware in a Push-T manipulation task. ACKNOWLEDGMENTS 
+
+This work was supported by the DFG Emmy Noether Programme (CH 2676/1-1), the EU Horizon Europe projects MANiBOT (101120823) and ARISE (101135959), the BMFTR project RIG (16ME1001), and the ERC project SIREN (101163933). We also acknowledge support from the hessian.AI Service Center (BMFTR, 16IS22091), the hessian.AI Innovation Lab (S-DIW04/0013/003), TAM, RAI, Google, and the Alfried Krupp Foundation. REFERENCES 
+
+[1] Karim Bouyarmane, St´ ephane Caron, Adrien Escande, and Abderrahmane Kheddar. Multi-contact mo-tion planning and control. In Amit Goswami and Prahlad Vadakkepat, editors, Humanoid Robotics: AReference . Springer Nature, 2019. doi: 10.1007/ 978-94-007-6046-2 32. [2] Tao Pang, HJ Terry Suh, Lujie Yang, and Russ Tedrake. Global planning for contact-rich manipulation via local smoothing of quasi-dynamic contact models. IEEE Transactions on Robotics , 39(6):4691–4711, 2023. [3] Wilson Jallet, Antoine Bambade, Etienne Arlaud, Sarah El-Kazdadi, Nicolas Mansard, and Justin Carpentier. Proxddp: Proximal constrained trajectory optimization. 
+
+IEEE Transactions on Robotics , 2025. [4] Carlos Mastalli, Rohan Budhiraja, Wolfgang Merkt, Guilhem Saurel, Bilal Hammoud, Maximilien Naveau, Justin Carpentier, Ludovic Righetti, Sethu Vijayakumar, and Nicolas Mansard. Crocoddyl: An efficient and versatile framework for multi-contact optimal control. In 
+
+Proc. IEEE International Conference on Robotics and Automation (ICRA) , 2020. [5] Michael Posa, Cecilia Cantu, and Russ Tedrake. Adirect method for trajectory optimization of rigid bodies through contact. The International Journal of Robotics Research , 33(1):69–81, 2014. [6] Aykut ¨Ozgun ¨Onol, Philip Long, and Tas ¸kın Padır. Contact-implicit trajectory optimization based on a vari-able smooth contact model and successive convexifica-tion. In 2019 International Conference on Robotics and Automation (ICRA) , pages 2447–2453. IEEE, 2019. [7] Jean-Pierre Sleiman, Farbod Farshidian, and Marco Hut-ter. Versatile multicontact planning and control for legged loco-manipulation. Science Robotics , 8(81):eadg5014, 2023. doi: 10.1126/scirobotics.adg5014. [8] Quentin Le Lidec, Wilson Jallet, Louis Montaut, Ivan Laptev, Cordelia Schmid, and Justin Carpentier. Con-tact models in robotics: a comparative analysis. IEEE Transactions on Robotics , 2024. [9] Holger Scheel and Stefan Scholtes. Mathematical pro-grams with complementarity constraints: Stationarity, optimality, and sensitivity. Mathematics of Operations Research , 25(1):1–22, 2000. [10] Armin Nurkanovi´ c, Anton Pozharskiy, and Moritz Diehl. Solving mathematical programs with complementarity constraints arising in nonsmooth optimal control: A. nurkanovi´ c et al. Vietnam Journal of Mathematics , 53 (3):659–697, 2025. [11] Yulin Li, Haoyu Han, Shucheng Kang, Jun Ma, and Heng Yang. On the Surprising Robustness of Sequen-tial Convex Optimization for Contact-Implicit Motion Planning. In Proceedings of Robotics: Science and Systems , Los Angeles, CA, USA, June 2025. doi: 10.15607/RSS.2025.XXI.047. [12] Vince Kurtz, Alejandro Castro, Aykut ¨ Ozg¨ un ¨ Onol, and Hai Lin. Inverse dynamics trajectory optimization for contact-implicit model predictive control. The Interna-tional Journal of Robotics Research , 45(1):23–40, 2026. [13] Wanxin Jin. Complementarity-Free Multi-Contact Mod-eling and Optimization for Dexterous Manipulation. In 
+
+Proceedings of Robotics: Science and Systems , Los An-geles, CA, USA, June 2025. doi: 10.15607/RSS.2025. XXI.111. [14] Sotaro Katayarna, Tatsunori Taniai, and Kazutoshi Tanaka. Quasistatic contact-rich manipulation via lin-ear complementarity quadratic programming. In 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , pages 203–210. IEEE, 2022. [15] Xiaoxi Jia, Christian Kanzow, Patrick Mehlitz, and Gerd Wachsmuth. An augmented lagrangian method for opti-mization problems with structured geometric constraints. 
+
+Mathematical Programming , 199(1):1365–1415, 2023. [16] Lei Guo and Zhibin Deng. A new augmented la-grangian method for mpccs—theoretical and numerical comparison with existing augmented lagrangian methods. 
+
+Mathematics of Operations Research , 47(2):1229–1246, 2022. [17] Alberto De Marchi, Xiaoxi Jia, Christian Kanzow, and Patrick Mehlitz. Constrained composite optimization and augmented lagrangian methods. Mathematical Program-ming , 201(1):863–896, 2023. [18] Christian Kanzow and Patrick Mehlitz. Convergence properties of monotone and nonmonotone proximal gra-dient methods revisited. Journal of Optimization Theory and Applications , 195(2):624–646, 2022. [19] Hyung Ju Terry Suh, Tao Pang, and Russ Tedrake. Bun-dled gradients through contact via randomized smooth-ing. IEEE Robotics and Automation Letters , 7(2):4000– 4007, 2022. [20] Simon Le Cleac’h, Taylor A Howell, Shuo Yang, Chi-Yen Lee, John Zhang, Arun Bishop, Mac Schwager, and Zachary Manchester. Fast contact-implicit model predictive control. IEEE Transactions on Robotics , 40: 1617–1629, 2024. [21] Gijeong Kim, Dongyun Kang, Joon-Ha Kim, and Hae-Won Park. Contact-implicit differential dynamic pro-gramming for model predictive control with relaxed com-plementarity constraints. In 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) ,pages 11978–11985. IEEE, 2022. [22] Gijeong Kim, Dongyun Kang, Joon-Ha Kim, Seungwoo Hong, and Hae-Won Park. Contact-implicit model pre-dictive control: Controlling diverse quadruped motions without pre-planned contact modes or trajectories. The International Journal of Robotics Research , 44(3):486– 510, 2025. [23] Bernhard Paus Graesdal, Shao Yuan Chew Chia, Tobia Marcucci, Savva Morozov, Alexandre Amice, Pablo Par-rilo, and Russ Tedrake. Towards Tight Convex Relax-ations for Contact-Rich Manipulation. In Proceedings of Robotics: Science and Systems , Delft, Netherlands, July 2024. doi: 10.15607/RSS.2024.XX.132. [24] Aykut ¨Ozgun ¨Onol, Radu Corcodel, Philip Long, and Tas ¸kın Padır. Tuning-free contact-implicit trajectory optimization. In 2020 IEEE International Conference on Robotics and Automation (ICRA) , pages 1183–1189. IEEE, 2020. [25] Jonas Hall, Armin Nurkanovi´ c, Florian Messerer, and Moritz Diehl. LCQPow: a solver for linear complemen-tarity quadratic programs. Mathematical Programming Computation , 17(1):81–109, 2025. [26] Alp Aydinoglu and Michael Posa. Real-time multi-contact model predictive control via admm. In 2022 International Conference on Robotics and Automation (ICRA) , pages 3414–3421. IEEE, 2022. [27] Alp Aydinoglu, Adam Wei, Wei-Cheng Huang, and Michael Posa. Consensus complementarity control for multi-contact mpc. IEEE Transactions on Robotics ,2024. [28] Wei-Cheng Huang, Alp Aydinoglu, Wanxin Jin, and Michael Posa. Adaptive contact-implicit model predictive control with online residual learning. In 2024 IEEE International Conference on Robotics and Automation (ICRA) , pages 5822–5828. IEEE, 2024. [29] Sharanya Venkatesh, Bibit Bianchini, Alp Aydinoglu, William Yang, and Michael Posa. Approximating global contact-implicit mpc via sampling and local complemen-tarity. IEEE Robotics and Automation Letters , 2025. [30] Hien Bui, Yufeiyang Gao, Haoran Yang, Eric Cui, Sid-dhant Mody, Brian Acosta, Thomas Stephen Felix, Bibit Bianchini, and Michael Posa. Push anything: Single- and multi-object pushing from first sight with contact-implicit mpc. arXiv preprint arXiv:2510.19974 , 2025. [31] Etienne M´ enager, Pierre Fabre, Antoine Bambade, Wil-son Jallet, Alberto de Marchi, and Justin Carpentier. Frictional Contact-Implicit Inverse Dynamics. working paper or preprint, August 2025. URL https://hal.science/ hal-05201780. [32] Mihai Anitescu. Optimization-based simulation of non-smooth rigid multibody dynamics. Mathematical Pro-gramming , 105(1):113–143, 2006. [33] Marc Toussaint. A novel augmented lagrangian approach for inequalities and convergent any-time non-central up-dates. arXiv preprint arXiv:1412.4329 , 2014. [34] Joel AE Andersson, Joris Gillis, Greg Horn, James B Rawlings, and Moritz Diehl. Casadi: a software frame-work for nonlinear optimization and optimal control. 
+
+Mathematical Programming Computation , 11(1):1–36, 2019. [35] Lorenz T Biegler and Victor M Zavala. Large-scale non-linear programming using ipopt: An integrating frame-work for enterprise-wide dynamic optimization. Com-puters & Chemical Engineering , 33(3):575–582, 2009. [36] HJ Terry Suh, Tao Pang, Tong Zhao, and Russ Tedrake. Dexterous contact-rich manipulation via the contact trust region. The International Journal of Robotics Research ,page 02783649251398875, 2025. SUPPLEMENTARY MATERIAL 
+
+In the supplementary material, Appendices A and B clarify the theoretical stationarity interface used by IMPACT. Appendices C and D provide the hyperparameters used in our experiments and additional results. Appendix A defines the corrected inner KKT residual rin , whose multiplier set is consistent with the limiting normal cone of the complementarity set 
+
+C := {(Y, Z ) : 0 ≤ Y ⊥ Z ≥ 0}.
+
+Appendix B proves that the BCD inner solver can attain this residual to any prescribed tolerance under the stated assumptions. This provides the inner-solve interface required by the safeguarded AuLa convergence result. 
+
+a) Scope : Throughout this work, “convergence/stationarity” refers to the standard safeguarded AuLa stationarity guarantee for MPCCs: under bounded safeguarded multipliers, vanishing inner residuals 
+
+rin (wk) ≤ ϵk, ϵk ↓ 0,
+
+and the stated MPCC regularity condition, every feasible accumulation point of the outer iterates is M-stationary 1 for the vertical MPCC formulation. We do not claim whole-sequence convergence, unconditional feasibility, or existence of accumulation points. By equivalence of the vertical reformulation, the stationarity statement also applies to the original MPCC after eliminating the slack variables. APPENDIX AINNER STATIONARITY INTERFACE FOR THE SAFEGUARDED AULA WRAPPER 
+
+This appendix makes explicit the inner-stationarity interface used by the safeguarded AuLa wrapper. The key point is that the complementarity variables are kept as hard constraints in the AuLa subproblem, and therefore the inner residual must be consistent with the limiting normal cone of the complementarity set 
+
+C .
+
+= {(Y, Z ) : 0 ≤ Y ⊥ Z ≥ 0}.
+
+We use the M-stationarity convention of MPCC theory and of the safeguarded AuLa method of Guo and Deng [16]. In particular, the multipliers associated with the complementarity variables are not subject to a global sign restriction. Their admissible signs depend on the local complementarity status of each pair (Yi, Z i).Throughout Appendix A and Appendix B, we fix an outer iteration k and write 
+
+Φ ≡ Φk
+
+for the corresponding inner AuLa objective in (4). The inner subproblem is 
+
+min  
+
+> X,Y,Z
+
+Φ( X, Y, Z ) s.t. (Y, Z ) ∈ C .
+
+The smooth equality and inequality constraints of the original MPCC are already represented in Φ through the safeguarded AuLa terms. The complementarity set C, however, is not penalized or relaxed. 
+
+a) Sign convention: We use the Lagrangian sign convention 
+
+Lin (w, u, v ) .
+
+= Φ( w) − u⊤Y − v⊤Z, w = ( X, Y, Z ).
+
+Thus the complementarity normal-cone element is represented as 
+
+(−u, −v) ∈ NC (Y, Z ),
+
+where NC denotes the limiting normal cone. 
+
+> 1We refer the reader to [10] for the relevant notions of stationarity; these notions are classified by the signs and feasible sets of the multipliers associated with the complementarity constraints. Throughout this paper, we do not otherwise distinguish among them.
+
+A. Stationarity-consistent multipliers and the KKT residual 
+
+For a feasible pair (Y, Z ) ∈ C , define the standard MPCC index sets 
+
+I+0 (w) .
+
+= {i : Yi > 0, Z i = 0 }, I0+ (w) .
+
+= {i : Yi = 0 , Z i > 0},I00 (w) .
+
+= {i : Yi = 0 , Z i = 0 }.
+
+We also define 
+
+QM
+
+.
+
+= R2++ ∪ (R × { 0}) ∪ ({0} × R).
+
+Equivalently, (a, b ) ∈ Q M if either a > 0 and b > 0, or ab = 0 .
+
+Definition 6 (Stationarity-consistent complementarity multipliers) . For a feasible w = ( X, Y, Z ) with (Y, Z ) ∈ C , define 
+
+MM (w) .
+
+=
+
+n
+
+(u, v ) : ui = 0 ∀i ∈ I+0 (w),vi = 0 ∀i ∈ I0+ (w),
+
+(ui, v i) ∈ Q M ∀i ∈ I00 (w)
+
+o
+
+.
+
+No sign restriction is imposed on vi for i ∈ I+0 (w), and no sign restriction is imposed on ui for i ∈ I0+ (w).
+
+Lemma 7 (Normal cone of the complementarity set) . For every feasible (Y, Z ) ∈ C ,
+
+NC (Y, Z ) = {(−u, −v) : ( u, v ) ∈ M M (w)}.
+
+Consequently, the condition 
+
+0 ∈ ∇ (Y,Z )Φ( w) + NC (Y, Z )
+
+is equivalent to the existence of (u, v ) ∈ M M (w) such that 
+
+∇Y Φ( w) − u = 0 , ∇Z Φ( w) − v = 0 .
+
+Proof: The complementarity set is a Cartesian product of the two-dimensional cones 
+
+Ci = {(yi, z i) : 0 ≤ yi ⊥ zi ≥ 0}.
+
+For a single pair, the limiting normal cone is 
+
+NCi (yi, z i) = 
+
+
+
+{0} × R, yi > 0, z i = 0 ,
+
+R × { 0}, yi = 0 , z i > 0,
+
+R2 
+
+> −
+
+∪ (R × { 0}) ∪ ({0} × R), yi = 0 , z i = 0 .
+
+Writing each normal element as (−ui, −vi) gives exactly the multiplier pattern in Definition 6. Taking the Cartesian product over all complementarity pairs gives the claim. 
+
+a) Reference normal-cone stationarity measure: The stationarity measure required by safeguarded AuLa/MPCC theory is 
+
+rnc (w) .
+
+= dist ∞(0 , ∇Φ( w) + {0} × NC (Y, Z )) , w = ( X, Y, Z ), (Y, Z ) ∈ C . (7) Here dist ∞ denotes distance in the ℓ∞ norm. This is the vertical-form version of the inner stationarity condition used in the safeguarded AuLa method of [16]. 
+
+b) X-block stationarity term: In the theoretical formulation (4), the X-variables are unconstrained after the smooth constraints have been absorbed into the AuLa objective. Thus the X-block residual is 
+
+GX (w) .
+
+= ∇X Φ( w). (8) If an implementation additionally enforces simple convex bounds on X directly, then GX may be replaced by the usual projected-gradient mapping over that convex set. 
+
+c) Primal complementarity feasibility: Although the inner subproblem enforces (Y, Z ) ∈ C exactly, we keep the primal feasibility term in the residual to make the KKT certificate explicit: 
+
+rpri (w) .
+
+= max 
+
+n
+
+∥ min( Y, 0) ∥∞, ∥ min( Z, 0) ∥∞, ∥Y ◦ Z∥∞
+
+o
+
+. (9) For all completed BCD iterates considered below, rpri (w) = 0 .d) KKT residual: For any feasible w = ( X, Y, Z ) and any (u, v ) ∈ M M (w), define 
+
+rin (w; u, v ) .
+
+= max 
+
+n
+
+∥GX (w)∥∞, ∥∇ Y Φ( w) − u∥∞, ∥∇ Z Φ( w) − v∥∞, r pri (w)
+
+o
+
+. (10) The best achievable KKT residual is 
+
+rin (w) .
+
+= inf   
+
+> (u,v )∈M M(w)
+
+rin (w; u, v ). (11) We call w ε -stationary for the inner AuLa subproblem if 
+
+rin (w) ≤ ε. 
+
+Equivalently, there exist consistent multipliers (u, v ) ∈ M M (w) such that rin (w; u, v ) ≤ ε.
+
+e) Closed-form evaluation: The infimum in (11) is separable across complementarity pairs. Let 
+
+ai(w) .
+
+= ∇Yi Φ( w), bi(w) .
+
+= ∇Zi Φ( w),
+
+and let (s)+
+
+.
+
+= max {s, 0}. For feasible w, define the per-pair stationarity mismatch 
+
+di(w) .
+
+=
+
+
+
+|ai(w)|, i ∈ I+0 (w),
+
+|bi(w)|, i ∈ I0+ (w),
+
+min 
+
+n
+
+max {(−ai(w)) +, (−bi(w)) +}, |ai(w)|, |bi(w)|
+
+o
+
+, i ∈ I00 (w).
+
+Then 
+
+rin (w) = max 
+
+n
+
+∥GX (w)∥∞, r pri (w), max  
+
+> i
+
+di(w)
+
+o
+
+. (12) At a biactive pair (Yi, Z i) = (0 , 0) , the third case in di is precisely the ℓ∞-distance from (ai, b i) to the multiplier set QM .This is the correction that replaces the incorrect global sign-feasible multiplier restriction. 
+
+B. Link to safeguarded AuLa stationarity 
+
+Lemma 8 (KKT residual matches the limiting-normal-cone residual) . For every feasible w = ( X, Y, Z ) with (Y, Z ) ∈ C ,
+
+rnc (w) = rin (w).
+
+Proof: Since X is unconstrained in the inner AuLa subproblem (4), 
+
+{0} × NC (Y, Z )
+
+is the only nonsmooth normal-cone term in (7). By Lemma 7, 
+
+(−u, −v) ∈ NC (Y, Z ) ⇐⇒ (u, v ) ∈ M M (w).
+
+Therefore, 
+
+rnc (w) = inf   
+
+> (u,v )∈M M(w)
+
+max 
+
+n
+
+∥∇ X Φ( w)∥∞, ∥∇ Y Φ( w) − u∥∞, ∥∇ Z Φ( w) − v∥∞
+
+o
+
+.
+
+Using GX (w) = ∇X Φ( w) and rpri (w) = 0 for feasible w gives exactly rin (w).
+
+Proposition 9 (Safeguarded AuLa interface) . Suppose the inner iterates returned to the outer loop satisfy 
+
+rin (wk) ≤ εk, εk ↓ 0.
+
+Then the inner stationarity requirement of the safeguarded AuLa method, 
+
+dist  0, ∇Φk(wk) + {0} × NC (Y k, Z k) ≤ O(εk),
+
+holds, up to norm-equivalence constants. Consequently, under bounded safeguarded multipliers and the MPCC regularity condition in [16, Thm. 3], every feasible accumulation point of the outer iterates is M-stationary for the vertical MPCC formulation. 
+
+Proof: The first claim follows immediately from Lemma 8 and norm equivalence between ℓ∞ and Euclidean distance. The second claim is exactly the safeguarded AuLa convergence implication for MPCCs with the complementarity constraints kept as lower-level constraints; see [16, Thm. 3]. 
+
+a) Takeaway: The residual rin is the sole inner-stationarity certificate used by the outer convergence statement. It is a computable KKT-style residual, but its multiplier feasibility is normal-cone consistent at the complementarity set. APPENDIX B
+
+ε-STATIONARY ATTAINABILITY FOR THE BCD INNER SOLVER 
+
+This appendix proves that the BCD inner solver can attain the KKT residual rin to any prescribed tolerance in finitely many inner iterations. This is the attainability property needed by the safeguarded AuLa outer loop. The result does not assert whole-sequence convergence of the nonconvex inner solver, nor does it assert global optimality of the AuLa subproblem. Throughout this section, k is fixed and Φ ≡ Φk. We write 
+
+w(j) = ( X(j), Y (j), Z (j))
+
+for completed BCD iterates after the (Y, Z )-update. If the initialized value (Y (0) , Z (0) ) is not the exact minimizer for X(0) ,all statements below apply after the first completed (Y, Z )-update, with a harmless relabeling of the index. 
+
+A. Assumptions 
+
+Assumption 1 (Smoothness and boundedness) . Along the inner iterates {w(j)} generated at the fixed outer iteration k:1) Φ is continuously differentiable on a neighborhood of the iterates, and ∇Φ is Lipschitz on that neighborhood. 2) The sequence {w(j)} is bounded, and 
+
+inf  
+
+> w: ( Y,Z )∈C
+
+Φ( w) > −∞ .
+
+Assumption 2 (X-step sufficient decrease) . There exists a constant cX > 0 such that every completed BCD sweep satisfies 
+
+Φ( w(j+1) ) ≤ Φ( w(j)) − cX GX (w(j)) 2
+
+> ∞
+
+. (13) This assumption covers both one-step and multi-step X-updates. For example, it holds if the completed X-update is globalized by Armijo-type line search so that the accumulated decrease is comparable to the X-block residual, and the subsequent 
+
+(Y, Z )-update does not increase Φ.
+
+Assumption 3 (Exact (Y, Z )-block minimization over the complementarity set) . For every completed BCD iterate w(j),
+
+(Y (j), Z (j)) ∈ arg min  
+
+> (Y,Z )∈C
+
+Φ( X(j), Y, Z ).
+
+B. Descent and X-block attainability 
+
+Lemma 10 (Monotone decrease and square-summable X-block residual) . Under Assumptions 1 and 2, the inner objective values are monotone non-increasing and ∞X
+
+> j=0
+
+GX (w(j)) 2 
+
+> ∞
+
+< ∞.
+
+Proof: Summing (13) from j = 0 to N gives 
+
+cXNX
+
+> j=0
+
+GX (w(j)) 2 
+
+> ∞
+
+≤ Φ( w(0) ) − Φ( w(N +1) ).
+
+By Assumption 1, the right-hand side is bounded above by 
+
+Φ( w(0) ) − inf  
+
+> w: ( Y,Z )∈C
+
+Φ( w).
+
+Letting N → ∞ proves square summability. Monotonicity follows directly from (13). 
+
+Theorem 11 (Attainability of the X-block residual) . Under Assumptions 1 and 2, for any ε > 0, there exists a finite inner iteration index jε such that 
+
+GX (w(jε)) ∞ ≤ ε. 
+
+Moreover, for any N ≥ 0,
+
+min  
+
+> 0≤j≤N
+
+GX (w(j)) ∞ ≤
+
+s
+
+Φ( w(0) ) − inf w: ( Y,Z )∈C Φ( w)
+
+cX (N + 1) .
+
+Proof: The quantitative bound follows from the summability estimate in Lemma 10. The finite-attainability statement follows because the right-hand side tends to zero as N → ∞ .C. From X-block attainability to KKT inner stationarity 
+
+Lemma 12 (Exact (Y, Z )-minimization eliminates the (Y, Z )-part of the KKT residual) . Under Assumptions 1 and 3, every completed BCD iterate w(j) = ( X(j), Y (j), Z (j)) satisfies 
+
+rin (w(j)) = GX (w(j)) ∞. (14) 
+
+Proof: By Assumption 3, (Y (j), Z (j)) is a global, hence local, minimizer of the smooth function 
+
+(Y, Z ) 7 → Φ( X(j), Y, Z )
+
+over the closed set C. The Fermat rule for closed sets gives 
+
+0 ∈ ∇ (Y,Z )Φ( w(j)) + NC (Y (j), Z (j)).
+
+By Lemma 7, there exist multipliers 
+
+(u(j), v (j)) ∈ M M (w(j))
+
+such that 
+
+∇Y Φ( w(j)) − u(j) = 0 , ∇Z Φ( w(j)) − v(j) = 0 .
+
+The completed (Y, Z )-update is feasible for C, so 
+
+rpri (w(j)) = 0 .
+
+Therefore the only nonzero term in the corrected residual (10) is the X-block term, and 
+
+rin (w(j)) ≤ GX (w(j)) ∞.
+
+The reverse inequality follows directly from the definition of rin , since the X-block term appears inside the maximum in (10). Hence equality holds. 
+
+Theorem 13 (Attainability of MPCC inner ε-stationarity by the BCD inner solver) . Fix outer iteration k and consider the completed BCD inner iterates {w(j)} generated by Algorithm 2. Suppose Assumptions 1– 3 hold. Then, for any tolerance 
+
+ε > 0, there exists a finite inner iteration index jε such that 
+
+rin (w(jε)) ≤ ε. 
+
+Moreover, for any N ≥ 0,
+
+min  
+
+> 0≤j≤N
+
+rin (w(j)) ≤
+
+s
+
+Φ( w(0) ) − inf w: ( Y,Z )∈C Φ( w)
+
+cX (N + 1) .
+
+Equivalently, there exist multipliers 
+
+(u(jε), v (jε)) ∈ M M (w(jε))
+
+such that 
+
+rin 
+
+ w(jε); u(jε), v (jε) ≤ ε. 
+
+Proof: Combine Theorem 11 with Lemma 12. The multiplier statement follows from the definition of rin .
+
+Practical stopping by stagnation. The implementation uses a budgeted inner solve and may stop by objective stagnation rather than explicitly evaluating rin . The theory above is therefore an attainability statement. Nevertheless, the sufficient decrease condition gives the following useful calibration. If 
+
+∆j
+
+.
+
+= Φ( w(j)) − Φ( w(j+1) ) ≤ τk,
+
+then (13) implies 
+
+GX (w(j)) ∞ ≤ pτk/c X .
+
+By Lemma 12, 
+
+rin (w(j)) ≤ pτk/c X .
+
+Thus objective stagnation is a practical proxy for the KKT residual. The safeguarded AuLa convergence statement itself, however, uses the theoretical residual rin and the attainability result in Theorem 13. D. Empirical Results for the Stagnation-Based Stopping Rule a) Empirical validation of the stagnation-based stopping rule: We empirically examine how the stagnation test relates to the corrected inner stationarity measure on the Push-T manipulation task. Across 30 random initializations (15,139 recorded inner-iteration pairs), we compute the association between 
+
+∥GX (w(j))∥∞
+
+and the one-step objective-decrease proxy 
+
+q
+
+∆Φ( w(j)), ∆Φ( w(j)) .
+
+= Φ( w(j)) − Φ( w(j+1) ).
+
+By Lemma 12, for completed BCD iterates this quantity coincides with the KKT residual: 
+
+rin (w(j)) = ∥GX (w(j))∥∞.
+
+• Strong correlation. In log–log scale, the correlation coefficient is ρ = 0 .983 , indicating that the stagnation signal is a reliable empirical proxy for ∥GX (w(j))∥∞ and hence for rin (w(j)).
+
+• Near-linear scaling. A power-law fit yields an exponent of 0.945 ≈ 1, consistent with the theoretical O(√τk) dependence implied by the sufficient-decrease relation. 
+
+• Empirical constant. Empirically, we observe 
+
+∥GX (w(j))∥∞ ≤ c
+
+q
+
+∆Φ( w(j))
+
+with c ≈ 1.9 (equivalently, cX ≈ 0.28 in (13)). Consequently, on Push-T, terminating the inner BCD loop when 
+
+Φ( w(j)) − Φ( w(j+1) ) ≤ τk
+
+typically yields 
+
+rin (w(j)) = ∥GX (w(j))∥∞ ≤ 1.9 √τk. (15) We emphasize that (15) is an empirical calibration on this problem; the theoretical analysis only requires the existence of a sufficient-decrease constant. 10 6 10 5 10 4 10 3 10 2 10 1 10 0                   
+
+> (w)
+> 10 6
+> 10 5
+> 10 4
+> 10 3
+> 10 2
+> 10 1
+> 10 0
+> |rin (w)|
+> (a) Correlation between metrics
+> (30 random inits, 15139 points)
+> Fit: slope=0.95
+> Corr=0.983
+> y=x
+> 10 010 110 210 3
+> BCD Iteration
+> 10 6
+> 10 5
+> 10 4
+> 10 3
+> 10 2
+> 10 1
+> 10 0
+> Value
+> (b) Convergence curves
+> (single experiment, seed 4)
+> |rin (w)|
+> (w)
+> 10 010 110 210 3
+> BCD Iteration
+> 10 1
+> 10 0
+> (w)
+> (c) AULA Lagrangian curve
+> (single experiment, seed 4)
+> (w)
+
+Fig. 5: Empirical validation of the stagnation-based stopping criterion on the Push-T task. (a) Log-log scatter plot showing the correlation ( ρ = 0 .98 ) between the X-block residual ∥GX (w)∥∞ (equivalently, the corrected inner residual rin (w) on completed BCD iterates) and the stagnation measure p∆Φ( w) across 30 random initializations (15,139 data points). (b) Convergence of both metrics during BCD iterations for a representative experiment. (c) Corresponding value of the augmented Lagrangian Φ( w).APPENDIX CHYPERPARAMETERS AND EXPERIMENTS SETUP 
+
+A. CITO Benchmark Problems 
+
+Push Box Push Box is a planar pushing task where a rectangular box moves on a tabletop under friction. The solver must plan a long-horizon trajectory to reach target poses while selecting appropriate contact modes (which face is pushed) and corresponding contact forces, resulting in nontrivial mode switching. 
+
+Cart Transport Cart Transport involves indirect manipulation via friction: a payload rests on a cart and may stick or slip as the cart accelerates. The goal is to drive the system to a target while keeping the payload on the cart, often requiring non-monotone motions that exploit stick–slip transitions to reposition the payload. Push T Push T generalizes planar pushing to a non-convex T-shaped object, increasing the number of feasible contact locations and modes. This leads to a larger complementarity system and a more complex mode landscape, making Push T a harder benchmark. We follow the optimization problem formulation in CRISP [11] (in its Appendix B). Specifically, CRISP enforces the system dynamics as equality constraints, models unilateral contacts via complementarity constraints, and (for tasks such as Push-T) uses mutual-exclusion complementarity constraints to ensure that at most one control mode is active at each time step. For the Push-T and Cart-Transport tasks, we include the control-feasibility and boundary constraints within the MPCC formulation. In general, the objective terms and constraints are identical to those in CRISP. We summarize the benchmark settings in Table II. The solver parameters are reported for IMPACT; for all other baselines, we set the stopping criteria to match this convergence setup. TABLE II: Hyperparameters for the three benchmark tasks.                                                                                                    
+
+> Parameter Push Box Push T Cart Transporter
+> Physical Parameters
+> Mass m(kg) 0.1 0.1 m1= 0 .1,m2= 0 .2
+> Gravity g(m/s 2)9.81 9.8 9.81 Friction coefficient μ0.5 0.4 0.2 Characteristic length (m) a= 0 .3,b= 0 .4l= 0 .05 l= 1 .0
+> Time step ∆t(s) 0.05 0.05 0.02
+> Problem Dimensions
+> State dimension nx334Control dimension nu624 4Complementarity pairs nc10 43 3Equality constraints ne071Inequality constraints ni044
+> Optimization Parameters
+> Horizon 50 50 300 Stage control cost weight 0.001 0.01 10 −6
+> Final cost weight 100.0 100.0 5000.0 Multiplier Safeguard 10 610 610 6
+> ρscaling factor 1.1 1.1 1.5
+> Convergence Criteria
+> Max outer iterations 1000 1000 1000 Outer tolerance ϵh10 −510 −510 −5
+> Outer tolerance ϵcomp 10 −510 −510 −5
+> Max inner iterations 50 50 10 Inner tolerance 10 −310 −310 −3
+> Newton Solver Parameters
+> Max Newton iterations 50 200 100 Newton tolerance 10 −610 −610 −6
+> Regularization 2×10 −55×10 −510 −5
+
+B. Allegro Benchmark 
+
+We summarize the hyperparameters used in the Allegro benchmark tests in Table III. APPENDIX DADDITIONAL EXPERIMENT DEMONSTRATION 
+
+We provide additional experimental demonstrations here to build intuition for the main-text results. 
+
+A. IMPACT CITO Extra Demos 
+
+We include additional qualitative demos of IMPACT CITO on three tasks. Figures 6 and 7 report overlaid rollouts for the Pushing Box and PushT settings across multiple start–goal pairs in the (x, y, θ ) state space. Figure 8 shows rollout sequences for the Cart Transporter task in (x, y, dx, dy ), with zero start and goal velocities. Visualization conventions (start/goal poses, force direction, and time progression) follow the figure captions. These results are based on the same data as the supplementary video. TABLE III: Hyperparameters comparison for Allegro Hand in-hand manipulation: IMPACT vs. C-Free 
+
+Parameter IMPACT C-Free Notes 
+
+System Dimensions 
+
+State dimension nq 23 23 Same (obj: 7, robot: 16) Velocity dimension nv 22 22 Same (obj: 6, robot: 16) Command dimension nu 16 16 Same (joint position cmds) Max contacts ncon 20 20 Same 
+
+Simulation Parameters (Mujoco) 
+
+Time step h (s) 0.1 0.1 Same Frame skip 50 50 Same Friction coefficient μ 0.5 0.5 Same 
+
+MPC Parameters 
+
+Horizon N 4 4 Same Control bound ±0.1 ±0.1(0 .2) 
+
+Cost Function Weights (Path Cost) 
+
+Position cost weight 0.0 0.0 Same Quaternion cost weight 0.0 0.0 Same Contact cost weight 1.0 1.0 Encourage contact Grasp closure weight 0.0 0.0 Same Control cost weight 0.1 0.1 Same Velocity penalty 0.1 – Object Damping 
+
+Cost Function Weights (Final Cost) 
+
+Final position weight 1000.0 1000.0 Same Final quaternion weight 90.0 50.0 scale match 
+
+Solver-Specific Parameters 
+
+IMPACT Parameters 
+
+ρmax 10 3 –
+
+ρ scale factor 5.0 –Max outer iterations 10 –Outer tol ( ϵh) 10 −3 –Outer tol ( ϵcomp ) 10 −3 –Max inner iterations 5 –Newton max iterations 30 –Newton step tolerance 10 −5 –Newton obj tolerance 10 −6 –
+
+C-Free (IPOPT-based NLP) 
+
+IPOPT max iterations – 50 Complementarity relaxation – > 0 Relaxed LCP 
+
+Success Criteria 
+
+Position tolerance (m) 0.02 0.02 Same Quaternion tolerance 0.04 0.04 Same Consecutive success steps 20 20 Same Max rollout steps 1000 1000 Same 
+
+B. Allegro Extra Demos 
+
+We provide additional Allegro in-hand re-orientation results on a variety of objects. Due to space constraints, we split them into four figures containing 5, 5, 5, and 2 objects, respectively (Figs. 9–12). The object shown above the hand indicates the target pose. (a) From (x, y, θ ) =(0 .00 , 0.00 , 0.00) to                     
+
+> (0 .10 ,0.21 ,1.00) .
+> (b) From (x, y, θ ) = (0 .00 ,0.00 ,−0.50) to
+> (2 .00 ,0.00 ,1.00) .
+> (c) From (x, y, θ ) = (0 .00 ,0.00 ,0.00) to
+> (1 .00 ,0.70 ,−1.00) .
+> (d) From (x, y, θ ) = (0 .00 ,0.00 ,0.00) to
+> (2 .00 ,0.70 ,−1.00) .
+
+Fig. 6: Pushing Box task. Each panel overlays one rollout conditioned on a start and a goal state in (x, y, θ ). The green and orange dashed boxes indicate the start and goal poses, respectively. The purple arrow shows the pushing force, and the color gradient from light blue to orange indicates time progression. The blue solid line shows the trajectory of the box center. (a) From (x, y, θ ) = (0 .00 , 0.00 , −0.50)                               
+
+> to (0 .50 ,0.00 ,1.00) .
+> (b) From (x, y, θ )=(0 .00 ,0.00 ,0.00) to
+> (1 .00 ,0.50 ,0.00) .
+> (c) From (x, y, θ )=(0 .00 ,0.00 ,−0.50) to
+> (0 .50 ,0.00 ,0.00) .
+> (d) From (x, y, θ )=(0 .00 ,0.00 ,−1.50) to
+> (0 .50 ,0.10 ,1.50) .
+
+Fig. 7: Push T task. Each panel overlays one rollout conditioned on a start and a goal state in (x, y, θ ). The green and orange dashed boxes indicate the start and goal poses, respectively. The purple arrow shows the pushing force, and the color gradient from light blue to orange indicates time progression. The blue solid line shows the trajectory of the pushed object’s center. t = 0.00s 
+
+> t = 0.74s
+> t = 1.48s
+> t = 2.22s
+> t = 2.96s
+> t = 3.70s
+> t = 4.44s
+> t = 5.18s
+> t = 5.92s
+> t = 6.00s
+
+(a) Start at x=0.00, y=0.00. Goal is x=0.00, y=0.90. t = 0.00s 
+
+> t = 0.74s
+> t = 1.48s
+> t = 2.22s
+> t = 2.96s
+> t = 3.70s
+> t = 4.44s
+> t = 5.18s
+> t = 5.92s
+> t = 6.00s
+
+(b) Start at x=0.00, y=-0.20. Goal is x=0.70, y=0.70. t = 0.00s 
+
+> t = 0.74s
+> t = 1.48s
+> t = 2.22s
+> t = 2.96s
+> t = 3.70s
+> t = 4.44s
+> t = 5.18s
+> t = 5.92s
+> t = 6.00s
+
+(c) Start at x=0.90, y=-0.10. Goal is x=1.70, y=1.50. t = 0.00s 
+
+> t = 0.74s
+> t = 1.48s
+> t = 2.22s
+> t = 2.96s
+> t = 3.70s
+> t = 4.44s
+> t = 5.18s
+> t = 5.92s
+> t = 6.00s
+
+(d) Start at x=1.00, y=1.00. Goal is x=-1.00, y=-1.50. 
+
+Fig. 8: Cart Transporter task. Each panel shows a rollout sequence in the state space (x, y, dx, dy ), where x and dx denote the load’s position and velocity, and y and dy denote the cart’s position and velocity, all expressed in the global coordinate frame. Start and goal velocities are set to zero. (a) Airplane 
+
+> (b) Binoculars
+> (c) Bottle
+> (d) Bowl
+> (e) Bunny
+
+Fig. 9: Additional Allegro in-hand re-orientation results on: Airplane, Binoculars, Bottle, Bowl, and Bunny. (a) Camera 
+
+> (b) Can
+> (c) Cube
+> (d) Cup
+> (e) Elephant
+
+Fig. 10: Additional Allegro in-hand re-orientation results on: Camera, Can, Cube, Cup, and Elephant. (a) Foam brick 
+
+> (b) Mug
+> (c) Piggy
+> (d) Rubber object
+> (e) Stick
+
+Fig. 11: Additional Allegro in-hand re-orientation results on: Foam brick, Mug, Piggy, Rubber object, and Stick (fail example). (a) Teapot 
+
+> (b) Torus
+
+Fig. 12: Additional Allegro in-hand re-orientation results on: Teapot and Torus.

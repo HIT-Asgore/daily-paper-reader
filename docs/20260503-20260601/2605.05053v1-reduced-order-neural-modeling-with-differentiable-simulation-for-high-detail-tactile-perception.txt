@@ -1,0 +1,228 @@
+Title: Reduced-order Neural Modeling with Differentiable Simulation for High-Detail Tactile Perception
+
+URL Source: https://arxiv.org/pdf/2605.05053v1
+
+Published Time: Thu, 07 May 2026 01:23:28 GMT
+
+Number of Pages: 7
+
+Markdown Content:
+> 1
+
+# Reduced-order Neural Modeling with Differentiable Simulation for High-Detail Tactile Perception 
+
+Yuhu Guo 1, Zhikai Shen 2, Jiasheng Qu 2, Chenghao Qian 3, Yuming Huang 1, Bin Chen 4∗, Guoxing Fang 2∗
+
+Abstract —Tactile perception is key to dexterous manipu-lation, yet simulating high-resolution elastomer deformation remains computationally prohibitive. Finite element methods (FEM) deliver high fidelity but demand costly remeshing, while Material Point Methods (MPM) suffer from heavy particle-memory tradeoffs. We propose a reduced-order neural simulation framework that couples coarse-grained MPM dynamics with an implicit neural decoder to reconstruct sub-particle tactile details from compact latent states. The framework learns acontinuous deformation manifold from paired high- and low-resolution simulations, enabling physically consistent, differen-tiable inference. Compared to the TacIPC, our method achieves over 65% faster simulation and 40% lower memory usage, while maintaining better geometric fidelity. In tactile rendering and 3D surface reconstruction, our methods further improve accuracy by 25% and produce realistic depth images and surface mesh within a faster inference speed. These results demonstrate that the proposed reduced-order neural model enables high-detail, physically grounded tactile simulation with substantial efficiency gains for robotic interaction and optimization. 
+
+I. I NTRODUCTION 
+
+Tactile perception enables the recovery of rich geometric and physical cues from object contact by capturing surface deformation. Optical sensors such as GelSight [1] excel at capturing textures, contact shapes, and deformations [2], [3]. Recent efforts to simulate tactile sensor deformation have focused on modeling the interaction between rigid objects and deformable elastomer surfaces. Traditional proxy-based approaches [4], [5] often allow object–gel penetration as a surrogate for deformation. Although computationally efficient, these methods lack physical realism and fail to capture ac-curate stress–strain responses. Physics-based methods offer more fidelity but face practical challenges. Among them, finite element methods (FEM) [6] can deliver high accuracy in modeling large deformations; however, they require carefully constructed meshes and often demand adaptive remeshing strategies to avoid numerical instabilities at sharp contacts [7], [8]. This mesh dependency hinders scalability and complicates simulation pipelines. On the other hand, the Material Point Method (MPM) [9] eliminates the need for explicit mesh-ing and is robust to topological changes, but its accuracy depends heavily on particle density. High-resolution particle discretizations quickly lead to prohibitive memory-cost, mak-ing it difficult to capture complex surface wrinkles and contact details. Briefly, FEM achieves high fidelity but at the expense of meshing complexity, whereas MPM provides flexibility but is bottlenecked by memory consumption in high-resolution scenarios.            
+
+> 1The University of Manchester, UK 2The Chinese University of Hong Kong, Hong Kong SAR, China 3University of Leeds, UK 4University of Melbourne, Australia ∗Corresponding Author( bin.chen@unimelb.edu.au; guoxinfang@mae.cuhk.edu.hk) Project Page: tac2detail.github.io
+
+Fig. 1: (a) The bunny presses against a soft elastomer, deforming its surface under illumination from multiple LEDs. The camera beneath captures modulated RGB reflections, encoding high-resolution 3D contact geometry. (b) Our method reconstructs fine-scale surface details, such as hair-like textures on a 3D bunny model, directly from our reduced-order model, achieving high tactile geometric fidelity. (c) Our physical experiment contains a UR5e robot with a GelSight Mini sensor that contacts the bunny, enabling direct validation of simulation accuracy against real-world tactile data. 
+
+To address this challenge, we propose a hybrid neural-physical simulation framework that enhances coarse MPM simulations with a learned, continuous representation of fine-scale deformation. Our key insight is that the high-dimensional state space of detailed tactile deformation can be effectively compressed into a low-dimensional latent manifold by princi-ples of reduced-order modeling (ROM) [10], [11]. We leverage this idea to train a neural field, an implicit neural representa-tion that encodes the topology and deformation patterns of the elastomer from high-resolution MPM data. This neural field operates as a super-resolution decoder, mapping low-dimensional latent codes to high-fidelity deformation fields conditioned on the coarse simulation state. During inference, our method decouples physical dynamics from detail reconstruction: the MPM solver handles global mechanics efficiently at low resolution, while the neural field refines the deformation field in efficient time, generat-ing sub-particle-level tactile details. By querying the neural field directly on a dense grid, we effectively super-resolve the displacement and stress fields, recovering critical tactile features such as surface wrinkles, contact edges, typically smoothed out or missed entirely in low-resolution simulations. Importantly, our approach remains differentiable and preserves the underlying physics of MPM, ensuring stable and plausible 
+
+> arXiv:2605.05053v1 [cs.RO] 6 May 2026 2
+> Fig. 2: This figure illustrates our pipeline. The top row depicts the transformation from a high-dimensional full-space MPM simulation (left, red particles) to a low-dimensional subspace representation, and then back to a sample of the reduced-order model (ROM) MPM simulation. The bottom row demonstrates the tactile rendering process: when a complex surface is pressed against an elastomer, our method generates deformation maps at varying force levels.
+
+interactions. The neural field is trained offline on paired high-and low-resolution MPM simulations, learning a mapping from coarse states to fine-grained deformation details. Once trained, it introduces minimal computational overhead during online execution, making it compatible with real-time robotic simulation and gradient-based optimization. This combination of physical grounding and expressive neural modeling enables both efficiency and high perceptual fidelity.  
+
+> •
+
+We propose a reduced-order neural simulation framework that couples coarse MPM dynamics with an implicit neural decoder, enabling sub-particle tactile detail re-construction from low-dimensional latent states while achieving significant computational efficiency.  
+
+> •
+
+We experimentally validate our framework against prior art through both simulation and real-robot experiments (Fig.1), demonstrating complex surface geometric fidelity in press simulation, tactile image rendering, and 3D surface reconstruction tasks with consistent sim-to-real transfer. II. R ELATED WORK 
+
+A. Tactile Simulation 
+
+The development of tactile simulation has followed a clear trajectory from rigid-body approximation to continuum and particle-based deformable modeling. Early attempts relied on rigid-body simulators, where soft contact was approximated through geometric penetration or penalty-based models. Prior art such as Tacto [12] and Tactile-Gym [13] extended Py-Bullet [14] to render tactile images from contact geometry, while the efficient simulator of Xu et al. [15] incorporated a penalty-based formulation to estimate local force distribution. Although computationally lightweight, these approaches ap-proximate soft contact dynamics and thus sacrifice physical re-alism. Finite Element Method (FEM)-based simulators [16] are subsequently introduced to improve physical accuracy in soft material modeling. Representative works such as TacIPC [7] employ FEM and incremental potential contact formulations to capture detailed contact interactions and large deforma-tion. Taxim [17] further proposes a superposition strategy to approximate FEM responses while reducing computational cost. However, FEM-based approaches remain expensive and difficult to integrate into robot learning or real-time control pipelines due to remeshing and solver complexity. Mate-rial Point Method (MPM)-based frameworks have recently emerged as a more efficient alternative for soft-body and tactile simulation. MPM combines particle-based representation with a background grid, naturally supporting large deformation, topological change, and differentiable implementation. Tac-chi [9] and Tacchi2.0 [18] exemplify this trend, providing lightweight, pluggable elastomer deformation simulators built on the Taichi [19] programming framework. Our work builds upon this trajectory by coupling a dif-ferentiable MPM core with reduced-order neural decoding to achieve high-detail surface tactile perception without a large number of particles. 
+
+B. Differentiable Simulation for Elastomer 
+
+Differentiable simulation enables gradient-based optimiza-tion in soft elastomer by providing exact sensitivities of physical dynamics [20]. Existing approaches can be broadly categorized into three types: (i) Analytic methods derive explicit gradients via sensitivity or adjoint analysis [21]. They provide highly accurate derivatives for governing equations and material models, but require extensive manual derivation and symbolic differentiation for each new constitutive law or boundary condition. Such analytic formulations are often used in elastomer modeling where precise stress–strain gra-dients are needed for parameter calibration or inverse elastic-ity problem [22]. (ii) Automatic differentiation solvers [19] leverage differentiable programming frameworks to propagate gradients through discretized physics pipelines. Systems such as PlasticineLab [23], employ moving least squares material point methods (MLS-MPM) [24] to achieve differentiable soft-body dynamics, enabling joint optimization of control and morphology in complex deformable systems. These methods are general and flexible but often computationally heavy for dense elastomer simulations. (iii) Neural surrogates [25] learn an end-to-end mapping from system states to gradients or next-step dynamics, amortizing the cost of differentiation. In tactile sensing, differentiable simulators have proven particularly valuable for solving the elastomer deformation problem [26], [27]. By directly comparing simulated and observed deformations, these models enable gradient-based recovery of contact geometry, force distribution, or material parameters that are ill-posed for traditional numerical solvers. However, high-fidelity differentiable elastomer simulations re-main computationally expensive due to the need for dense particle or mesh resolutions. Our framework addresses this limitation by combining dif-ferentiable analytic simulation with reduced-order modeling, thereby achieving physical consistency at a minimal cost. 3
+
+C. Reduced-order Neural Fields Modeling 
+
+Reduced-order modeling (ROM) accelerates simulation by projecting dynamics onto a low-dimensional manifold. Early methods used linear subspaces from modal analysis [28] or piecewise control [11], [29], but struggle with nonlinear deformations. Recent approaches employ autoencoder-based neural networks [30], [31] and implicit neural representa-tions [32], [33] to learn richer, nonlinear reduced spaces. How-ever, excessive nonlinearity can lead to overfitting and slow convergence [34] issues that hybrid linear-neural architectures can help mitigate [31]. In this work, we combine autoencoder-based dimensionality reduction with differentiable latent-space dynamics for high-detail tactile perception. To improve efficiency, we use ap-proximate forces via sparse spatial sampling during training. This efficiently enforces smoothness and enables the stable learning of deformation models, allowing for fine-grained contact interaction. III. M ETHODS 
+
+Preliminaries: MPM in Tactile Simulation 
+
+The Material Point Method (MPM) discretizes elastomer materials as a set of particles that carry mass, velocity, and deformation gradients, which interact through a background Eulerian grid [9]. At each time step, particle mass and mo-mentum are transferred to grid nodes (P2G), grid velocities are updated under internal and external forces, and results are interpolated back to particles (G2P). The deformation gradient of each particle evolves as 
+
+Ft+1  
+
+> i
+
+= ( I + ∆ t ∇vi) Fti,
+
+∇vi = X
+
+> g∈G
+
+vg ⊗ ∇ w(xi − xg), (1) where Fi is the deformation gradient of particle i, vg denotes the grid node velocity, w(·) is the quadratic B-spline weighting kernel, and ∇w(·) is its spatial gradient that determines particle–grid coupling. We adopt the affine particle-in-cell (APIC) variant [35] to improve stability and angular momen-tum conservation. The details refer to Tacchi [9]. While MPM robustly captures elastomer dynamics and contact interactions, its computational cost scales linearly with the number of particles N . Accurately modeling complex surface deformations (e.g., wrinkles and micro-indentations) typically requires millions of particles, rendering high-fidelity tactile simulation computationally prohibitive. 
+
+A. Reduced-order Neural Modeling 
+
+High-resolution tactile simulation incurs prohibitive compu-tational cost due to the large number of particles; to this end, we reformulate the problem in a reduced-order setting. Let the full particle-based configuration at time step t be 
+
+qt = xti, Fti 
+
+> Ni=1
+
+∈ Rn, (2) where xti ∈ R3 and Fti ∈ R3×3 denote the position and deformation gradient of particle i, respectively. Standard MPM evolves qt through particle-to-grid transfers, grid updates, and 
+
+> Fig. 3: Comparison of Gelsight press simulation results. We present an evaluation of Tacchi [9], TacIPC [7], and our proposed method under identical pressure conditions and equivalent element counts, while the red model is the input complex surface. Our simulation results demonstrate superior fidelity in capturing the complex surface morphology, outperforming previous work.
+
+grid-to-particle advections, as described in the preliminaries. However, the computational complexity scales with n, which becomes intractable for n ∼ 10 6.We therefore introduce a nonlinear subspace parameteriza-tion: 
+
+qt ≈ fθ (zt), zt ∈ Rr , r ≪ n, (3) where fθ : Rr → Rn is a neural decoder that reconstructs the full particle states from a compact latent coordinate zt. Instead of evolving qt directly, we solve for zt such that the governing MPM dynamics are satisfied in the reduced subspace. The latent update is obtained by minimizing the energy functional projected onto the subspace manifold: 
+
+zt+1 = arg min 
+
+> z
+
+ 12∆ t2 ∥fθ (z) − qinertial  
+
+> t+1
+
+∥2 
+
+> M
+
++ P (fθ (z)) 
+
+
+
+,
+
+(4) In the reduced-order formulation, the implicit inertial penalty term is projected onto a latent subspace, resulting in  
+
+> 12∆ t2
+
+fθ (z) − qinertial 
+
+> t+1
+> 2
+> M
+
+, where ∆t2 denotes the square of the time step, consistent with the second-order temporal dis-cretization used in the physical integration scheme. While 
+
+qinertial  
+
+> t+1
+
+is the inertial guess propagated from the previous state, 
+
+∥·∥ M denotes the mass-weighted norm induced by the particle mass matrix M, and P (·) denotes the total potential energy, including both internal elastic and external loading. This formulation enables latent dynamics to faithfully ap-proximate the high-dimensional evolution while operating in a much smaller dimensional space. 4
+
+B. Subspace Representation for High-Detail Tactile 
+
+The effectiveness of reduced-order simulation hinges on the expressiveness of the subspace manifold. In tactile elas-tomer modeling, fine-grained contact features, such as ridges, wrinkles, and localized stress fields are critical for percep-tual fidelity but are easily lost under naive dimensionality reduction. To preserve these details, we construct the subspace using a neural autoencoder trained to capture high-resolution deformation modes (see Fig.2). We observe that our method effectively reduces the particle dimensionality while preserv-ing sharp geometric features, as highlighted by the blue points (e.g., edges and protrusions). Specifically, we employ an autoencoder structure (fθ , g θ ),where the encoder fθ : Rn → Rr maps full particle configu-rations to latent coordinates, and the decoder gθ : Rr → Rn
+
+reconstructs them: 
+
+zt = fθ (qt), (5) 
+
+ˆqt = gθ (zt). (6) The decoder gθ serves as the reduced-order mapping used during simulation. Training is conducted on paired low- and high-resolution MPM trajectories: the reconstruction loss en-forces that high-resolution particle states are recoverable from their latent codes. To ensure physical consistency between the reduced latent dynamics and the coarse-grained MPM updates, we introduce a consistency loss that penalizes deviations in momentum and deformation evolution. Specifically, given the coarse MPM prediction ˜qt obtained from the low-resolution simulation and the reconstructed high-resolution state ˆqt = gθ (fθ (qt)) , the loss is defined as 
+
+Lcons = λv
+
+X
+
+> i∈P
+
+∥ ˆv ti − v ti ∥2 + λF
+
+X
+
+> i∈P
+
+∥ ˆF ti − F ti ∥2, (7) where ˆv ti and ˆF ti are the velocity and deformation gradient of particle i reconstructed from the latent code, while v ti and F ti
+
+are their counterparts computed by the coarse MPM solver. The coefficients λv and λF balance momentum and strain consistency, with λv = 0 .4 and λF = 0 .6 in our setting. This loss term enforces that the reduced representation evolves coherently with the underlying physics, preserving local stress evolution and global momentum conservation during training. Once trained, the decoder implicitly encodes a nonlinear subspace that spans both global deformation patterns and localized high-frequency details. During simulation, solving for zt via the reduced optimization in Eq. (4) yields high-detail tactile surface reconstructions at a fraction of the original computational cost. The recovered high-resolution configura-tion ˆqt = gθ (zt) is then used for tactile rendering, enabling detailed depth map generation without the overhead of full-resolution MPM simulations. 
+
+C. Tactile Image Rendering from Reduced States 
+
+In MPM-based tactile simulation, the tactile signal is captured through a camera observing the elastomer surface through a transparent gel layer. Instead of a direct orthographic projection, the apparent depth map Dt(u) is computed by 
+
+> Fig. 4: We denote the input complex surface geometry in white and render tactile depth maps using Tacchi, TacIPC, and our reduced-order neural method. While Tacchi [9] and TacIPC [7] suffer from smoothing artifacts and loss of fine-scale features (e.g., wrinkles, ridges), our approach preserves high fidelity details, even from a low-dimensional latent state. Crucially, it generates realistic tactile images directly via learned geometric reconstruction, eliminating the need for full-resolution MPM simulation.
+
+tracing view rays refracted through the gel and intersecting them with the deformed elastomer surface. We first define the reconstructed surface particle set as 
+
+ˆSt = ˆxti i ∈ P surface , (8) where ˆSt denotes the reconstructed surface configuration ob-tained from the decoder gθ (zt), and Psurface indexes particles on the elastomer–object contact boundary. Each surface point ˆxti is projected onto the sensor plane along a refracted viewing direction di, which accounts for the bending of light at the gel–air interface with normal n0 and refractive index ratio. The resulting depth value is given by 
+
+Dt(u) = ⟨ns, ˆxti⟩ + zs − ⟨ ns, ˆxti⟩⟨ns, di⟩ , (9) where the denominator ⟨ns, di⟩ accounts for the angular deviation introduced by refraction. Here, zs denotes the signed distance of the sensor plane along its normal direction ns,serving as the reference depth at which the tactile image is formed. When di aligns with the sensor normal ns (i.e., no refraction), naturally degenerates into the orthographic projection Dt(u) = ⟨ns, ˆxti⟩.This rendering formulation ensures that geometric defor-mation and optical projection are consistently modeled in the same physical framework (as shown in Fig.4). Given the latent state zt from the reduced-order dynamics, the decoder recon-structs the high-resolution surface ˆSt, and substituting ˆxti ∈ ˆSt
+
+into Eq. (9) yields the tactile depth map value directly from the reduced dynamics. As a result, tactile image formation becomes a physically grounded outcome of the reduced-order simulation, capturing fine-scale geometric and photometric variations without full-resolution MPM computation. IV. E XPERIMENTS 
+
+A. Implementation Details 
+
+Our simulations and training are implemented in Taichi [19] with PyTorch for neural modules. The reduced-order autoen-coder consists of an MLP encoder-decoder pair with three 5                          
+
+> Fig. 5: Left: UR5e robotic arm equipped with a GelSight Mini sensor for planar tactile perception. The sensor is mounted on the end-effector, ready to interact with objects fixed on the workbench.
+> Right: Our custom-designed dataset of eight 3D-printed models featuring complex, non-trivial surface geometries (including intricate curvatures, localized indentations, and asymmetric topographies). TABLE I: Pseudo-image quality evaluation.
+> Method SSIM ↑MAE ↓PSNR ↑Rendering Time(s) ↓
+> Tacchi [9] 0.880 0.034 55.4 0.38 TacIPC [7] 0.902 0.037 57.7 0.25 Ours 0.923 0.028 61.5 0.17
+
+hidden layers of sizes [512 , 256 , 128] and latent dimension 
+
+r = 64 (which work well in initial trials), each followed by ReLU activations and layer normalization. The decoder output reconstructs per-particle displacement and deformation gradient. Training data are generated from paired high- and low-resolution MPM simulations of 10 6 and 10 4 particles, respectively, using identical boundary conditions and mate-rials. Each sequence contains quasi-static indentation with varying force levels, yielding approximately 6k training pairs. Networks are optimized with Adam (lr = 1 × 10 −4, β1 = 0 .9,
+
+β2 = 0 .999 ) for 3k epochs on RTX 3090 GPU. Each training epoch takes ≈ 7 s with a mini-batch size of 32, and the model converges in ∼ 12 h wall-clock time. At inference, coarse MPM dynamics run with Ncoarse = 10 4 particles on a 
+
+100 × 100 × 21 grid. Latent optimization per frame (Eq. 4) is solved using L-BFGS for at most 10 iterations (tolerance 
+
+10 −5). 
+
+B. Experimental Setup 
+
+To validate our method under realistic robotic setup, we use a UR5e robotic arm equipped with a GelSight Mini optical tactile sensor. Following the capture policy of prior work [9], we fabricate eight custom FDM-printed objects with complex surface geometries. Each object is pressed at nine locations arranged in a 3 × 3 grid (8 mm spacing), with indentation depths ranging from 0 to 0.5 mm in 0.1 mm steps, yielding high-resolution tactile image sequences under controlled light-ing and motion. This robotically collected dataset serves as a real-world benchmark for evaluating physical fidelity and generalization. For simulation evaluation, we compare against Tacchi [9] and TacIPC [7]. By decoupling coarse MPM dynamics from neural super-resolution, our method recovers sub-particle tac-tile details without mesh constraints, achieving TacIPC-level geometric fidelity at significantly faster inference speed. 
+
+> Fig. 6: Comparison of depth prediction quality across simulators. Each tactile simulator generates tactile images under identical contact poses.
+
+C. Press Simulation 
+
+To enable direct comparison with Tacchi [9] and TacIPC [7], we simulate a 30 mm × 30 mm × 4 mm silicone elastomer with Young’s modulus E = 1 .19 × 10 5 Pa and Poisson’s ratio ν =0.43 following empirical calibration [7]. We employ a coarse MPM solver with Ncoarse = 10 4 particles on a 100 × 100 × 21 
+
+grid, which captures global deformation patterns efficiently but fails to preserve microscale features such as wrinkles, asymmetric local textures, and small contact discontinuities. Our reduced-order neural framework addresses this limitation by super-resolving the latent state zt into a high-fidelity displacement field equivalent to over 10 6 particles. This re-construction not only recovers the lost geometric fidelity but also provides stable gradients for downstream optimization tasks. In contrast, Tacchi’s memory-cost displacement maps suffer from partial surface collapse in regions of high cur-vature, while TacIPC’s FEM-based outputs remain bounded by mesh resolution, producing visible interpolation artifacts in contact zones. As shown in Fig. 3, our reconstructed tactile geometry closely matches the ground-truth reference (red surface), successfully reproducing microscopic ridges, localized indentations, and nonlinear surface undulations that are absent in both baseline methods. 
+
+D. Rendering Evaluation 
+
+Our formulation preserves fine-scale surface details without full-resolution MPM simulation, showing that tactile rendering emerges directly from the reduced-order latent dynamics rather than post-processing. By coupling latent evolution with surface reconstruction, our framework synthesizes high-fidelity tactile images efficiently. We evaluate rendering fidelity against real GelSight data and prior simulators [7], [9] using SSIM, MAE, and PSNR. As shown in Tab. I, our method consistently outperforms baselines, improving SSIM and PSNR while reducing MAE by over 20%, with approximately 50% lower inference time per frame. These results demonstrate superior geometric and photometric fidelity at higher efficiency. Qualitative comparisons (Fig. 4) further show that, unlike Tacchi and TacIPC which oversmooth high-frequency features, our method preserves sharp local details and complex contact geometry, enabled by rendering directly from reduced latent states (Sec. III-C). 
+
+E. Tactile Reconstruction 
+
+While previous tactile simulators mainly generate 2D pseudo-images, physically accurate 3D surface reconstruction 6
+
+TABLE II: Runtime, memory, and accuracy comparison. Averages of the same tactile interaction. Method Time [min] ↓ Mem [GB] ↓ Chamfer-L2 ↓
+
+Full MPM ( 10 6 p) 6.83 10.4 0.34 FEM+IPC [7] 3.57 3.9 0.39 Tacchi [9] 5.21 5.1 0.43 
+
+Ours (full) 1.20 3.5 0.35 
+
+w/o physics 0.76 1.3 0.45 w/o multi-scale 0.98 1.4 0.40 latent dim r=16 1.05 1.7 0.43 
+
+is essential for tasks that require geometric or force reasoning, such as grasp stability analysis or system identification. We therefore conduct a fully simulated evaluation that measures how well the deformed elastomer surface can be reconstructed from rendered tactile images, following the protocol in [7]. A U-Net is trained to predict depth maps from simulated tactile images produced by corresponding simulators. The predicted depth maps are back-projected to 3D and converted into meshes for comparison with the original surfaces from simulation. We evaluate reconstruction accuracy using Chamfer dis-tance. Our method achieves the lowest error, outperforming Tacchi’s over-smoothed results and TacIPC’s loss of fine con-tact details. The implicit neural decoder preserves sharp edges and micro-wrinkles while maintaining physical plausibility. As shown in Fig. 6, both predicted depth and reconstructed meshes remain structurally coherent and free of depth-induced artifacts, indicating physically consistent and recoverable 3D geometry. 
+
+F. Computational Cost 
+
+Our framework achieves high computational efficiency by decoupling coarse physical simulation from fine geometric re-construction. Global dynamics are solved with a coarse MPM, while fine surface details are recovered through lightweight neural inference, avoiding the cost of simulating millions of particles or dense FEM meshes. In practice, full-resolution MPM with > 10 6 particles re-quires large GPU memory, while FEM+IPC [7] offers compa-rable fidelity but remains computationally expensive (about 3.6 min on average) due to implicit solving and remeshing over-head. Tacchi [9], though lighter, relies on memory-intensive precomputed maps (∼ 5 GB ) that scale poorly with resolution. In contrast, our reduced-order latent model reconstructs high-fidelity surfaces at only 1.20 min on a single RTX 3090 GPU, about 3× faster than TacIPC and over 4.3× faster than Tacchi, while maintaining nearly the same Chamfer distance as full MPM. As summarized in Tab. II, our method attains the best trade-off between runtime, memory footprint, and geometric ac-curacy. Removing physics-consistency constraints accelerates inference slightly but causes noticeable geometric degradation and unstable contact behavior. Similarly, removing multi-scale supervision leads to oversmoothed ridges and a ∼25% increase in Chamfer error. Reducing the latent dimension from r = 64 
+
+to r = 16 lowers runtime to 1.05 min average simulation, but at the cost of high-frequency detail loss, confirming that our chosen latent width provides a balanced compromise between efficiency and fidelity. This efficiency is achieved without sacrificing accuracy: as shown in Tab. II, our method matches or exceeds the geometric fidelity of TacIPC while remaining significantly faster. V. D ISCUSSION AND CONCLUSION 
+
+In this work, we presented a reduced-order neural simulation framework that couples coarse-grained MPM dynamics with an implicit neural decoder for high-detail tactile perception. By learning a compact latent manifold of elastomer deformation, our method reconstructs sub-particle tactile geometry with high fidelity while achieving substantial computational and memory savings. The framework remains physically grounded and fully differentiable, enabling efficient tactile rendering and geometry reconstruction that approach the accuracy of full-resolution MPM or FEM solvers at a fraction of their cost. Our current formulation targets quasi-static or low-speed indentation-dominated contact regimes. Highly dynamic interactions such as fast sliding, rolling, or impact introduce inertial effects and contact discontinuities that are not ex-plicitly modeled in the present latent dynamics. In addition, generalization to unseen materials is limited, as elastomer deformation is highly sensitive to material parameters and our decoder is trained under fixed constitutive settings. We also focus on geometric fidelity of tactile deformation rather than absolute force or stress estimation, which typically requires precise material calibration and friction modeling. Finally, the tactile rendering assumes fixed illumination, which may limit photometric realism. Future work will explore incorporating isosurface-based contact representations [36] and dynamic sliding interactions [37], [38] to support richer contact be-haviors and internal deformation inference [39], as well as extending the differentiable pipeline toward real-time tactile display [40]. ACKNOWLEDGMENT 
+
+This work was supported in part by the Hong Kong SAR Research Grants Council Early Career Scheme (RGC-ECS) under Grant CUHK/24204924, and University of Melbourne Early Career Researcher Grant PRJ 026163. REFERENCES [1] W. Yuan, S. Dong, and E. H. Adelson, “Gelsight: High-resolution robot tactile sensors for estimating geometry and force,” Sensors , vol. 17, no. 12, p. 2762, 2017. [2] I. Akinola, J. Xu, J. Carius, D. Fox, and Y. Narang, “Tacsl: A library for visuotactile sensor simulation and learning,” IEEE Transactions on Robotics , vol. 41, p. 2645–2661, 2025. [Online]. Available: http://dx.doi.org/10.1109/TRO.2025.3547267 [3] Q. K. Luu, P. Zhou, Z. Xu, Z. Zhang, Q. Qiu, and Y. She, “Manifeel: Benchmarking and understanding visuotactile manipulation policy learning,” 2025. [Online]. Available: https://arxiv.org/abs/2505.18472 [4] S. Wang, Y. She, B. Romero, and E. Adelson, “Gelsight wedge: Measur-ing high-resolution 3d contact geometry with a compact robot finger,” in 2021 IEEE International Conference on Robotics and Automation (ICRA) , 2021, pp. 6468–6475. 7
+
+[5] E. Donlon, S. Dong, M. Liu, J. Li, E. Adelson, and A. Rodriguez, “Gelslim: A high-resolution, compact, robust, and calibrated tactile-sensing finger,” in 2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, Oct. 2018, p. 1927–1934. [Online]. Available: http://dx.doi.org/10.1109/IROS.2018.8593661 [6] Y. Narang, B. Sundaralingam, M. Macklin, A. Mousavian, and D. Fox, “Sim-to-real for robotic tactile sensing via physics-based simulation and learned latent projections,” in 2021 IEEE International Conference on Robotics and Automation (ICRA) , 2021, pp. 6444–6451. [7] W. Du, W. Xu, J. Ren, Z. Yu, and C. Lu, “Tacipc: Intersection-and inversion-free fem-based elastomer simulation for optical tactile sensors,” IEEE Robotics and Automation Letters , vol. 9, no. 3, pp. 2559– 2566, 2024. [8] P. Preechayasomboon and E. Rombokas, “Contact sensors: A tactile sen-sor readily integrable into soft robots,” in 2019 2nd IEEE International Conference on Soft Robotics (RoboSoft) , 2019, pp. 605–610. [9] Z. Chen, S. Zhang, S. Luo, F. Sun, and B. Fang, “Tacchi: A pluggable and low computational cost elastomer deformation simulator for optical tactile sensors,” IEEE Robotics and Automation Letters , vol. 8, no. 3, pp. 1239–1246, 2023. [10] A. Lyu, S. Zhao, C. Xian, Z. Cen, H. Cai, and G. Fang, “Accelerate neural subspace-based reduced-order solver of deformable simulation by lipschitz optimization,” ACM Trans. Graph. , vol. 43, no. 6, Nov. 2024. [Online]. Available: https://doi.org/10.1145/3687961 [11] S. Tonkens, J. Lorenzetti, and M. Pavone, “Soft robot optimal control via reduced order finite element models,” in 2021 IEEE International Conference on Robotics and Automation (ICRA) .IEEE Press, 2021, p. 12010–12016. [Online]. Available: https: //doi.org/10.1109/ICRA48506.2021.9560999 [12] S. Wang, M. Lambeta, P.-W. Chou, and R. Calandra, “Tacto: A fast, flexible, and open-source simulator for high-resolution vision-based tactile sensors,” IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 3930–3937, 2022. [13] A. Church, J. Lloyd, R. Hadsell, and N. F. Lepora, “Tactile sim-to-real policy transfer via real-to-sim image translation,” in Proceedings of the 5th Conference on Robot Learning , ser. Proceedings of Machine Learning Research, A. Faust, D. Hsu, and G. Neumann, Eds., vol. 164. PMLR, 08–11 Nov 2022. [Online]. Available: https://proceedings.mlr.press/v164/church22a.html [14] E. Coumans and Y. Bai, “Pybullet, a python module for physics simulation for games, robotics and machine learning,” http://pybullet.org, 2016–2021. [15] J. Xu, S. Kim, T. Chen, A. R. Garcia, P. Agrawal, W. Matusik, and S. Sueda, “Efficient tactile simulation with differentiability for robotic manipulation,” in 6th Annual Conference on Robot Learning , 2022. [Online]. Available: https://openreview.net/forum?id=6BIffCl6gsM [16] D. Ma, E. Donlon, S. Dong, and A. Rodriguez, “Dense tactile force estimation using gelslim and inverse fem,” in 2019 International Conference on Robotics and Automation (ICRA) . IEEE, May 2019, p. 5418–5424. [Online]. Available: http://dx.doi.org/10.1109/icra.2019. 8794113 [17] Z. Si and W. Yuan, “Taxim: An example-based simulation model for gelsight tactile sensors,” IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 2361–2368, 2022. [18] Y. Sun, S. Zhang, W. Li, J. Zhao, J. Shan, Z. Shen, Z. Chen, F. Sun, D. Guo, and B. Fang, “Tacchi 2.0: A low computational cost and comprehensive dynamic contact simulator for vision-based tactile sensors,” 2025. [Online]. Available: https://arxiv.org/abs/2503.09100 [19] Y. Hu, T.-M. Li, L. Anderson, J. Ragan-Kelley, and F. Durand, “Taichi: a language for high-performance computation on spatially sparse data structures,” ACM Trans. Graph. , vol. 38, no. 6, Nov. 2019. [Online]. Available: https://doi.org/10.1145/3355089.3356506 [20] M. B¨ acher, E. Knoop, and C. Schumacher, “Design and control of soft robots using differentiable simulation,” Current Robotics Reports , vol. 2, 2021. [21] J. M. Bern, P. Banzet, R. Poranne, and S. Coros, “Trajectory optimization for cable-driven soft robot locomotion,” Robotics: Science and Systems XV , 2019. [Online]. Available: https://api.semanticscholar.org/CorpusID: 197468371 [22] T. Du, K. Wu, P. Ma, S. Wah, A. Spielberg, D. Rus, and W. Matusik, “Diffpd: Differentiable projective dynamics,” ACM Trans. Graph. , vol. 41, no. 2, nov 2021. [Online]. Available: https://doi.org/10.1145/3490168 [23] Z. Huang, Y. Hu, T. Du, S. Zhou, H. Su, J. B. Tenenbaum, and C. Gan, “Plasticinelab: A soft-body manipulation benchmark with differentiable physics,” in International Conference on Learning Representations , 2021. [Online]. Available: https://openreview.net/ forum?id=xCcdBRQEDW [24] Y. Hu, Y. Fang, Z. Ge, Z. Qu, Y. Zhu, A. Pradhana, and C. Jiang, “A moving least squares material point method with displacement discontinuity and two-way rigid body coupling,” ACM Transactions on Graphics , vol. 37, no. 4, p. 150, 2018. [25] X. Sun, T. Xue, S. Rusinkiewicz, and R. P. Adams, “Amortized synthesis of constrained configurations using a differentiable surrogate,” in Advances in Neural Information Processing Systems , A. Beygelzimer, Y. Dauphin, P. Liang, and J. W. Vaughan, Eds., 2021. [Online]. Available: https://openreview.net/forum?id=wdIDt--oLmV [26] Z. Si, G. Zhang, Q. Ben, B. Romero, Z. Xian, C. Liu, and C. Gan, “DIFFTACTILE: A physics-based differentiable tactile simulator for contact-rich robotic manipulation,” in The Twelfth International Conference on Learning Representations , 2024. [Online]. Available: https://openreview.net/forum?id=eJHnSg783t [27] N. F. Lepora, Y. Lin, B. Money-Coomes, and J. Lloyd, “Digitac: A digit-tactip hybrid tactile sensor for comparing low-cost high-resolution robot touch,” IEEE Robotics and Automation Letters , vol. 7, no. 4, pp. 9382–9388, 2022. [28] O. Ma, “Model order reduction for contact dynamics simulations of manipulator systems,” in IEEE International Conference on Robotics and Automation, 2004. Proceedings. ICRA ’04. 2004 , vol. 2, 2004, pp. 1814–1819 Vol.2. [29] C. Liang, X. Gao, K. Wu, and Z. Pan, “Learning reduced-order soft robot controller,” in 2023 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 2023, pp. 574–581. [30] L. Fulton, V. Modi, D. Duvenaud, D. I. W. Levin, and A. Jacobson, “Latent-space dynamics for reduced deformable simulation,” Computer Graphics Forum , vol. 38, no. 2, p. 379–391, May 2019. [Online]. Available: http://dx.doi.org/10.1111/cgf.13645 [31] S. Shen, Y. Yang, T. Shao, H. Wang, C. Jiang, L. Lan, and K. Zhou, “High-order differentiable autoencoder for nonlinear model reduction,” 
+
+ACM Trans. Graph. , vol. 40, no. 4, July 2021. [Online]. Available: https://doi.org/10.1145/3450626.3459754 [32] Z. Zong, X. Li, M. Li, M. M. Chiaramonte, W. Matusik, E. Grinspun, K. Carlberg, C. Jiang, and P. Y. Chen, “Neural stress fields for reduced-order elastoplasticity and fracture,” in SIGGRAPH Asia 2023 Conference Papers , ser. SA ’23. New York, NY, USA: Association for Computing Machinery, 2023. [Online]. Available: https://doi.org/10.1145/3610548.3618207 [33] P. Y. Chen, M. M. Chiaramonte, E. Grinspun, and K. Carlberg, “Model reduction for the material point method via an implicit neural representation of the deformation map,” Journal of Computational Physics , vol. 478, p. 111908, 2023. [Online]. Available: https: //www.sciencedirect.com/science/article/pii/S0021999123000037 [34] N. Sharp, C. Romero, A. Jacobson, E. Vouga, P. G. Kry, D. I. Levin, and J. Solomon, “Data-free learning of reduced-order kinematics,” 2023. [35] C. Jiang, C. Schroeder, A. Selle, J. Teran, and A. Stomakhin, “The affine particle-in-cell method,” ACM Trans. Graph. , vol. 34, no. 4, July 2015. [Online]. Available: https://doi.org/10.1145/2766996 [36] Y. Guo, C. Qian, Y. Mo, and A. Sangpetch, “Gaussianslicer: Effi-cient surface reconstruction from cross-sectional slices with gaussian splatting,” in ICASSP 2025 - 2025 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) , 2025, pp. 1–5. [37] N. Guo, X. Han, S. Zhong, Z. Zhou, J. Lin, J. S. Dai, F. Wan, and C. Song, “Proprioceptive state estimation for amphibious tactile sensing,” Trans. Rob. , vol. 40, p. 4684–4698, Jan. 2024. [Online]. Available: https://doi.org/10.1109/TRO.2024.3463509 [38] Y. Meng, G. Fang, J. Yang, Y. Guo, and C. C. L. Wang, “Spring-imu fusion-based proprioception for feedback control of soft manipulators,” 
+
+IEEE/ASME Transactions on Mechatronics , vol. 29, no. 2, pp. 832–842, 2024. [39] O. Shorthose, A. Albini, L. He, and P. Maiolino, “Design of a 3d-printed soft robotic hand with integrated distributed tactile sensing,” 
+
+IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 3945–3952, 2022. [40] M. Linnander, D. Goetz, G. Reardon, V. Kumar, E. Hawkes, and Y. Visell, “Tactile displays driven by projected light,” Science Robotics , vol. 10, no. 107, p. eadv1383, 2025. [Online]. Available: https://www.science.org/doi/abs/10.1126/scirobotics.adv1383

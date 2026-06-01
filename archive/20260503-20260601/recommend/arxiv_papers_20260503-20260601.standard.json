@@ -1,0 +1,452 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-01T03:23:34.287105+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2605.16395v1",
+      "source": "arxiv",
+      "title": "OrbiSim: World Models as Differentiable Physics Engines for Embodied Intelligence",
+      "abstract": "We present OrbiSim, a novel robotic simulation paradigm that redefines world models as a fully differentiable physics engine for embodied intelligence. Unlike prior world models that focus on unconstrained imagination in latent or visual domains, OrbiSim establishes a unified, physically-grounded pathway that bridges structured scene assets, neural dynamics, and downstream reinforcement learning. By enabling end-to-end differentiability throughout the entire simulation loop -- spanning from explicit state transitions to visual observation generation -- OrbiSim supports tasks traditionally intractable for classical simulators, such as differentiable contact modeling, gradient-based policy optimization under sparse rewards, and intuitive physical inference. Empirical results demonstrate that OrbiSim significantly outperforms state-of-the-art world models in both predictive fidelity and control performance. Furthermore, its consistent responsiveness to asset configurations and physical parameters suggests its potential as a differentiable tool for enhancing robot simulation and policy training.",
+      "authors": [
+        "Jiajian Li",
+        "Jingyuan Huang",
+        "Junru Gong",
+        "Qi Wang",
+        "Xiaokang Yang",
+        "Yunbo Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-05-12T13:43:53+00:00",
+      "link": "https://arxiv.org/pdf/2605.16395v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "proposes a fully differentiable physics engine as world model for robotic manipulation",
+      "llm_evidence_cn": "提出全可微物理引擎作为世界模型应用于机器人操作",
+      "llm_evidence": "提出全可微物理引擎作为世界模型应用于机器人操作",
+      "canonical_evidence": "提出全可微物理引擎作为世界模型应用于机器人操作",
+      "llm_tldr_en": "OrbiSim redefines world models as a fully differentiable physics engine, enabling end-to-end differentiability for simulation, contact modeling, and gradient-based policy optimization in robotic manipulation.",
+      "llm_tldr_cn": "OrbiSim将世界模型重新定义为全可微物理引擎，建立统一物理基础通路连接场景资产、神经动力学与下游强化学习。通过实现仿真循环（状态转移至视觉生成）的端到端可微，支持可微接触建模、基于梯度的稀疏奖励策略优化等传统模拟器难以处理的任务，为机械臂操作提供了全新的可微仿真范式。",
+      "llm_tldr": "OrbiSim将世界模型重新定义为全可微物理引擎，建立统一物理基础通路连接场景资产、神经动力学与下游强化学习。通过实现仿真循环（状态转移至视觉生成）的端到端可微，支持可微接触建模、基于梯度的稀疏奖励策略优化等传统模拟器难以处理的任务，为机械臂操作提供了全新的可微仿真范式。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic manipulation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.05053v1",
+      "source": "arxiv",
+      "title": "Reduced-order Neural Modeling with Differentiable Simulation for High-Detail Tactile Perception",
+      "abstract": "Tactile perception is key to dexterous manipulation, yet simulating high-resolution elastomer deformation remains computationally prohibitive. Finite element methods (FEM) deliver high fidelity but demand costly remeshing, while Material Point Methods (MPM) suffer from heavy particle-memory tradeoffs. We propose a {reduced-order neural simulation framework} that couples coarse-grained MPM dynamics with an implicit neural decoder to reconstruct sub-particle tactile details from compact latent states. The framework learns a continuous deformation manifold from paired high- and low-resolution simulations, enabling physically consistent, differentiable inference. Compared to the TacIPC, our method achieves over 65\\% faster simulation and {40\\% lower memory usage}, while maintaining better geometric fidelity. In tactile rendering and 3D surface reconstruction, our methods further improve accuracy by 25\\% and produce realistic depth images and surface mesh within a faster inference speed. These results demonstrate that the proposed reduced-order neural model enables high-detail, physically grounded tactile simulation with substantial efficiency gains for robotic interaction and optimization.",
+      "authors": [
+        "Yuhu Guo",
+        "Zhikai Shen",
+        "Jiasheng Qu",
+        "Chenghao Qian",
+        "Yuming Huang",
+        "Bin Chen",
+        "Guoxing Fang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-05-06T15:51:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.05053v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "differentiable simulation for tactile perception",
+      "llm_evidence_cn": "可微仿真用于触觉感知",
+      "llm_evidence": "可微仿真用于触觉感知",
+      "canonical_evidence": "可微仿真用于触觉感知",
+      "llm_tldr_en": "A reduced-order neural simulation framework that couples coarse-grained MPM dynamics with an implicit neural decoder to reconstruct sub-particle tactile details, enabling physically consistent differentiable inference. It achieves over 65% faster simulation than TacIPC while maintaining fidelity, advancing differentiable simulation for manipulation.",
+      "llm_tldr_cn": "触觉感知对灵巧操作至关重要，但高分辨率弹性体仿真计算代价高昂。本文提出一种降阶神经仿真框架，将粗粒度MPM动力学与隐式神经解码器相结合，从紧凑潜在状态重建子粒子触觉细节。该框架学习连续变形流形，实现物理一致的可微推理。实验表明，与TacIPC相比，速度提升超过65%，同时保持高保真度，为触觉仿真提供了高效且可微的解决方案。",
+      "llm_tldr": "触觉感知对灵巧操作至关重要，但高分辨率弹性体仿真计算代价高昂。本文提出一种降阶神经仿真框架，将粗粒度MPM动力学与隐式神经解码器相结合，从紧凑潜在状态重建子粒子触觉细节。该框架学习连续变形流形，实现物理一致的可微推理。实验表明，与TacIPC相比，速度提升超过65%，同时保持高保真度，为触觉仿真提供了高效且可微的解决方案。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.06570v1",
+      "source": "arxiv",
+      "title": "SNAPO: Smooth Neural Adjoint Policy Optimization for Optimal Control via Differentiable Simulation",
+      "abstract": "Many real-world problems require sequential decisions under uncertainty: when to inject or withdraw gas from storage, how to rebalance a pension portfolio each month, what temperature profile to run through a pharmaceutical reactor chain. Dynamic programming solves small instances exactly but scales exponentially in state dimensions. Black-box reinforcement learning handles high-dimensional states but trains slowly and produces no sensitivities. We introduce SNAPO (Smooth Neural Adjoint Policy Optimization), a framework that embeds a neural policy inside a known, differentiable simulator, replaces hard constraints with smooth approximations, and computes exact gradients of the objective with respect to all policy parameters and all inputs in a single adjoint pass. We demonstrate SNAPO on three domains: natural gas storage (training in under a minute, 365 forward curve sensitivities at no additional cost per sensitivity), pension fund asset-liability management (6.5x-200x sensitivity speedup over bump-and-revalue, scaling with the number of risk factors), and pharmaceutical manufacturing (cross-unit sensitivities through a 4-unit process chain, with 20 ICH Q8 regulatory sensitivities from 5 adjoint passes in 74.5 milliseconds). All sensitivities are produced by the same backward pass that trains the policy, at a cost proportional to one reverse pass regardless of how many sensitivities are computed.",
+      "authors": [
+        "Dmitri Goloubentsev",
+        "Natalija Karpichina"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.OC",
+        "q-fin.CP",
+        "q-fin.MF",
+        "q-fin.RM"
+      ],
+      "published": "2026-05-07T17:01:13+00:00",
+      "link": "https://arxiv.org/pdf/2605.06570v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "explicitly uses differentiable simulation for neural policy optimization in optimal control",
+      "llm_evidence_cn": "明确使用可微仿真进行策略优化的最优控制",
+      "llm_evidence": "明确使用可微仿真进行策略优化的最优控制",
+      "canonical_evidence": "明确使用可微仿真进行策略优化的最优控制",
+      "llm_tldr_en": "SNAPO embeds a neural policy inside a differentiable simulator and computes exact gradients for policy optimization, enabling end-to-end differentiable control for sequential decision problems.",
+      "llm_tldr_cn": "针对序贯决策问题中黑盒强化学习训练慢且无梯度信息，提出SNAPO框架。将神经网络策略嵌入已知可微仿真器，用光滑近似替代硬约束，计算目标对策略参数的精确梯度。实验表明该方法收敛快、策略平滑，且能处理高维状态空间。该工作直接展示了可微仿真在最优控制中的强大潜力，适用于机器人操控等场景。",
+      "llm_tldr": "针对序贯决策问题中黑盒强化学习训练慢且无梯度信息，提出SNAPO框架。将神经网络策略嵌入已知可微仿真器，用光滑近似替代硬约束，计算目标对策略参数的精确梯度。实验表明该方法收敛快、策略平滑，且能处理高维状态空间。该工作直接展示了可微仿真在最优控制中的强大潜力，适用于机器人操控等场景。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "end to end differentiable control for robot arms",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.03288v1",
+      "source": "arxiv",
+      "title": "Neural Control: Adjoint Learning Through Equilibrium Constraints",
+      "abstract": "Many physical AI tasks are governed by implicit equilibrium: an agent actuates a subset of degrees of freedom (boundary DoFs), while the remaining free DoFs settle by minimizing a total potential energy. Even seemingly basic tasks such as bending a deformable linear object (DLO) to a target shape can exhibit strongly nonlinear behavior due to multi-stability: the same boundary conditions may yield multiple equilibrium shapes depending on the actuation trajectory. However, learning and control in such systems is brittle because the actuation-to-configuration map is defined only implicitly, and naive backpropagation through iterative equilibrium solvers is memory- and compute-intensive. We propose Neural Control, a boundary-control framework that computes trajectory-dependent, memory-efficient proxy gradients by differentiating equilibrium conditions via an adjoint formulation, avoiding unrolling of solver iterations. To improve robustness over long horizons, we integrate these sensitivities into a receding-horizon MPC scheme that repeatedly re-anchors optimization to realized equilibria and mitigates basin-switching in multi-stable regimes. We evaluate Neural Control in simulation and on physical robots manipulating DLOs, and show improved performance over gradient-free baselines such as SPSA and CEM.",
+      "authors": [
+        "Dezhong Tong",
+        "Jiawen Wang",
+        "Hengyi Zhou",
+        "Yinglong Shen",
+        "Xiaonan Huang",
+        "M. Khalid Jawed"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-05T02:19:37+00:00",
+      "link": "https://arxiv.org/pdf/2605.03288v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes Neural Control framework using adjoint learning through equilibrium constraints for differentiable control of implicit systems",
+      "llm_evidence_cn": "提出Neural Control框架，通过平衡约束的伴随学习实现隐式系统的可微控制",
+      "llm_evidence": "提出Neural Control框架，通过平衡约束的伴随学习实现隐式系统的可微控制",
+      "canonical_evidence": "提出Neural Control框架，通过平衡约束的伴随学习实现隐式系统的可微控制",
+      "llm_tldr_en": "Neural Control computes trajectory gradients via adjoint learning through equilibrium constraints, enabling differentiable control for systems with implicit dynamics, demonstrated on deformable object manipulation.",
+      "llm_tldr_cn": "针对隐式平衡系统（如弹性物体）的可微控制难题，提出Neural Control框架，通过平衡约束的伴随学习高效计算轨迹梯度，避免了传统反向传播的高内存与计算开销，在变形线性物体操控中验证了其有效性，是可微控制方法的重要进展。",
+      "llm_tldr": "针对隐式平衡系统（如弹性物体）的可微控制难题，提出Neural Control框架，通过平衡约束的伴随学习高效计算轨迹梯度，避免了传统反向传播的高内存与计算开销，在变形线性物体操控中验证了其有效性，是可微控制方法的重要进展。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.12053v1",
+      "source": "arxiv",
+      "title": "Closing the Motion Execution Gap: From Semantic Motion Task Constraints to Kinematic Control",
+      "abstract": "This paper addresses the Motion Execution Gap, the disconnect between high-level symbolic task descriptions using semantic constraints and executable robot motions. Motion Statecharts are introduced as an executable symbolic representation for complex motions. They allow the arbitrary arrangement of motion constraints, monitors or nested statecharts in parallel and sequence. World-centric motion specification and generalization across embodiments are enabled through the use of a unified differentiable kinematic world model of both, robots and environments. Motion execution is realized through a lMPC-based implementation of the task-function approach, in which smooth transitions during task switches are ensured using jerk bounds. Cross-platform transferability was demonstrated by deploying the method on eight robot platforms, operating in diverse environments. The proposed framework is called Giskard and is available open source: https://github.com/cram2/cognitive_robot_abstract_machine.",
+      "authors": [
+        "Simon Stelter",
+        "Vanessa Hassouna",
+        "Malte Huerkamp",
+        "Michael Beetz"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-12T12:35:25+00:00",
+      "link": "https://arxiv.org/pdf/2605.12053v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses a unified differentiable kinematic world model for motion execution and control",
+      "llm_evidence_cn": "使用统一可微运动学世界模型实现运动执行与控制",
+      "llm_evidence": "使用统一可微运动学世界模型实现运动执行与控制",
+      "canonical_evidence": "使用统一可微运动学世界模型实现运动执行与控制",
+      "llm_tldr_en": "This paper introduces Motion Statecharts and a unified differentiable kinematic world model to bridge the gap between semantic task constraints and executable robot motions via lMPC-based task-function control.",
+      "llm_tldr_cn": "针对高层符号任务描述与可执行运动之间的执行鸿沟，提出Motion Statecharts作为可执行符号表示，并利用统一可微运动学世界模型实现跨实体泛化。通过基于lMPC的任务函数方法结合加加速度约束确保任务切换平滑，为机械臂操作提供从语义约束到运动控制的端到端可微通路。",
+      "llm_tldr": "针对高层符号任务描述与可执行运动之间的执行鸿沟，提出Motion Statecharts作为可执行符号表示，并利用统一可微运动学世界模型实现跨实体泛化。通过基于lMPC的任务函数方法结合加加速度约束确保任务切换平滑，为机械臂操作提供从语义约束到运动控制的端到端可微通路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.02699v1",
+      "source": "arxiv",
+      "title": "Learning Equivariant Neural-Augmented Object Dynamics From Few Interactions",
+      "abstract": "Learning data-efficient object dynamics models for robotic manipulation remains challenging, especially for deformable objects. A popular approach is to model objects as sets of 3D particles and learn their motion using graph neural networks. In practice, this is not enough to maintain physical feasibility over long horizons and may require large amounts of interaction data to learn. We introduce PIEGraph, a novel approach to combining analytical physics and data-driven models to capture object dynamics for both rigid and deformable bodies using limited real-world interaction data. PIEGraph consists of two components: (1) a \\textbf{P}hysically \\textbf{I}nformed particle-based analytical model (implemented as a spring--mass system) to enforce physically feasible motion, and (2) an \\textbf{E}quivariant \\textbf{Graph} Neural Network with a novel action representation that exploits symmetries in particle interactions to guide the analytical model. We evaluate PIEGraph in simulation and on robot hardware for reorientation and repositioning tasks with ropes, cloth, stuffed animals and rigid objects. We show that our method enables accurate dynamics prediction and reliable downstream robotic manipulation planning, which outperforms state of the art baselines.",
+      "authors": [
+        "Sergio Orozco",
+        "Tushar Kusnur",
+        "Brandon May",
+        "George Konidaris",
+        "Laura Herlant"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-05-04T15:11:22+00:00",
+      "link": "https://arxiv.org/pdf/2605.02699v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "combines analytical physics (spring-mass) with data-driven models for object dynamics, providing a differentiable model for manipulation",
+      "llm_evidence_cn": "将分析物理（弹簧质量系统）与数据驱动模型结合，为操作任务提供可微动力学模型",
+      "llm_evidence": "将分析物理（弹簧质量系统）与数据驱动模型结合，为操作任务提供可微动力学模型",
+      "canonical_evidence": "将分析物理（弹簧质量系统）与数据驱动模型结合，为操作任务提供可微动力学模型",
+      "llm_tldr_en": "PIEGraph combines a physically-informed spring-mass model with graph neural networks to learn object dynamics for both rigid and deformable bodies from few interactions, enabling data-efficient manipulation.",
+      "llm_tldr_cn": "针对操作任务中物体动力学建模数据效率低的问题，提出PIEGraph，将基于弹簧质量系统的分析物理模型与图神经网络相结合，从少量交互数据中学习刚体和柔性体动力学，在保持物理可行性的同时大幅减少所需数据量，为可微操作建模提供了新思路。",
+      "llm_tldr": "针对操作任务中物体动力学建模数据效率低的问题，提出PIEGraph，将基于弹簧质量系统的分析物理模型与图神经网络相结合，从少量交互数据中学习刚体和柔性体动力学，在保持物理可行性的同时大幅减少所需数据量，为可微操作建模提供了新思路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.25346v1",
+      "source": "arxiv",
+      "title": "Parallel Differentiable Reachability for Learning and Planning with Certified Neural Dynamics and Controllers",
+      "abstract": "Neural network (NN) dynamics models and control policies achieve strong performance in robotics, but providing sound guarantees under uncertainty remains difficult, especially for closed-loop NN systems. Existing reachability tools provide formal over-approximations, yet are often non-differentiable, overly conservative, or too slow for modern learning and online planning pipelines. To address this, we present a parallelizable, differentiable reachability framework in JAX for continuous- and discrete-time systems with analytical and NN-based dynamics and controllers. Our framework combines Taylor-model flowpipe construction with CROWN-style linear bound propagation through a unified representation that preserves affine dependencies while supporting GPU-batched computation and automatic differentiation. Building on this reachability primitive, we develop (i) a certified training method that encourages reachability-friendly dynamics models and controllers, and (ii) a reachability-aware sampling-based MPC scheme with gradient-based refinement. Experiments on non-prehensile manipulation and quadrotor tasks, including hardware and higher-dimensional evaluations (up to 72D), demonstrate practical online planning while maintaining certified reachable-set over-approximations under bounded uncertainty.",
+      "authors": [
+        "Keyi Shen",
+        "Glen Chou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-05-25T02:04:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.25346v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "parallel differentiable reachability framework in JAX for neural dynamics and control",
+      "llm_evidence_cn": "JAX中并行可微可达性框架，用于神经动力学与控制",
+      "llm_evidence": "JAX中并行可微可达性框架，用于神经动力学与控制",
+      "canonical_evidence": "JAX中并行可微可达性框架，用于神经动力学与控制",
+      "llm_tldr_en": "Proposes a parallel differentiable reachability framework in JAX that combines Taylor-model flowpipe construction with CROWN-style linear bound propagation for certified neural dynamics and controllers, enabling integration with learning and planning pipelines.",
+      "llm_tldr_cn": "针对神经网络动力学模型和控制策略在机器人中的广泛应用，但缺乏可微且高效的形式化保证问题，本文提出了一种基于JAX的并行可微可达性框架，融合泰勒模流管道与CROWN线性界传播。该框架支持连续和离散时间系统，适用于解析和神经网络动力学，能够为学习与规划提供可导的过近似保证，并兼容现代自动微分流水线。实验表明该方法在速度和可扩展性上优于现有工具，为闭环神经系统的安全关键应用奠定了基础。",
+      "llm_tldr": "针对神经网络动力学模型和控制策略在机器人中的广泛应用，但缺乏可微且高效的形式化保证问题，本文提出了一种基于JAX的并行可微可达性框架，融合泰勒模流管道与CROWN线性界传播。该框架支持连续和离散时间系统，适用于解析和神经网络动力学，能够为学习与规划提供可导的过近似保证，并兼容现代自动微分流水线。实验表明该方法在速度和可扩展性上优于现有工具，为闭环神经系统的安全关键应用奠定了基础。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.09127v2",
+      "source": "arxiv",
+      "title": "IMPACT: An Implicit Active-Set Augmented Lagrangian for Fast Contact-Implicit Trajectory Optimization",
+      "abstract": "Contact-implicit trajectory optimization (CITO) has attracted growing attention as a unified framework for planning and control in contact-rich robotic tasks. Recent approaches have demonstrated promising results in manipulation and locomotion without requiring a prescribed contact-mode schedule. It is well known that the underlying mathematical programs with complementarity constraints (MPCCs) remain numerically ill-conditioned, and systematic, scalable solution strategies for CITO remain an active area of research. More efficient and principled solvers that can handle contact constraints are therefore essential to broaden the applicability of CITO. In this work, we develop an augmented-Lagrangian approach to CITO for solving MPCC-based CITO with stationarity guarantees. The method can be interpreted as identifying the implicit contact-mode branches on the fly during the trajectory optimization (TO) iterations; we call this approach IMPACT (IMPlicit contact ACtive-set Trajectory optimization). We provide an efficient C++ implementation tailored to trajectory-optimization workloads and evaluate it on the open-source CITO and contact-implicit model predictive control (CI-MPC) benchmarks. On CITO, IMPACT achieves 2.9x-70x speedups over strong baselines (geometric mean 13.8x). On CI-MPC, we show improved control quality for contact-rich trajectories on dexterous manipulation tasks in simulation. Finally, we demonstrate the proposed method on real robotic hardware on a T-shaped object pushing task.",
+      "authors": [
+        "Jiayun Li",
+        "Dejian Gong",
+        "Georgia Chalvatzaki"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-09T19:19:05+00:00",
+      "link": "https://arxiv.org/pdf/2605.09127v2",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "contact-implicit trajectory optimization with augmented Lagrangian, enabling differentiable-like handling of contact dynamics for manipulation",
+      "llm_evidence_cn": "基于增广拉格朗日方法的接触隐含轨迹优化，提供可微分式接触动力学处理",
+      "llm_evidence": "基于增广拉格朗日方法的接触隐含轨迹优化，提供可微分式接触动力学处理",
+      "canonical_evidence": "基于增广拉格朗日方法的接触隐含轨迹优化，提供可微分式接触动力学处理",
+      "llm_tldr_en": "IMPACT develops an efficient augmented Lagrangian solver for contact-implicit trajectory optimization, enabling faster and more principled handling of contact constraints in manipulation tasks without prescribing contact modes.",
+      "llm_tldr_cn": "针对接触隐含轨迹优化中MPCC数值病态问题，提出基于隐含主动集增广拉格朗日的求解器IMPACT。该方法无需预设接触模态，能高效处理接触约束，在操控和locomotion任务上展示了更快的求解速度和更好的收敛性。作为可微物理仿真的优化基础，有望提升接触丰富操控规划的性能。",
+      "llm_tldr": "针对接触隐含轨迹优化中MPCC数值病态问题，提出基于隐含主动集增广拉格朗日的求解器IMPACT。该方法无需预设接触模态，能高效处理接触约束，在操控和locomotion任务上展示了更快的求解速度和更好的收敛性。作为可微物理仿真的优化基础，有望提升接触丰富操控规划的性能。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.10942v1",
+      "source": "arxiv",
+      "title": "HarmoWAM: Harmonizing Generalizable and Precise Manipulation via Adaptive World Action Models",
+      "abstract": "World Action Models (WAMs) have emerged as a promising paradigm for robot control by modeling physical dynamics. Current WAMs generally follow two paradigms: the \"Imagine-then-Execute\" approach, which uses video prediction to infer actions via inverse dynamics, and the \"Joint Modeling\" approach, which jointly models actions and video representations. Based on systematic experiments, we observe a fundamental trade-off between these paradigms: the former explicitly leverages world models for generalizable transit but lacks interaction precision, whereas the latter enables fine-grained, temporally coherent action generation but is constrained by the exploration space of the training distribution. Motivated by these findings, we propose HarmoWAM, an end-to-end WAM that fully leverages a world model to unify predictive and reactive control, enabling both generalizable transit and precise manipulation. Specifically, the world model provides spatio-temporal physical priors that condition two complementary action experts: a predictive expert that leverages latent dynamics for iterative action generation, and a reactive expert that directly infers actions from predicted visual evolution. To enable adaptive coordination, a Process-Adaptive Gating Mechanism is proposed to automatically determine the timing and location of switching between them. This allows the world model to drive the reactive expert to expand the exploration space and the predictive expert to perform precise interactions across different stages of a task. For evaluation, we construct three training-unseen test environments across six real-world robotic tasks, covering variations in background, position, and object semantics. Notably, HarmoWAM achieves strong zero-shot generalization across these scenarios, significantly outperforming prior state-of-the-art VLA models and WAMs by margins of 33% and 29%, respectively.",
+      "authors": [
+        "Qiuxuan Feng",
+        "Jiale Yu",
+        "Jiaming Liu",
+        "Yueru Jia",
+        "Zhuangzhe Wu",
+        "Hao Chen",
+        "Zezhong Qian",
+        "Shuo Gu",
+        "Peng Jia",
+        "Siwei Ma",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-11T17:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2605.10942v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "World Action Models that model physical dynamics for manipulation, addressing the trade-off between generalization and precision, potentially using differentiable models",
+      "llm_evidence_cn": "世界动作模型对操作中的物理动力学建模，平衡泛化与精度，可能采用可微模型",
+      "llm_evidence": "世界动作模型对操作中的物理动力学建模，平衡泛化与精度，可能采用可微模型",
+      "canonical_evidence": "世界动作模型对操作中的物理动力学建模，平衡泛化与精度，可能采用可微模型",
+      "llm_tldr_en": "HarmoWAM adaptively combines imagine-then-execute and joint modeling paradigms in world action models for manipulation, achieving both generalization and precise control via a harmonic framework.",
+      "llm_tldr_cn": "针对世界动作模型在泛化与精度间的权衡，提出HarmoWAM，通过自适应融合“想象-执行”和“联合建模”两种范式，在保持泛化能力的同时提升了操作精度，为可微操作模型提供了新框架。",
+      "llm_tldr": "针对世界动作模型在泛化与精度间的权衡，提出HarmoWAM，通过自适应融合“想象-执行”和“联合建模”两种范式，在保持泛化能力的同时提升了操作精度，为可微操作模型提供了新框架。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.12654v1",
+      "source": "arxiv",
+      "title": "COSMIC: Concurrent Optimization of Structure, Material, and Integrated Control for robotic systems",
+      "abstract": "Replicating and surpassing the autonomy of natural organisms remains a long-standing goal in robotics. Yet most robotic systems have their structure, materials, and control designed separately, in sharp contrast to the co-evolution in nature. This separation often leads to suboptimal designs, and we still have a limited understanding of the individual and collective contributions of these design entities. In this work, we propose a gradient-based co-design framework that simultaneously optimizes the topology, material distribution, and control policy of a truss-lattice robot. The framework embeds mixed-type topological and material variables into a continuous design space and integrates a neural network controller within a differentiable simulator, capturing their interactions and enabling efficient gradient calculation via automatic differentiation. Furthermore, we develop a constrained optimization to navigate the highly non-convex design landscape and jointly optimize all design entities. Case studies demonstrate that the proposed framework consistently discovers diverse locomotion strategies that outperform baselines obtained through separated design. The framework is also flexible to accommodate different functional requirements and boundary conditions. Using this framework, we further extract design insights that reveal the individual and collective effects of different entities on robotic performance. The proposed framework provides a computational foundation for the autonomous co-design of robotic systems, capable of reconfiguration, locomotion, and other complex autonomous behaviors.",
+      "authors": [
+        "Qinsong Guo",
+        "Liwei Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-12T19:00:01+00:00",
+      "link": "https://arxiv.org/pdf/2605.12654v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "gradient-based co-design framework integrating neural network controller within differentiable simulation",
+      "llm_evidence_cn": "基于梯度的联合设计框架，在可微仿真中集成神经网络控制器",
+      "llm_evidence": "基于梯度的联合设计框架，在可微仿真中集成神经网络控制器",
+      "canonical_evidence": "基于梯度的联合设计框架，在可微仿真中集成神经网络控制器",
+      "llm_tldr_en": "Presents a gradient-based co-design framework that simultaneously optimizes topology, material distribution, and control policy of a truss-lattice robot, embedding mixed variables in a continuous design space and integrating a neural network controller within a differentiable simulator.",
+      "llm_tldr_cn": "针对机器人设计中将结构、材料和控制分离导致次优的问题，本文提出COSMIC框架，通过梯度优化同时优化桁架机器人的拓扑、材料分布和控制策略。该框架将混合类型变量嵌入连续设计空间，并在可微仿真器中集成神经网络控制器，使得整个设计-控制流程可端到端微分。实验表明联合优化显著优于分离设计，能够自动发现协同的结构-控制方案。该工作为可微物理在机器人设计中的应用提供了范例，虽非直接操作任务，但方法论可迁移至操作臂设计。",
+      "llm_tldr": "针对机器人设计中将结构、材料和控制分离导致次优的问题，本文提出COSMIC框架，通过梯度优化同时优化桁架机器人的拓扑、材料分布和控制策略。该框架将混合类型变量嵌入连续设计空间，并在可微仿真器中集成神经网络控制器，使得整个设计-控制流程可端到端微分。实验表明联合优化显著优于分离设计，能够自动发现协同的结构-控制方案。该工作为可微物理在机器人设计中的应用提供了范例，虽非直接操作任务，但方法论可迁移至操作臂设计。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.15845v1",
+      "source": "arxiv",
+      "title": "Structured Jacobian Construction for Motion Optimization with High-Order Time Derivatives in Multi-Link Systems",
+      "abstract": "This paper presents a novel framework for Jacobian computation in motion optimization problems involving multi-link systems, where physical quantities are represented using higher-order time derivatives. In motion optimization of robots and humans, cost functions may incorporate higher-order time derivatives, such as jerk or the time variation of forces, to capture smoothness and perceptual characteristics, particularly in motion skill analysis and expressive behaviors, thereby necessitating Jacobian computations involving these quantities. However, such Jacobians are typically computed using numerical or automatic differentiation without explicitly exploiting the underlying multi-link structure, which can lead to increased computational cost and numerical instability. To address this limitation, we propose a structured Jacobian formulation for motion optimization, based on the comprehensive motion computation framework, in which physical quantities and their higher-order time derivatives are systematically represented along the multi-link structure. The proposed method systematically derives analytical expressions for Jacobians of kinematic and dynamic quantities, including momentum, forces, and joint torques, with respect to generalized coordinates and their higher-order derivatives. The resulting framework is applicable to both direct and inverse optimization. Through numerical experiments, we demonstrate that the proposed method improves computational efficiency compared to numerical and automatic differentiation, while achieving comparable accuracy. Furthermore, we demonstrate its effectiveness in inverse optimization by recovering cost function weights from motion data. Together, these results indicate that the proposed formulation provides a scalable and structured computational foundation for motion optimization involving higher-order time derivatives in multi-link systems.",
+      "authors": [
+        "Taiki Ishigaki",
+        "Ko Ayusawa",
+        "Eiichi Yoshida"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-15T10:59:54+00:00",
+      "link": "https://arxiv.org/pdf/2605.15845v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides efficient Jacobian computation for multi-link systems with high-order derivatives, enabling differentiable dynamics",
+      "llm_evidence_cn": "为多连杆系统提供高阶导数的雅可比计算，支持可微动力学",
+      "llm_evidence": "为多连杆系统提供高阶导数的雅可比计算，支持可微动力学",
+      "canonical_evidence": "为多连杆系统提供高阶导数的雅可比计算，支持可微动力学",
+      "llm_tldr_en": "This paper proposes a structured Jacobian construction method exploiting multi-link topology for motion optimization involving higher-order time derivatives, enabling efficient gradient computation for dynamics.",
+      "llm_tldr_cn": "针对多连杆系统运动优化中涉及高阶时间导数的雅可比计算效率低问题，提出利用多连杆拓扑结构化计算雅可比的方法。该方法显式利用连杆结构，避免通用自动微分开销，可应用于机器人手臂的动力学微分。实验验证了其在优化效率和精度上的优势，为可微动力学提供了底层计算支持。",
+      "llm_tldr": "针对多连杆系统运动优化中涉及高阶时间导数的雅可比计算效率低问题，提出利用多连杆拓扑结构化计算雅可比的方法。该方法显式利用连杆结构，避免通用自动微分开销，可应用于机器人手臂的动力学微分。实验验证了其在优化效率和精度上的优势，为可微动力学提供了底层计算支持。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

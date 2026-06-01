@@ -1,0 +1,1007 @@
+Title: Neural Control: Adjoint Learning Through Equilibrium Constraints
+
+URL Source: https://arxiv.org/pdf/2605.03288v1
+
+Published Time: Wed, 06 May 2026 00:41:13 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+Dezhong Tong 1 Jiawen Wang 2 Hengyi Zhou 1 Yinglong Shen 2 Xiaonan Huang 1 M. Khalid Jawed 2
+
+## Abstract 
+
+Many physical AI tasks are governed by implicit equilibrium: an agent actuates a subset of degrees of freedom (boundary DoFs), while the remain-ing free DoFs settle by minimizing a total po-tential energy. Even seemingly basic tasks such as bending a deformable linear object (DLO) to a target shape can exhibit strongly nonlinear be-havior due to multi-stability: the same boundary conditions may yield multiple equilibrium shapes depending on the actuation trajectory. However, learning and control in such systems is brittle because the actuation-to-configuration map is de-fined only implicitly, and naive backpropagation through iterative equilibrium solvers is memory-and compute-intensive. We propose Neural Con-trol, a boundary-control framework that computes trajectory-dependent, memory-efficient proxy gra-dients by differentiating equilibrium conditions via an adjoint formulation, avoiding unrolling of solver iterations. To improve robustness over long horizons, we integrate these sensitivities into a receding-horizon MPC scheme that repeatedly re-anchors optimization to realized equilibria and mitigates basin-switching in multi-stable regimes. We evaluate Neural Control in simulation and on physical robots manipulating DLOs, and show im-proved performance over gradient-free baselines such as SPSA and CEM. 
+
+## 1. Introduction 
+
+Many physical systems encountered in robotics, graphics, and simulation are governed by an energy functional, with system states defined implicitly as solutions of energy mini-mization problems under boundary and loading conditions. In the absence of non-conservative forces, controlling such 
+
+> 1
+
+The Robotics Department, University of Michigan, Ann Arbor, USA 2The Department of Mechanical and Aerospace Engineer-ing, University of California, Los Angeles, USA. Correspondence to: Xiaonan Huang <xiaonanh@umich.edu >, M. Khalid Jawed 
+
+<khalidjm@seas.ucla.edu >.
+
+Preprint. May 6, 2026. 
+
+systems amounts to shaping the energy landscape – by ad-justing boundary conditions or parameters – so that the resulting equilibrium achieves a desired objective. This setting poses a fundamental challenge: equilibria are high-dimensional and often multi-stable, with small changes in boundary actuation inducing discontinuous transitions be-tween solution branches. These difficulties are especially pronounced in robotic ma-nipulation of deformable structures (Figure 1A), such as deformable linear objects (DLOs) (Mora et al., 2021; Li et al., 2023; Tong et al., 2024), where large, geometrically nonlinear deformations and hysteresis lead to multi-stable equilibria and path-dependent behavior (Qiao et al., 2020; Liang et al., 2019; Huang et al., 2025; Bretl & McCarthy, 2014; Tong et al., 2021). Figure 1B illustrates this phe-nomenon, showing that a DLO can admit multiple stable equilibrium shapes under identical boundary conditions. A fundamental challenge is that state updates are defined only implicitly as the solution of equilibrium problems – such as energy minimization – over high-dimensional discretiza-tions of continua (Yin et al., 2021; Moll & Kavraki, 2006; Bergou et al., 2008). As a result, this equilibrium map can be history-dependent due to basin-of-attraction effects, breaking standard Markov assumptions and making long-horizon planning and learning brittle (Hausknecht & Stone, 2015; Suh et al., 2022). Differentiable simulation offers gradients for optimiza-tion (Qiao et al., 2020; Mora et al., 2021; Suh et al., 2022), but multistable control requires branch-consistent, trajectory-dependent sensitivities that follow the realized branch selected by the solver (Georgiev et al., 2024; Gao et al., 2024). Markovian transition models are inherently single-valued; in multi-stable systems, identical states and actions can converge to different equilibria, causing learned dynamics to average over branches unless latent modes are modeled explicitly (Bishop, 1994; Hafner et al., 2019b;a). Moreover, when each step requires an implicit equilibrium solve, backpropagating through solver iterations over long horizons is memory-intensive and numerically fragile near instabilities (Gruslys et al., 2016; Amos & Kolter, 2017; Bai et al., 2019). This motivates a method that computes trajectory-dependent sensitivities through sequences of implicit equilibrium 1          
+
+> arXiv:2605.03288v1 [cs.RO] 5 May 2026 Neural Control: Adjoint Learning Through Equilibrium Constraints Stable state 1 Stable state 2 Deformable linear object
+> XYZ
+> XY
+> State: x
+> (Free nodes: qf)Controllable quantities: z
+> (Boundary nodes:
+> qb)AB
+> Figure 1. (A) Robotic manipulation of a deformable linear object (e.g., elastic strips). (B) Discretization into boundary and free nodes. Varying the controllable quantities zshapes the resulting state x. Multiple stable shapes may exist under the same z.
+
+solves without unrolling inner iterations, while remaining robust to branch selection over long horizons. Inspired by adjoint sensitivity methods in continuous-depth learn-ing (Chen et al., 2018), we introduce an adjoint-based frame-work that computes memory-efficient, trajectory-dependent proxy gradients by differentiating equilibrium conditions, while keeping the forward rollout on converged equilibria along the realized branch. To improve robustness in multi-stable regimes, we embed these sensitivities into a receding-horizon model predictive control (MPC) loop (Chua et al., 2018) that repeatedly replans from realized configurations and mitigates basin drift over long continuations. We vali-date the approach on shape control of DLOs, with simula-tion and real-robot experiments on elastic strips under noise, modeling mismatch, and gravity. Compared to gradient-free baselines (SPSA (Spall, 2002) and CEM (Botev et al., 2013)), Adjoint+RHC is 19–127 × faster and achieves 1–6 orders of magnitude lower best loss across all elastic strip manipulation tasks (Table 1). This paper makes the following contributions: (i) an ad-joint formulation that computes trajectory-dependent gra-dients by implicit differentiation of equilibrium conditions, enabling long-horizon optimization through sequences of equilibrium solves without unrolling inner Newton/CG iter-ations; (ii) a receding-horizon continuation (RHC) scheme that repeatedly re-anchors optimization to realized equilib-ria and mitigates unintended basin switches in multi-stable regimes; (iii) simulation and real-robot demonstrations on DLOs, including transfer under parameter mismatch and gravity. 
+
+## 2. Related works 
+
+Optimization and learning for long-horizon, path-dependent control. Long-horizon control and sequential decision-making are central themes in machine learning, where performance is often limited by delayed credit as-signment and partial observability, and, in model-based settings, by compounding model error. A common re-sponse is to cast history dependence as a partially observable Markov decision process (POMDP) and augment policies and value functions with memory, e.g., recurrent reinforce-ment learning (RL) (Hausknecht & Stone, 2015), or to learn latent state-space models that support planning via imag-ined rollouts (Hafner et al., 2019b;a). Another dominant paradigm is model-based RL with receding-horizon plan-ning: actions are optimized over a short horizon and re-peatedly replanned using model predictive control (MPC) to reduce error accumulation and improve robustness un-der regime changes (Chua et al., 2018). Complementary to these approaches, black-box and sampling-based opti-mizers remain strong baselines for long-horizon problems because they avoid differentiating through complex transi-tions and can explore multi-modal outcomes. Representa-tive examples include simultaneous perturbation stochas-tic approximation (SPSA) (Spall, 2002), the cross-entropy method (CEM) (Botev et al., 2013), and parameter-space search methods such as evolution strategies (ES) (Salimans et al., 2017) and augmented random search (ARS) (Mania et al., 2018). Recent work also makes CEM differentiable (DCEM) (Amos & Yarats, 2020). However, the rollout cost of these methods typically grows quickly with hori-zon length and action dimension, which becomes especially acute when each step involves an expensive implicit equi-librium computation (Pinneri et al., 2021). Our method retains receding-horizon replanning but computes physics-informed, trajectory-level sensitivities through implicit tran-sitions along the realized branch, enabling efficient gradient-based optimization. 
+
+Memory-efficient, trajectory-based gradients for long horizons. Backpropagation through time (BPTT) pro-vides a direct way to obtain long-horizon, trajectory-dependent gradients by propagating sensitivities across timesteps (Williams & Peng, 1990), but naively storing intermediate states makes memory scale with horizon length, motivating checkpointing and recomputation strate-gies (Gruslys et al., 2016). In differentiable physics and control, this challenge becomes more pronounced when each transition is an implicit update solved via inner it-erations (e.g., Newton or conjugate gradient), since dif-ferentiating through solver iterations is memory-intensive and can be numerically brittle near instabilities (Amos & Kolter, 2017; Suh et al., 2022). Inspired by adjoint sensi-tivity methods (Chen et al., 2018), a complementary line of work avoids unrolling by differentiating through implicit functions via optimality or fixed-point conditions, including deep equilibrium models (Bai et al., 2019) and differentiable implicit layers (Look et al., 2020). Related ideas also appear in differentiable control, such as differentiable MPC via KKT conditions (Amos et al., 2018) and Pontryagin differ-entiable programming (PDP) (Jin et al., 2020). In contrast 2Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+to DEQ/implicit layers that differentiate a single fixed point, we address long-horizon optimization through sequences of equilibria where multi-stability makes the realized trajectory branch-dependent. In contrast to differentiable MPC/PDP, our setting requires sensitivities through an implicit equi-librium solve at every step rather than explicit dynamics or a single KKT system. Compared to BPTT through solver iterations, we avoid unrolling inner solves and use a proxy-adjoint recursion; we further adopt a frozen-tangent proxy to avoid higher-order derivatives along long horizons. 
+
+Differentiable models for learning and control. Differ-entiable modeling and simulation have become core prim-itives for gradient-based learning, planning, and inverse problems, and recent ML toolchains such as DiffTaichi (Hu et al., 2019a) and Brax (Freeman et al., 2021) make opti-mizing through physics practical at scale. Differentiable simulators have been extended from rigid bodies to de-formables and soft bodies, including ChainQueen (Hu et al., 2019b), DiffPD (Du et al., 2021), and differentiable soft multi-body simulation (Qiao et al., 2021). For flexible struc-tures, discrete differential geometry (DDG) discretizations provide geometry-preserving, energy-based models with analytic derivatives (Bergou et al., 2008; Grinspun et al., 2003; Huang et al., 2025). Benchmarks further clarify the difficulty of long-horizon deformable manipulation, e.g., SoftGym (Lin et al., 2021) and PlasticineLab (Huang et al., 2021). Learned differentiable simulators can offer fast pre-dictors, but near multistability and bifurcation boundaries deterministic models can blur branch selection without ex-plicit multimodality (e.g., mixture formulations) (Sanchez-Gonzalez et al., 2020; Pfaff et al., 2021; Bishop, 1994). Recent work also integrates analytic gradients from dif-ferentiable multiphysics simulations into RL updates (e.g., SAPO) (Xing et al., 2025). Our work complements these efforts by focusing on the gradient pathway itself: memory-efficient, trajectory-level sensitivities through sequences of implicit equilibrium solves so optimization follows the real-ized branch. 
+
+## 3. Methodology 
+
+We study learning and control problems where the system state is defined implicitly by an equilibrium condition rather than an explicit dynamics model. A continuation parameter 
+
+λ ∈ [0 , 1] indexes the process, with λ = 0 the initial con-figuration and λ = 1 the terminal configuration. At each λ,the equilibrium state x(λ) is obtained by solving 
+
+G(x(λ), z(λ)) = 0, (1) where z(λ) denotes controllable quantities entering the equi-librium (e.g., boundary conditions, loads, or design param-eters), rather than by an explicit state update of the form 
+
+xk+1 = f (xk). In mechanics, Equation (1) corresponds to Newton’s second law in the quasi-static regime, where inertia and vibrational effects are neglected and internal con-servative forces balance applied loads. A common instance is 
+
+G(x, z) = ∇xE(x, z) − Fext , (2) where E is total potential energy and Fext collects external loads. Equilibrium-governed systems pose two challenges: (i) x(λ)
+
+is typically computed by iterative solvers (e.g., Newton– CG), so differentiating through solver iterations across long horizons is expensive; and (ii) equilibria can be multi-stable, so for fixed z, multiple stable solutions may exist and warm-started solvers follow a realized branch through their basins of attraction. We therefore generate rollouts by warm-started equilibrium solves along the continuation path. A neural controller parameterized by Θ produces a continu-ation control signal 
+
+u(λ) = uΘ(λ), (3) which drives z(λ) via known continuation dynamics 
+
+dz
+
+dλ = f (z(λ), u(λ)) , z(0) = z0. (4) Given z(λ), the realized equilibrium x(λ) is obtained by repeatedly solving (1) with warm starts from the previous solution, yielding a branch-consistent rollout. In all exper-iments, the forward rollout is exact in the sense that each state is a converged equilibrium. 
+
+3.1. Adjoint gradients via proxy sensitivity dynamics 
+
+At any converged equilibrium (x(λ), z(λ)) satisfying 
+
+G(x, z) = 0, implicit differentiation yields the local equi-librium sensitivity 
+
+S(λ) := ∂x
+
+∂z (λ), Gx(λ) S(λ) = −Gz (λ), (5) where Gx = ∂G 
+
+> ∂x
+
+and Gz = ∂G 
+
+> ∂z
+
+. We never form S(λ);instead we compute products ST (λ)v via one adjoint linear solve with Gx(λ).Along a smooth realized branch, the total derivative satisfies 
+
+dx
+
+dλ = S(λ) dz
+
+dλ + ∂x
+
+∂λ . (6) In our instantiation, G has no explicit λ-dependence: any scheduling is absorbed into z(λ). Consequently, ∂x/∂λ =
+
+0 and dx
+
+dλ = S(λ) dz
+
+dλ . (7) Combining (7) with the continuation dynamics (4) gives the continuous sensitivity identity 
+
+dx
+
+dλ = S(λ) f (z(λ), u(λ)) . (8) 3Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+Equation (8) defines the proxy sensitivity dynamics used only for backward sensitivity propagation; the forward states 
+
+x(λ) are still obtained by solving (1) to convergence at each continuation step. All gradients below are derived as adjoints of this proxy sensitivity dynamics, combined with implicit differentiation at converged equilibria. The only approximation in our gradient construction is a 
+
+frozen-tangent discretization: we evaluate S(λ) on the re-alized rollout at discrete continuation steps and treat it as locally constant during the backward pass (equivalently, we ignore dS/dλ ). This avoids higher-order derivatives of Eq. (1) . Appendix C formalizes this approximation and shows that, under mild regularity assumptions on the re-alized equilibrium branch, the resulting proxy gradient is first-order accurate. 
+
+Terminal objective. We first consider a terminal loss 
+
+L = ϕ(x(1) , z(1)) . (9) Define proxy-system costates a(λ) := ∂L/∂ x(λ) and 
+
+g(λ) := ∂L/∂ z(λ). Under (8) and frozen tangent, the terminal conditions are 
+
+a(1) = ∇xϕ(x(1) , z(1)) ,
+
+g(1) = ∇zϕ(x(1) , z(1)) + S(1) ⊤a(1) , (10) where S(1) ⊤a(1) accounts for the dependence of the termi-nal equilibrium on z(1) .Let A(λ) := ∂f ∂z (z(λ), u(λ)) and B(λ) :=  
+
+> ∂f ∂u
+
+(z(λ), u(λ)) . Under the frozen-tangent approxi-mation, we neglect the dependence of S(λ) on x, yielding zero local Jacobian of the proxy dynamics with respect to x.The costates satisfy backward ODEs integrated from λ = 1 
+
+to 0,
+
+− da
+
+dλ = 0,
+
+− dg
+
+dλ = A(λ)⊤
+
+g(λ) + S(λ)⊤a(λ)
+
+
+
+,
+
+(11) and the instantaneous control gradient is 
+
+dL
+
+du(λ) = B(λ)⊤
+
+g(λ) + S(λ)⊤a(λ)
+
+
+
+. (12) The parameter gradient follows by the chain rule 
+
+dL
+
+dΘ =
+
+Z 10
+
+ ∂uΘ(λ)
+
+∂Θ
+
+⊤ dL
+
+du(λ) dλ. (13) 
+
+3.2. Adjoints for trajectory objectives 
+
+Many equilibrium-control tasks specify objectives along the realized branch rather than only at λ = 1 . We therefore consider 
+
+L = ϕ(x(1) , z(1)) + 
+
+Z 10
+
+w(λ) ℓ(x(λ), z(λ)) dλ, (14) where w(λ) ≥ 0 is user-specified. The terminal conditions remain (10) . Under (8) and frozen tangent, the backward ODEs become 
+
+− da
+
+dλ = w(λ) ∇xℓ(x(λ), z(λ)) , (15) 
+
+− dg
+
+dλ =w(λ)
+
+
+
+∇zℓ(x(λ), z(λ)) + S(λ)⊤∇xℓ(x(λ), z(λ)) 
+
+
+
++ A(λ)⊤
+
+g(λ) + S(λ)⊤a(λ)
+
+
+
+,
+
+(16) and the control/parameter gradients retain the same form as Eqs. (12)–(13). 
+
+3.3. Receding-horizon continuation control 
+
+Over long continuations, proxy/discretization errors can accumulate, and in multi-stable regions overly aggressive updates may drive the equilibrium solve across basins of attraction. We therefore solve the task as a sequence of short continuation segments (MPC-style), repeatedly re-anchoring optimization to realized equilibria. At segment index m, starting from (x(m)0 , z(m)0 ), we opti-mize a control schedule over a local homotopy λ ∈ [0 , 1] 
+
+(implemented with H continuation steps of size 1/H ). The continuation control is generated by a lightweight neural controller 
+
+u(λ) = uΘ(m) (λ), (17) with fixed architecture and parameters Θ(m) reinitialized at the start of each segment and optimized within the segment. We minimize a short-horizon segment objective L(m) of the same form as Eq. (14), restricted to the segment rollout: 
+
+min 
+
+> Θ(m)
+
+L(m) =ϕ(x(m)(1) , z(m)(1)) +
+
+Z 10
+
+w(λ) ℓ(x(m)(λ), z(m)(λ)) dλ. 
+
+(18) subject to the equilibrium constraint (1) , continuation dynamics (4) , and bounded progress (e.g., ∥u(λ)∥ ≤
+
+umax ). We optimize Θ(m) using the proxy-adjoint gradi-ents above and stop early when the segment objective stalls (or after a fixed budget). Executing the segment yields 
+
+(x(m)(1) , z(m)(1)) , and we shift the horizon by 
+
+x(m+1) 0 ← x(m)(1) , z(m+1) 0 ← z(m)(1) . (19) This segment-wise design localizes proxy error and reduces unintended basin switches in multi-stable landscapes. We provide the discrete derivation, implementation details, and pseudocode in Appendix A and Algorithm 1. 
+
+## 4. Results 
+
+We evaluate our method on elastic-strip manipulation tasks (Figure 1A). The strip undergoes large deformations and 4Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+admits multi-stable equilibria, inducing strong path depen-dence: small continuation errors can accumulate and trigger undesired switches between equilibrium branches. We con-sider three tasks that progressively stress these effects: (i) point-to-point manipulation (terminal objective), (ii) path following of a designated strip point (trajectory objective), and (iii) shape formation in multi-stable regimes (branch selection). All methods share the same forward rollout, which com-putes strip configurations by solving implicit equilibria to convergence at each continuation step. We compare our full method (Adjoint+RHC) against SPSA and CEM, and ab-late our approach by removing RHC (Adjoint-only). Each method is run for the same number of parameter-update steps T (optimizer updates on Θ). An objective evalua-tion corresponds to one full rollout that computes the task loss from implicit equilibrium solves. Because SPSA uses two rollouts per update (two-sided perturbations) and CEM uses P rollouts per update (population evaluation), these gradient-free methods consume multiple objective evalua-tions per update. Adjoint-only and Adjoint+RHC use one rollout per update and additionally solve tangent/adjoint linear systems to obtain gradients, avoiding backpropaga-tion through the Newton/CG iterations of the equilibrium solver. We therefore report both best achieved loss and total wall-clock time, reflecting rollout cost and gradient over-head. Finally, we validate the approach in real-world robotic experiments. 
+
+4.1. Experimental setup 
+
+We model the manipulated object as a planar elastic strip with stretching and bending energy. At each continuation step, the forward rollout computes the realized configuration by solving the corresponding equilibrium equations to con-vergence under imposed boundary constraints. We partition degrees of freedom into boundary nodes qb and free nodes 
+
+qf and set z ≡ qb, x ≡ qf (Figure 1B): control acts only through boundary conditions, while free nodes are solved implicitly and used to evaluate task losses. The strip is held by clamped boundary conditions at both ends; Tasks 1–2 actuate transverse (global x-axis in our setup) displacements at both ends, and Task 3 actuates (x, y ) displacement and in-plane rotation at one end with the other end passively clamped. Unless otherwise stated, we discretize the strip with N = 101 nodes and ignore gravity in numerical ex-periments. The stretching and bending stiffness are fixed to 
+
+ks = 0 .31 N and kb = 7 .85 × 10 −8 N m 2. Full discretiza-tion and solver details are provided in the Appendix B. 
+
+4.2. Tasks and metrics 
+
+We evaluate three numerical tasks that progressively test terminal objectives, trajectory objectives, and multi-stable shape (branch) selection. In all tasks, boundary degrees of freedom define the controllable variable z ≡ qb, and the free degrees of freedom x ≡ qf are solved implicitly from equilibrium and used to evaluate losses. Tasks 1–2 start from the same pre-deformed configuration (Figure 2A), while Task 3 starts from a straight strip (Figure 3). The continuation control is produced by a neural controller 
+
+u(λ) = uΘ(λ), where u(λ) specifies the rate of boundary actuation along continuation. In Tasks 1–2, u(λ) ∈ R2
+
+outputs the transverse ( x-direction) displacement rates of the left and right clamped ends. In Task 3, u(λ) ∈ R3
+
+outputs the (x, y ) displacement rates and in-plane rotation rate of the manipulated end, while the other end remains passively clamped. 
+
+Task 1: point-to-point node targeting. We select a strip node i and a target position p⋆i within the reachable workspace. The goal is to drive the node to the target at the end of continuation. We use the terminal loss 
+
+Lpos = 12 pi(1) − p⋆i
+
+> 22
+
+, (20) and declare success if Lpos ≤ εpos .
+
+Task 2: trajectory tracking. We track a prescribed planar path with a designated node (the middle node). Let p⋆
+
+> mid
+
+(λ)
+
+denote the reference trajectory (sinusoid, circle, or square wave; Fig. 2B). We define 
+
+ℓtraj (λ) = 12 pmid (λ) − p⋆
+
+> mid
+
+(λ) 22, (21) and evaluate the trajectory objective 
+
+Ltraj =
+
+Z 10
+
+ℓtraj (λ) dλ, (22) implemented as a Riemann sum over realized continuation steps (and, for RHC, over the concatenated executed trajec-tory). We declare success if Ltraj ≤ εtraj .
+
+Task 3: shape formation under multi-stability. We shape the strip by manipulating one clamped end while the other end remains passively clamped. For fixed boundary condi-tions, multiple stable equilibria may coexist; given a target shape, the goal is to reach the corresponding equilibrium branch. We measure shape discrepancy by curvature match-ing: 
+
+Lκ =
+
+Z L
+
+> 0
+
+ κ(s; 1) − κ⋆(s)2 ds, (23) where κ⋆(s) is the target curvature. We declare success if 
+
+Lκ ≤ εκ.
+
+4.3. Main numerical results 
+
+We report the main numerical results of neural control on the three tasks in Section 4.2. Unless otherwise noted, all 5Neural Control: Adjoint Learning Through Equilibrium Constraints  
+
+> Figure 2. Numerical results for Tasks 1–2. (A) Four representative cases of two-end boundary actuation that drive a selected strip node to a user-specified target position. (B) Four representative cases of two-end boundary actuation that guide the strip midpoint along a prescribed planar trajectory. (Shadow is rendered for visualization only.)
+
+experiments use the same strip discretization and physical parameters as in Section 4.1, with solver and hyperparameter details deferred to the Appendix D. 
+
+Tasks 1–2: two-end boundary actuation. Figure 2 sum-marizes four representative instances of point-to-point node targeting (Task 1; Figure 2A) and midpoint trajectory track-ing (Task 2; Figure 2B). In Task 1, the controller steers a user-selected node to the target position by coordinating the transverse actuation of both clamped ends, producing cou-pled rigid motion and elastic deformation along the realized equilibrium branch. In Task 2, the controller guides the strip midpoint to follow prescribed nontrivial planar trajectories; the tracked paths closely match the references across all cases, confirming that the method can optimize objectives that depend on intermediate equilibria rather than only the terminal state. 
+
+Task 3: multistable shape formation. Figure 3 visual-A1 B1 A2 B2 Initial Terminal Initial Terminal Initial Terminal Initial Terminal Target Stable state 1 Stable state 2 Stable state 1 Stable state 2  
+
+> Figure 3. Neural continuation control for multistable shape forma-tion (Task 3). (A1–A2) Two mirrored C-shaped stable equilibria arise under the same boundary condition (identical end pose), illus-trating multistability. (B1–B2) A U-shaped and an M-like stable equilibrium are also obtained under the same boundary condition.
+
+izes shape formation under multi-stability when manipu-lating a single clamped end while the other end remains passively clamped. For the same boundary condition, mul-tiple stable equilibria coexist, including mirror-symmetric C-shaped solutions (Figure 3A1–A2) and distinct U/M-like shapes (Figure 3B1–B2). Despite these competing basins, curvature-based shaping drives the strip to the specified target configuration, indicating robust branch selection in regimes where small continuation errors can otherwise in-duce unintended basin switches. 
+
+4.4. Baselines and ablations 
+
+We compare four optimizers for elastic-strip manipulation: (i) SPSA, (ii) CEM, (iii) our neural continuation control without RHC (Adjoint-only; full-horizon), and (iv) our full method, which combines the same adjoint-based neural con-trol with RHC (Adjoint+RHC). All methods share the same forward simulator (implicit equilibrium solves to conver-gence at each continuation step) and the same controller parameterization uΘ(λ) with λ as the sole input; they differ only in how the controller parameters Θ are updated and whether receding-horizon execution is used. 
+
+Budgeting and evaluation. Each method is run for a fixed number of parameter-update steps T (optimizer updates on 
+
+Θ). An objective evaluation corresponds to one full roll-out that computes the task loss from implicit equilibrium solves. The number of objective evaluations per update is method-dependent: SPSA uses two evaluations per update, CEM uses P evaluations per update, and Adjoint-only / Adjoint+RHC use one rollout per update. Adjoint-based methods additionally solve tangent/adjoint linear systems to obtain gradients via implicit sensitivities, without back-propagating through the equilibrium solver iterations. We report the best loss achieved within T updates and the to-tal wall-clock time in Table 1; wall-clock time includes all 6Neural Control: Adjoint Learning Through Equilibrium Constraints Task 1 Task 2 Task 3     
+
+> Figure 4. Optimization steps (iterations) vs. score (log best-so-far loss) for Tasks 1–3 (mean ±1 stderr over four cases). For Task 2, Adjoint+RHC executes the trajectory in segments; we therefore report its full-horizon trajectory objective Ltraj only when a complete rollout is available (i.e., at the end of the executed horizon), and use those values to form the best-so-far curve.
+
+equilibrium solves and all additional linear-solve overheads. 
+
+Baselines and ablation. SPSA and CEM are used as black-box optimizers over Θ and are run without RHC. SPSA forms a stochastic descent direction using two-sided ran-dom perturbations of Θ, whereas CEM samples a population of P candidates, selects elites (fraction ρ), and updates a search distribution. We use P = 10 and ρ = 0 .3; remain-ing hyperparameters are provided in the Appendix D. Our ablation isolates the contribution of RHC by comparing Adjoint-only against Adjoint+RHC. In Adjoint+RHC, we split the continuation into short segments of H steps and solve a sequence of segment subproblems; the controller parameters Θ are reinitialized at the start of each segment. All reported task losses are evaluated using the task defini-tions in Sec. 4.2 on the concatenated executed rollout across segments. 
+
+Convergence and robustness. Figure 4 plots the log best-so-far objective value versus optimizer updates (defined as iterations) for all methods and tasks. Task 1 (node targeting) is the simplest setting: all methods reduce the loss early, but SPSA and CEM plateau mid-training and fail to reach the tolerance within the budget on some cases. Both adjoint-based variants continue improving and reach lower final loss, with Adjoint-only converging fastest in this short-horizon regime where proxy-adjoint gradients remain accurate. Task 2 (trajectory tracking) is substantially harder because the objective depends on intermediate equilibria along the realized branch. SPSA and CEM again stall and fail under the fixed update budget. Adjoint-only succeeds on smooth references but fails on non-smooth targets (e.g., square-wave and triangular trajectories), where long-horizon accumula-tion makes optimization brittle. In contrast, Adjoint+RHC achieves consistent convergence across all trajectory types, indicating that segment-wise re-anchoring to realized equi-libria is critical for stable trajectory-level control. Task 3 (multistable shape formation) is the most challenging regime: multiple stable equilibria coexist under identical boundary conditions, so small errors can induce undesired basin switches. SPSA and CEM stagnate early, and Adjoint-only, despite a fast initial decrease, often become trapped in an incorrect branch and fail the curvature tolerance. Ad-joint+RHC consistently reaches the lowest curvature losses and reliably selects the specified equilibrium branch, demon-strating the importance of combining adjoint-based gradi-ents with RHC in multistable landscapes. 
+
+Efficiency summary. Table 1 reports best loss and wall-clock time (mean ± std) under the fixed update budget. Our full method (Adjoint+RHC) is consistently the most efficient, often achieving comparable or better final objec-tives with 10 × to 100 × lower runtime than gradient-free baselines. This gap is expected: SPSA and CEM spend most compute on repeated full rollouts per update ( 2 and 
+
+P , respectively), whereas adjoint-based updates replace ex-tra rollouts with inexpensive tangent/adjoint linear solves. Compared to Adjoint-only, RHC mitigates long-horizon error accumulation and reduces peak memory by backprop-agating only through short segments, yielding the best time– accuracy trade-off in our experiments. 
+
+4.5. Real-world experiments 
+
+As shown in Fig. 5, a 6-DoF robot arm actuates one endpoint of an elastic strip, while the other endpoint is fixed using a passive clamp. The strip has measured length ≈25 cm, width 0.5 cm, and thickness 0.127 mm. Clamping one end yields an effective free length of 22 cm for Tasks 1–2 and 15 cm for Task 3, chosen to fit within the robot workspace. At each step, the policy outputs a desired boundary incre-ment for the actuated endpoint, which we convert into a Cartesian end-effector command. For Tasks 1–2, the end-effector is constrained to translate in the x–y plane; for Task 3, we additionally command an endpoint rotation. Fig-ure 5 shows representative hardware rollouts. Across all three tasks, the observed strip motion closely matches the task requirements (target reaching, trajectory following, and final-shape attainment), indicating strong qualitative sim-to-real transfer under gravity and experimentally identified material parameters. 7Neural Control: Adjoint Learning Through Equilibrium Constraints                                                               
+
+> Theory (per optimizer update) Task 1 ( 200 updates) Task 2 ( 500 updates) Task 3 ( 500 updates) Method Time/update Memory/update Time (s) ↓Best loss ↓Time (s) ↓Best loss ↓Time (s) ↓Best loss ↓
+> SPSA O(2 K C eq )O(nΘ)727.3 ±108.8s 2.0e-6 ±1.8e-6 3612.9 ±1231.9s 5.4e-3 ±7.7e-3 3967.3 ±417.9s 2.8e-5 ±1.5e-5
+> CEM O(P K C eq )O(P n Θ)2043.2 ±73.0s 6.7e-4 ±1.2e-3 5358.9 ±208.7s 6.4e-3 ±3.9e-3 3176.4 ±232.8s 1.6e-2 ±8.5e-3
+> Adjoint-only O(K C eq +K C lin )≈ O (K C eq )O(K(nx+nz) + nΘ)176.0 ±53.1s 3.2e-7 ±5.6e-7 1111.2 ±83.1s 4.3e-4 ±5.4e-4 935.2 ±164.7s 8.4e-3 ±1.2e-2
+> Adjoint+RHC O(H C eq +H C lin )≈ O (H C eq )O(H(nx+nz) + nΘ)16.1 ±2.8s 2.3e-7 ±3.0e-7 186.9 ±24.8s 3.6e-8 ±3.6e-8 50.9 ±6.1s 3.8e-8 ±7.4e-9
+
+Table 1. Theory and empirical efficiency comparison. Here K is the number of continuation steps in a full-horizon rollout, H is the number of steps per RHC segment, P is the CEM population size, and nx, n z , n Θ denote the dimensions of x, z, and Θ, respectively. 
+
+Ceq is the cost of computing one converged equilibrium at a continuation step (Newton–CG to tolerance), and Clin is the cost of one 
+
+additional tangent/adjoint linear solve with Gx or G⊤ 
+
+> x
+
+used by implicit sensitivities (beyond Newton’s internal linear solves); typically 
+
+Ceq ≫ Clin in our implementation. Here reports total wall-clock runtime and best loss achieved over the fixed update budget. Robotic arm Task 1: Point-to-point node targeting Task 3: Strip shape control Task 2: Midpoint trajectory tracking Passive clamp Manipulated elastic strip   
+
+> Midpoint Prescribied trajectory Strip node Target node Target shape Time Circular curve Sine curve Straight line
+
+Figure 5. Experimental setup and qualitative results for all three tasks. For Task 1 and Task 2, each subfigure shows sampled frames from the control process, illustrating point-to-point manipulation and midpoint trajectory following, respectively. For Task 3, the figure visualizes the initial, intermediate, and final configurations during the shape control process. 
+
+## 5. Discussion 
+
+Our results highlight two recurring difficulties in equilibrium-governed control: (i) obtaining usable gradients when states are defined only implicitly by a converged equi-librium solve, and (ii) maintaining branch consistency over long continuations in multi-stable landscapes. We address (i) by keeping the forward pass exact (each rollout state is a converged equilibrium) while computing proxy-adjoint gradients that avoid differentiating through Newton–CG it-erations. Despite the frozen-tangent approximation, these gradients are sufficiently informative to optimize terminal and trajectory objectives. We address (ii) with RHC, which localizes proxy/discretization error to short segments and re-peatedly re-anchors optimization at realized equilibria. This wrapper is most beneficial in multi-stable regimes, where it reduces basin drift and improves reliability of branch selection. Limitations include frozen-tangent bias (ignored dS/dλ and higher-order terms), reduced reliability near bifurcations or under non-smooth physics, and limited lookahead in segment-wise updates, which may require stronger terminal objectives or shaping to solve long-horizon tasks. Equilib-rium solves remain the dominant cost, motivating better warm-starting, preconditioning, and adaptive step sizing. 
+
+## 6. Conclusion 
+
+We presented proxy-adjoint neural continuation for control and learning in equilibrium-defined systems, combining exact equilibrium rollouts with efficient implicit sensitiv-ities and a receding-horizon continuation (RHC) wrapper for robust long-horizon branch tracking. Empirically, Ad-joint+RHC achieves large efficiency gains: it is 19–127 ×
+
+faster than SPSA/CEM across Tasks 1–3 while reaching 3–6 orders of magnitude lower best loss on the same fixed update budgets. Finally, we demonstrate qualitative sim-to-real transfer on a 6-DoF robotic setup under gravity and experimentally identified material parameters (Figure 5), indicating that proxy-adjoint continuation is a practical tool for real manipulation of compliant, multi-stable structures. 8Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+## References 
+
+Amos, B. and Kolter, J. Z. Optnet: Differentiable opti-mization as a layer in neural networks. In International conference on machine learning , pp. 136–145. PMLR, 2017. Amos, B. and Yarats, D. The differentiable cross-entropy method. In International Conference on Machine Learn-ing , pp. 291–302. PMLR, 2020. Amos, B., Jimenez, I., Sacks, J., Boots, B., and Kolter, J. Z. Differentiable mpc for end-to-end planning and control. 
+
+Advances in neural information processing systems , 31, 2018. Bai, S., Kolter, J. Z., and Koltun, V. Deep equilibrium mod-els. Advances in neural information processing systems ,32, 2019. Bergou, M., Wardetzky, M., Robinson, S., Audoly, B., and Grinspun, E. Discrete elastic rods. In ACM SIGGRAPH 2008 papers , pp. 1–12. 2008. Bishop, C. M. Mixture density networks. 1994. Botev, Z. I., Kroese, D. P., Rubinstein, R. Y., and L’ecuyer, P. The cross-entropy method for optimization. In Handbook of statistics , volume 31, pp. 35–59. Elsevier, 2013. Bretl, T. and McCarthy, Z. Quasi-static manipulation of a kirchhoff elastic rod based on a geometric analysis of equilibrium configurations. The International Journal of Robotics Research , 33(1):48–68, 2014. Chen, R. T., Rubanova, Y., Bettencourt, J., and Duvenaud, D. K. Neural ordinary differential equations. Advances in neural information processing systems , 31, 2018. Chua, K., Calandra, R., McAllister, R., and Levine, S. Deep reinforcement learning in a handful of trials using proba-bilistic dynamics models. Advances in neural information processing systems , 31, 2018. Du, T., Wu, K., Ma, P., Wah, S., Spielberg, A., Rus, D., and Matusik, W. Diffpd: Differentiable projective dynamics. 
+
+ACM Transactions on Graphics (ToG) , 41(2):1–21, 2021. Freeman, C. D., Frey, E., Raichuk, A., Girgin, S., Mordatch, I., and Bachem, O. Brax–a differentiable physics engine for large scale rigid body simulation. arXiv preprint arXiv:2106.13281 , 2021. Gao, F., Shi, L., Zhang, S., Wang, Z., and Wu, Y. Adaptive-gradient policy optimization: Enhancing policy learning in non-smooth differentiable simulations. In Forty-first International Conference on Machine Learning , 2024. Georgiev, I., Srinivasan, K., Xu, J., Heiden, E., and Garg, A. Adaptive horizon actor-critic for policy learning in contact-rich differentiable simulation. arXiv preprint arXiv:2405.17784 , 2024. Grinspun, E., Hirani, A. N., Desbrun, M., and Schr ¨oder, P. Discrete shells. In Proceedings of the 2003 ACM SIGGRAPH/Eurographics symposium on Computer ani-mation , pp. 62–67, 2003. Gruslys, A., Munos, R., Danihelka, I., Lanctot, M., and Graves, A. Memory-efficient backpropagation through time. Advances in neural information processing systems ,29, 2016. Hafner, D., Lillicrap, T., Ba, J., and Norouzi, M. Dream to control: Learning behaviors by latent imagination. arXiv preprint arXiv:1912.01603 , 2019a. Hafner, D., Lillicrap, T., Fischer, I., Villegas, R., Ha, D., Lee, H., and Davidson, J. Learning latent dynamics for planning from pixels. In International conference on machine learning , pp. 2555–2565. PMLR, 2019b. Hausknecht, M. J. and Stone, P. Deep recurrent q-learning for partially observable mdps. In AAAI fall symposia ,volume 45, pp. 141, 2015. Hu, Y., Anderson, L., Li, T.-M., Sun, Q., Carr, N., Ragan-Kelley, J., and Durand, F. Difftaichi: Differentiable programming for physical simulation. arXiv preprint arXiv:1910.00935 , 2019a. Hu, Y., Liu, J., Spielberg, A., Tenenbaum, J. B., Freeman, W. T., Wu, J., Rus, D., and Matusik, W. Chainqueen: A real-time differentiable physical simulator for soft robotics. In 2019 International conference on robotics and automation (ICRA) , pp. 6265–6271. IEEE, 2019b. Huang, W., Hao, Z., Li, J., Tong, D., Guo, K., Zhang, Y., Gao, H., Hsia, K. J., and Liu, M. A tutorial on simulating nonlinear behaviors of flexible structures with the discrete differential geometry (ddg) method. Applied Mechanics Reviews , pp. 1–88, 2025. Huang, Z., Hu, Y., Du, T., Zhou, S., Su, H., Tenenbaum, J. B., and Gan, C. Plasticinelab: A soft-body manip-ulation benchmark with differentiable physics. arXiv preprint arXiv:2104.03311 , 2021. Jin, W., Wang, Z., Yang, Z., and Mou, S. Pontryagin dif-ferentiable programming: An end-to-end learning and control framework. Advances in Neural Information Pro-cessing Systems , 33:7979–7992, 2020. Li, S., Huang, Z., Chen, T., Du, T., Su, H., Tenenbaum, J. B., and Gan, C. Dexdeform: Dexterous deformable 9Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+object manipulation with human demonstrations and dif-ferentiable physics. arXiv preprint arXiv:2304.03223 ,2023. Liang, J., Lin, M., and Koltun, V. Differentiable cloth simulation for inverse problems. Advances in neural information processing systems , 32, 2019. Lin, X., Wang, Y., Olkin, J., and Held, D. Softgym: Bench-marking deep reinforcement learning for deformable ob-ject manipulation. In Conference on Robot Learning , pp. 432–448. PMLR, 2021. Look, A., Doneva, S., Kandemir, M., Gemulla, R., and Peters, J. Differentiable implicit layers. arXiv preprint arXiv:2010.07078 , 2020. Mania, H., Guy, A., and Recht, B. Simple random search of static linear policies is competitive for reinforcement learning. Advances in neural information processing systems , 31, 2018. Moll, M. and Kavraki, L. E. Path planning for deformable linear objects. IEEE Transactions on Robotics , 22(4): 625–636, 2006. Mora, M. A. Z., Peychev, M., Ha, S., Vechev, M., and Coros, S. Pods: Policy optimization via differentiable simulation. In International Conference on Machine Learning , pp. 7805–7817. PMLR, 2021. Pfaff, T., Fortunato, M., Sanchez-Gonzalez, A., and Battaglia, P. W. Learning mesh-based simulation with graph networks. In 9th International Conference on Learning Representations (ICLR) . OpenReview.net, 2021. URL https://openreview.net/forum? id=roNqYL0_XP .Pinneri, C., Sawant, S., Blaes, S., Achterhold, J., Stueckler, J., Rolinek, M., and Martius, G. Sample-efficient cross-entropy method for real-time planning. In Conference on Robot Learning , pp. 1049–1065. PMLR, 2021. Qiao, Y., Liang, J., Koltun, V., and Lin, M. Differentiable simulation of soft multi-body systems. Advances in Neu-ral Information Processing Systems , 34:17123–17135, 2021. Qiao, Y.-L., Liang, J., Koltun, V., and Lin, M. C. Scalable differentiable physics for learning and control. arXiv preprint arXiv:2007.02168 , 2020. Salimans, T., Ho, J., Chen, X., Sidor, S., and Sutskever, I. Evolution strategies as a scalable alternative to rein-forcement learning. arXiv preprint arXiv:1703.03864 ,2017. Sanchez-Gonzalez, A., Godwin, J., Pfaff, T., Ying, R., Leskovec, J., and Battaglia, P. W. Learning to simu-late complex physics with graph networks. In Proceed-ings of the 37th International Conference on Machine Learning (ICML) , volume 119 of Proceedings of Ma-chine Learning Research , pp. 8459–8468. PMLR, 2020. URL http://proceedings.mlr.press/v119/ sanchez-gonzalez20a.html .Spall, J. C. Multivariate stochastic approximation using a simultaneous perturbation gradient approximation. IEEE transactions on automatic control , 37(3):332–341, 2002. Suh, H. J., Simchowitz, M., Zhang, K., and Tedrake, R. Do differentiable simulators give better policy gradients? In International Conference on Machine Learning , pp. 20668–20696. PMLR, 2022. Tong, D., Borum, A., and Jawed, M. K. Automated stability testing of elastic rods with helical centerlines using a robotic system. IEEE Robotics and Automation Letters ,7(2):1126–1133, 2021. Tong, D., Choi, A., Qin, L., Huang, W., Joo, J., and Jawed, M. K. Sim2real neural controllers for physics-based robotic deployment of deformable linear objects. The International Journal of Robotics Research , 43(6):791– 810, 2024. Williams, R. J. and Peng, J. An efficient gradient-based algorithm for on-line training of recurrent network trajec-tories. Neural computation , 2(4):490–501, 1990. Xing, E., Luk, V., and Oh, J. Stabilizing reinforcement learning in differentiable multiphysics simulation. In The Thirteenth International Conference on Learning Repre-sentations (ICLR) . OpenReview.net, 2025. URL https: //openreview.net/forum?id=DRiLWb8bJg .Yin, H., Varava, A., and Kragic, D. Modeling, learning, perception, and control methods for deformable object manipulation. Science Robotics , 6(54):eabd8803, 2021. 10 Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+## A. Discrete proxy-adjoint derivation and implementation details 
+
+This appendix derives the discrete proxy-adjoint recursions used in Section 3.1 and shows how we compute policy gra-dients without differentiating through the equilibrium solver. The key primitive is a matrix-free routine for products S⊤ 
+
+> k
+
+v,where Sk = ∂xk/∂ zk is the equilibrium sensitivity at step 
+
+k.
+
+Forward rollout and notation. We discretize λ ∈ [0 , 1] 
+
+into {λk}Kk=0 with step size ∆λ = 1 /K . At each step 
+
+k = 0 , . . . , K − 1, the controller outputs uk = uΘ(λk) and the continuation variable updates explicitly as 
+
+zk+1 = zk + ∆ λ f (zk, uk). (24) The state xk is defined as the converged equilibrium at 
+
+(zk, λ k), warm-started from the previous solution: 
+
+xk = SolveEq( zk, λ k; init = xk−1),
+
+G(xk, zk, λ k) = 0. (25) Along the realized rollout, define the equilibrium Jacobians 
+
+Gx,k := ∂G
+
+∂x (xk ,zk ,λ k )
+
+, Gz,k := ∂G
+
+∂z (xk ,zk ,λ k )
+
+,
+
+(26) and the continuation-dynamics Jacobians 
+
+Ak := ∂f ∂z (zk ,uk )
+
+, Bk := ∂f ∂u (zk ,uk )
+
+. (27) 
+
+Implicit sensitivity and S⊤ 
+
+> k
+
+v products. Let Sk := 
+
+∂xk/∂ zk denote the local sensitivity of the equilibrium map at step k. Implicit differentiation of G(xk, zk, λ k) = 0
+
+yields 
+
+Sk := ∂xk
+
+∂zk
+
+, Gx,k Sk = −Gz,k . (28) We never form Sk. Instead, for any vector v we compute 
+
+S⊤ 
+
+> k
+
+v via one adjoint linear solve: solve G⊤
+
+> x,k
+
+p = v, then S⊤ 
+
+> k
+
+v = − G⊤
+
+> z,k
+
+p. (29) This matrix-free product is the only place where equilibrium sensitivities enter the gradient computation. 
+
+Proxy dynamics and frozen tangent To backpropagate without differentiating through SolveEq , we use the proxy identity dx/dλ ≈ S(λ) f (z(λ), u(λ)) , discretized as the proxy transition 
+
+xk+1 ≈ xk + ∆ λ Sk f (zk, uk). (30) The forward pass still uses exact equilibria (25) ; (30) is used only to define a tractable backward pass. We further apply a frozen-tangent approximation: Sk (equivalently 
+
+Gx,k , Gz,k on the realized rollout) is treated as constant and we drop terms involving dS/dλ and higher-order derivatives. Receding-horizon continuation limits the accumulation of this proxy mismatch by restricting the adjoint propagation horizon (Section 3.3). 
+
+Objective, proxy adjoints, and gradients We write ter-minal and trajectory objectives in one form: 
+
+L = ϕ(xK , zK ) + 
+
+> K−1
+
+X
+
+> k=0
+
+wk ℓ(xk, zk), (31) where ϕ is an optional terminal loss and ℓ is an optional per-step loss (terminal-only uses wk ≡ 0; trajectory-only uses ϕ ≡ 0). Define adjoints ak := ∂L/∂ xk and gk := ∂L/∂ zk. At 
+
+k = K,
+
+aK = ∇xϕ(xK , zK ), gK = ∇zϕ(xK , zK ) + S⊤ 
+
+> K
+
+aK ,
+
+(32) where S⊤ 
+
+> K
+
+aK is computed using (29) . From the explicit continuation update (24), 
+
+∂zk+1 
+
+∂zk
+
+= I + ∆ λ Ak, ∂zk+1 
+
+∂uk
+
+= ∆ λ Bk. (33) Under the proxy transition (30) and frozen tangent, the proxy adjoints propagate for k = K − 1, . . . , 0 as 
+
+ak ≈ ak+1 + wk ∇xℓ(xk, zk), (34) 
+
+gk ≈ (I + ∆ λ Ak)⊤gk+1 + ∆ λ A⊤ 
+
+> k
+
+(S⊤ 
+
+> k
+
+ak+1 )+ wk ∇zℓ(xk, zk) + wk S⊤ 
+
+> k
+
+∇xℓ(xk, zk), (35) where each S⊤ 
+
+> k
+
+(·) is evaluated by (29). For convenience define 
+
+dk := gk+1 + S⊤ 
+
+> k
+
+ak+1 .
+
+Then the control gradient at each step is 
+
+dL
+
+duk
+
+≈ ∆λ B⊤ 
+
+> k
+
+dk, (36) and the policy-parameter gradient follows by the chain rule through the controller: 
+
+dL
+
+dΘ =
+
+> K−1
+
+X
+
+> k=0
+
+ ∂uΘ(λk)
+
+∂Θ
+
+⊤ dL
+
+duk
+
+. (37) The implementation algorithm is stated in Algo. 1 11 Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+Algorithm 1 Adjoint+RHC (proxy-adjoint training with receding-horizon continuation) 
+
+Input: segment horizon H, number of segments M , step size ∆λ
+
+Input: initial (x(0) , z(0) ), controller uΘ(λ), update rule 
+
+f (z, u)
+
+Input: segment update budget Tseg , optimizer step 
+
+OptStep(Θ , d L/d Θ) 
+
+Helper: StProd( k, v) computes S⊤ 
+
+> k
+
+v without forming 
+
+Sk:solve G⊤
+
+> x,k
+
+p = v, return −G⊤
+
+> z,k
+
+p
+
+for m = 0 to M − 1 do 
+
+Set segment start (x0, z0) ← (x(m), z(m))
+
+Initialize Θ ← Θ0
+
+for t = 1 to Tseg do 
+
+Forward rollout (exact equilibria). 
+
+for k = 0 to H − 1 do 
+
+uk ← uΘ(λmH +k)
+
+zk+1 ← zk + ∆ λ f (zk, uk)
+
+xk+1 ← SolveEq( zk+1 , λ mH +k+1 ; init = xk)
+
+Cache Gx,k +1 , Gz,k +1 , Ak, Bk on the realized rollout 
+
+end for 
+
+Compute segment loss L (terminal or trajectory on this segment) 
+
+Backward pass (proxy adjoints; frozen tangent). 
+
+Initialize aH ← ∂L/∂ xH
+
+Initialize gH ← ∂L/∂ zH + StProd( H, aH )
+
+for k = H − 1 to 0 do 
+
+sk ← StProd( k, ak+1 ) (this equals S⊤ 
+
+> k
+
+ak+1 )
+
+dk ← gk+1 + sk
+
+dL/d uk ← ∆λ B⊤ 
+
+> k
+
+dk
+
+Update (ak, gk) by the proxy-adjoint recursions (terminal or trajectory form) 
+
+end for 
+
+dL/d Θ ← PH−1 
+
+> k=0
+
+(∂uΘ(λmH +k)/∂ Θ) ⊤ (dL/d uk)Θ ← OptStep(Θ , d L/d Θ) 
+
+end for 
+
+Execute segment once with optimized Θ.
+
+Roll out to obtain terminal (xH , zH ) and set 
+
+(x(m+1) , z(m+1) ) ← (xH , zH )
+
+end for Output: concatenated executed rollout and task loss (evaluated over all segments) 
+
+## B. Elastic strip equilibrium model and implicit solver ( SolveEq )
+
+This section instantiates the equilibrium residual G(x, z, λ )
+
+and the implicit solver xk = SolveEq( zk, λ k) in Eq. (25) for our elastic strip simulator. q0
+
+## q1
+
+## qi
+
+## qi+1 
+
+## qN-1 qN
+
+## qi-1 
+
+## ti-1 
+
+## tiФi
+
+Figure 6. Discrete schematic of an elastic strip showing the dis-cretization and notation: node positions {qi}, segment tangents 
+
+{ti}, and turning angles {θi}.
+
+State and controls. As shown in Fig. 6, we discretize the strip centerline into N +1 nodes {qi}Ni=0 with qi ∈ Rd
+
+(d=2 or 3), and stack them as q = [ q⊤ 
+
+> 0
+
+, . . . , q⊤ 
+
+> N
+
+]⊤. We clamp two nodes at each end and treat them as boundary (controllable) DoFs, 
+
+qb := [ q⊤ 
+
+> 0
+
+, q⊤ 
+
+> 1
+
+, q⊤ 
+
+> N−1
+
+, q⊤ 
+
+> N
+
+]⊤,
+
+qf := [ q⊤ 
+
+> 2
+
+, . . . , q⊤ 
+
+> N−2
+
+]⊤. (38) We identify x ≡ qf and z ≡ qb.
+
+Energy model. Strip equilibrium is defined by a stationary point of the total potential energy 
+
+Etot (qf ) = Es(qf , qb) + Eb(qf , qb) + Eg (qf , qb), (39) including stretching, bending, and gravity. 1
+
+Stretching energy. Let ∆l be the undeformed edge length and ei := qi+1 − qi for i = 0 , . . . , N − 1. We use 
+
+Es = 12 ksN −1X
+
+> i=0
+
+
+
+1 − ∥ei∥
+
+∆l
+
+2
+
+∆l. (40) 
+
+Bending energy. Let ϕi be the turning angle at node i
+
+(Fig. 6(d)) and ϕ0 
+
+> i
+
+the rest angle (zero in our study). We use 
+
+Eb = 12 kbN −1X
+
+> i=2
+
+
+
+2 tan ϕi
+
+2 − 2 tan ϕ0
+
+> i
+
+2
+
+2 1∆l . (41) 
+
+Gravitational energy. We use a lumped-mass gravity po-tential 
+
+Eg = −
+
+> N
+
+X
+
+> i=0
+
+mi g⊤qi, (42) 
+
+> 1
+
+We do not model twist; the strip is represented by its centerline with stretching and bending energies. 
+
+12 Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+where g ∈ Rd is the gravitational acceleration and mi is the lumped nodal mass. 
+
+Equilibrium residual. Given qb, the equilibrium configu-ration solves 
+
+q⋆f (qb) = arg min 
+
+> qf
+
+Etot (qf , qb) (43) We therefore define 
+
+G(x, z) := ∇qf Etot (qf , qb),
+
+with x ≡ qf , z ≡ qb. (44) The Jacobians Gx,k and Gz,k in Eq. (26) are the corre-sponding derivatives of G evaluated at (qf,k , qb,k ).
+
+Implicit solver (SolveEq ). We implement xk =SolveEq( zk, λ k) using a trust-region Newton–CG method applied to Eq. (43) . At iterate q(t) 
+
+> f
+
+, we assemble E(t)tot ,
+
+g(t) := ∇qf Etot , and H(t) := ∇2 
+
+> qf
+
+Etot , and symmetrize 
+
+H(t) ← 12 (H(t) + H(t)⊤).
+
+Trust-region step. We approximately solve 
+
+min 
+
+> ∥p∥2≤∆(t)
+
+m(t)(p) := g(t)⊤p + 12 p⊤H(t)p. (45) If H(t) is SPD (via Cholesky-type factorization), we com-pute the Newton step H(t)p(t) 
+
+> N
+
+= −g(t) and take p(t) =
+
+p(t) 
+
+> N
+
+if feasible; otherwise we take a standard dogleg bound-ary step between the Cauchy and Newton directions. If SPD detection fails, we use Steihaug PCG with Hessian-vector products, terminating on negative curvature d⊤H(t)d ≤ 0
+
+or on hitting ∥p∥2 = ∆ (t). We use a Jacobi preconditioner 
+
+M(t) = diag( |diag( H(t))|) + σI.
+
+Acceptance, radius update, and termination. Let 
+
+pred (t) = −m(t)(p(t)) and ared (t) = E(t) − Etot (q(t) 
+
+> f
+
++
+
+p(t), qb; λ), and define ρ(t) = ared (t)/ max(pred (t), ϵ ).We accept the step if ρ(t) ≥ η, and update ∆(t) using stan-dard shrink/expand rules based on ρ(t). We terminate when 
+
+∥g(t)∥2 ≤ εg , ∆(t) ≤ ε∆, or after a maximum number of iterations. We warm-start continuation step k with the previous equilibrium q(0)  
+
+> f,k
+
+← q⋆f,k −1; under multistability, this initialization selects a specific locally stable equilibrium branch for the same z.
+
+## C. Assumptions and consistency of the frozen-tangent proxy gradient 
+
+We formalize when the frozen-tangent proxy used in Sec. 3.1 yields a controlled approximation to the exact trajectory gradient along the realized equilibrium branch. We consider the equilibrium constraint (cf. (1)) 
+
+G(x(λ), z(λ)) = 0 , λ ∈ [0 , 1] , (46) where z(λ) is induced by the continuation dynamics 
+
+dz/dλ = f (z(λ), u(λ)) . Write Gx := ∂G/∂ x, Gz := 
+
+∂G/∂ z, and Gλ := ∂G/∂λ .
+
+Assumption C.1 (Smooth stable realized branch) . G is C2
+
+in (x, z) and C1 in λ in a neighborhood of the realized rollout. The warm-started solver follows a unique realized branch x(λ) ∈ C1([0 , 1]) , and Gx(λ) is nonsingular for all λ ∈ [0 , 1] . This assumption excludes points where the realized equilibrium loses stability or switches basins (e.g., near bifurcations), where Gx may become singular or ill-conditioned. 
+
+Existence and sensitivity. Assumption C.1 implies (by the Implicit Function Theorem) that locally x = x⋆(z, λ )
+
+and the equilibrium sensitivity S(λ) := ∂x/∂ z exists and satisfies 
+
+Gx(λ) S(λ) = −Gz (λ), S(λ) = −Gx(λ)−1Gz (λ).
+
+(47) 
+
+Exact vs. proxy sensitivity dynamics. Differentiat-ing (46) along λ gives the exact identity 
+
+dx
+
+dλ = S(λ) dz
+
+dλ − Gx(λ)−1Gλ(λ). (48) When explicit λ-dependence is absent or absorbed into z(λ)
+
+(as in Sec. 3.1), Gλ ≡ 0 and 
+
+dx
+
+dλ = S(λ) f (z(λ), u(λ)) . (49) Our proxy adjoint uses the same forward equilibria x(λ)
+
+from solving (1) but freezes the tangent in the backward pass, i.e., it neglects the contribution of dS/dλ when propa-gating sensitivities through the sequence. 
+
+Assumption C.2 (Slowly varying tangent) . Along the real-ized branch, 
+
+sup 
+
+> λ∈[0 ,1]
+
+ddλ S(λ) ≤ ε, (50) for some ε > 0. In the conservative case G = ∇xE(x, z) −
+
+F ext (λ), this holds when the tangent stiffness H(λ) = 
+
+∇2
+
+> xx
+
+E(x(λ), z(λ)) is uniformly positive definite and the third derivatives of E are bounded along the rollout. On a discretization λk with step size ∆λ, (50) implies 
+
+∥S(λk+1 ) − S(λk)∥ ≤ ε ∆λ by the mean value theorem. All norms are induced operator norms unless otherwise stated. 
+
+Theorem C.3 (First-order consistency of frozen-tangent proxy gradient) . Consider the trajectory objective (14) and 
+
+13 Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+the proxy-gradient construction in Secs. 3.1–3.2 (freezing 
+
+S(λ) in the backward pass). Under Assumptions C.1–C.2, the proxy gradient is first-order accurate: 
+
+∇ΘLproxy − ∇ ΘL ≤ C ε, (51) 
+
+where C depends on bounds of f , ∂f /∂ (z, u), (G−1 
+
+> x
+
+, G z ),and the objective derivatives along the realized branch, but not on ε.
+
+Remark (role of receding horizon). RHC limits the ac-cumulation of proxy error by shortening the horizon over which the frozen-tangent approximation is applied and re-anchoring optimization to realized equilibria after each seg-ment, which is especially helpful near basin boundaries where ∥dS/dλ ∥ may increase. When basin switching oc-curs or Gx becomes ill-conditioned, the bound in (51) need not hold; empirically, RHC reduces these events by keeping segments local and reinitializing from realized equilibria. 
+
+## D. Implementation details and hyperparameters 
+
+This section reports the hyperparameters used in our numer-ical experiments (Secs. 4.3–4.4). Unless otherwise stated, all methods share the same forward equilibrium simulator and the same controller parameterization; they differ only in the optimizer. 
+
+Elastic-strip simulator and equilibrium solver. We dis-cretize the strip centerline into N +1 = 101 nodes and clamp the first two and last two nodes. Unless otherwise stated, material parameters are kb = 7 .85 × 10 −8 N · m2
+
+and ks = 0 .314 N , and we set g = 0 (no gravity) in all numerical experiments. At each continuation step we solve for the free DoFs using a trust-region Newton–CG method (App. B), warm-started from the previous equilibrium. We use initial radius ∆0 =10 −3, acceptance threshold η = 0 .1, shrink/expand factors 
+
+(0 .5, 2.0) , and at most 200 outer iterations. We terminate when ∥∇ Etot ∥ ≤ 10 −9 (gradient w.r.t. free DoFs) or when the radius drops below 10 −8.If the Hessian is detected SPD we take a Newton/dogleg step; otherwise we use Steihaug PCG in the trust region. PCG is capped at 200 iterations and stops when the PCG residual satisfies ∥r∥ ≤ min(0 .5, p∥∇ E∥)∥∇ E∥, on neg-ative curvature, or upon hitting the trust-region boundary. We use a diagonal (Jacobi) preconditioner. 
+
+Controller parameterization and optimization. We parameterize the continuation controller uΘ(λ) as alightweight MLP that takes the scalar λ ∈ [0 , 1] as input and outputs the control vector u(λ) ∈ Rdu . For Tasks 1–2, 
+
+du = 2 (left/right transverse displacement rates); for Task 3, 
+
+du = 3 (end-effector (x, y ) displacement rates and in-plane rotation rate). Unless otherwise stated, we use 2–3 hidden layers with width 64 (architectures [64 , 64] or [64 , 64 , 64] ), ReLU activations, and a final tanh to bound the output; we scale the output to enforce ∥u(λ)∥ ≤ umax .For the adjoint-only baseline, we use a single rollout with full horizon K = 101 continuation steps. For RHC+adjoint, we use segment horizon H = 10 continuation steps per segment (with horizon shifting as described in Sec. 3.3). All numerical experiments use Adam with learning rate 10 −2
+
+to optimize Θ, and we keep the optimizer settings identical across methods. 
+
+Baseline hyperparameters. We use population size 
+
+Npop = 10 , elite fraction 0.3, smoothing α = 0 .25 , and standard deviation settings σ0 = 0 .5 umax , with a minimum floor σmin = 10 −2. We choose Npop = 10 because the per-step action is low-dimensional ( dim( u) ∈ { 2, 3} depending on the task), so a modest population is typically sufficient for exploration. 
+
+SPSA. We use learning rate 10 −2, perturbation magnitude 
+
+c = 5 × 10 −3, and average m = 2 independent SPSA per-turbation pairs per update. We choose a relatively large c
+
+to obtain a stable finite-difference directional signal under strongly nonlinear deformation; with unit-normalized strip length, c = 5 × 10 −3 corresponds to a small ( ∼ 0.5% )geometric perturbation that empirically yields more reli-able search directions than smaller perturbations that can be dominated by solver tolerance and numerical noise. 
+
+## E. System identification for the elastic strip in real robotic manipulation 
+
+This part describes the lightweight system-identification procedure used to match the elastic-strip model to the real robot experiments. The key identified quantity is the gravito-bending length Lgb , which captures the characteristic defor-matino scale of a slender strip under gravity and is robust to many nuisance factors (camera noise, slight boundary mismatch, etc.). 
+
+Gravito-bending length. For an inextensible/slender strip under its own weight, the dominant competition is between bending stiffness and distributed gravity load. We parame-terize this balance by 
+
+Lgb := 
+
+ kb
+
+ρwhg 
+
+ 13
+
+, (52) where kb is the bending stiffness (units N ·m2), ρ is the density, w is the strip’s width, h is the thickness, and g is gravitational acceleration. We collect M = 5 static snapshots of the strip under gravity 14 Neural Control: Adjoint Learning Through Equilibrium Constraints 
+
+with diverse boundary conditions (multiple clamp-clamp configurations). Each snapshot provides an observed equi-librium shape ˆx(m) together with the corresponding bound-ary constraints. Using multiple configurations reduces de-generacy and discourages overfitting to a single pose. For a candidate Lgb , we run the simulator under each ex-perimental boundary condition and obtain the converged equilibrium shape x(m)(Lgb ). We measure mismatch on 
+
+free nodes only (excluding constrained/clamped DoFs) and use a mean-squared shape discrepancy: 
+
+J(Lgb ) = 1
+
+M
+
+> M
+
+X
+
+> m=1
+
+1
+
+|I (m) 
+
+> f
+
+|
+
+X
+
+> i∈I (m)
+> f
+
+x(m) 
+
+> i
+
+(Lgb ) − ˆx(m)
+
+> i
+> 22
+
+,
+
+(53) where I(m) 
+
+> f
+
+denotes the free-node index set for snapshot m.We identify 
+
+L⋆gb ∈ arg min  
+
+> Lgb ∈[Lmin ,L max ]
+
+J(Lgb ). (54) We solve (54) with a bounded 1D scalar minimiza-tion (Brent-type method). Unless otherwise stated, we use bounds [Lmin , L max ] = [0 .05 , 0.10] and tolerance 
+
+xatol = 10 −4. Each objective evaluation runs the for-ward simulator with gravity enabled and otherwise matches the real-robot settings. The computed Lgb = 0 .0514m −1.15
