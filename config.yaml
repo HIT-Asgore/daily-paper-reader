@@ -25,3 +25,60 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: diff-physics
+      description: 可微物理在机械臂操作任务中的应用
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: differentiable physics
+          keyword_cn: 可微物理
+          query: differentiable physics for robotic manipulation
+        - keyword: robot arm manipulation
+          keyword_cn: 机械臂操作
+          query: robot arm manipulation using differentiable methods
+        - keyword: differentiable simulation
+          keyword_cn: 可微仿真
+          query: differentiable simulation for manipulation tasks
+        - keyword: differentiable control
+          keyword_cn: 可微控制
+          query: differentiable control in robotics
+        - keyword: differentiable dynamics
+          keyword_cn: 可微动力学
+          query: differentiable dynamics for robot arms
+        - keyword: manipulation tasks
+          keyword_cn: 操作任务
+          query: differentiable models for manipulation tasks
+      intent_queries:
+        - query: differentiable physics for robotic arm manipulation
+          query_cn: 可微物理在机械臂操作中的应用
+          enabled: true
+          source: manual
+          note: ''
+        - query: differentiable simulation of robotic manipulation
+          query_cn: 可微仿真在机器人操作中的应用
+          enabled: true
+          source: manual
+          note: ''
+        - query: end to end differentiable control for robot arms
+          query_cn: 机械臂的端到端可微控制
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-06-01T03:17:28.482Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
