@@ -1,0 +1,543 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-02T23:01:35.736064+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 9,
+    "quick_skim_target": 12,
+    "quick_selected": 9
+  },
+  "deep_dive": [
+    {
+      "id": "2605.26452v1",
+      "source": "arxiv",
+      "title": "Robust Koopman Control Barrier Filters for Safe Actor-Critic Reinforcement Learning",
+      "abstract": "Safe reinforcement learning (RL) for robotic systems requires policies that improve task performance while satisfying state and input constraints during both training and deployment. Control barrier functions (CBFs) provide a principled mechanism for enforcing forward invariance through minimally invasive safety filters, but their use in model-free RL is limited by the need for accurate dynamics and hand-designed barrier certificates. We propose Robust Koopman-CBF SAC, a safety-filtered actor--critic framework that learns a finite-dimensional Koopman predictor from data, constructs affine CBF constraints in the lifted space, and enforces them through a quadratic-program safety layer. To account for finite-dimensional Koopman approximation error, the CBF condition is tightened using a projected residual margin estimated from held-out rollout data. The critic is trained on the executed safe action, while the actor is regularized toward the Koopman-CBF feasible set, reducing dependence on the filter over training. Across safe-control benchmarks, the method achieves zero constraint violations on CartPole stabilization and tracking while matching or exceeding unconstrained SAC returns. On high-dimensional Safety Gymnasium locomotion tasks, the method reduces violations in some settings but also exposes important limitations of first-order velocity barriers and linear EDMD models, motivating high-order and multi-step Koopman-CBF extensions. These results suggest that robust Koopman-CBF filters are a promising bridge between model-free RL and certifiable safety, while clarifying the structural conditions under which such filters remain effective. All code is available at \\href{https://github.com/DhruvKushwaha/Koopman-CBF-Soft-Actor-Critic}{Github Repository}.",
+      "authors": [
+        "Dhruv S. Kushwaha",
+        "Zoleikha A. Biron"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG",
+        "eess.SY"
+      ],
+      "published": "2026-05-26T02:02:40+00:00",
+      "link": "https://arxiv.org/pdf/2605.26452v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns a Koopman predictor as dynamics model for safe actor-critic RL, directly relevant to model-based RL",
+      "llm_evidence_cn": "学习Koopman预测器作为动力学模型用于安全演员-评论家强化学习，直接相关于基于模型的强化学习",
+      "llm_evidence": "学习Koopman预测器作为动力学模型用于安全演员-评论家强化学习，直接相关于基于模型的强化学习",
+      "canonical_evidence": "学习Koopman预测器作为动力学模型用于安全演员-评论家强化学习，直接相关于基于模型的强化学习",
+      "llm_tldr_en": "Proposes Robust Koopman-CBF SAC, which learns a finite-dimensional Koopman predictor, constructs affine CBF constraints, and enforces them via a QP safety layer for safe RL.",
+      "llm_tldr_cn": "针对安全强化学习中的约束满足问题，提出Robust Koopman-CBF SAC框架。该方法从数据中学习有限维Koopman预测器，在提升空间中构建仿射控制障碍函数约束，并通过二次规划安全层在演员-评论家架构中强制执行。实验表明该方法在满足约束的同时保持了任务性能。",
+      "llm_tldr": "针对安全强化学习中的约束满足问题，提出Robust Koopman-CBF SAC框架。该方法从数据中学习有限维Koopman预测器，在提升空间中构建仿射控制障碍函数约束，并通过二次规划安全层在演员-评论家架构中强制执行。实验表明该方法在满足约束的同时保持了任务性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.01151v1",
+      "source": "arxiv",
+      "title": "Lagrangian Perturbation Diffusion Steering: Latent Reinforcement Learning for Generative Policies",
+      "abstract": "Behavior cloning with high-capacity generative policies achieves strong imitation performance, but is often limited by demonstration coverage and distribution shift. Direct reinforcement learning fine-tuning can improve performance, but updating large action decoders is frequently unstable and sample inefficient. We propose Lagrangian Perturbation Diffusion Steering (LP-DS), a lightweight adaptation method that improves a frozen generative policy by learning a compact noise-space perturbation before decoding. LP-DS optimizes this perturbation with a Lagrangian trust-region objective, improving downstream value while constraining deviation from the latent prior. Across RoboMimic manipulation, OpenAI Gym locomotion, and Adroit dexterous manipulation benchmarks, LP-DS improves sample efficiency, success, and return while maintaining higher action-space entropy than unconstrained noise-space steering, with return improvements of up to 25% over prior baselines. Additional evaluations with flow-matching backbones, a large vision-language-action model, and physical Franka deployment show that LP-DS is not limited to compact diffusion policies or simulated benchmarks. Project page: https://sites.google.com/view/lp-ds/home.",
+      "authors": [
+        "Hikmet Simsir",
+        "Ozgur S. Oguz"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-31T10:40:28+00:00",
+      "link": "https://arxiv.org/pdf/2606.01151v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "latent reinforcement learning for generative policies on manipulation tasks",
+      "llm_evidence_cn": "对机器人操作任务应用拉格朗日扰动扩散强化学习微调生成策略",
+      "llm_evidence": "对机器人操作任务应用拉格朗日扰动扩散强化学习微调生成策略",
+      "canonical_evidence": "对机器人操作任务应用拉格朗日扰动扩散强化学习微调生成策略",
+      "llm_tldr_en": "Proposes LP-DS, a lightweight RL fine-tuning method that optimizes noise-space perturbations for frozen generative policies, achieving improved performance on RoboMimic manipulation tasks.",
+      "llm_tldr_cn": "该工作针对行为克隆在高容量生成策略中的演示覆盖不足和分布偏移问题，提出了一种轻量级强化学习微调方法LP-DS。该方法在冻结的生成策略的解码之前学习一个紧凑的噪声空间扰动，并采用拉格朗日信任区域目标进行优化，以在约束偏离潜在先验的同时改进下游价值。实验在RoboMimic操作基准、OpenAI Gym locomotion和Adroit灵巧操作任务上验证了其有效性。LP-DS以最小的训练开销显著提升了策略性能，为利用强化学习改进预训练生成策略提供了一种高效且稳定的范式。",
+      "llm_tldr": "该工作针对行为克隆在高容量生成策略中的演示覆盖不足和分布偏移问题，提出了一种轻量级强化学习微调方法LP-DS。该方法在冻结的生成策略的解码之前学习一个紧凑的噪声空间扰动，并采用拉格朗日信任区域目标进行优化，以在约束偏离潜在先验的同时改进下游价值。实验在RoboMimic操作基准、OpenAI Gym locomotion和Adroit灵巧操作任务上验证了其有效性。LP-DS以最小的训练开销显著提升了策略性能，为利用强化学习改进预训练生成策略提供了一种高效且稳定的范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.01363v1",
+      "source": "arxiv",
+      "title": "All Models are Wrong, Knowing Where is Useful: On Model Uncertainty in Reinforcement Learning",
+      "abstract": "Model-based reinforcement learning (MBRL) infers information about the environment from a learned dynamics model and bears the potential to address open problems such as data efficient and safe learning in robotics. However, inaccuracies of the learned dynamics model are typically exploited by the agent, substantially hampering the capabilities of MBRL methods. We present a framework for dealing with inaccuracies of probabilistic models through targeted handling of uncertainty that effectively mitigates model exploitation. We present recent successes in learning directly on hardware and safe exploration, and discuss future directions for uncertainty-aware MBRL.",
+      "authors": [
+        "Bernd Frauenknecht",
+        "Devdutt Subhasish",
+        "Artur Eisele",
+        "Friedrich Solowjow",
+        "Sebastian Trimpe"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SY"
+      ],
+      "published": "2026-05-31T17:34:22+00:00",
+      "link": "https://arxiv.org/pdf/2606.01363v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "model-based reinforcement learning with uncertainty handling",
+      "llm_evidence_cn": "基于模型的强化学习及不确定性处理",
+      "llm_evidence": "基于模型的强化学习及不确定性处理",
+      "canonical_evidence": "基于模型的强化学习及不确定性处理",
+      "llm_tldr_en": "Proposes a framework for handling model uncertainty in MBRL to mitigate model exploitation, with successes in data-efficient and safe learning on hardware.",
+      "llm_tldr_cn": "针对基于模型的强化学习中模型不准确性导致智能体利用模型漏洞的问题，本文提出了一种通过针对性处理概率模型不确定性来缓解模型利用的框架。该框架在硬件上直接学习及安全探索方面取得了成功，并讨论了不确定性感知MBRL的未来方向，为数据高效且安全的机器人学习提供了新途径。",
+      "llm_tldr": "针对基于模型的强化学习中模型不准确性导致智能体利用模型漏洞的问题，本文提出了一种通过针对性处理概率模型不确定性来缓解模型利用的框架。该框架在硬件上直接学习及安全探索方面取得了成功，并讨论了不确定性感知MBRL的未来方向，为数据高效且安全的机器人学习提供了新途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.28812v1",
+      "source": "arxiv",
+      "title": "Beyond Binary: Sim-to-Real Dexterous Manipulation with Physics-Grounded Contact Representation",
+      "abstract": "A primary bottleneck in contact-rich manipulation is the difficulty of collecting real-world data. Sim-to-real reinforcement learning offers a scalable alternative, but the simulation-reality gap prevents information-dense modalities like touch from being effectively used. Existing sim-to-real methods often mitigate this gap by simplifying tactile data into coarse low-dimensional features -- sacrificing the richness required for complex manipulation. In this work, we introduce Center-of-Pressure (CoP), an effective tactile representation grounded in physical principles that preserves dense contact information while maintaining robustness for sim-to-real transfer. To support this representation, we propose a sensor calibration scheme based on differentiable dynamics, enabling the estimation of taxel orientations without requiring ground-truth force measurements. We evaluate CoP on two blind, challenging contact-rich manipulation tasks: peg-in-hole insertion and ball balancing. Across both tasks, policies conditioned on CoP achieve zero-shot sim-to-real transfer on a multi-fingered hand, and outperform both coarse binary-contact and raw-taxel baselines. Analysis of learned policy states further suggests that CoP-conditioned policies encode task-relevant physical properties, such as object mass, as an emergent byproduct of control.",
+      "authors": [
+        "Jiahe Pan",
+        "Stelian Coros",
+        "Jitendra Malik",
+        "Toru Lin"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-05-27T17:59:02+00:00",
+      "link": "https://arxiv.org/pdf/2605.28812v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "sim-to-real RL with physics-grounded tactile representation for dexterous manipulation",
+      "llm_evidence_cn": "使用物理接地触觉表示的仿真到现实强化学习用于灵巧操作",
+      "llm_evidence": "使用物理接地触觉表示的仿真到现实强化学习用于灵巧操作",
+      "canonical_evidence": "使用物理接地触觉表示的仿真到现实强化学习用于灵巧操作",
+      "llm_tldr_en": "Proposes a physics-grounded Center-of-Pressure (CoP) tactile representation for sim-to-real reinforcement learning in dexterous manipulation, enabling dense contact information transfer across simulation and reality.",
+      "llm_tldr_cn": "接触丰富的操作任务中，真实数据收集困难，仿真到现实强化学习是一种可扩展方案，但仿真现实差距阻碍了触觉信息的有效利用。本文提出基于物理原理的接触表示（压力中心CoP），在保持丰富接触信息的同时实现稳健的仿真到现实迁移。通过传感器标定方案支持该表示，实验表明CoP表示能显著提升灵巧操作策略的迁移效果。",
+      "llm_tldr": "接触丰富的操作任务中，真实数据收集困难，仿真到现实强化学习是一种可扩展方案，但仿真现实差距阻碍了触觉信息的有效利用。本文提出基于物理原理的接触表示（压力中心CoP），在保持丰富接触信息的同时实现稳健的仿真到现实迁移。通过传感器标定方案支持该表示，实验表明CoP表示能显著提升灵巧操作策略的迁移效果。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.25672v1",
+      "source": "arxiv",
+      "title": "Compliant Non-Prehensile Pushing Manipulation",
+      "abstract": "In this paper, we address the challenge of performing non-prehensile pushing operations with a compliant robotic manipulation system. To ensure safe operations in human-populated environments, robots must comply with external physical interactions and exhibit passive behavior. To achieve this, we extend a state-of-the-art pushing model to integrate it with impedance-controlled robots. We develop a model predictive control framework built upon this model that enables compliant pushing through optimal modulation of the robot's position/velocity set-point, jointly realizing the required pushing force and contact point adaptation to obtain desired object motion. However, external interactions may induce tracking errors, causing a consequent potentially indefinite increase of the pushing force. To prevent this, we integrate an energy tank passivity filter that further modulates the robot velocity set-point to guarantee passivity and avoid uncontrolled energy buildup. The proposed method has been rigorously tested in simulation and validated through experiments on two different robotic systems, demonstrating passive compliance during human-robot interactions and assessing trajectory tracking performance and robustness to variations in the object's physical parameters.",
+      "authors": [
+        "Francesco Cufino",
+        "Mario Selvaggio",
+        "Fabio Amadio",
+        "Fabio Ruggiero"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-25T10:24:05+00:00",
+      "link": "https://arxiv.org/pdf/2605.25672v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model predictive control for compliant non-prehensile pushing",
+      "llm_evidence_cn": "基于模型预测控制的合规非抓取推操作",
+      "llm_evidence": "基于模型预测控制的合规非抓取推操作",
+      "canonical_evidence": "基于模型预测控制的合规非抓取推操作",
+      "llm_tldr_en": "This paper proposes a model predictive control framework for compliant non-prehensile pushing, integrating a pushing model with impedance control to achieve safe manipulation. It optimally modulates position/velocity setpoints to realize desired forces and contact adaptation.",
+      "llm_tldr_cn": "该文针对非抓取推操作中的安全合规问题，提出将推动模型与阻抗控制结合的模型预测控制框架，通过最优调节位置/速度设定点实现所需推动力和接触点适应。实验表明该方法能有效实现合规推动，但外部干扰可能引起跟踪误差。该贡献为机器人推操作提供了一种以模型为基础的安全合规控制方法。",
+      "llm_tldr": "该文针对非抓取推操作中的安全合规问题，提出将推动模型与阻抗控制结合的模型预测控制框架，通过最优调节位置/速度设定点实现所需推动力和接触点适应。实验表明该方法能有效实现合规推动，但外部干扰可能引起跟踪误差。该贡献为机器人推操作提供了一种以模型为基础的安全合规控制方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.00113v1",
+      "source": "arxiv",
+      "title": "World Models for Robotic Manipulation: A Survey",
+      "abstract": "Robotic manipulation depends on the ability to anticipate how actions reshape objects, contacts, and scene geometry before execution. Learned world models provide this capability by predicting task-relevant future evolution under robot intervention, yet the term now spans latent dynamics models, action-conditioned video generators, three- and four-dimensional scene predictors, physics-informed simulators, and predictive modules inside vision-language-action systems. This breadth has fragmented the literature and obscured the design choices that matter for manipulation. We survey world models for robotic manipulation through three questions: what future representation is predicted, how prediction is connected to action, and when prediction is used in the robot-learning pipeline. We operationally define a world model as an action-conditioned predictive system and distinguish it from perception modules, inverse models, policies, rewards, and value functions. We then organize existing work into five representation families, develop a functional taxonomy that separates integrated prediction-action models from explicit predictive planners, and characterize infrastructure roles including synthetic experience generation, candidate filtering, search-based evaluation, learned environments, and outcome verification. We further map these roles across pretraining, post-training, and inference adaptation, review 34 manipulation datasets, and synthesize evaluation protocols for predictive fidelity, task performance, and simulator reliability. This survey shows that world models are evolving from task-specific dynamics predictors into predictive infrastructure for robot learning, while exposing open challenges in contact modeling, hallucination control, action alignment, and benchmarking under closed-loop use.",
+      "authors": [
+        "Fangyuan Wang",
+        "Ziyuan Wang",
+        "Guorui Pei",
+        "Mengshi Zhang",
+        "Canxi Liang",
+        "Jun Hu",
+        "Zhongxuan Li",
+        "Jinsong Wu",
+        "Ning Han",
+        "Zeqing Zhang",
+        "Jiaming Qi",
+        "Hongmin Wu",
+        "Shiyao Zhang",
+        "Pai Zheng",
+        "Jia Pan",
+        "David Navarro-Alarcon",
+        "Sichao Liu",
+        "Peng Zhou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-27T05:32:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.00113v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "survey of world models for robotic manipulation, relevant to model-based RL",
+      "llm_evidence_cn": "机器人操作世界模型综述，与基于模型的强化学习相关",
+      "llm_evidence": "机器人操作世界模型综述，与基于模型的强化学习相关",
+      "canonical_evidence": "机器人操作世界模型综述，与基于模型的强化学习相关",
+      "llm_tldr_en": "A comprehensive survey of world models for robotic manipulation, covering latent dynamics, video prediction, physics-informed simulators, and predictive modules in VLA systems.",
+      "llm_tldr_cn": "该综述系统梳理了机器人操作领域中世界模型的研究现状，涵盖潜在动力学模型、动作条件视频生成器、物理信息模拟器以及视觉-语言-动作系统中的预测模块。文章通过三个关键问题（预测什么未来表示、如何连接预测与动作、何时使用预测）对文献进行归类，并指出了设计选择对操作任务性能的影响。",
+      "llm_tldr": "该综述系统梳理了机器人操作领域中世界模型的研究现状，涵盖潜在动力学模型、动作条件视频生成器、物理信息模拟器以及视觉-语言-动作系统中的预测模块。文章通过三个关键问题（预测什么未来表示、如何连接预测与动作、何时使用预测）对文献进行归类，并指出了设计选择对操作任务性能的影响。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.27947v1",
+      "source": "arxiv",
+      "title": "SANTS: A State-Adaptive Scheduler for World Action Models",
+      "abstract": "World Action Models (WAMs) improve robot manipulation by using video-based future representations to condition action generation. In pixel-space WAMs, however, the best action condition is not necessarily the fully denoised video. Controlled denoising-depth scans show that video refinement can reduce action error up to a state-dependent point, after which the gain may saturate or even reverse when late predictions become less action-relevant or physically unreliable. This suggests that action generation should use a state-dependent point along the video noise trajectory rather than a fixed terminal denoising depth. We introduce State-Adaptive Noise Trajectory Scheduler (SANTS), a lightweight scheduler for video-to-action diffusion policies. At each video decision point, SANTS reads the current video-state representation and noise level, then jointly predicts a cumulative stopping hazard and a relative noise-progression ratio. SANTS is post-trained with a path-level reward computed after the frozen action branch generates the final action chunk, so the scheduler is optimized for downstream action quality rather than intermediate video fidelity, while redundant video-state updates are explicitly penalized. Experiments show that SANTS reaches \\(94.4\\%\\) overall success on RoboTwin 2.0 and \\(73.1\\%\\) average success across seven real-robot tasks, while reducing latency by \\(81.7\\%\\) and \\(79.0\\%\\) relative to full video denoising, respectively. These results indicate that adaptive selection along the video noise trajectory can preserve the control benefits of WAM-style future reasoning while removing much of its redundant inference cost.",
+      "authors": [
+        "Yirui Sun",
+        "Guangyu Zhuge",
+        "Keliang Liu",
+        "Jie Gu",
+        "Xinyu Bing",
+        "Zhongxue Gan",
+        "Chunxu Tian"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-27T04:40:48+00:00",
+      "link": "https://arxiv.org/pdf/2605.27947v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "world action models for robot manipulation, relevant to model-based predictive control",
+      "llm_evidence_cn": "世界动作模型用于机器人操作，与基于模型的预测控制相关",
+      "llm_evidence": "世界动作模型用于机器人操作，与基于模型的预测控制相关",
+      "canonical_evidence": "世界动作模型用于机器人操作，与基于模型的预测控制相关",
+      "llm_tldr_en": "Introduces SANTS, a state-adaptive scheduler that selects an optimal denoising step for video-to-action diffusion policies in world action models, improving action generation for robot manipulation.",
+      "llm_tldr_cn": "针对像素级世界动作模型中视频去噪深度影响动作生成质量的问题，提出状态自适应噪声轨迹调度器（SANTS）。该调度器根据当前状态动态选择最优去噪步长，避免由于过度去噪导致的动作精度下降。在多种操作任务上验证了其有效性。",
+      "llm_tldr": "针对像素级世界动作模型中视频去噪深度影响动作生成质量的问题，提出状态自适应噪声轨迹调度器（SANTS）。该调度器根据当前状态动态选择最优去噪步长，避免由于过度去噪导致的动作精度下降。在多种操作任务上验证了其有效性。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.00664v1",
+      "source": "arxiv",
+      "title": "SKIP: Sparse Keyframe Interpolation Paradigm for Efficient Embodied World Models",
+      "abstract": "Embodied world models have emerged as a promising paradigm in robotics by predicting how robot actions affect the surrounding scene. However, the rollout inference remains computationally expensive in pixel space, as long-horizon manipulation videos typically have to be generated frame by frame. This cost cannot be easily reduced by indiscriminately dropping frames, since downstream policies rely on complete preservation of sparse task-relevant events such as approach, contact, grasp, and release. To address this challenge, we propose Sparse Keyframe Interpolation Paradigm (SKIP), an event-preserving sparse-to-dense framework that avoids dense frame-by-frame generation. SKIP first identifies task-relevant keyframes by leveraging robot-aware multimodal features. It then synthesizes only these keyframes with a sparse video diffusion model. A learned gap predictor and an action-conditioned interpolator subsequently reconstruct the missing intervals according to the robot actions. On LIBERO, SKIP generates dense rollouts $4.16\\times$ faster than a dense baseline while improving visual fidelity and reducing aggregate FVD by $89.0\\%$. Importantly, SKIP-generated videos are effective policy-training data. Even when they fully replace real demonstrations, $π_{0.5}$ success drops only $1.3$ pp in LIBERO simulation and $6.7$ pp on the real robot, whereas fully dense frame-by-frame generation collapses by $48$ to $58$ pp.",
+      "authors": [
+        "Ziheng He",
+        "Yixiang Chen",
+        "Ning Yang",
+        "Zhanqian Wu",
+        "Qisen Ma",
+        "Yuan Xu",
+        "Jiabing Yang",
+        "Peiyan Li",
+        "Xiangnan Wu",
+        "Xiaofeng Wang",
+        "Zheng Zhu",
+        "Jing Liu",
+        "Nianfeng Liu",
+        "Yan Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-05-30T10:41:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.00664v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "sparse keyframe interpolation for efficient world models",
+      "llm_evidence_cn": "稀疏关键帧插值用于高效世界模型",
+      "llm_evidence": "稀疏关键帧插值用于高效世界模型",
+      "canonical_evidence": "稀疏关键帧插值用于高效世界模型",
+      "llm_tldr_en": "Proposes SKIP, a sparse-to-dense keyframe interpolation paradigm to accelerate embodied world model rollout.",
+      "llm_tldr_cn": "SKIP提出稀疏关键帧插值方法，通过识别任务相关的关键帧（如接近、接触、抓取、释放），仅对这些帧进行完整预测，再插值得到密集帧，从而大幅降低世界模型推理的计算成本。该方法适用于长时域操作任务，提升了世界模型在机器人任务中的实用性。",
+      "llm_tldr": "SKIP提出稀疏关键帧插值方法，通过识别任务相关的关键帧（如接近、接触、抓取、释放），仅对这些帧进行完整预测，再插值得到密集帧，从而大幅降低世界模型推理的计算成本。该方法适用于长时域操作任务，提升了世界模型在机器人任务中的实用性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.30778v1",
+      "source": "arxiv",
+      "title": "Object-Informed Model Predictive Path Integral Control for Non-Prehensile Robot Manipulation",
+      "abstract": "Long-horizon planning for non-prehensile robot manipulation is challenging due to underactuated and discontinuous interactions. We propose a hierarchical formulation of model predictive path integral (MPPI) control that guides robot-level planning with a separately computed object-level plan to achieve efficient long-horizon prediction. We first solve a simplified object-only problem, assuming the object can be actuated directly, and use the planned object trajectory as a reference in solving the joint robot-object planning problem. We evaluate our method in both simulation and hardware using a 6-DoF xArm6 manipulator to perform object pushing tasks in which the target object must reach a goal while avoiding static obstacles, necessitating non-myopic reasoning. Our object-informed MPPI increases task success by 40\\% with a 26\\% faster control frequency in simulation, and by 20\\% in real experiments with similar computation as regular MPPI.",
+      "authors": [
+        "Nikola Raicevic",
+        "Bharath Raam Radhakrishnan",
+        "Chenbin Yu",
+        "Ki Myung Brian Lee",
+        "Nikolay Atanasov"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-29T03:10:44+00:00",
+      "link": "https://arxiv.org/pdf/2605.30778v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based control for non-prehensile manipulation using MPPI",
+      "llm_evidence_cn": "基于模型的非抓取操作控制，使用模型预测路径积分方法",
+      "llm_evidence": "基于模型的非抓取操作控制，使用模型预测路径积分方法",
+      "canonical_evidence": "基于模型的非抓取操作控制，使用模型预测路径积分方法",
+      "llm_tldr_en": "Proposes a hierarchical MPPI control that uses an object-level plan to guide robot-level planning for long-horizon non-prehensile manipulation, validated on a 6-DoF arm.",
+      "llm_tldr_cn": "针对非抓取操作的长期规划难题，提出分层模型预测路径积分（MPPI）控制方法。先求解简化物体规划问题，再将物体轨迹作为参考引导机器人-物体联合规划。在6自由度xArm6机械臂上进行推动任务仿真和实物实验，验证了其在避免障碍物场景中的有效性。",
+      "llm_tldr": "针对非抓取操作的长期规划难题，提出分层模型预测路径积分（MPPI）控制方法。先求解简化物体规划问题，再将物体轨迹作为参考引导机器人-物体联合规划。在6自由度xArm6机械臂上进行推动任务仿真和实物实验，验证了其在避免障碍物场景中的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.01027v1",
+      "source": "arxiv",
+      "title": "$τ_0$-WM: A Unified Video-Action World Model for Robotic Manipulation",
+      "abstract": "Robotic manipulation requires models that generate executable actions while anticipating and evaluating their future consequences before physical execution. We present $τ_0$-World Model ($τ_0$-WM), a unified video-action world model that integrates policy learning, video prediction, and action evaluation within a single future-predictive framework. Built on a shared video diffusion backbone, $τ_0$-WM provides two complementary interfaces. First, a video action model jointly predicts future visual latents and continuous action chunks from multi-view observations, language instructions, and robot state. Second, an action-conditioned video simulator rolls out candidate action chunks into multi-view futures and predicts dense task-progress scores. The model is trained on approximately $27{,}300$ hours of real-robot teleoperation, UMI-style interaction, egocentric human videos, and rollout or failure trajectories using modality-specific supervision masks. At inference time, $τ_0$-WM uses test-time computation to sample action candidates, rank them with re-denoising consistency, and invoke simulator-based rectification for low-quality candidates. On challenging long-horizon and fine-grained robotic manipulation tasks, $τ_0$-WM shows superior performance over other relevant baselines.",
+      "authors": [
+        "Pengfei Zhou",
+        "Shengcong Chen",
+        "Di Chen",
+        "Jiaxu Wang",
+        "Rongjun Jin",
+        "Bingwen Zhu",
+        "Yike Pan",
+        "Songen Gu",
+        "Kuanning Wang",
+        "Shufeng Nan",
+        "Xingyu Qiu",
+        "Chenhao Qiu",
+        "Pu Yang",
+        "Yunuo Cai",
+        "Jianxiong Gao",
+        "Yifan Li",
+        "Yanwei Fu",
+        "Xiangyu Yue",
+        "Zhi Chen",
+        "Jianlan Luo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-05-31T05:35:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.01027v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "unified video-action world model for robotic manipulation",
+      "llm_evidence_cn": "统一的视频-动作世界模型用于机械臂操作",
+      "llm_evidence": "统一的视频-动作世界模型用于机械臂操作",
+      "canonical_evidence": "统一的视频-动作世界模型用于机械臂操作",
+      "llm_tldr_en": "Proposes a unified video-action world model that integrates policy learning, video prediction, and action evaluation for robotic manipulation.",
+      "llm_tldr_cn": "该论文提出τ0-WM，一个统一的视频-动作世界模型，将策略学习、视频预测和动作评估集成在一个框架中。它使用共享的视频扩散骨干网络，能够从多视角观测、语言指令和机器人状态中联合预测未来视觉潜变量和连续动作块，并评估动作进度。该方法为机器人操作提供了一个未来预测框架，有助于提升任务成功率。",
+      "llm_tldr": "该论文提出τ0-WM，一个统一的视频-动作世界模型，将策略学习、视频预测和动作评估集成在一个框架中。它使用共享的视频扩散骨干网络，能够从多视角观测、语言指令和机器人状态中联合预测未来视觉潜变量和连续动作块，并评估动作进度。该方法为机器人操作提供了一个未来预测框架，有助于提升任务成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.00702v1",
+      "source": "arxiv",
+      "title": "Shape Your Body: Value Gradients for Multi-Embodiment Robot Design",
+      "abstract": "We propose to turn generalist multi-embodiment value functions into reusable models for robot design. Instead of running a new reinforcement learning co-design loop for each robot, we first train an embodiment-aware policy and value function across many robot designs. After training, the frozen value function is used as a differentiable surrogate to optimize candidate embodiments through value gradients. We evaluate our approach across different robot design settings, from perturbed single robots to held-out robots across morphology classes, with single models trained on up to 50 robots and design spaces of over 1100 continuous embodiment parameters. Beyond optimizing complete embodiments, we show that value gradients can identify performance-limiting design and control parameters, enabling both the optimization and the analysis of new robot designs.",
+      "authors": [
+        "Nico Bohlinger",
+        "Jan Peters"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-05-30T12:21:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.00702v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uses value function as differentiable surrogate for robot design optimization",
+      "llm_evidence_cn": "使用价值函数作为可微代理进行机器人设计优化",
+      "llm_evidence": "使用价值函数作为可微代理进行机器人设计优化",
+      "canonical_evidence": "使用价值函数作为可微代理进行机器人设计优化",
+      "llm_tldr_en": "Proposes using a frozen embodiment-aware value function as a differentiable surrogate to optimize robot designs via value gradients, enabling multi-embodiment design without retraining.",
+      "llm_tldr_cn": "现有机器人协同设计方法每次都需要重新训练强化学习循环，效率低下。本文提出预训练一个跨实体的价值函数，并通过价值梯度将其作为可微代理来优化机器人形态参数。实验在多达50个机器人、1100个连续参数的设计空间上验证了有效性。该方法不仅优化完整形态，还能识别设计瓶颈，为可微分方法在机器人设计中的应用提供了新思路。",
+      "llm_tldr": "现有机器人协同设计方法每次都需要重新训练强化学习循环，效率低下。本文提出预训练一个跨实体的价值函数，并通过价值梯度将其作为可微代理来优化机器人形态参数。实验在多达50个机器人、1100个连续参数的设计空间上验证了有效性。该方法不仅优化完整形态，还能识别设计瓶颈，为可微分方法在机器人设计中的应用提供了新思路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.02194v1",
+      "source": "arxiv",
+      "title": "Coherent Off-Policy Improvement of Large Behavior Models with Learned Rewards",
+      "abstract": "Distilling expert demonstration data into large generative models using behavioral cloning is a scalable approach to learning capable policies for robotic control, particularly for dexterous manipulation. Reinforcement learning (RL) can be used as a means to finetune these policies further using additional experience. An open question is whether RL is more sample-efficient than collecting more human demonstrations. Prior work has finetuned large pretrained policies in a scalable fashion by applying RL to a smaller residual policy that corrects the pretrained model. However, for the typical sparse reward tasks, RL algorithms can struggle to optimize the behavior in a sample-efficient manner. We explore inverse reinforcement learning, where a dense reward function is learned from expert demonstrations, potentially reducing the challenge of RL finetuning. We specifically consider coherent imitation learning, an IRL method that facilitates improvement of the BC policy through using a specific reward formulation with theoretical guarantees. We show that our IRL method maintains or improves the performance of pi-0.5 on all six sparse manipulation tasks and achieves a $\\geq 90\\%$ success rate on five out of six complex manipulation tasks, outperforming RL-based baselines using sparse rewards. By ensuring our initial pretrained finetuning policy is optimal for our initial reward and critic, our method circumvents the initial drop commonly seen in RL finetuning and enables faster improvement.",
+      "authors": [
+        "Christian Scherer",
+        "Joe Watson",
+        "Theo Gruner",
+        "Daniel Palenicek",
+        "Ingmar Posner",
+        "Jan Peters"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-01T12:49:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.02194v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses reinforcement learning with learned rewards to improve large behavior models for dexterous manipulation",
+      "llm_evidence_cn": "使用学习到的奖励通过强化学习改进大型行为模型用于灵巧操作",
+      "llm_evidence": "使用学习到的奖励通过强化学习改进大型行为模型用于灵巧操作",
+      "canonical_evidence": "使用学习到的奖励通过强化学习改进大型行为模型用于灵巧操作",
+      "llm_tldr_en": "Explores inverse reinforcement learning to learn dense rewards for sample-efficient fine-tuning of large pretrained policies for dexterous manipulation, showing better sample efficiency than collecting more demonstrations.",
+      "llm_tldr_cn": "对于灵巧操作，将专家演示通过行为克隆蒸馏到大型生成模型是可扩展的方法。强化学习可用于进一步微调策略，但稀疏奖励下样本效率低。本文探索逆强化学习，通过学习稠密奖励来高效优化行为策略。实验表明，该方法比收集更多演示更为样本高效，显著提升了策略性能。",
+      "llm_tldr": "对于灵巧操作，将专家演示通过行为克隆蒸馏到大型生成模型是可扩展的方法。强化学习可用于进一步微调策略，但稀疏奖励下样本效率低。本文探索逆强化学习，通过学习稠密奖励来高效优化行为策略。实验表明，该方法比收集更多演示更为样本高效，显著提升了策略性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

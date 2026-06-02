@@ -1,0 +1,709 @@
+Title: Object-Informed Model Predictive Path Integral Control for Non-Prehensile Robot Manipulation
+
+URL Source: https://arxiv.org/pdf/2605.30778v1
+
+Published Time: Mon, 01 Jun 2026 00:37:14 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Object-Informed Model Predictive Path Integral Control for Non-Prehensile Robot Manipulation 
+
+Nikola Raicevic, Bharath Raam Radhakrishnan, Chenbin Yu, Ki Myung Brian Lee, and Nikolay Atanasov 
+
+Abstract — Long-horizon planning for non-prehensile robot manipulation is challenging due to underactuated and discon-tinuous interactions. We propose a hierarchical formulation of model predictive path integral (MPPI) control that guides robot-level planning with a separately computed object-level plan to achieve efficient long-horizon prediction. We first solve a simplified object-only problem, assuming the object can be actuated directly, and use the planned object trajectory as a reference in solving the joint robot-object planning problem. We evaluate our method in both simulation and hardware using a 6-DoF xArm6 manipulator to perform object pushing tasks in which the target object must reach a goal while avoiding static obstacles, necessitating non-myopic reasoning. Our object-informed MPPI increases task success by 40% with a 26% faster control frequency in simulation, and by 20% in real experiments with similar computation as regular MPPI. 
+
+I. I NTRODUCTION 
+
+Non-prehensile manipulation expands the capabilities of robot systems by allowing pushing interactions beyond stable grasping, as shown in Fig. 1, which may be advantageous in certain scenarios. Recent advances in modeling and sim-ulation of multi-body contact dynamics [1, 2] have enabled object motion prediction under intermittent contact in parallel and at faster-than-real-time speeds on modern hardware. Fur-thermore, sampling-based model predictive control (MPC) algorithms such as model predictive path integral (MPPI) control [3] can utilize such fast parallelized simulators to achieve real-time control given a suitable cost description of the manipulation task [4]. However, long-horizon planning for non-prehensile ma-nipulation remains challenging for two reasons. First, con-tact dynamics are discontinuous, so small changes in robot motion can produce qualitatively different object behaviors depending on how contact is established or broken. This renders large portions of the robot’s configuration space not useful for task progress. Second, the object is actuated only implicitly, and the robot must select its own motion to produce the desired object displacement through contact. This dramatically expands the search space, as the planner must simultaneously reason about robot kinematics, contact geometry, and object response. To address these challenges, we propose a hierarchical formulation of MPPI that guides robot-level planning with a separately computed object-level plan. The key idea is to decompose the manipulation task into two coupled optimal     
+
+> All authors are with the Department of Electrical and Computer Engi-neering, University of California San Diego, 9500 Gilman Drive, La Jolla, CA 92093, United States. Emails: {nmarinosraitsevits, bradhakrishnan, chy066, lkm1321, natanasov }@ucsd.edu
+
+Fig. 1: A manipulator pushes the orange letter I to form a complete phrase ”IROS” while avoiding the letters R, O, and 
+
+S using the proposed object-informed MPPI approach. control problems operating at different abstraction levels, rather than planning directly in the joint robot-object state space, as illustrated in Fig. 2. First, we solve an object-level optimal control problem using MPPI by treating the object as directly actuated through virtual control inputs, as shown in Fig. 2(b). Second, we solve a robot-level control problem using MPPI, where the robot samples control trajectories that align with the planned object trajectory from the object-level problem, as shown in Fig. 2(c). This hierarchical decomposi-tion reduces the effective planning horizon at the robot level, while allowing the object-level planner to reason at a longer horizon in the smaller configuration space of object motions. We explore two variants: sequential object informed (SOI) MPPI , which performs a single object-planning stage in the beginning, and closed-loop object-informed (CLOI) MPPI ,which re-computes the object trajectory in closed-loop given the latest object position, as illustrated in Fig. 2. Our contributions are summarized as follows.  
+
+> •
+
+We introduce two hierarchical MPPI variants, CLOI and SOI, that decompose non-prehensile manipulation into object-level and robot-level planning problems.  
+
+> •
+
+We demonstrate in simulated and real experiments using a 6-DoF robotic manipulator that our object-informed 
+
+> arXiv:2605.30778v1 [cs.RO] 29 May 2026
+
+Fig. 2: Object-Informed hierarchical planning. Starting from an initial configuration (a), the object-level planner generates a desired object trajectory xo∗ 
+
+> t, 0: Ho
+
+(b), which is passed to the robot-level planner for tracking (c). After execution, the updated object state xot+1 is fed back to the object-level planner for replanning (d), forming a closed loop. The dashed red region represents SOI, which performs a single object-planning stage, while the dashed black region represents CLOI, which performs object-planning in a closed loop. MPPI algorithms enable long-horizon non-prehensile manipulation with significantly improved success rate, by 40% in simulation and 20% on hardware, compared to standard MPPI. II. R ELATED WORK 
+
+Non-prehensile manipulation is a challenging robotic task that demands reasoning about making and breaking contact with objects of interest. Contact forces can be modeled using complementarity constraints [5] or an equivalent second-order cone program (SOCP) [6]. Recent work focuses on directly optimizing through such analytical models of contact dynamics by forming local approximations of the comple-mentarity constraints [7–9], smoothing the SOCP formula-tion [10], or constructing an explicit SOCP solution [11]. Al-though these analytical approaches are physically grounded, they require carefully designed differentiable models of contact, which may be difficult to obtain for arbitrary objects. Sampling-based MPC relies on parallel forward simulation in a multi-body physics simulation engine without gradient information. Notable methods include the cross entropy method (CEM) [12], MPPI [3], and diffusion-inspired an-nealing (DIAL) MPC [13]. With appropriate cost defini-tions and control parameterization, sampling-based MPC has proven useful in manipulation tasks [14] and benefits from GPU-accelerated, high-fidelity simulation [4]. These meth-ods iteratively update a distribution over control sequences based on the cumulative cost of online interactions with the simulation environment resulting from control sequences sampled from the distribution [15]. Our work is inspired by the success of sampling-based MPC in handling complicated dynamics via parallel forward simulation, and seeks to cap-ture the hierarchical robot-object structure present in non-prehensile manipulation. Some prior approaches offer insight into imposing struc-ture for non-prehensile manipulation. Recently, consensus complementarity control (C3) [16] applied the alternating direction method of multipliers (ADMM) to solve non-prehensile manipulation via consensus between two iterative steps: the first solving for control actions without comple-mentarity constraints, and the second projecting the solution to satisfy complementarity constraints. This approach iso-lates the non-convexity of the complementarity constraints and exploits their temporal independence. In related works, explicit choice of contact modes has proven to be ben-eficial for performance and computational efficiency [17– 19]. Closely related to our approach are the object-centric planning methods [20, 21], which first plan a full object-only trajectory that achieves the goal, and subsequently solve for a robot motion that achieves the object trajectory. In comparison, our approach can also create object plans in a receding horizon to close the loop with object pose estimates. We also contribute a clear mathematical formulation of this decomposition between robot- and object-level planning problems based on a general dynamic model. III. P ROBLEM STATEMENT 
+
+Consider a robot manipulator modeled in discrete-time input-affine form: 
+
+xrt+1 = fr (xrt ) + gr (xrt ) urt + hr (xrt ) wrt , (1) where xrt ∈ Rnr is the robot’s configuration at time t, urt ∈
+
+Rmr denotes the control input (e.g., joint torque or desired velocity), and wrt ∈ Rpr represents external forces induced by contact with the object or the environment. The robot’s task is to push a rigid target object toward a goal configuration in a cluttered environment. The target object is not directly actuated. Its motion arises implicitly through contact with the robot and the environment. The object dynamics is also modeled in discrete-time input-affine form: 
+
+xot+1 = fo(xot ) + ho(xot ) wot , (2) where xot ∈ Rno denotes the object’s configuration, and wot ∈
+
+Rpo represents the external forces induced by contact with the robot or the environment. The coupling between the robot and the object arises through the external force terms wrt and wot . We show this explicitly by considering a frictionless model of contact for simplicity. However, even for contact with friction, the coupling between the robot and the object still occurs through these force terms. In the frictionless model, the external forces are given by: 
+
+wot = ∇xo ϕ1(xot , x rt ) λ1 
+
+> t
+
++ ∇xo ϕ2(xot ) λ2 
+
+> t
+
+,wrt = ∇xr ϕ1(xot , x rt ) λ1 
+
+> t
+
++ ∇xr ϕ3(xrt ) λ3 
+
+> t
+
+, (3) where the functions ϕj encode the gap between the rigid bodies: (i) ϕ1(xot , x rt ) is the gap between the robot and the object, (ii) ϕ2(xot ) between the object and the environment, and (iii) ϕ3(xrt ) between the robot and the environment. Each ϕj is defined such that ϕj ≥ 0 corresponds to non-penetration, and ϕj = 0 corresponds to contact at the boundary. The terms λjt ∈ R≥0 denote the (scalar) normal contact force magnitude associated with ϕj .1 The magnitudes 
+
+λjt are subject to complementarity constraints [5]: 
+
+0 ≤λ1 
+
+> t
+
+⊥ ϕ1(xot , x rt ) ≥ 0,
+
+0 ≤λ2 
+
+> t
+
+⊥ ϕ2(xot ) ≥ 0,
+
+0 ≤λ3 
+
+> t
+
+⊥ ϕ3(xrt ) ≥ 0.
+
+(4) Here, the complementarity constraint a ⊥ b means either a or 
+
+b is true, but not both. For contact, it encodes that (i) contact forces are non-zero only when the corresponding bodies are in contact ( ϕj = 0 ), and (ii) bodies cannot interpenetrate (ϕj ≥ 0). We emphasize that the environment geometry (including obstacles) is subsumed into ϕ2 and ϕ3 and is treated as static throughout. We assume access to a physics simulator that implements (1)–(4), e.g., NVIDIA Isaac [1] or MuJoCo [2]. We do not assume access to derivative information for the dynamics. It is important in the later discussion that the structure of object-robot dynamics is in the form of (1) and (2), with coupling only through the external force terms (3). As a sketch of how the robot and object dynamics can be represented in this form, we consider the case of planar pushing of a rigid body as an example, as follows. 
+
+Example 1 (Quasi-static planar pushing) . Consider a point robot with position xrt and a rigid body object B ⊂ R2 in 2D, whose shape is described by a signed distance function (SDF) dB(x) = ± min b∈∂B ∥b − x∥, with positive sign if 
+
+x is outside of B. Since the object is on a plane, the object’s configuration is given by xot ≜ [pox,t , p oy,t , θ ot ]⊤ ∈
+
+SE (2) and the external force is given by a wrench wot ≜
+
+[fx,t , f y,t , τ t]⊤ ∈ R3. Under quasi-static mechanics, the body twist is proportional to the applied wrench [22], 
+
+˙xot = D w ot , D ≜ diag  μmg, μmg, cr μmg −1 (5) 
+
+where μ is the support friction coefficient, m is the object mass, g is gravity, r is characteristic length, and c > 0 is the (ellipsoidal) limit-surface shape parameter. With Euler      
+
+> 1For multiple simultaneous contacts or contact with friction, ϕjand λjt
+> can be vector-valued, with ∇ϕjreplaced by the corresponding stacked contact Jacobian.
+
+discretization, this yields the discrete-time form (2) :
+
+xot+1 = xot
+
+|{z}  
+
+> fo(xot)
+
++ ∆ t D | {z }  
+
+> ho(xot)
+
+wot . (6) 
+
+Now, to show that the external forces follow the form in (3) , we express ϕ1 in terms of the body SDF dB:
+
+0 ≤ λ1 
+
+> t
+
+⊥ ϕ1(xot , x rt ) ≜ dB
+
+ R⊤ 
+
+> 2D
+
+(θot )( xrt − pot ) ≥ 0, (7) 
+
+where xot = [ pot , θ ot ], and R2D is the 2D rotation matrix from 
+
+θot . Using ϕ1, the external force wot is: 
+
+wot = λ1 
+
+> t
+
+∇xot ϕ1(xot , x rt ) = λ1
+
+> t
+
+ −R⊤(θot )∇dB
+
+∇dB × R⊤ 
+
+> 2D
+
+(θot )( xrt − pot )
+
+
+
+,
+
+where × is the scalar cross product for 2D vectors, and ∇dB
+
+is the gradient of dB at R⊤ 
+
+> 2D
+
+(θot )( xrt − pot ).
+
+Given initial object and robot configurations (xr
+
+> 0
+
+, x o
+
+> 0
+
+) and an object goal configuration g ∈ Rno , we seek a sequence of robot inputs that drives the object to the goal while avoiding contacts with the environment. We formulate this as an optimal control problem with finite horizon H ∈ N:
+
+min  
+
+> {urt}H−1
+> t=0
+> H−1
+
+X
+
+> t=0
+
+
+
+ℓo(xot ) + ℓr (xrt , u rt )
+
+
+
++ ℓf (xoH )
+
+s.t. dynamics in (1)–(4) ,
+
+(xrt , u rt ) ∈ C , t = 0 , . . . , H − 1.
+
+(8) We collect standard robot feasibility constraints (joint limits, velocity limits, and actuation bounds) into a single admis-sible set C ⊂ Rnr × Rmr . Additional task- or platform-specific constraints (e.g., self-collision avoidance, workspace limits, or smoothness constraints) can be incorporated into 
+
+C without changing the structure of (8). The stage cost 
+
+ℓo(xot ) penalizes object’s deviation from the goal, ℓr (xrt , u rt )
+
+regularizes robot motion and effort, and ℓf (xoH ) encourages reaching goal at terminal timestep. IV. B ACKGROUND ON MPPI A popular method to solve finite-horizon optimal control problems like (8) is MPPI [3]. MPPI is a derivative-free optimal control method that maintains a nominal control sequence over a finite horizon H, ¯U rt ≜ {¯urh}t+H−1 
+
+> h=t
+
+. During each iteration, a perturbed control sequence is rolled out (i.e. applied) to obtain system states Xt ≜ {xh}t+Hh=t where 
+
+xt = xr⊤ 
+
+> t
+
+, x o⊤
+
+> t
+
+⊤, and subsequently the associated cost. An improved control sequence is computed as a weighted mean of perturbed control sequences. For each rollout k ∈ [1 , K ]
+
+and time index h ∈ [0 , H − 1] , MPPI samples: 
+
+ur, (k) 
+
+> t+h
+
+= ¯ urt+h + ϵ(k)
+
+> t+h
+
+, ϵ(k) 
+
+> t+h
+
+∼ N (0 , Σu), (9) where Σu ∈ Rmr ×mr is the covariance of the exploration perturbations. Each control sequence is propagated through the dynamics (1)–(4) to obtain a trajectory Xt and cost: 
+
+S(k) =
+
+> H−1
+
+X
+
+> h=0
+
+
+
+ℓo(xo, (k) 
+
+> t+h
+
+) + ℓr (xr, (k) 
+
+> t+h
+
+, u r, (k) 
+
+> t+h
+
+)
+
+
+
++ ℓf (xo, (k) 
+
+> t+H
+
+)
+
+(10) Algorithm 1 Standard MPPI Iteration 
+
+Require: Current state xt, nominal controls ¯Ut, dynamics model (1)–(4) and cost function S(·) 
+
+> 1:
+
+for k = 1 , . . . , K do  
+
+> 2:
+
+for h = 0 , . . . , H r − 1 do  
+
+> 3:
+
+Sample ϵ(k) 
+
+> t+h
+
+∼ N (0 , Σu) 
+
+> 4:
+
+u(k) 
+
+> t+h
+
+← ¯ut+h + ϵ(k) 
+
+> t+h
+> 5:
+
+Rollout Xt using (1)–(4) with Ut 
+
+> 6:
+
+Evaluate S(k) using S(·) with Xt. 
+
+> 7:
+
+Update ¯Ut using (11)–(12)  
+
+> 8:
+
+return ¯Ut
+
+MPPI updates the nominal control sequence using an importance-weighted average of the perturbations: 
+
+¯urt+h ← ¯urt+h +
+
+> K
+
+X
+
+> k=1
+
+ω(k)ϵ(k)
+
+> t+h
+
+, h = 0 , . . . , H − 1. (11) Here, the weights w(k) are given by: 
+
+ω(k) = exp  − 1
+
+> λ
+
+ S(k) − Smin 
+
+ PKj=1 exp  − 1
+
+> λ
+
+ S(j) − Smin 
+
+ , (12) where Smin ≜ min j S(j). The temperature λ > 0 controls the selectivity of the update. MPPI is executed in receding horizon by applying urt = ¯ urt , shifting ¯U rt+1 ← shift( ¯U rt ),and re-optimizing at time t+1 , summarized in Alg. 1. V. O BJECT INFORMED SAMPLING -BASED CONTROL 
+
+We observe a hierarchical structure in the joint robot-object problem (8) where the object and the robot costs are separable, while the dynamics are coupled through the external forces wrt , wot , and the complementarity constraint in (4). This suggests that we can solve Problem (8) hierar-chically, by first optimizing the task-space object trajectory 
+
+and then using it to find the contact-implicit robot controls to execute the task, as indicated in Fig. 2. More concretely, we address long-horizon non-prehensile manipulation by using the object model (2) to generate a task-space reference, as shown in Fig. 2 b). This reference is used in the robot-level problem that realizes this reference through physically consistent robot–object interactions, as presented in Fig. 2 c). 
+
+A. Hierarchical Decomposition 
+
+To obtain an object-level problem that is independent of the robot configuration, we exploit the fact that the robot–object coupling enters exclusively through the external interaction force wot . We treat the force wot as controllable and decompose Problem 8 into (i) an object-level subproblem that plans the object trajectory given interaction force control and (ii) a robot-level subproblem that selects robot controls to produce a robot trajectory that achieves the planned object 
+
+Algorithm 2 Closed-Loop Object-Informed MPPI 
+
+Require: Initial state x0 = (xr
+
+> 0
+
+, x o
+
+> 0
+
+); horizons Ho, H r ;samples Ko, K r ; nominals ¯W0, ¯U r 
+
+> 0
+> 1:
+
+while not converged do  
+
+> 2:
+
+(A) Object-level planning (solve (13))  
+
+> 3:
+
+Update ¯Wt with Alg. 1 using (1)–(4) and So (13).  
+
+> 4:
+
+Extract xo∗ 
+
+> t:t+Ho
+
+from the nominal rollout  
+
+> 5:
+
+(B) Robot-level execution (solve (14))  
+
+> 6:
+
+Update ¯U rt with Alg. 1 using (1)–(4) and S (14).  
+
+> 7:
+
+Apply urt ← ¯urt and shift ¯U rt+1 ← shift( ¯U rt ) 
+
+> 8:
+
+Observe xt+1 ; set t ← t + 1 
+
+motion. Given horizon Ho, the object-level problem solves 
+
+min  
+
+> {wot}Ho−1
+> t=0
+> Ho−1
+
+X
+
+> t=0
+
+ℓo(xot ) + ℓf (xoHo )
+
+s.t. dynamics in (2)–(4) ,ϕ2(xot ) ≥ 0,
+
+0 ≤ λ2 
+
+> t
+
+⊥ ϕ2(xot ) ≥ 0.
+
+(13) This produces a nominal object reference trajectory xo∗
+
+> 0: Ho
+
+for the robot-level problem, where we optimize real robot inputs over a robot-level horizon Hr :
+
+min    
+
+> {urt}Hr−1
+> t=0
+> Hr−1
+
+X
+
+> t=0
+
+
+
+ℓo(xot ) + ℓr (xrt ) + ℓc(xot , x o∗ 
+
+> t
+
+)
+
+
+
++ ℓf (xoHr )
+
+s.t. dynamics in (1)–(4) , (14) 
+
+(xrt , u rt ) ∈ C ,
+
+where ℓc(xot , x o∗ 
+
+> t
+
+) = d2(xot , x o∗ 
+
+> t
+
+) is the coupling stage cost representing the squared distance between the object reference and the current object position, which encourages the robot-level solution to match the object plan. 
+
+B. Object-Informed MPPI Control 
+
+We use two MPPI algorithms to solve the object-level and robot-level problems defined above in two ways, either sequentially in an open loop (SOI) or repeatedly in a closed loop (CLOI), as shown in Fig. 2. CLOI-MPPI performs online object-level re-planning and couples the two subproblems in a receding-horizon closed loop as indicated on Fig. 2. At each real time step t, the object-level MPPI solves (13) from the current object state to produce an updated reference xo∗ 
+
+> t:t+Ho
+
+, from which we extract the segment xo∗ 
+
+> t:t+Ho
+
+used by the robot level. The robot-level MPPI then solves (14), executes the first control 
+
+urt , and shifts its nominal sequence. The next observed state, xot+1 , is fed back to the object planner for the next re-planning step, yielding robustness to deviations between object dynamics (2) and the actual interaction dynamics. Pseudocode is provided in Algorithm 2. SOI-MPPI decouples planning and execution in time by computing the object reference offline (or once per episode) before robot execution. Specifically, the object-level MPPI solves (13) until the goal to obtain a global reference xo∗ 
+
+> 0: Ho
+
+.Algorithm 3 Sequential Object-Informed MPPI 
+
+Require: Initial state x0 = (xr
+
+> 0
+
+, x o
+
+> 0
+
+); horizons Ho, H r ;samples Ko, K r ; initial nominals ¯W0, ¯U r 
+
+> 0
+> 1:
+
+(A): Object-level planning (solve (13))  
+
+> 2:
+
+Set xo 
+
+> 0
+
+as observed object position, and t = 0 . 
+
+> 3:
+
+while not converged do  
+
+> 4:
+
+Update ¯Wt with Alg. 1 using (2)–(4) and So (13).  
+
+> 5:
+
+Simulate Wt to obtain xot+1 . 
+
+> 6:
+
+Shift ¯Wt+1 ← shift( ¯Wt), t ← t + 1 . 
+
+> 7:
+
+Extract xo∗ 
+
+> 0: Ho
+
+from the executed trajectory.  
+
+> 8:
+
+(B): Robot-level execution (solve (14))  
+
+> 9:
+
+t ← 0 
+
+> 10:
+
+while not converged do  
+
+> 11:
+
+Extract segment xo∗ 
+
+> t:t+Hr
+
+from xo∗ 
+
+> 0: Ho
+> 12:
+
+Update ¯U rt with Alg. 1 using (2)–(4) and S (14).  
+
+> 13:
+
+Apply urt ← ¯urt and shift ¯U rt+1 ← shift( ¯U rt ) 
+
+> 14:
+
+Observe xt+1 ; set t ← t + 1 
+
+During execution, the robot-level MPPI runs in receding horizon and tracks successive segments xo∗ using (14). Unlike CLOI-MPPI, the reference is not updated online; consequently, performance depends on the validity of the offline object-only plan under the actual dynamics and any disturbances. Pseudocode is provided in Algorithm 3. 
+
+C. Cost Functions 
+
+We instantiate both the object-level and robot-level ob-jectives for the task of pushing an object to a goal while avoiding environment collisions. The object configuration is described by a pose xot = ( pot , R ot ) ∈ R3 ×SO (3) with a goal pose g = ( pg , R g ) ∈ R3 × SO (3) , for generality we present the cost formulation in 3D but only consider 2D planar scenario with fixed z-coordinate. The object-level costs ℓo
+
+track the task-space progress and obstacle interaction: 
+
+ℓo(xot ) = wodd2(xot , g ) + wof
+
+ max  λ2 
+
+> t
+
+− f0, 0 2 , (15) where d2(xot , g ) is the squared distance between xot and g,and the second term is a hinge loss that penalizes the contact force between the object and the environment λ2 
+
+> t
+
+with a threshold at f0. The hinge loss penalizes large impulsive contacts while tolerating minor incidental ones. This contact force can be obtained from the simulator. The squared distance d2(xot , g ) between xot and g is measured as: 
+
+d2(xot , g ) = ∥pot − pgt ∥2 + woθ
+
+
+
+cos −1 trace( R⊤ 
+
+> 1R2)−12
+
+ 2
+
+.
+
+(16) The weights wod, woθ , and wof correspond to the weights for target to goal distance, target to goal orientation, and contacting obstacle, respectively. The robot-level stage cost ℓr comprises terms that steer the end-effector toward favorable relative poses to the object for manipulation 
+
+ℓr (xrt ) = wee max  ∥pee t − pot ∥2 − r20 , 0
+
++walign ψalign (pee t , p ot , x o∗ 
+
+> t
+
+) + wtilt ψtilt (Ree  
+
+> t
+
+).
+
+(17) Here, the first term penalizes the distance between the end effector and the object, except if the end effector is within 
+
+r0 distance of the object. This encourages the end effector to first approach the object, but still provides freedom when the end effector is close enough to the object. The second term, ψalign , encourages the end effector to be ‘behind’ the object relative to the goal for pushing. This is encoded using the cosine angle between the object-to-goal and end-effector-to-goal vectors: 
+
+ψalign = max ( γ0 − cos ∠(pot − pee t , p o∗ 
+
+> t
+
+− pot ), 0) , (18) where cos ∠ denotes the cosine of the angle between two vectors, which can be calculated using an inner product. As with the end-effector to object distance term, we use a threshold term γ0 so that the cost goes to zero once the end-effector position is within the desired angle. Finally, ψtilt (Ree  
+
+> t
+
+) penalizes the end effector from leaving the vertical orientation, by taking the squared sum of roll and pitch angles: 
+
+ψtilt (R) = pϱ2 + φ2,ϱ = tan −1( R32  
+
+> R33
+
+), φ = tan −1   −R31 √R232 +R233 
+
+, (19) encouraging a favorable orientation of the end-effector. VI. E XPERIMENTAL RESULTS 
+
+We evaluate our CLOI and SOI algorithms in simulation and hardware experiments using a 6DoF xArm6 manipulator. The objective in all experiments is to push the target object to a goal pose while avoiding obstacles. We compare against the MPPI implementation from [4], on which we built CLOI and SOI. For both simulation and hardware experiments, we report the following metrics:  
+
+> •
+
+Success rate (SR): Success is defined as reaching posi-tion error ≤ 0.2m ( 0.1m for real) and orientation error 
+
+≤ 0.5rad (not considered for real).  
+
+> •
+
+Position error (ϵd, ϵsd): position error in terms of Eu-clidean distance to goal pose averaged over time, for all trials ( ϵd) and for successful trials ( ϵsd) 
+
+> •
+
+Frequency ( ¯f ): The average computation frequency of the planner is the inverse of the time taken to compute a single control action.  
+
+> •
+
+Total execution time (T ): Total execution time is the time taken until success. If unsuccessful, we record the max time allowed for each method. For SOI, we include the object trajectory planning time to reflect real use. 
+
+A. Simulation Experiments 
+
+We consider five non-prehensile manipulation tasks in the simulated experiments, shown in Fig. 3. Each method is run for a fixed maximum number of simulator steps. We performed ten trials per task with different starting object poses, but the same goal pose. The standard MPPI, SOI, and (a) (b) (c) (d) (e) 
+
+Fig. 3: IsaacGym simulation experiments using xArm6 robot. (a) Task 01: Pushing a T block with no obstacles; (b) Task 02: Pushing a T block around the obstacles; (c) Task 03: Pushing a T block through or around the two obstacles; (d) Task 04: Pushing a T block through a cluttered environment; (e) Task 05: Pushing the letter ”S” to make the word ”IROS”. In all panels, the initial object position is indicated with green, the final position with red, and the obstacles with yellow. .
+
+Successful Trials 
+
+> CLOI SOI MPPI
+
+Failed Trials 
+
+> CLOI SOI MPPI
+
+Fig. 4: Hardware experiment visualization. Successful and failed trials for Task 2 across all methods. CLOI used K = 1200 control samples for all, and robot planning horizon Hr of 25 , 25 , and 15 . SOI and CLOI used the object planning horizon Ho of 90 and 60 .From Table I, SOI attains an 82% success rate, followed by CLOI at 72% , while standard MPPI succeeds in only 
+
+42% of trials, often stalling near obstacles. The position-error metrics ϵsd and ϵd exhibit the same trend: the gap widens on the harder Tasks 4–5, whereas on the simpler Tasks 1– 2, MPPI can be comparable (e.g., ϵsd = 0 .29 ). Overall, our methods achieve lower average error ( ϵsd = 0 .29 , ϵd = 0 .32 ), which we attribute to more reliable obstacle avoidance; MPPI frequently fails to discover feasible detours, as they incur high short-term cost. Further, both CLOI and SOI show lower execution times of T = 194 .77 s and T = 182 .81 s. These results support the central hypothesis that object-level guidance improves performance by biasing MPPI rollouts toward promising control actions in the robot-level problem. 
+
+B. Hardware Experiments 
+
+We compare the performance of SOI and CLOI to standard MPPI in real hardware experiments. We performed two different tasks, one with and one without an obstacle, as shown in Figs. 4 and 5. For each task, we considered five start and one goal locations. All algorithms used a planning horizon Hr = 12 and K = 2000 control samples. SOI and CLOI both used the object planning horizon Ho = 60 .We used SAM-6D [23] to estimate object pose with an Intel RealSense D-455 camera mounted in front of the Fig. 5: Object trajectories in hardware experiments. We report 5 repeated push executions. Numbered markers correspond to different starting positions, and the colors represent time propagation from blue to red. Start and goal positions are shown in green and red circles, respectively, where the outer red circle shows the success region. Yellow indicates the obstacle. robot (Fig. 4). In our implementation, the pose estimation frequency only reached 1 Hz, with occasional misdetections and erroneous estimates, in addition to occlusions from a limited field of view. The imperfect perception serves as a test of robustness for all algorithms considered. Because of errors in orientation estimates, we tracked the goal pose only in terms of position. We used a Tomato Soup Can from the YCB dataset [24] as the target object. A ROS2 interface was implemented to relay the estimated physical states of the robot and the object to an Isaac Gym simulation [1, 4], and the joint commands back to the robot. Table II shows the quantitative results from the hardware experiments. Averaged across tasks, CLOI and SOI achieve the highest success rate (90% ), whereas standard MPPI succeeds in 70% of trials. As expected, SOI yields the lowest overall execution time, even when accounting for the offline object-trajectory planning overhead, indicating that the reduced online planning burden translates to faster task completion. Interestingly, MPPI attains the lowest position error in successful trials ( ϵsd = 0 .31 ) and overall ( ϵd = 0 .25 ). We attribute this to its direct tracking of the goal position without intermediate waypoints. However, the observations from the simulated experiments in Sec. VI-A suggest the lower position error of MPPI is primarily due to the simple environment. In more cluttered settings, using reference object trajectories as in CLOI and SOI is expected to improve progress by inducing obstacle-aware detours. The improve-ments in success rate are consistent with observations in the simulated experiments, and suggest that using reference object trajectories leads to substantial performance gains in hardware, even with imperfect perception and actuation. Qualitative results in Figs. 4 and 5 further support the role of object-level guidance in inducing non-myopic behavior, while also highlighting a failure mode when the local refer-ence approaches obstacles too closely. In the obstacle-setting, standard MPPI frequently drives straight toward the goal and stalls at the obstacle boundary due to its short-horizon objective shaping; the few successful runs are those in which the sampled rollouts happen to discover a detour early. In contrast, CLOI and SOI generally select obstacle-avoidant approaches consistent with the object-level plan, but can fail when the planned reference trajectory provides insufficient clearance for hardware execution. In these cases, the planner places intermediate references near the obstacle under the assumption of accurate tracking, while the real manipulator must contend with perception error and contact/actuation limits, leading to stalls. This behavior is evident in Fig. 4 (cols. 3–6, rows 4–5), where failures occur during attempted passage close to the obstacle boundary where the collision-avoidance cost dominates the short-term objective, prevent-ing progress despite the existence of a feasible detour. VII. C ONCLUSION 
+
+This paper introduced an object-informed, hierarchical formulation of MPPI for non-prehensile manipulation. We inject task structure by first solving an object-level problem to produce an object reference trajectory, and subsequently solving for robot-level trajectories that track this reference. We realize this hierarchy in two variants: CLOI, which replans the object reference online in a closed loop, and SOI, which plans the object reference once and executes it sequentially. Across simulation and hardware, object-informed MPPI improves performance over standard MPPI by providing global guidance from the object level while re-taining physical feasibility via contact-implicit robot rollouts. While object-informed MPPI improves reliability and sam-ple efficiency in non-prehensile manipulation, two limitations TABLE I: Simulation results. SR: success rate. ϵd: position error (m). ϵsd: position error on successful trials (m). ¯f :control frequency (Hz). T : execution time (s). SOI includes pre-planning time in brackets. 
+
+Task Method SR ↑ ϵd ↓ ϵsd ↓ ¯f ↑ T ↓
+
+01 MPPI 0.9 0.35 0.35 2.51 117.03 CLOI 1.0 0.27 0.27 3.25 152.61 SOI 1.0 0.33 0.33 2.49 107.75 
+
+(70.96) 02 MPPI 0.4 0.37 0.29 2.42 249.21 CLOI 0.9 0.3 0.3 3.00 167.01 SOI 1.0 0.34 0.34 2.39 134.07 
+
+(87.21) 03 MPPI 0.0 0.42 – 2.19 345.19 CLOI 0.3 0.35 0.29 5.64 271.91 SOI 0.9 0.34 0.33 2.23 181.08 
+
+(130.77) 04 MPPI 0.2 0.62 0.46 2.23 312.78 CLOI 0.7 0.36 0.33 2.80 222.11 
+
+SOI 0.9 0.3 0.27 2.27 235.46 (103.69) 05 MPPI 0.6 0.34 0.24 2.52 153.45 
+
+CLOI 0.7 0.31 0.25 3.00 160.22 SOI 0.3 0.29 0.14 2.47 255.70 (110.77) Mean MPPI 0.42 0.42 0.32 2.38 235.53 CLOI 0.72 0.32 0.29 3.01 194.77 SOI 0.82 0.32 0.29 2.37 182.81 
+
+(100.68) 
+
+remain: 1) the mismatch between the robot and object models may lead to dynamically infeasible object reference for the robot to execute; and 2) the object-level planning increases the required number of parallel simulations and computation to execute the task. Future work will address these limitations via uncertainty-aware guidance and contact-aware object modeling. Specifi-cally, we will explicitly account for feasible contact wrenches during object-level planning, and randomize problem param-eters such as object friction or pose during rollout. REFERENCES [1] V. Makoviychuk et al. , “Isaac Gym: High performance GPU based physics simulation for robot learning,” in Proc. of Neural Info. Proc. Sys. , 2021. [2] E. Todorov, T. Erez, and Y. Tassa, “MuJoCo: A physics engine for model-based control,” in Proc. of IEEE/RSJ Int. Conf. on Intell. Robots and Sys. IEEE, 2012, pp. 5026–5033. [3] G. Williams, P. Drews, B. Goldfain, J. M. Rehg, and E. A. Theodorou, “Information theoretic model predictive control: Theory and applica-tions to autonomous driving,” 2017. [4] C. Pezzato, C. Salmi, E. Trevisan, M. Spahn, J. Alonso-Mora, and C. H. Corbato, “Sampling-based Model Predictive Control Leveraging Parallelizable Physics Simulations,” 2025. [5] D. E. Stewart and J. C. Trinkle, “An implicit time-stepping scheme for rigid body dynamics with inelastic collisions and coulomb friction,” 
+
+TABLE II: Hardware results. SR: success rate. ϵd: position error (m). ϵsd: position error on successful trials (m). ¯f :control frequency (Hz). T : execution time (s). SOI includes pre-planning time in brackets. 
+
+Task Method SR ↑ ϵd ↓ ϵsd ↓ ¯f ↑ T ↓
+
+01 MPPI 1.0 0.3 0.3 4.04 114.52 CLOI 1.0 0.38 0.38 2.85 113.53 SOI 1.0 0.35 0.35 4.08 94.97 
+
+(17.29) 02 MPPI 0.4 0.32 0.13 3.80 233.37 CLOI 0.8 0.32 0.29 2.69 229.83 SOI 0.8 0.32 0.28 3.88 215.49 
+
+(16.00) Mean MPPI 0.7 0.31 0.25 3.92 173.95 CLOI 0.9 0.35 0.34 2.77 171.68 SOI 0.9 0.34 0.32 3.98 155.23 
+
+(16.65) 
+
+Int. J. for Numer. Methods in Eng. , vol. 39, no. 15, pp. 2673–2691, 1996. [6] M. Anitescu, “Optimization-based simulation of nonsmooth rigid multibody dynamics,” Math. Prog. , vol. 105, no. 1, pp. 113–143, 2006. [7] M. Posa, C. Cantu, and R. Tedrake, “A Direct Method for Trajectory Optimization of Rigid Bodies Through Contact,” pp. 69–81, Jan. 2014. [8] Y. Li, H. Han, S. Kang, J. Ma, and H. Yang, “On the surprising ro-bustness of sequential convex optimization for contact-implicit motion planning,” in Proc. of Robotics Science and Systems , 2025. [9] B. P. Graesdal, S. Y. C. Chia, T. Marcucci, S. Morozov, A. Amice, P. A. Parrilo, and R. Tedrake, “Towards tight convex relaxations for contact-rich manipulation,” 2024. [10] T. Pang, H. J. T. Suh, L. Yang, and R. Tedrake, “Global planning for contact-rich manipulation via local smoothing of quasi-dynamic contact models,” 2022. [11] W. Jin, “Complementarity-Free Multi-Contact Modeling and Opti-mization for Dexterous Manipulation,” 2025. [12] P.-T. De Boer, D. P. Kroese, S. Mannor, and R. Y. Rubinstein, “A tutorial on the cross-entropy method,” Annals of operations research ,vol. 134, no. 1, pp. 19–67, 2005. [13] H. Xue, C. Pan, Z. Yi, G. Qu, and G. Shi, “Full-Order Sampling-Based MPC for Torque-Level Locomotion Control via Diffusion-Style Annealing,” 2024. [14] M. Bhardwaj, B. Sundaralingam, A. Mousavian, N. Ratliff, D. Fox, F. Ramos, and B. Boots, “Storm: An integrated framework for fast joint-space model-predictive control for reactive manipulation,” 2021. [15] N. Wagener, C.-A. Cheng, J. Sacks, and B. Boots, “An on-line learning approach to model predictive control,” arXiv preprint arXiv:1902.08967 , 2019. [16] S. Venkatesh, B. Bianchini, A. Aydinoglu, W. Yang, and M. Posa, “Approximating global contact-implicit mpc via sampling and local complementarity,” 2025. [17] G. Lee, T. Lozano-P´ erez, and L. P. Kaelbling, “Hierarchical planning for multi-contact non-prehensile manipulation,” in Proc. of IEEE/RSJ Int. Conf. on Intell. Robots and Sys. , 2015, pp. 264–271. [18] H. Bui, Y. Gao, H. Yang, E. Cui, S. Mody, B. Acosta, T. S. Felix, B. Bianchini, and M. Posa, “Push anything: Single- and multi-object pushing from first sight with contact-implicit mpc,” 2025. [19] F. R. Hogan and A. Rodriguez, “Feedback control of the pusher-slider system: A story of hybrid and underactuated contact dynamics,” 2016. [20] K. Ren, G. Wang, A. S. Morgan, L. E. Kavraki, and K. Hang, “Object-centric kinodynamic planning for nonprehensile robot rearrangement manipulation,” 2025. [21] J. E. King, M. Cognetti, and S. S. Srinivasa, “Rearrangement plan-ning using object-centric and robot-centric action spaces,” in IEEE International Conference on Robotics and Automation (ICRA) , 2016, p. 3940–3947. [22] J. Zhou, J. A. Bagnell, and M. T. Mason, “A fast stochastic contact model for planar pushing and grasping: Theory and experimental validation,” 2017. [23] J. Lin, L. Liu, D. Lu, and K. Jia, “SAM-6D: Segment anything model meets zero-shot 6D object pose estimation,” arXiv preprint arXiv:2311.15707 , 2023. [24] B. Calli, A. Singh, J. Bruce, A. Walsman, K. Konolige, S. Srinivasa, P. Abbeel, and A. M. Dollar, “Yale-CMU-Berkeley dataset for robotic manipulation research,” The Int. J. of Robot. Res. , vol. 36, no. 3, pp. 261–268, 2017.

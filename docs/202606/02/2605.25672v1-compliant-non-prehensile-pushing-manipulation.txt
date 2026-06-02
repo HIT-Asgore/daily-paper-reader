@@ -1,0 +1,878 @@
+Title: Compliant Non-Prehensile Pushing Manipulation
+
+URL Source: https://arxiv.org/pdf/2605.25672v1
+
+Published Time: Tue, 26 May 2026 02:36:42 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+> 1
+
+# Compliant Non-Prehensile Pushing Manipulation 
+
+Francesco Cufino 1, Mario Selvaggio 1, Fabio Amadio 2, and Fabio Ruggiero 1
+
+Abstract —In this paper, we address the challenge of per-forming non-prehensile pushing operations with a compliant robotic manipulation system. To ensure safe operations in human-populated environments, robots must comply with external phys-ical interactions and exhibit a passive behavior. To achieve this, we extend a state-of-the-art pushing model to integrate it with impedance-controlled robots. We develop a model predictive control framework built upon this model that enables performing compliant pushing through optimal modulation of the robot’s position/velocity set-point, jointly realizing the required pushing force and contact point adaptation to obtain a desired object motion. However, external interactions may induce tracking errors causing a consequent potentially indefinite increase of the pushing force. To prevent this, we integrate an energy tank passivity filter that further modulates the robot velocity set-point to guarantee passivity and avoid uncontrolled energy buildup. The proposed method has been rigorously tested in simulation and validated through experiments on two different robotic systems, demonstrating passive compliance during human–robot interactions, and assessing trajectory tracking performance and robustness to variations in the object’s physical parameters. 
+
+Index Terms —Dexterous Manipulation; Non-Prehensile push-ing; Compliance and Impedance Control; Physical Human-Robot Interaction. 
+
+I. I NTRODUCTION 
+
+# SERVICE robots are increasingly deployed in human-populated environments, where they are required to both manipulate objects and ensure safe operation under intentional or accidental physical contacts with nearby people [1]. Across a wide range of contexts, spanning from professional to domestic and personal settings, robots are expected to operate in close proximity to humans, often sharing workspaces and physically interacting with them during the execution of ma-nipulative tasks. Representative scenarios include collaborative industrial workstations, where robots and human operators jointly handle parts, tools, or mobile fixtures; assistive settings, where robots support individuals with reduced mobility by  
+
+> 1
+
+The authors are with the PRISMA Lab, department of Electrical Engi-neering and Information Technology of the University of Naples Federico II, Via Claudio, 21, Naples, 80125, Italy. Corresponding author e-mail: francesco.cufino@unina.it  
+
+> 2
+
+The author is with Inria, CNRS, Universit´ e de Lorraine, Nancy, 54000, France (work carried out while at the ABB Corporate Research Center, V¨ aster˚ as, 72226, Sweden). The research leading to these results has been supported by the DARC project, in the frame of the PRIN 2022 PNRR research program, grant number P2022MHR5C, funded by the European Union Next-Generation EU; the ARIEL project, in the frame of the PRIN 2022 research program, grant number 2022WS29WP, funded by the European Union Next-Generation EU; “Dottorati Transizione Digitale” - CUP: E66E23001030002, funded by MUR under the program PNRR - DM 118/2023 Mis.: I.3.4, funded by the European Union Next-Generation EU; the ROMOTIVE project, funded by MUR under program FIS3 - DD 1802/2024, grant number FIS-2024-05915. Manuscript received ...; revised .... 
+
+Fig. 1. Picture showing the envisioned scenario: a robot pushes a rack of test tubes in a hospital environment while a human operator safely interacts with it thanks to our proposed compliant non-prehensile pushing control framework. 
+
+repositioning objects or mobility aids; and logistics appli-cations, where robots operate in close collaboration with human workers. In all these settings, robots must combine 
+
+human-like dexterous manipulation capabilities with inher-ently compliant and passive behaviors to enable dependable physical human–robot interaction. This work focuses on non-prehensile pushing as the manipulation primitive of interest, and develops a control framework that enables service robots to perform pushing tasks in human-centered environments while ensuring safe and compliant behavior during external physical interactions. As an illustrative example, we focus on a hospital logistics task where a robot delivers a rack of test tubes by pushing it on a horizontal table while interacting with healthcare personnel who may also oppose its motion during operation (see Fig. 1). The hospital represents a suitable example of an unstructured, human-populated environment where other typically complex manipulation tasks, currently performed by skilled human operators, consist of transporting and delivering medical supplies or serving meals to patients in bed [2]. 
+
+A. Motivation and objective 
+
+In human-populated environments, robots performing ma-nipulation tasks must also guarantee safe physical interac-tion. Among the manipulation strategies relevant to these settings, non-prehensile pushing is particularly important, as it enables versatile object repositioning when grasping is impractical (e.g., in case of large or fragile items or constrained workspaces) [3], [4]. Several methods for non-prehensile push-ing manipulation have been proposed in the literature, includ-ing model-based approaches that explicitly capture contact me-chanics and constraints. Among these, the recently proposed 
+
+> arXiv:2605.25672v1 [cs.RO] 25 May 2026 2
+
+model predictive control (MPC) framework with complemen-tarity constraints in [5] enables pushing via real-time switching between sticking and sliding contact modes. However, existing pushing approaches, including [5], are typically designed for position-controlled robots and do not account for physical interaction occurring in shared human–robot environments. Extending these methods to impedance-controlled robots is a natural step towards safe coexistence, yet it raises new chal-lenges: the compliance itself may degrade pushing accuracy, and without proper safeguards, external interactions might cause uncontrolled energy buildup in the system, potentially leading to unbounded interaction forces. Motivated by these considerations, our objective is to develop a control framework for non-prehensile pushing that is suitable for impedance-controlled robots and that jointly enforces passive and compli-ant behavior with respect to external interactions, while still accomplishing the manipulation task with high precision. 
+
+B. Methodology towards the objective 
+
+In the envisioned scenario, the following two requirements must be satisfied simultaneously and in a principled way: (i)
+
+achieving the manipulation objective with high precision, and 
+
+(ii ) guaranteeing a passive and compliant response of the robot to external interactions (e.g., with humans). To address the requirement (i), we propose an extension of the non-prehensile pushing framework based on MPC with complementarity constraints presented in [5], enabling the use of an impedance-controlled robot to perform pushing manipulation tasks. Our extension generates an optimal position/velocity set-point for the impedance-controlled robot, jointly achieving the required pushing force and contact point evolution to produce the intended object motion, while preserving compliant interaction behavior. However, compliance alone does not guarantee safe interaction. This is precisely why requirement (ii ) is essential. A key challenge arises when external disturbances, such as hu-man interaction, prevent accurate tracking of the desired object motion. In such cases, naive error compensation performed by the MPC framework may produce control actions for the robot which result in potentially unbounded interaction forces and external energy exchange. To address this problem, we adopt a passivity-based perspective to ensure that the system does not generate more energy than it receives [6]. In particular, we incorporate a virtual energy tank in our control framework [7]– [9], that acts as a passivity filter: it monitors the system energy and modifies the optimal set-point when passivity is at risk of being violated. This ensures a safe interaction behavior by bounding the energy exchange. 
+
+C. Contributions 
+
+In summary, the contributions of this paper are:  
+
+> •
+
+A compliant pushing MPC formulation that enables an impedance-controlled robot to achieve the desired object motion by jointly optimizing the pushing force and con-tact point evolution.  
+
+> •
+
+An energy tank passivity filter that guarantees bounded energy exchange during non-prehensile pushing in the presence of external interactions.  
+
+> •
+
+Open-source release of the developed control frame-work at the following link: https://github.com/prisma-lab/ compliant-nonprehensile-pushing-manip. The devised framework is tested and evaluated in a physics-engine simulator and on two real robotic systems, quantifying its performance and robustness against variability of object’s physical parameters and trajectories. II. R ELATED WORKS 
+
+In non-prehensile manipulation, the object is not firmly grasped by the robot and inertial or external forces must be conveniently exploited during manipulation [10]. This allows performing human-like manipulation primitives such as throw-ing [11], catching [12], batting [13], pushing [14], rolling [15], etc. Planning and executing them in sequence allows achieving complex manipulation behaviors [16]. We focus our literature review on pushing, a simple yet highly effective non-prehensile primitive central to our envisioned case study. 
+
+A. Quasi-static pushing models 
+
+Several papers investigated the theoretical aspects of non-prehensile pushing. The first derivation of a physics-based model was shown in [17], where a mapping from the center of pressure to the direction of the object’s angular velocity was established. It was soon recognized that the pushed object could move in an unpredictable way due to unknown and variable pressure distribution between an object and its support surface [18]. Stability and controllability analyses were conducted to find pushing directions causing the object to remain stably in contact with the manipulator [19]. Quasi-static analytical models of robotic pushing provide a good and computationally efficient representation useful not only for analysis but also for planning and control. In quasi-static conditions, pushing forces can be related to object velocities via a physics-based criterion known as limit surface, defined as the bounded convex set of friction loads that the surfaces in contact might exhibit [20]. The ellipsoidal approximation of the limit surface, introduced in [21], yields a differentially flat system [22], which allows finding invertible models from force to motion [21] useful for planning [17], state estimation [18], dynamics learning [23], and feedback control [24]–[26]. 
+
+B. Switching contact modes 
+
+Although pushing trajectories can be effectively computed by constraining robot-object interactions to stick, the capability to reason across contact modes leads to more efficient motions and faster corrections [22]. There are many ongoing efforts to develop local/global motion planning frameworks that can effectively handle the complexity associated with changing frictional contact points [27]. These approaches, however, have large computational requirements associated with solving non-linear and non-convex optimization programs, unsuitable for online planning and control. Some recent approaches tend to separate the optimal contact mode sequence, computed offline, from the online search of optimal control inputs computed 3
+
+via MPC used in tandem with integer programming [26], [28]. Planar pushing allows for flexible contact adaptation by transitioning between two fundamental modes: sticking and sliding. To capture the hybrid nature of this interaction, complementarity constraints can be integrated into a MPC formulation and subsequently relaxed, circumventing the need for mixed-integer programming. This approach enables real-time mode transitions, facilitating stable pushing operations while simultaneously sliding along the object surface [5]. 
+
+C. Compliant pushing 
+
+To showcase pushing performance, all the previous works use position-controlled manipulators, which are precise but stiff and prove inadequate when unexpected interactions oc-cour. Physical constraints imposed by the dynamic contact interaction in manipulation can be handled via impedance control [29]. When this is solely used to replicate spring behavior the manipulator exhibits compliance. Nowadays, the compliant mode can be enabled as a default controller in several commercially-available robotic manipulators. This allows specifying the compliance parameters directly in the Cartesian coordinates of the operational space [30]. So far, impedance control has been used in several human-robot in-teraction scenarios, e.g., for implementing walk-through robot programming [31], displaying virtual guides to the user of a telerobotic system [32], and in a unified combination with force control to perform polishing tasks [33]. More recently, MPC started to be leveraged to synthesize impedance con-trol, handling external interactions while respecting state/input constraints [34], [35]. By augmenting the state space of the manipulator system it is also possible to feed back effort measurements useful for explicit force regulation [4], [36]. This is useful to realize a compliant behavior while performing a non-prehensile manipulation task, enabling a safe response in case of unknown external interactions with humans/obstacles. However, specifying motion set-points without jeopardizing the performance of the manipulation task requires particular attention. An effort to achieve pushing using an impedance-controlled manipulator is presented in [37], aiming to prevent unsafe behavior in the presence of uncertainties, which may arise from inaccurate knowledge of the environment (e.g., the surface supporting the object). Combining this with a dedicated gripper design, a human-inspired pushing strategy was developed, allowing the contact to be maintained more easily. However, such a control strategy has not been conceived to track a planned object trajectory thus severely limiting the manipulation performance. 
+
+D. Passivity-based control 
+
+In general, a dynamic interaction among the robot, the environment and/or the human can inject energy into the controlled robotic system. This has been observed when re-alizing a time-varying impedance [38], or in the presence of switching contacts during manipulation [39], [40]. When an external interaction hinders the robot motion during trajectory tracking, the robot controller reacts to reduce the task error generating internal energy in the system which can poten-tially grow unbounded [33]. To preserve a passive behavior, the introduction of energy flow monitoring elements in the controller, also known as energy tanks, was initially proposed in [7]. Energy tanks allow using the dissipated energy to per-form potentially non-passive interactions while still preventing unbounded internal energy generation [8], [41]. The energy tanks passivity-based control approach has been successfully used so far to realize variable impedance/admittance control in surgical robotics [32], or control of mobile robots interacting with a dynamic environment [42]. III. C ONTROL FRAMEWORK 
+
+This section presents the methodology adopted to realize the sought compliant and passive pushing behavior. Section III-A reviews the pusher–slider model—describing the planar inter-action between a point pusher and a sliding object—from [25], [26], together with the complementarity-constraints MPC for-mulation introduced in [5]. Building on these foundations, the following subsections describe the control framework that enables an impedance-controlled robot to perform pushing tasks while remaining compliant and passive with respect to external interactions. The architecture of the proposed framework is shown in Fig. 2. Our compliant pushing manip-ulation controller (within dashed rectangle) comprises three main components. First, a Compliant pushing MPC block that computes a planar velocity set-point for the robot, relying on a model that extends the one in [5] to impedance-controlled robots (Sections III-B, III-C). Second, a To Spatial Interaction 
+
+block lifts the planar velocity set-point to a spatial twist set-point 1 (Section III-D) suitable for Cartesian impedance-controlled robot manipulators (Section III-E). Third, before being supplied to the impedance controller, the twist set-point is processed by an energy tank passivity filter (Section III-F), to prevent uncontrolled internal energy generation when ex-ternal interactions occur. In addition to these fundamental components, a trajectory planner is assumed to provide the reference trajectory for the object to be pushed. As shown on the right part of Fig. 2, the framework explic-itly accounts for physical interactions between the controlled robot, the object, and a human operator, all represented as energy-exchanging ports in the block diagram. All the notation and variables labeled are introduced in the corresponding subsections. 
+
+A. Planar pushing model 
+
+Let us consider a planar pusher-slider system composed of a slider—a rectangular object, assumed to be a rigid body moving on a planar surface—and a pusher—modeled as a point that applies a contact force on the object to control its motion, as shown in Fig. 3. In this work, the pusher corresponds to the contact point between a robot manipulator       
+
+> 1Throughout this paper, a twist provides a description of the instantaneous velocity of a rigid body in terms of its linear and angular components. Similarly, a wrench is a generalized force acting on a rigid body and consists of a linear (force) and an angular component (torque) acting at a point. Depending on the context, twists and wrenches are 3D or 6D vectors [43]. 4
+> Fig. 2. Block scheme of the considered control framework. Our proposed compliant pushing manipulation controller (dashed box) is composed by a planar compliant pushing MPC and an energy tank passivity filter connected by a planar to spatial set-point transformation. The controller interacts with the impedance-controlled manipulator/object system (dot-dashed box) via a power port and simultaneously acts on the trajectory planner to passively handle external interactions with a human operator. All the blocks and symbols are explained throughout the text of Section III.
+> Fig. 3. Planar pushing model of a rectangular object pushed via a contact force. The symbols in the figure are defined throughout the text of Sec-tion III-A.
+
+and the object, denoted with xc ∈ R2. Let us define an inertial, world planar frame, with origin in o, and a body planar frame, with origin in b, attached to the object at its center of mass, as shown in Fig. 3. In this case, the system coordinates can be defined as xb = [ xb yb θb φb]T , where xb, y b ∈ R and 
+
+θb ∈ S1 are, respectively, the two position coordinates of the object body and its orientation with respect to the world frame. The coordinate φb ∈ S1 is defined as the angle between the x-axis of the body frame and the line connecting the body frame origin b to the contact point xc. The model of the considered pusher-slider system is useful to make the object position and orientation xb, y b, θ b track a reference time-varying trajectory expressed in terms of desired quantities x∗ 
+
+> b
+
+(t), y ∗ 
+
+> b
+
+(t) ∈ R and 
+
+θ∗ 
+
+> b
+
+(t) ∈ S1. Let us define the object twist in body frame 
+
+ωbb ∈ R3, as ωbb =
+
+h
+
+˙xbb ˙ybb ˙θbb
+
+iT
+
+, where ˙xbb, ˙ybb , ˙θbb ∈ R
+
+are the two linear body velocity components and the angular one, respectively, and the body wrench f bb ∈ R3 applied at the body frame origin b due to the pushing force as 
+
+f bb =
+
+h
+
+f bbx f bby τ bbz
+
+iT
+
+, where f bbx , f bby , τ bbz ∈ R are the two linear force and torque components expressed in body frame, respectively. As for previous works [5], [24]–[26], the object planar model in body frame, under quasi-static motion assumption, i.e., neglecting inertial effects, is described by the following equation 
+
+f bb = −f bs, (1) where f bs ∈ R3 is the wrench due to the sliding friction. To describe the object motion due to the pushing force, it is necessary to find a mapping between f bb and ωbb. In quasi-static conditions, these quantities can be related via a physics-based criterion known as limit surface, defined as the bounded convex set of friction loads that the object surfaces in contact with the ground might exhibit [20]. We use the ellipsoidal approximation of the limit surface introduced in [21], defined as H(f bb) = 12 f bT 
+
+> b
+
+Lf bb, with L ∈ R3×3 being a positive-definite matrix [23]. The semi-principal axes of the ellipsoidal limit surface are given by fmax and τmax computed as 
+
+fmax = μg mg, τmax = μg mg A
+
+Z
+
+> A
+
+|| rdm || dA. 
+
+In these expressions, μg > 0 is the friction coefficient between the object and the ground, m > 0 is the object mass, g > 0
+
+is the gravitational acceleration, A > 0 is the surface area of the object exposed to friction, rdm ∈ R2 is the position of an infinitesimal mass dm relative to the body frame origin b. By the principle of maximal dissipation, the object reacts to an applied wrench by moving in the direction that maximizes the dissipated power at the frictional interface [26]. This implies that the resulting object twist is directed along the perpendicular direction to the ellipsoidal limit surface, yielding the following sought mapping between f bb and ωbb
+
+ωbb = ∇H(f bb) = Lf bb. (2) To derive the complete pusher–slider model, it is now nec-essary to express the wrench f bb at the body frame origin as a function of the contact force applied by the pusher on the object. Let us define the planar force at the contact point expressed in the body frame 
+
+f bc = [ f bcx f bcy ]T , (3) where f bcx > 0, f bcy ∈ R are the two linear force components that are normal and tangential to the object edge, respectively. The contact force f bc can be transformed in the equivalent wrench exerted at the body frame origin f bb through the transpose of the contact Jacobian matrix Jc ∈ R2×3, i.e., 
+
+f bb = JTc f bc, with Jc =
+
+1 0 −ybc
+
+0 1 xbc
+
+
+
+, (4) in which xbc, y bc ∈ R are the contact point coordinates expressed in body frame. Plugging (4) into (2), the contact force f bc can be directly related to the resulting object twist 
+
+ωbb. At this point, the object twist can be expressed in the world frame through a change of coordinates performed via the rotation matrix Rb ∈ SO (3) as follows 
+
+ωb = Rbωbb, where Rb =
+
+cos θ − sin θ 0sin θ cos θ 00 0 1
+
+ . (5) 5
+
+The time derivative of the system coordinates can be described by combining (2), (4) and (5) as follows 
+
+˙xb =
+
+RbLJ Tc f bc
+
+˙φb
+
+
+
+. (6) In (6), the contact point coordinates xbc, y bc ∈ R, used in the contact Jacobian (4), are parametrized by the current φb
+
+according to the object geometry. An expression for these coordinates can be derived by assuming a rectangular object, whose body frame axes are aligned with its sides, with its origin b coincident with the geometric center of the object, as shown in Fig. 3. We further assume that the pusher only contacts the side parallel to the y-axis in the negative x half-plane. Denoting by l > 0 the length of the sides parallel to the x-axis, the contact point coordinates are computed as 
+
+xbc(φb) = xbc ybc
+
+T =
+
+
+
+− l
+
+2 − l
+
+2 tan φb
+
+T
+
+. (7) If the object geometric center does not coincide with b, an offset between the two should be accounted for in the compu-tation of xbc(φb). For objects having more general shapes, i.e., non-rectangular or non-convex, particular attention must be devoted to the choice of system coordinates as contact location may not correspond to a unique or well-defined point. In this case, one can adopt the choice reported in [44], where arc-length is used instead of φb to parametrize the contact point position along the object contour. The model in (6) describes the continuous quasi-static behavior of the pusher–slider system. However, the system also exhibits a hybrid nature, as different contact modes can occur between the pusher and the slider during manipulation. Following the formulation in [5], [28], assuming the pusher can only exert a uni-directional force on the object, i.e., 
+
+f bcx ≥ 0, three contact modes must be considered, i.e., 
+
+c1 :
+
+(
+
+˙φb = 0 ,
+
+|f bcy | ≤ μf bcx , c2 :
+
+(
+
+˙φb > 0,f bcy = μf bcx , c3 :
+
+(
+
+˙φb < 0,f bcy = −μf bcx .
+
+(8) The first contact mode c1 is a sticking contact, in which 
+
+φb is constant and the applied force belongs to the friction cone characterized by the friction coefficient μ > 0 between pusher and object. The second contact mode c2 is sliding counterclockwise, in which the applied force belongs to one edge of the friction cone while ˙φb is positive. The third contact mode c3 is sliding clockwise, in which the applied force belongs to the other edge of the friction cone and ˙φb is negative. In the state-of-the-art framework [5], the contact modes are incorporated as constraints in the MPC formulation, which optimizes f bc and ˙φb to track a desired object trajectory. From these, the reference contact point is derived using (7). With position-controlled robots, pushing can be achieved by directly tracking this reference contact point with high external dis-turbance rejection. However, position control makes the robot arbitrarily stiff to external interactions, limiting its deployment in human-populated environments. In the next subsection, we overcome this limitation by introducing our compliant non-prehensile pushing model.      
+
+> Fig. 4. Compliant pushing model of an object pushed by a spring-like force
+> fc, applied at the contact point xc. The spring end-point xdhas velocity
+> ˙xd, which mediates between different control objectives.
+
+B. Compliant pushing model 
+
+As discussed above, with position-controlled robots pushing can be achieved by direct tracking of the predicted contact point with high disturbance rejection and low positional error. In contrast, with Cartesian impedance-controlled robots, a displacement between the set-point and actual contact point needs to be imposed to generate the generalized interaction forces required by the manipulation task. For this reason, the predicted contact point xc cannot be directly used in our framework, as done in [5]. Assuming that an impedance-controlled robot behaves ac-cording to a compliant virtual spring model (neglecting inertia due to quasi-static conditions), a pushing force to realize the considered manipulation task needs to be generated by a displacement between the set point xd ∈ R2, that is the free, controlled spring end, and the contact point xc ∈ R2, that is constrained by the object edge (see Fig. 4). At the same time, to precisely steer the object along a given trajectory, also a desired sliding velocity ˙xc of the contact point along the object edge has to be generated by the motion of the free, controlled spring end. Yet, since the directly controllable spring end xd involves two variables, and the desired output involves three variables (two force components and one sliding velocity), the considered interacting system is inherently un-deractuated. This is a key limitation because it is not possible to straightforwardly impose both a pushing force and control the sliding velocity ˙xc independently by only commanding the controlled spring set-point xd. Our framework aims to produce a velocity set-point ˙xd that mediates between these two different objectives, resulting in a coupled regulation of contact force and sliding velocity. The adopted spring model assumes the force to be propor-tional to the displacement between the spring position set-point and the contact point expressed in the body frame, i.e., 
+
+f bc = K(xbd − xbc(φb)) , (9) with K ∈ R2×2 a diagonal positive-definite stiffness matrix. Computing the time derivative of (9) and isolating the set-point velocity term leads to 
+
+˙xbd = K−1 ˙f bc
+
+| {z }
+
+> Force dynamics contribution
+
++ ˙xbc(φb, ˙φb)
+
+| {z }
+
+> Sliding velocity contribution
+
+, (10) where ˙xbc(φb, ˙φb) can be computed via time derivative of (7) as 
+
+˙xbc(φb, ˙φb) =  ˙xbc ˙ybc
+
+T =
+
+
+
+0 − l
+
+2˙φb
+
+cos 2 φb
+
+T
+
+.6
+
+The quantities ˙f bc and ˙φb are both adopted as control actions optimized by the proposed compliant pushing MPC introduced in the next section. The model obtained in (10) can be physically interpreted and justified as follows. If no variation of the contact point along the edge is required, the second term 
+
+˙xbc = 0 , and the velocity set-point is influenced only by the first term related to the force dynamic evolution. Instead, when no time variation of the force is required, the first term ˙f bc = 0 ,and only the sliding contact velocity contributes to velocity set-point. If both contributions persist, they are coupled into a set-point velocity which realizes a proper trade-off between the two through the control action. 
+
+C. Compliant pushing MPC formulation 
+
+Relying on the model just derived, we can now formulate the MPC problem that realizes the sought compliant non-prehensile pushing framework. The state of the problem is defined as 
+
+x =
+
+h
+
+xTb xbT 
+
+> d
+
+f bT
+
+> c
+
+iT
+
+, (11) where x ∈ Rn, with n = 8, is composed by the object state xb, the position set-point xbd, and the desired force f bc.Notice that the desired force is included in the state because we want to optimize the force time derivative appearing in the compliant pushing model in (10). Furthermore, this allows realizing and exerting a smoother pushing force, and introduces the possibility to realize force feedback as a future development [36]. The dynamic model, resulting from the time derivative of the state in (11), is obtained by considering (6) and (10) as follows 
+
+˙x =
+
+
+
+RbLJ Tc f bc
+
+˙φb
+
+K−1 ˙f bc + ˙ xbc(φb, ˙φb)˙f bc
+
+ . (12) To formulate a physically grounded MPC based on the model in (12), the three contact modes introduced in (8) must be included as complementarity constraints [5]. To this end, two non-negative auxiliary variables ˙φ+, ˙φ− ≥ 0 are introduced, such that ˙φb is expressed as their difference, i.e., 
+
+˙φb = ˙φ+ − ˙φ−. By further defining λv = [ λ− λ+]T =
+
+h
+
+μf bcx − f bcy μf bcx + f bcy
+
+iT
+
+and ˙φv = [ ˙ φ+ ˙φ−]T , it can be shown that the following conditions simultaneously satisfy all three contact modes in (8) 
+
+(
+
+˙φ+, ˙φ−, λ −, λ + ≥ 0,
+
+λTv ˙φv + ϵ = 0 . (13) It is worth noting that in (13), ϵ ∈ R is a slack variable that relaxes the strict complementarity condition λTv ˙φv = 0 ,ensuring numerical tractability of the optimization problem and allowing the system to continuously switch from one active contact mode to another at any instant in time. The chosen control input u ∈ Rm, with m = 5 , naturally follows from this formulation, and consists of ˙φ+, ˙φ−, the pushing force derivative ˙f bc, and the slack variable ϵ, i.e., 
+
+u =
+
+h
+
+˙φ+ ˙φ− ˙f bT 
+
+> c
+
+ϵ
+
+iT
+
+. (14) The formulated MPC problem has the following form 
+
+min  
+
+> u
+
+J(u, xk) = m(x(tk + T )) + 
+
+Z tk +Ttk
+
+l(x(τ ), u(τ )) dτ 
+
+s.t. ˙x(τ ) = f (x(τ ), u(τ )) , x(tk) = xk,
+
+x(τ ) ∈ X , u(τ ) ∈ U ,
+
+and is solved over the time horizon [tk, t k + T ], with tk, T ∈
+
+R, starting from the initial condition xk ∈ Rn. Mayer and Lagrange terms are defined as 
+
+m(x(tk + T )) = xT (tk + T )W xx(tk + T ),l(x(τ ), u(τ )) = ( y∗(τ ) − y(τ )) T W y (y∗(τ ) − y(τ )) ,
+
+with y = [ xT uT ]T and y∗ = [ x∗T u∗T ]T the reference state/input trajectory, W x ∈ Rn×n and W y ∈ R(n+m)×(n+m)
+
+positive-definite diagonal weight matrices. In our implementation, the reference vector y∗ has the first three components different from zero (i.e., reference object position and orientation), and all the other ones equal to zero. In this way, the optimizer penalizes the object position and orientation error and the difference from zero for all the other variables. The weight corresponding to φb is always set to zero to let the robot freely slide on the object edge. The system dynamics ˙x(τ ) = f (x(τ ), u(τ )) is expressed by (12), and constraints x(τ ) ∈ X , u(τ ) ∈ U are taken from (13), to which lower and upper bounds on the state and control input are added. Before solving the MPC problem, xb is updated with the measured object state, while the other state variables are updated using the model prediction. For the implementation, the MPC is discretized with a sampling frequency νs ∈ R
+
+and the prediction time horizon is chosen by considering 
+
+N ∈ N samples. All the weights, sampling frequency, and time horizon chosen in our simulations and experiments in Sections IV and V are reported in Table I, II, and III. In summary, the formulated MPC receives as input the reference trajectory and the object state feedback, and com-putes time derivative of contact force and sliding velocity from which we derive the planar position/velocity set-point 
+
+xbd, ˙xbd ∈ R2 resulting from (10) specified with respect to the object frame. The velocity set-point is then transformed into the world frame. Unless otherwise specified, all the referenced quantities are expressed in the world frame. 
+
+D. From planar to spatial interaction 
+
+This subsection details how the planar MPC set-points and target forces are mapped into 3D Cartesian space to execute compliant pushing via an impedance-controlled manipulator. As detailed previously, our compliant pushing MPC strategy modulates the planar position/velocity set-point xd, ˙xd to indi-rectly generate an optimal manipulative force f c at the contact point. This force is physically realized by the impedance-controlled manipulator and transmitted to the object via a dedicated pushing tool attached to the robot flange—the standardized mounting surface at the end of a robot arm, acting as the crucial interface for attaching end-effectors (i.e., tools like grippers, welders). Figure 5 illustrates the relevant system coordinate frames and quantities used throughout the subsequent description. 7
+
+Through Cartesian impedance control, the robot frame at-tached to the flange (see Figure 5) is regulated to match a target impedance dynamics (see Sec. III-E). Imposing a compliant behavior enables the robot to generate a generalized force in response to commanded Cartesian set-point displacements. To produce these displacements, the planar position/velocity set-points—and consequently the desired contact force—must be mapped from the 2D plane to the 3D Cartesian space. These variables are expressed as spatial quantities (3D pose and twist for the set-points, and a wrench for the force) and transformed into the flange frame. Let us denote with xe = (pe, Re) ∈ SE (3) the pose composed of the position and the orientation matrix of the flange frame with origin in e and with ˙xe ∈ R6 its twist. The flange set-point, consisting of the reference pose x∗ 
+
+> e
+
+=(p∗ 
+
+> e
+
+, R∗ 
+
+> e
+
+) ∈ SE (3) and its reference twist ˙x∗ 
+
+> e
+
+∈ R6, is constructed by combining the planar position/velocity set-point in the horizontal plane generated by the MPC, a constant ref-erence height along the vertical z axis, and a fixed orientation that points the pushing tool downward. The spatial pose/twist set-point x∗ 
+
+> e
+
+, ˙x∗ 
+
+> e
+
+is provided to the manipulator impedance controller described in the next section. Dually, the planar contact force f c applied to the object is mapped to the spatial wrench f p ∈ R6 applied to the flange as 
+
+f p = AT ΣT f c, (15) where 
+
+Σ =
+
+1 0 0 0 0 00 1 0 0 0 0
+
+
+
+, A =
+
+ I3 −S(pe,c )
+
+O3 I3
+
+
+
+,
+
+and AT ∈ R6×6 transforms wrenches between the contact and the flange frames, with S(·) : R3 → R3×3 the skew-symmetric operator [45], I×, O× the identity and zero matrices of proper dimensions, respectively, and pe,c ∈ R3 the distance between the flange and the contact frames expressed in the world frame. The transformation introduced in (15) is exploited for the passivity filter introduced later in Sec. III-F. 
+
+E. Manipulator impedance control 
+
+Classical impedance control establishes a desired dynamic relationship between a robot position and the external forces it exerts on its environment. Instead of strictly controlling position or force independently, the controller makes the robot behave like a mechanical mass-spring-damper system, ensur-ing compliant and safe physical interactions. This behavior is generally achieved by choosing the joint control torques 
+
+τ m ∈ Rnq (with nq ∈ N denoting the number of joints) as follows: 
+
+τ m = g(q) + J(q)T (M k(xe)¨ x∗ 
+
+> e
+
++ Ck(xe, ˙xe) ˙ x∗ 
+
+> e
+
+++ Kd ˜xe + Dd ˙˜xe), (16) With the control commands in (16), we can obtain the follow-ing impedance dynamics of the frame attached to the flange expressed in Cartesian coordinates relative to the world frame 
+
+f e = M k(xe)¨ ˜xe + ( Ck(xe, ˙xe) + Dd) ˙ ˜xe + Kd ˜xe. (17)          
+
+> Fig. 5. Illustration of the proposed compliant non-prehensile pushing ma-nipulation system with associated 3-D reference frames. The realized planar spring-like pushing force fcis proportional to the displacement between xd
+> and xc.fpis the equivalent spatial wrench in the robot flange frame.
+
+In the equations above, q ∈ Rnq are the joint variables, 
+
+g(q) ∈ Rnq is the gravity, J(q) ∈ R6×nq is the Jacobian. The quantity ˜xe = (˜ pe, ˜ϕe) ∈ R6 is the flange frame position/orientation error, with ˜pe = p∗ 
+
+> e
+
+− pe, and ˜ϕe the roll, pitch, and yaw Euler angles extracted from the matrix 
+
+R∗ 
+
+> e
+
+RTe . The matrices M k(xe), Ck(xe, ˙xe) ∈ R6×6 are the inertia and Coriolis terms of the robot in Cartesian coordinates, respectively, defined in [6], and f e ∈ R6 is the external wrench applied at the flange. Finally, the positive-definite matrices Dd, Kd ∈ R6×6 are desired impedance damping and stiffness, respectively. Without using an external force/torque sensor, from (17) it is easy to notice that we can freely shape the desired stiffness, Kd, we can add a contribution to the damping through Dd, while we cannot change the robot’s inertia M k via the control action (16) [6]. However, in view of the quasi-static conditions, the last term of (17) is the major contributor towards the physical realizability of the external wrench f e. By matching the stiffness of the compliant pushing model introduced in Section III-B along the first two linear positional components, this term will be used to realize the contact force in (9), in view of the transformation (15). 
+
+F. Passivity filter 
+
+We now analyze the case in which an external interaction occurs during the execution of the non-prehensile pushing task. Intuitively, if such an interaction prevents accurate tracking of the object reference trajectory, the MPC would attempt to compensate for the growing tracking error by increasing the pushing force. This response is unsafe, and can be in-terpreted as a potentially unbounded generation of internal energy within the system. To study this behavior, we consider a scenario in which a human interacts with the object by applying an external wrench f h ∈ R6, while the robot is pushing the object via the pushing wrench f p. We suppose that the human wrench f h is such that it hinders the motion of the object and does not cause a contact loss between the 8 
+
+> Fig. 6. Port representation of the compliant pushing system interacting with a human.
+
+object and the pushing tool, as this could not be counteracted by the manipulator performing a non-prehensile manipulation task [3]. The considered system can be represented by the block diagram shown in Fig. 6, where the block manipulator + object describes the controlled manipulator while interacting with the object, receiving as input the human wrench f h
+
+and producing as output the twist error ˙˜xe. We investigate the passivity of the proposed system with respect to the input–output pair given by the interaction wrench and the twist error (f h, ˙˜xe). For the impedance-controlled manipulator, we consider the total external wrench in (17) decomposed in the sum of the two contributions 
+
+f e = f p + f h. (18) Let us consider a storage function V : R12 → R+
+
+representing the elastic potential energy plus the kinetic energy of the system 
+
+V = 12 ˜xTe Kd ˜xe + 12 ˙˜xTe M k(xe) ˙ ˜xe. (19) Passivity is enforced by the condition ˙V ≤ ˙˜xTe f h. Computing the time derivative of V , combining it with (17) and (18), and exploiting the skew-symmetric property of the matrix 
+
+˙M k(xe) − 2Ck(xe, ˙xe) [45], we have ˙V = ˙ ˜xTe f h + ˙ ˜xTe f p −
+
+˙˜xTe Dd ˙˜xe. The term representing the energy dissipated by the damping effect is − ˙˜xTe Dd ˙˜xe < 0, but the term ˙˜xTe f p,representing the energy exchanged across the twist error and the pushing wrench port has undefined sign, which means that energy injection can occur, causing passivity violation. To solve this problem, we make the MPC output passive through a passivity filter . This is achieved by introducing an energy tank designed to store the energy dissipated by the system, thereby enabling a less conservative control action while preserving the overall passivity of the system. To this end, an energy storing element z ∈ R is added to the state of the system, whose storage function T : R → R+ is 
+
+T (z) = 0 .5z2. An upper bound limitation ¯T > 0 for the energy stored in the tank is necessary to avoid practical instability issues [46]. The tank is singular for z = 0 , hence a lower bound Tϵ > 0 for the tank energy must also be defined. The twist set-point ˙x∗ 
+
+> e
+
+generated by the MPC is processed through the passivity filter to obtain a passive set-point ˙x∗ 
+
+> ep
+
+∈ R6. This is done to track the potentially non-passive set-point as accurately as possible until a passivity violation occurs. The energy tank dynamics is defined as 
+
+˙z = βz ˙˜xTep Dd ˙˜xep − γz ˙˜xTep f p, (20) where β, γ ∈ {0, 1} are parameters used to enforce the upper bound limitation ¯T for the energy stored in the tank.  
+
+> Fig. 7. Port representation of the compliant pushing system interacting with a human equipped with energy tank passivity filter.
+
+The first term, representing dissipated energy, replenishes the tank, whereas the second term—associated with physical interaction—may either supply or deplete energy. The core idea behind the passivity filter is the following. When the tank energy falls below the lower threshold Tϵ and the internal energy is increasing, the twist set-point no longer tracks the non-passive set-point; instead it is set to the actual twist to eliminate the twist error. This can be formalized through the following passivity filter 
+
+˙x∗ 
+
+> ep
+
+= α
+
+
+
+Λ
+
+
+
+x∗ 
+
+> e
+
+− x∗
+
+> ep
+
+
+
++ ˙ x∗
+
+> e
+
+
+
++ (1 − α) ˙ xe, (21) with 
+
+α =
+
+(
+
+0, T ≤ Tϵ ∧ ˙˜xTep f p > 0,
+
+1, otherwise , (22) and ˙˜xep = Λ
+
+
+
+x∗ 
+
+> e
+
+− x∗
+
+> ep
+
+
+
++ ˙ x∗ 
+
+> e
+
+− ˙xe. The term Λ ∈ R6×6
+
+is a positive semidefinite diagonal gain matrix (in which only the first two elements of the diagonal are non-null since the other components of the twist set-point are always zero). Let us now define the error ˜xep = x∗ 
+
+> ep
+
+−xe. Equation (21) implies that, when passivity is violated, ˙˜xep = 0 . It is worth noting that the quantity ˙˜xep is used in the switching condition in (22) instead of ˙˜xep to make the state stable with α = 0 . Indeed, 
+
+α = 0 implies ˙˜xTep f p = 0 while this would imply α = 1 if 
+
+˙˜xep was adopted in (22), instead. The system model is now represented by the equa-tions (17), (18), (20), (21), (22), where in (17) the terms 
+
+˜xe, ˙˜xe, ¨˜xe are replaced by ˜xep , ˙˜xep , ¨˜xep , respectively. The block scheme with port representation of the system equipped with the tank is shown in Fig. 7. It is now possible to introduce a new storage function, obtained through the sum of robotic system (19) and of the tank T (z). The expression of the new storage function V : R13 → R+ is 
+
+V = V + T = 12 ˜xTep Kd ˜xep + 12 ˙˜xTep M k(xe) ˙ ˜xep + 12 z2,
+
+where the error terms are substituted by their passive coun-terpart. Computing the time derivative of V and combining it with (20) leads to 
+
+˙V = ˙ ˜xTep f h + ˙ ˜xTep f p − ˙˜xTep Dd ˙˜xep + z ˙z == (1 − γ) ˙ ˜xTep f p − (1 − β) ˙ ˜xTep Dd ˙˜xep + ˙ ˜xTep f h ≤ ˙˜xTep f h.
+
+(23) Observing this storage function, to enforce upper/lower bounds of the tank energy it is sufficient to choose β and γ as 
+
+β =
+
+(
+
+1, T < ¯T , 
+
+0, otherwise , γ =
+
+(
+
+β, ˙˜xTep f p < 0,
+
+1, otherwise .
+
+The parameter β disables the dissipated energy recovery if an upper bound is reached, in order to avoid practical instability 9
+
+issues [46]. The parameter γ, like β, disables the energy recovery when ˙˜xTep f p < 0, corresponding to the condition of increasing tank energy and the upper bound reached. With these choices, considering all the possible cases, it can be deduced from (23) that the system is passive with respect to the pair ( f h, ˙˜xep ) with storage function V.It is worth noting that the introduced tank filter requires knowledge of the current pushing wrench f p. However, even when measuring the external wrench is possible via a dedi-cated force/torque sensor mounted at the flange, it is difficult to isolate f p from f e, as measurements would always contain the total wrench f p +f h. In our implementation, we use as f p the one derived in (15), in which f c is the contact force predicted by the MPC. Moreover, to avoid an indefinite growth of the tracking error during interaction, the object reference set-point extracted from the trajectory x∗ 
+
+> b
+
+(t(α)) is kept constant when 
+
+α = 0 , making the planner aware of the tank activation. IV. S IMULATION 
+
+In this section, we validate the proposed control frame-work in simulation prior to its deployment on real hardware. Simulation allows testing potentially dangerous conditions without inducing any risk to human operators or equipment. We analyze the system’s response when an external obstacle hinders the object’s motion during the pushing task along two comparative cases: one in which the passivity filter is active ( passive case ), and one in which it is removed ( non-passive case ). By considering these two cases, we aim to demonstrate two key aspects: first, that the proposed control scheme maintains high tracking performance in non-prehensile pushing tasks despite the robot operating under impedance control; and second, that the passivity filter effectively prevents unsafe force escalation by modulating the twist set-point when external interactions lead to increased tracking error and pushing force. The simulation setup, including the physics engine, the robot configuration, and the selected parameters, is described in Section IV-A, while the obtained results are reported and discussed in Section IV-B. 
+
+A. Simulation setup 
+
+The simulation has been implemented in RAISIM 2, a cross-platform multi-body physics engine for robotics and AI. RAISIM provides a realistic contact simulation, particularly beneficial for obtaining reliable results in the considered pushing task. The robot we use is the 7-DOF KUKA LBR iiwa 7, commanded in torque mode and equipped with a pushing tool consisting of a steel stick with a spherical-shaped end. Its radius, r = 0 .01 m, is treated as an offset when defining the set-point. The robot pushes through the tool a steel box whose nominal mass is m = 0 .5 kg and whose dimensions are l × l × l, with l = 0 .1 m. The box slides on a brass surface. The friction coefficients between steel-steel and steel-brass were both set to μg = 0 .2. The simulation integration step is ti = 0 .001 s. The robot control torques τ ∈ Rnq are set as τ = τ task + τ null , where τ task , τ null ∈ Rnq are,                 
+
+> 2https://raisim.com/ 0510 15
+> t[s]
+> -0.04 -0.02 0
+> E [m or rad]
+> exeye3
+> (a) 0510 15
+> t[s]
+> 0123
+> f bc [N]  fbcxfbcy
+> (b)
+> Fig. 8. Time history of the object tracking error (a) and predicted forces (b) during the passive case simulation.
+
+respectively, the task and the null space control torques. The task control torques τ task are the ones in (16) in which the reference acceleration and the Coriolis effect are neglected by virtue of the quasi-static hypotheses. The null space control torques are chosen as 
+
+τ null =
+
+
+
+Inq − J† 
+
+> M
+
+(q)J(q)
+
+
+
+(Kn(qn − q) − Dn ˙q) ,
+
+where qn ∈ Rnq is the desired nominal configuration cho-sen equal to the initial one q0 ∈ Rnq , and Kn, Dn ∈
+
+Rnq ×nq are positive-definite gain matrices. The matrix 
+
+J† 
+
+> M
+
+= M −1(q)JT (q)( J(q)M −1(q)JT (q)) −1 is the inertia-weighted right pseudo-inverse of J(q). For the MPC imple-mentation, we use the software package acados 3 which pro-vides fast and embedded solvers for nonlinear optimal control. For both cases, the selected parameters are summarized in Table I. The MPC weighting matrices were systematically and iteratively tuned across multiple simulation trials. Weights on the object tracking error were set as high as possible without jeopardizing the stability of the overall framework, while weights on other state and control variables were maintained at significantly lower magnitudes. The passivity filter gains were determined empirically, ensuring consistency with the system’s energy scale. Robot stiffness and damping parameters were selected to reflect realistic conditions in a human-centered environment, where the robot is expected to exhibit compliant behavior during physical interactions with humans. The state bounds are set to constrain the contact point to the valid region of the object surface, ensuring that it remains inside the object boundary, preventing any violation of the object-edge limits during manipulation. 
+
+B. Results 
+
+The passive case simulation considers an eight-shaped ref-erence trajectory for the object, with an obstacle spawning at 
+
+t = 3 s in front of the object and disappearing at t = 5 s. In this simulation, the interaction between the object and the obstacle happens between the time instants t = 3 .83 s and t = 5 s.                                                                                 
+
+> 3https://docs.acados.org/ 10
+> TABLE I PARAMETERS CHOICE OF THE CONTROL FRAMEWORK USED FOR SIMULATIONS .
+> MPC Robot Passivity filter
+> x0= [0 ,0.6,π
+> 4, π, −l
+> 2,0,0,0] Kd= diag {3e2 ,3e2 ,3e2 ,90 ,90 ,90 }T0= 1e −2
+> wx= [1e6 ,1e6 ,1.5e6 ,0,0,0,1e −2,0.1] Dd= diag {50 ,50 ,50 ,15 ,15 ,15 }z0=√2T0
+> wu= [1e −3,1e −3,1e −2,1,10] Kn=Inq¯T= 1e −2
+> Wx= diag {wx},Wy= diag {10 wx,wu}Dn= 0 .1InqTϵ= 5e −4
+> νs= 1e3 Hz, N= 5 qn= [0 .85 ,1.50 ,1.57 ,−1.65 ,−1.50 ,1.57 ,2.50] Λ= diag {50 ,50 ,0,0,0,0}0510 15
+
+t [s]    
+
+> 510
+> T
+> #10 !3
+> (a) 0510 15
+
+t [s]    
+
+> 00.5 1
+> ,
+> (b)
+> Fig. 9. Time history of the tank energy (a) and tank activation parameter (b) during the passive case simulation.
+
+We report the results up to t = 15 s to analyze the system behavior during and after the occurrence of the unexpected interaction; the performance along the whole trajectory is shown in the video accompanying this paper. Results are shown in Figs. 8 and 9. In all the plots, the time interval during which the external interaction occurs is highlighted with a shaded gray area. The obstacle, which hinders the motion, causes an increase of the tracking error (Fig. 8a), which consequently generates an increase of the pushing force (Fig. 8b). This causes a reduction of the tank energy (Fig. 9a) starting at time t = 3 .83 s when the collision happens, until the lower bound is reached at time t = 3 .91 s. At this point, the tank deactivates changes in the manipulator velocity set-point generated by MPC via the activation parameter α (Fig. 9b), preventing the pushing force from growing indefinitely. At time t = 5 .02 s, once the obstacle is removed, the motion is no longer hindered and the manipulator resumes its pushing movement, the tank energy starts increasing and the velocity set-point is reactivated. It is possible to observe that, in terms of absolute value, both the components of the object position tracking error do not exceed 1.5 × 10 −2 m, while the orientation error remains below 10 −2 rad. These values demonstrate the precision of our framework in executing the non-prehensile pushing task, despite the robot operating in a compliant mode. The non-passive case simulation was conducted under identical conditions, but with the passivity filter removed. Results are shown in Fig. 10. In this case, when the object’s interaction with the obstacle occurs at time t = 3 .83 s, the 0 5 10 15 
+
+t [s]      
+
+> -0.04 -0.02 00.02 0.04 0.06 0.08
+> E [m or rad]  exeye3
+> (a) 0510 15
+
+t [s]       
+
+> 0510 15
+> f bc [N]  fbcxfbcy
+> (b)
+> Fig. 10. Time history of the object tracking error (a) and predicted forces (b) during the non-passive case simulation.
+
+tracking error begins to increase (Fig. 10a) and the pushing force correspondingly rises in a potentially dangerous manner until the obstacle is removed (Fig. 10b). After the obstacle is removed, the tracking error returns to its nominal values. The sharp increase in force results from the controller’s attempt to reduce the growing tracking error. In the absence of a passivity filter, no mechanism prevents the controller from continuously increasing the pushing force. Such behavior is clearly undesirable, as physical interactions that hinder motion are not intended to be treated as disturbances to be rejected within the proposed framework. Therefore, integrating a passivity filter into non-prehensile pushing is essential to prevent unsafe system responses. V. E XPERIMENTAL EVALUATION 
+
+In this section, we experimentally validate the proposed control framework on real hardware, assessing whether the properties established in simulation—namely, safe passive in-teraction and accurate tracking under impedance control—hold under real-world conditions. To this end, the two complemen-tary aspects are investigated on two robotic platforms with significantly different hardware characteristics: the passive interaction behavior of the system during physical human intervention, tested on the ABB Mobile YuMi (Section V-A), and the tracking performance under varying task conditions, assessed on the KUKA LBR iiwa 7 (Section V-B). The use of two platforms is motivated by their performance complemen-tarity. The ABB Mobile YuMi is a platform specifically de-signed for human-centered environments, making it the natural choice for validating passive interaction behavior. However, its 11  
+
+> Fig. 11. The Mobile YuMi platform while pushing a rack of test tubes.
+
+stringent hardware limitations restrict the achievable motions to slow velocities, preventing a thorough assessment of the controller’s performance. The KUKA LBR iiwa 7, instead, is a sensitive, lightweight collaborative robot designed for delicate assembly work and human-robot collaboration, and is more suitable for pushing the controller to its performance limits. The two platforms differ both in terms of maximum payload (0.5 kg for the YuMi, 7 kg for the LBR iiwa 7) and available control modalities (current interface on the YuMi, torque/position interface on the LBR iiwa 7). Despite these differences, the proposed controllers were implemented on both platforms with minimal modifications, achieving compli-ant pushing manipulation and passive interactions using only onboard sensors. 
+
+A. ABB Mobile YuMi Experiments 
+
+Here we show the compliant interaction experiments per-formed with the ABB Mobile YuMi robot. The goal of these experiments is to validate the proposed framework in guaranteeing a passive behavior when an external operator physically interacts with the system during the pushing task. 
+
+A1) Experimental setup: The ABB Mobile Yumi (Fig. 11) is a robotic prototype constituted by a YuMi robot (a platform composed by two 7-DOF manipulators) mounted on top of an omnidirectional mobile base. The standard interface of the YuMi does not offer the possibility to explicitly command joints’ torques, nor it is equipped with torque sensors. To circumvent this limitation, we directly control the motors’ currents to nominally set the desired torque references. Such interface runs at 250 Hz. Additionally, our setup includes an Azure Kinect RGB-D camera operating at 15 Hz, positioned to frame the robot workspace and used to estimate object poses via AprilTags. This solution was preferred over an external motion tracking system to demonstrate the robustness of our framework to the limited frame rate, errors, and noise associated with onboard visual perception. During the pushing task, the orientation of the pushing tool about the vertical axis is regulated through a PD controller to keep alignment with the object. For this experiment, we envision a scenario in which a medical professional safely interacts with a robotic assistant which pushes a rack containing test tubes for medical analysis along a desired trajectory. The rack, including all the tubes, has mass m = 0 .474 kg and dimensions l1 × l2 × l3, with 
+
+l1 = 0 .21 m, l2 = 0 .09 m, l3 = 0 .10 m. To perform this task, we use the robot’s right arm, equipped with a custom 3D-printed cylindrical pushing tool (with approximate height and diameter of 0.094 m and 0.015 m, respectively). Throughout the task execution, the pushing-tool pose set-points are updated at 15 Hz to match the working frequency of the vision system. The controller parameters reported in Table II were selected following the same rationale adopted for the simulations. However, due to the inherent difference between simulated and real-world conditions, the MPC weights used in simulation (Table I) and those employed in the real experiments (Table II) differ substantially. In both cases, the object tracking error is penalized significantly more heavily than the remaining state and control variables. In simulation, this weight can be increased substantially, as the controller operates at 1 kHz, enabling more aggressive tuning. In contrast, real experi-ments are constrained by the camera working frequency of 
+
+15 Hz, requiring the weights to be scaled accordingly. Given the two-order-of-magnitude difference in control frequency, a corresponding disparity in the selected weights is expected. The energy tank bounds also differ between the simulation setup and the real experiments. Selecting appropriate bounds is intrinsically challenging and typically requires empirical tuning. The chosen criterion is to keep the passivity filter inactive under nominal frictional forces, while ensuring rapid discharge during unexpected external interactions. Regarding MPC initialization, the object coordinates in the world frame are biased using the measured initial position, such that the reference trajectory is translated to match the actual starting configuration. The friction coefficients between the pushing tool (plastic) and the object (plastic), and between the object and the desk surface (plastic), were both set to 0.2.
+
+A2) Results: Two experiments are carried out with the energy tank passivity filter enabled, considering two different reference trajectories for the object: a linear trajectory and a 
+
+curvilinear trajectory .The linear trajectory experiment results are shown in Fig. 12, 13. The system maintains high-precision tracking under compliant pushing robot control with a positional error magnitude below 2 × 10 −3 m, and the orientation error below 
+
+6 × 10 −2 rad. During this experiment, the human hinders the object motion through physical interaction between t = 4 .27 sand t = 5 .40 s. When the interaction begins, the tank energy decreases faster until it reaches the lower bound at t = 4 .47 sand the activation parameter disables the control action. After the human releases the object, at t = 5.47 s, the robot resumes motion, the energy tank recharges, and the task can be completed. The curvilinear trajectory experiment results are reported in Fig. 14, 15. The object tracking error remains on the same order of magnitude as in the previous case (positional error magnitude below 3.5×10 −3 m, and the orientation error below 
+
+6×10 −2 rad). In this case, the human hinders the object motion 12                                                                          
+
+> TABLE II PARAMETERS CHOICE OF THE CONTROL FRAMEWORK USED FOR EXPERIMENTS WITH THE ABB M OBILE YUMI .
+> MPC Robot Passivity filter
+> x0= [0 ,0,0, π, −l1
+> 2,0,0,0] Kd= diag {3e2 ,3e2 ,3e2 ,90 ,90 ,90 }T0= 5e −3
+> wx= [3e2 ,3e2 ,3e2 ,0,0,0,0,1e −4] Dd= diag {50 ,50 ,50 ,15 ,15 ,15 }z0=√2T0
+> wu= [0 .1,0.1,0.1,0,0.1] -¯T= 6e −3
+> Wx= diag {wx},Wy= diag {10 wx,wu}-Tϵ= 1 .5e −3
+> νs= 15 Hz, N= 3 -Λ= diag {50 ,50 ,0,0,0,0}0246810
+
+t [s]       
+
+> 0.74 0.745 0.75
+> xb [m]
+> xbx$
+> b
+> (a) 0246810
+
+t [s]       
+
+> -0.25 -0.2 -0.15 -0.1
+> yb [m]  yby$
+> b
+> (b) 0246810
+
+t [s]       
+
+> 1.54 1.56 1.58 1.6 1.62 1.64
+> 3b [rad]  3b3$
+> b
+> (c) 0246810
+
+t [s]      
+
+> -0.06 -0.04 -0.02 00.02 0.04
+> E [m or rad]
+> exeye3
+> (d)
+> Fig. 12. Time history of the desired and measured object position (a),(b), orientation (c), tracking error (d) during the linear trajectory experiment.
+
+between t = 8 .13 s and t = 10 .06 s. Likewise, the tank energy decreases until it reaches its lower bound at t = 8 .60 s and the activation parameter disables the control action. Once the object motion is no longer hindered, at t = 10 .13 s, the tank recharges storing dissipated energy and the robot can resume the task. In both cases, the passive behavior with respect to the external interaction has been demonstrated. 
+
+B. KUKA LBR iiwa Experiments 
+
+Here we show a quantitative experimental analysis per-formed to assess the tracking and the robustness capabilities of the proposed controller when pushing objects of different masses, on different surfaces, along different paths, with dif-ferent velocity profiles. Repeated experiments were performed under a variety of possible conditions to better demonstrate the performance of the presented architecture. 0 2 4 6 8 10 
+
+t [s]      
+
+> 246
+> T
+> #10 !3
+> (a) 0246810
+
+t [s]    
+
+> 00.5 1
+> ,
+> (b)
+> Fig. 13. Time history of the tank energy (a) and tank activation parameter (b) during the linear trajectory experiment.
+
+B1) Experimental Setup: The KUKA LBR iiwa 7 is a 7-DOF lightweight collaborative robot designed for precise assembly tasks to be performed alongside humans. The Fast Robot Interface (FRI) allows commanding the robot by send-ing joint torque/position commands rates up to 1-KHz. The control framework is developed exploiting the ROS 2 LBR-Stack 4 wrapping the FRI [47]. We use the built-in Cartesian Impedance Control Mode , which allows the user to easily set the robot stiffness and damping. Our setup comprises an in-hand Intel RealSense depth camera D435i, operating at 30 Hz, to track the object’s pose via AprilTags. The robot is equipped with a custom pushing tool providing a camera support and an aluminium stick with a spherical-shaped end of radius 
+
+r = 0 .0125 m. The MPC problem is solved at 25 Hz, matching the update rate of the camera. Between consecutive MPC solutions, the generated set-points are linearly interpolated at 
+
+200 Hz to ensure smooth robot motion. The FRI interface commands the robot at the same rate of 200 Hz. As in [5], the MPC comprises N = 25 samples in the prediction horizon. We solve the OCP in 4.10 ms (mean value) ±1.80 ms (std), which is suitable for our application. The experiments have been executed running the controller on a machine with x86-64 architecture, powered by an AMD Ryzen 5 5600H processor with Radeon Graphics running at 1300 MHz, and operating on Ubuntu 20.04.6 LTS. In this session of experiments, we push a rack containing test tubes of the same dimensions of those used previously. Also in this case, the orientation of the                                          
+
+> 4https://github.com/lbr-stack/lbr fri ros2 stack 13 0510 15 20
+> t[s]
+> 0.65 0.7 0.75
+> xb [m]
+> xbx$
+> b
+> (a) 0510 15 20
+> t[s]
+> -0.25 -0.2 -0.15 -0.1
+> yb [m]  yby$
+> b
+> (b) 0510 15 20
+> t[s]
+> 1.6 1.8 22.2
+> 3b [rad]  3b3$
+> b
+> (c) 0510 15 20
+> t[s]
+> -0.05 00.05
+> E [m or rad]
+> exeye3
+> (d)
+> Fig. 14. Time history of the desired and measured object position (a),(b), orientation (c), tracking error (d) during the curvilinear trajectory experiment. 0510 15 20
+> t[s]
+> 246
+> T
+> #10 !3
+> (a) 0510 15 20
+> t[s]
+> 00.5 1
+> ,
+> (b)
+> Fig. 15. Time history of the tank energy (a) and tank activation parameter (b) during the curvilinear trajectory experiment.
+
+pushing tool about the vertical axis is regulated through a PD controller to keep alignment with the object. The controller parameters are reported in Table III. These values were obtained using the same tuning procedure adopted in the previous experiments, namely iterative adjustments aimed at balancing performance and stability. Since these trials focus exclusively on performance evaluation and do not in-volve physical interaction scenarios, passivity filter parameters are not considered. In this setup, the damping parameters in Table III are normalized; the friction coefficient between the end-effector (plastic) and the object (plastic) is 0.2, whereas that between the object and the aluminum table is 0.35 .
+
+B2) Results: The experimental campaign was conducted considering the following factors (independent variables) and their respective levels: 
+
+μ: Linear object-table friction coefficient: three levels cor-responding to aluminum ( μ1 = 0 .35 ), nylon ( μ2 = 0 .28 )and steel ( μ3 = 0 .33 ) tables. 
+
+m: Object mass: three levels denoting the rack condition 
+
+empty (m1 = 0 .1649 kg), half-full (m2 = 0 .2843 kg), and full (m3 = 0 .4097 kg) of test tubes, respectively. 
+
+s: Object desired path: two levels corresponding to linear (s1) and curvilinear ( s2) paths. 
+
+v: Desired trajectory mean velocity: four levels chosen as 
+
+v1 = 0 .0313 m/s, v2 = 0 .0391 m/s, v3 = 0 .0521 m/s, 
+
+v4 = 0 .0782 m/s. The values of v were selected by performing experiments at increasing speeds up to 0.078 m/s, pushing the controller to its performance and real-world applicability limits. Given the envisioned task/scenario, we considered the performance as acceptable if the object positional and rotational root mean square errors (RMSE) are below 0.015 m and 0.2 rad, re-spectively, in the nominal working conditions. In experiments conducted at increasing mean velocities, we observed that at 0.078 m/s the adopted performance bounds are no longer satisfied. Three experiments were run for each combination of the factors’ levels leading to a total of 216 tests. In all the considered cases, the controller parameters are kept at their nominal level, to demonstrate the robustness of the method with respect to environmental uncertainty. We use the collected data to analyze two object trajectory tracking performance metrics of the proposed controller, i.e., the root mean square positional ( ¯Ep) and rotational ( ¯Eθ ) errors. Box plots showing the aggregated data are shown in Fig. 16, where the mean (dashed line) and the median (continuous line) are also re-ported. The Mann–Whitney U test was used to test whether the changes in the metrics, due to changes in the factors, are statistically significant. The test was chosen due to non-Gaussian distribution of the data according to the D’Agostino and Pearson’s [48], [49] test that combines skew and kurtosis to produce an omnibus test of normality. One, two, three asterisks denote significance levels corresponding to the p-value p < 0.05 , 0.01 , 0.001 , respectively. As can be noted, changes in the friction coefficient μ
+
+do not cause a statistically significant change in the object positioning error ¯Ep, while for the object rotational error ¯Eθ
+
+we observe a statistically significant change between μ2 and 
+
+μ3 (p < 0.001 ) and between μ1 and μ3 (p < 0.01 ). This is expected and reflects greater difficulties of our controller to precisely steer the object to the desired value in case of steel table, which exhibits greater rotational friction compared to the others. Nevertheless, the RMSE is contained and satisfies the application requirements. Changes in the mass of the object do not always lead to statistically significant changes in the considered metrics, showing the robustness of our method with respect to changes 14                                                                 
+
+> TABLE III PARAMETERS CHOICE OF THE CONTROL FRAMEWORK USED FOR EXPERIMENTS WITH THE KUKA LBR IIWA 7.
+> MPC Robot
+> x0= [0 ,0,0, π, −l1
+> 2,0,0,0] Kd= diag {3e2 ,3e2 ,3e2 ,3e2 ,3e2 ,3e2 }
+> wx= [1e2 ,1e2 ,1e2 ,0,0,0,1e −4,1e −4] Dd= diag {0.7,0.7,0.7,0.7,0.7,0.7}
+> wu= [0 .1,0.1,0.5,0.5,1e −2] -
+> Wx= diag {wx},Wy= diag {10 wx,wu}-
+> νs= 25 Hz, N= 25 -
+> Fig. 16. Box plots showing the aggregated results of the experimental campaign conducted to assess the robustness of the method. ¯Epand ¯Eθdenote positional and rotational RMSE. Factors are: object-table friction μ, object mass m, desired path s, trajectory mean velocity v. One (*), two (**), three (***) asterisks denote significance levels with p-value p < 0.05 ,0.01 ,0.001 , respectively. From left to right, it can be noted that object positional error is largely unaffected by friction, while rotational error increases on the high-friction surface. Object mass has minimal influence, except for a slight positional improvement at higher mass. Curvilinear paths degrade tracking accuracy and, finally, higher desired velocities lead to increased errors.
+
+in the envisioned working conditions (rack empty, half-full, and full). A statistically significant change is observed between 
+
+m2 and m3 for the metric ¯Ep (p < 0.05 ), with greater mass leading to less positional error. In contrast, changing the desired path for the object leads to a statistically significant difference in the tracking performance along both metrics ( p < 0.001 ), with the curvilinear path exhibiting higher errors. This denotes a strong dependence of the considered RMSEs on the choice of the pushing path: in our experience, choosing a feasible path is essential to mitigate the error and maintain a high-level task performance. Ultimately, with a few exceptions, the tracking performance is in different measures significantly affected by the object desired mean velocity, with higher velocities leading in general to more degraded performance. This was also intuitively expected. However, in view of the considered collaborative application scenario, we expect our method to operate in slow velocity conditions. In summary, with a general mean positional error of 
+
+1.65 × 10 −2 m and mean rotational error of 0.10 rad in all the perturbed cases, our method exhibits performance comparable to recent pushing approaches (e.g., [44]) where RMS positional errors of 5.2 × 10 −3 m (mean x-axis and y-axis) and rotational error of 0.21 rad are reported, despite the re-created uncertainty of the environment. The slightly higher positional error achieved in our experimental setup is mainly attributable to the use of the impedance control mode, whose trajectory tracking capability is more sensitive to disturbances (e.g. static and non-homogeneous friction). VI. D ISCUSSION AND FUTURE DIRECTIONS 
+
+Our control framework combines two key components: an extended compliant manipulation model that enables model-predictive non-prehensile pushing with an impedance-controlled robot, and an energy tank passivity filter that guarantees system passivity. Several design choices and future developments are discussed here. We discuss possible modifi-cations of the object interaction model, the inclusion of force measurements, and tuning aspects for both the controller and the passivity filter. 
+
+A. Dynamic interaction model for compliant pushing 
+
+The proposed MPC leverages a compliant pushing model to indirectly realize a predicted force, via a spring posi-tion/velocity set-point and contact point adaptation. Given the envisioned quasi-static conditions, featuring low velocities and negligible accelerations, the limit surface maps this force into a resulting object velocity. In more dynamic conditions, the use of a spring-damper model for the force could, instead, yield an acceleration set-point (influenced by the force derivative and the second time derivative of φb), which would become the 15 
+
+control input in (14), requiring an extension of the state in (11) that should include velocity set-point and φb time derivative. This may lead to a second-order dynamic pusher–slider model suitable for pushing tasks involving non-negligible acceler-ations, albeit at the cost of increased MPC complexity and a consequently more delicate controller tuning procedure. We deliberately omitted this aspect in our controller design, adopting a trade-off that is central to our MPC framework: the model should not be more complex than required by the task. In our quasi-static scenario, the use of the simpler model is justified and is shown to provide satisfactorily robust perfor-mance under parameter variability. As future work, it would be interesting to address the problem of faster, more dynamic pushing tasks, also considering safe physical interaction in such regimes, as well as generalizing or quantifying robustness to object shape variation [44]. 
+
+B. Force feedback 
+
+In both simulations and experiments conducted using our MPC framework, force updates rely on predictions, which proved adequate for the considered task. Since force deriva-tives act as control inputs while force itself is included in the system state, it could alternatively be updated using measured force values, provided that a force sensor is available. This is not trivial, as the quasi-static pusher–slider model uses the mapping in (2), which does not uniquely determine the force intensity for a given velocity. Improved accuracy could be obtained via online identification of the limit surface, at the cost of a time-varying model which may potentially impact the MPC convergence. In our current design, the predicted force is also em-ployed in the energy tank passivity filter in (21). Replacing it with measured force feedback would require separating the robot-applied component from external interactions (see Section III-F). In some cases, appropriately placed force or tactile sensors at the object interface may provide this informa-tion in isolation. With suitable modifications, our framework could therefore be extended to incorporate measured forces, potentially improving both control performance and safety through real-time force feedback. VII. C ONCLUSION 
+
+We proposed an MPC framework for non-prehensile push-ing that ensures passive and compliant behavior of the robot with respect to external interactions. Our extension of the state-of-the-art optimal control formulation in [5] enabled an impedance-controlled robot to achieve a desired object motion by jointly optimizing the pushing force and contact point evolution through the robot’s position and velocity set-point. An energy tank passivity filter was introduced to prevent loss of passivity when a human hinders the manipulative motion, a condition that would otherwise cause the controller to increase the pushing force. The proposed framework enables the safe execution of non-prehensile pushing tasks in human-centered environments, by explicitly handling external interac-tions, whether intentional or accidental. Results obtained from physics-based simulations and real-world experiments support these claims and further demonstrate the robustness of the controller under varying operating conditions. The significance of these findings has been discussed, and potential directions for future extensions have been outlined. ACKNOWLEDGMENTS 
+
+The authors wish to express their sincere gratitude to Prof. Luigi Villani for his thorough review and valuable remarks, which played an important role in improving the clarity and quality of this manuscript. REFERENCES [1] I. Lee, “Service robots: A systematic literature review,” Electronics ,vol. 10, p. 2658, 2021. [2] J. Holland, L. Kingston, C. McCarthy, E. Armstrong, P. O’Dwyer, F. Merz, and M. McConnell, “Service robots in the healthcare sector,”                                                          
+
+> Robotics , vol. 10, no. 1, p. 47, 2021. [3] F. Ruggiero, V. Lippiello, and B. Siciliano, “Nonprehensile dynamic manipulation: A survey,” IEEE Robot. Autom. Lett. , vol. 3, no. 3, pp. 1711–1718, 2018. [4] M. Selvaggio, A. Garg, F. Ruggiero, G. Oriolo, and B. Siciliano, “Non-prehensile object transportation via model predictive non-sliding manipulation control,” IEEE Trans. Control Syst. Technol. , vol. 31, no. 5, pp. 2231–2244, 2023. [5] J. Moura, T. Stouraitis, and S. Vijayakumar, “Non-prehensile planar ma-nipulation via trajectory optimization with complementarity constraints,” in 2022 Int. Conf. Robot. Autom. , pp. 970–976, 2022. [6] C. Ott., Cartesian Impedance Control of Redundant and Flexible- Joint Robots , vol. 49. Springer Tracts in Advanced Robotics (STAR), 2008. [7] V. Duindam and S. Stramigioli, “Port-based asymptotic curve tracking for mechanical systems,” European Journal of Control , vol. 10, no. 5, pp. 411–420, 2004. [8] C. Secchi, S. Stramigioli, and C. Fantuzzi, “Position drift compensation in port-hamiltonian based telemanipulation,” Proc. IEEE/RSJ Int. Conf. Intell. Rob. Syst. , pp. 4211–4216, 2006. [9] F. Ferraguti, C. Secchi, and C. Fantuzzi, “A tank-based approach to impedance control with variable stiffness,” in Proc. IEEE Int. Conf. Robot. Autom. , pp. 4948–4953, 2013. [10] M. T. Mason and K. M. Lynch, “Dynamic manipulation,” Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. , vol. 1, pp. 152–159, 1993. [11] A. Satici, F. Ruggiero, V. Lippiello, and B. Siciliano, “Coordinate-free framework for robotic pizza tossing and catching,” Proc. IEEE Int. Conf. Robot. Autom. , pp. 3932–3939, 2016. [12] M. M. Schill, F. Gruber, and M. Buss, “Quasi-direct nonprehensile catching with uncertain object states,” Proc. IEEE Int. Conf. Robot. Autom. , pp. 2468–2474, 2015. [13] C. Liu, Y. Hayakawa, and A. Nakashima, “Racket control and its experiments for robot playing table tennis,” Proc. IEEE Int. Conf. Robot. Biomim. , pp. 241–246, 2012. [14] F. Bertoncelli, F. Ruggiero, and L. Sabattini, “Linear time-varying mpc for nonprehensile object manipulation with a nonholonomic mobile robot,” Proc. IEEE Int. Conf. Robot. Autom. , pp. 11032–11038, 2020. [15] D. Serra, F. Ruggiero, A. Donaire, L. Buonocore, V. Lippiello, and B. Siciliano, “Control of nonprehensile planar rolling manipulation: A passivity-based approach,” IEEE Trans. Robot. , vol. 35, no. 2, pp. 317– 329, 2019. [16] A. Bicchi, D. Prattichizzo, and H. Christensen, Control of nonprehensile manipulation,” in Control Problems in Robotics , vol. 4. Springer, 2003. [17] M. T. Mason, “Mechanics and planning of manipulator pushing opera-tions,” Int. J. Robotics Res. , vol. 5, no. 3, pp. 53–71, 1986. [18] K.-T. Yu, M. Bauz´ a, N. Fazeli, and A. Rodriguez, “More than amillion ways to be pushed. a high-fidelity experimental dataset of planar pushing,” Proc. IEEE/RSJ Int. Conf. Intell. Rob. Syst. , pp. 30–37, 2016. [19] K. Lynch and M. Mason, “Stable pushing: Mechanics, controllability, and planning,” Int. J. Robot. Res. , vol. 15, no. 6, pp. 533–556, 1996. [20] S. Goyal, A. Ruina, and J. Papadopoulos, “Limit surface and moment function descriptions of planar sliding,” IEEE Int. Conf. Robot. Autom. ,pp. 794–799, 1989. [21] S. Lee and M. Cutkosky, “Fixture planning with friction,” J. Manuf. Sci. Eng. , vol. 113, no. 3, pp. 320–327, 1991. 16
+
+[22] J. Zhou, Y. Hou, and M. T. Mason, “Pushing revisited: Differential flatness, trajectory planning, and stabilization,” Int. J. Robotics Res. ,vol. 38, no. 12-13, pp. 1477–1489, 2019. [23] J. Zhou, R. Paolini, J. A. Bagnell, and M. T. Mason, “A convex polynomial force-motion model for planar sliding: Identification and application,” IEEE Int. Conf. Robot. Autom. , pp. 372–377, 2016. [24] K. Lynch, “The mechanics of fine manipulation by pushing,” Proc. IEEE Int. Conf. Robot. Autom. , pp. 2269–2276, 1992. [25] F. R. Hogan and A. Rodriguez, “Feedback control of the pusher slider system: A story of hybrid and underactuated contact dynamics,” 
+
+Algorithmic Foundations of Robotics XII , pp. 800–815, 2020. [26] F. R. Hogan and A. Rodriguez, “Reactive planar non-prehensile manip-ulation with hybrid model predictive control,” International Journal of Robotics Research , vol. 39, no. 7, pp. 755–773, 2020. [27] B. P. Graesdal, S. Y. C. Chia, T. Marcucci, S. Morozov, A. Amice, P. A. Parrilo, and R. Tedrake, “Towards tight convex relaxations for contact-rich manipulation,” 2024. [28] F. R. Hogan, E. R. Grau, and A. Rodriguez, “Reactive planar manipu-lation with convex hybrid mpc,” in 2018 Proc. IEEE Int. Conf. Robot. Autom. , pp. 247–253, 2018. [29] N. Hogan, “Impedance control: An approach to manipulation,” in 1984 American Control Conference , pp. 304–313, 1984. [30] O. Khatib, “A unified approach for motion and force control of robot manipulators: The operational space formulation,” IEEE Journal on Robotics and Automation , vol. 3, no. 1, pp. 43–53, 1987. [31] F. Ferraguti, C. T. Landi, C. Secchi, C. Fantuzzi, M. Nolli, and M. Pesamosca, “Walk-through programming for industrial applications,” 
+
+Procedia Manufacturing , vol. 11, pp. 31–38, 2017. [32] M. Selvaggio, G. A. Fontanelli, F. Ficuciello, L. Villani, and B. Sicil-iano, “Passive virtual fixtures adaptation in minimally invasive robotic surgery,” IEEE Robot. Autom. Lett. , vol. 3, no. 4, pp. 3129–3136, 2018. [33] S. Haddadin and E. Shahriari, “Unified force-impedance control,” Int. J. Robot. Res. , vol. 43, no. 13, pp. 2112–2141, 2024. [34] M. Bednarczyk, H. Omran, and B. Bayle, “Model predictive impedance control,” in 2020 Proc. IEEE Int. Conf. Robot. Autom. , pp. 4702–4708, 2020. [35] T. Gold, A. V¨ olz, and K. Graichen, “Model predictive interaction control for robotic manipulation tasks,” IEEE Trans. Robot. , vol. 39, no. 1, pp. 76–89, 2023. [36] S. Kleff, E. Dantec, G. Saurel, N. Mansard, and L. Righetti, “Introducing force feedback in model predictive control,” in Proc. IEEE/RSJ Int. Conf. Intell. Rob. Syst. , pp. 13379–13385, 2022. [37] P. Bhat, M. Nieuwenhuisen, and D. Schulz, “Human-inspired non-prehensile manipulation strategies: Design, implementation, and eval-uation,” SN Computer Science , vol. 5, no. 70, 2024. [38] F. Ferraguti, C. T. Landi, L. Sabattini, M. Bonf` e, C. Fantuzzi, and C. Secchi, “A variable admittance control strategy for stable physical human-robot interaction,” Int. J. Robotics Res. , vol. 38, no. 6, pp. 747– 765, 2019. [39] E. Shahriari, A. Kramberger, A. Gams, A. Ude, and S. Haddadin, “Adapting to contacts: Energy tanks and task energy for passivity-based dynamic movement primitives,” in Proc. IEEE-RAS 17th Int. Conf. Humanoid Robotics , pp. 136–142, 2017. [40] E. Shahriari, L. Johannsmeier, E. Jensen, and S. Haddadin, “Power flow regulation, adaptation, and learning for intrinsically robust virtual energy tanks,” IEEE Robot. Autom. Lett. , vol. 5, no. 1, pp. 211–218, 2020. [41] A. Dietrich, X. Wu, K. Bussmann, A. A.-S. C. Ott, and S. Stramigioli, “Passive hierarchical impedance control via energy tanks,” IEEE Robot. Autom. Lett. , vol. 2, no. 2, pp. 522–529, 2017. [42] M. Brunner, L. Giacomini, R. Siegwart, and M. Tognon, “Energy tank-based policies for robust aerial physical interaction with moving objects,” 
+
+Proc. IEEE Int. Conf. Robot. Autom. , pp. 2054–2060, 2022. [43] R. M. Murray, S. S. Sastry, and L. Zexiang, A Mathematical Introduction to Robotic Manipulation . CRC Press, Inc., 1st ed., 1994. [44] S. Federico, M. Costanzo, M. De Simone, and C. Natale, “Nonlinear model predictive control for robotic pushing of planar objects with generic shape,” IEEE Robot. Autom. Lett. , vol. 10, no. 3, pp. 3006– 3013, 2025. [45] B. Siciliano, L. Sciavicco, L. Villani, and G. Oriolo, Robotics - Mod-elling, Planning and Control . Springer, 2009. [46] D. Lee and K. Huang, “Passive-set-position-modulation framework for interactive robotic systems,” IEEE Trans. Robot. , vol. 26, no. 2, pp. 354– 369, 2010. [47] M. Huber, C. E. Mower, S. Ourselin, T. Vercauteren, and C. Bergeles, “Lbr-stack: Ros 2 and python integration of kuka fri for med and iiwa robots,” Journal of Open Source Software , vol. 9, no. 103, p. 6138, 2024. [48] R. D’Agostino, “An omnibus test of normality for moderate and large sample sizes,” Biometrika , vol. 58, no. 34, pp. 1–348, 1971. [49] R. D’agostino and E. S. Pearson, “Tests for departure from normality. empirical results for the distributions of b2 and √b1,” Biometrika ,vol. 60, no. 3, pp. 613–622, 1973. 
+
+Francesco Cufino is a PhD student with the de-partment of Electrical Engineering and Information Technology of the University of Naples Federico II, Naples, Italy. From the same institution, he received the bachelor’s degree in Automation Engineering in 2020, and the master’s degree in Automation Engineering and Robotics in 2023. His research interests are focused on control strategies for robotic manipulation. 
+
+Mario Selvaggio (S’16, M’20) is a Tenure Track Researcher with the Department of Electrical En-gineering and Information Technology, University of Naples Federico II, Naples, Italy. He received the bachelor’s and master’s degrees in mechanical engineering in 2013 and 2015, and the Ph.D. in information technology and electrical engineering in 2020, all from the same institution. From 2020 to 2023 he was a Postdoctoral Researcher. He serves as Associate Editor for the IEEE Transactions on Robotics, the IEEE/ASME Transactions on Mecha-tronics, and the IEEE Robotics and Automation Letters. He has authored more than 50 peer-reviewed journal and conference papers and book chapters. 
+
+Fabio Amadio is a Postdoctoral Researcher at the Inria Centre at Universit´ e de Lorraine, Nancy, France. He received the M.Sc. degree in automatic control and robotics from the Technical University of Catalonia (UPC), Barcelona, Spain, in 2018, and the M.Sc. degree in automation engineering and the Ph.D. degree in information engineering from the University of Padua, Padua, Italy, in 2018 and 2022, respectively. He was a Research Fellow with Leonardo Labs and the Istituto Italiano di Tec-nologia, Genoa, Italy (2021–2023) and a Research Scientist with ABB Corporate Research, V¨ aster˚ as, Sweden (2023–2024). His research interests are focused on learning-based methods for robot control. 
+
+Fabio Ruggiero (S’07–M’10–SM’19) is Associate Professor of Automatic Control and Robotics in the Department of Electrical Engineering and Informa-tion Technology at University of Naples Federico II, where he is responsible for the DynLeg (Dynamic manipulation and Legged robotics) research area. He received the M.Sc. degree in Automation Engineer-ing in 2007 and he got the Ph.D. degree in 2010. His research interests are focused on model-based control design of robotic systems. In particular, his studies are specialized on control strategies for dexterous, dual-hand and nonprehensile robotic manipulation, aerial robots, aerial manipulators, and legged robots. He is Chair of the IEEE Italy RAS Chapter. He has co-authored more than 110 among journal papers, book chapters, and conference papers.

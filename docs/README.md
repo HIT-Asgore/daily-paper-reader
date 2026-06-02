@@ -6,64 +6,58 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-01
-- 运行时间：2026-06-01 22:16:57 UTC
+- 最新运行日期：2026-06-02
+- 运行时间：2026-06-02 23:08:46 UTC
 - 运行状态：成功
-- 本次总论文数：14
-- 精读区：5
+- 本次总论文数：12
+- 精读区：3
 - 速读区：9
 
 ### 今日简报（AI）
-1) 今日推荐14篇论文，两篇精读高分聚焦扩散策略优化与GPU加速机器人学习。
-2) 最值得关注世界模型强化学习中的扩散策略优化（DPO）与PyTorch可微刚体动力学。
-3) 建议进一步探索样本高效的RL微调（EXPO-FT）及具身智能的仿真学习可靠性（MiraBench）。
-- 详情：[/202606/01/README](/202606/01/README)
+今日推荐12篇论文，精读聚焦强化学习安全与生成策略，速读涵盖机器人灵巧操作与世界模型。
+最值得关注方向：基于Koopman控制屏障的安全强化学习，以及拉格朗日扩散引导的潜在生成策略。
+建议优先精读两篇8分论文，并速读世界模型及稀疏关键帧插值相关研究。
+- 详情：[/202606/02/README](/202606/02/README)
 
 ### 精读区论文标签
-1. [Scaling World-Model Reinforcement Learning Through Diffusion Policy Optimization](/202606/01/2605.26282v1-scaling-world-model-reinforcement-learning-through-diffusion-policy-optimization)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：基于世界模型的模型基强化学习用于扩展
-2. [Batched Differentiable Rigid Body Dynamics in PyTorch for GPU-Accelerated Robot Learning](/202606/01/2605.31481v1-batched-differentiable-rigid-body-dynamics-in-pytorch-for-gpu-accelerated-robot-learning)  
-   标签：评分：9.0/10、query:diff-physics
-   evidence：可微刚体动力学应用于机械臂；GPU加速批处理与自动微分
-3. [Parallel Differentiable Reachability for Learning and Planning with Certified Neural Dynamics and Controllers](/202606/01/2605.25346v1-parallel-differentiable-reachability-for-learning-and-planning-with-certified-neural-dynamics-and-controllers)  
-   标签：评分：8.0/10、query:diff-physics
-   evidence：并行可微可达性框架用于神经网络控制器和动力学
-4. [Prior Policy Guided Dual-Agent Coordinated Manipulation Planning of Spacecraft-Manipulator System](/202606/01/2605.25362v1-prior-policy-guided-dual-agent-coordinated-manipulation-planning-of-spacecraft-manipulator-system)  
+1. [Robust Koopman Control Barrier Filters for Safe Actor-Critic Reinforcement Learning](/202606/02/2605.26452v1-robust-koopman-control-barrier-filters-for-safe-actor-critic-reinforcement-learning)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：深度强化学习用于双机械臂协调操作规划
-5. [Automated design of soft-rigid hybrid robots for dynamic locomotion](/202606/01/2605.29389v1-automated-design-of-soft-rigid-hybrid-robots-for-dynamic-locomotion)  
-   标签：评分：8.0/10、query:diff-physics
-   evidence：可微模拟器用于软硬混合设计可应用于操作任务
+   evidence：学习Koopman预测器作为动力学模型用于安全演员-评论家强化学习，直接相关于基于模型的强化学习
+2. [Lagrangian Perturbation Diffusion Steering: Latent Reinforcement Learning for Generative Policies](/202606/02/2606.01151v1-lagrangian-perturbation-diffusion-steering-latent-reinforcement-learning-for-generative-policies)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：对机器人操作任务应用拉格朗日扰动扩散强化学习微调生成策略
+3. [All Models are Wrong, Knowing Where is Useful: On Model Uncertainty in Reinforcement Learning](/202606/02/2606.01363v1-all-models-are-wrong-knowing-where-is-useful-on-model-uncertainty-in-reinforcement-learning)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：基于模型的强化学习及不确定性处理
 
 ### 速读区论文标签
-1. [EXPO-FT: Sample-Efficient Reinforcement Learning Finetuning for Vision-Language-Action Models](/202606/01/2605.25477v1-expo-ft-sample-efficient-reinforcement-learning-finetuning-for-vision-language-action-models)  
+1. [Beyond Binary: Sim-to-Real Dexterous Manipulation with Physics-Grounded Contact Representation](/202606/02/2605.28812v1-beyond-binary-sim-to-real-dexterous-manipulation-with-physics-grounded-contact-representation)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：对预训练VLA策略进行强化学习微调用于操作任务
-2. [Theoretical Foundations and Effective Algorithms for Policy-Aware Simulator Learning](/202606/01/2605.29032v1-theoretical-foundations-and-effective-algorithms-for-policy-aware-simulator-learning)  
+   evidence：使用物理接地触觉表示的仿真到现实强化学习用于灵巧操作
+2. [World Models for Robotic Manipulation: A Survey](/202606/02/2606.00113v1-world-models-for-robotic-manipulation-a-survey)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于模型的强化学习用于鲁棒模拟器学习
-3. [MiraBench: Evaluating Action-Conditioned Reliability in Robotic World Models](/202606/01/2605.29360v1-mirabench-evaluating-action-conditioned-reliability-in-robotic-world-models)  
+   evidence：机器人操作世界模型综述，与基于模型的强化学习相关
+3. [SKIP: Sparse Keyframe Interpolation Paradigm for Efficient Embodied World Models](/202606/02/2606.00664v1-skip-sparse-keyframe-interpolation-paradigm-for-efficient-embodied-world-models)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：评估动作条件世界模型可靠性的基准，支持学习动力学模型
-4. [When are LLMs Sufficient Policy Optimizers for Sequential RL Tasks?](/202606/01/2605.30719v1-when-are-llms-sufficient-policy-optimizers-for-sequential-rl-tasks)  
+   evidence：稀疏关键帧插值用于高效世界模型
+4. [$τ_0$-WM: A Unified Video-Action World Model for Robotic Manipulation](/202606/02/2606.01027v1-0-wm-a-unified-video-action-world-model-for-robotic-manipulation)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：LLM作为策略优化器，在包括Meta-World的RL任务上表现
-5. [RDGen: Demonstration Generation for High-Quality Robot Learning via Reinforcement Learning](/202606/01/2605.30957v1-rdgen-demonstration-generation-for-high-quality-robot-learning-via-reinforcement-learning)  
+   evidence：统一的视频-动作世界模型用于机械臂操作
+5. [Coherent Off-Policy Improvement of Large Behavior Models with Learned Rewards](/202606/02/2606.02194v1-coherent-off-policy-improvement-of-large-behavior-models-with-learned-rewards)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：强化学习在机械臂操作任务中的应用；机器人学习中的演示生成
-6. [Manifold-Constrained MPPI: Real-Time Sampling-Based Control Under Hard Constraints](/202606/01/2605.24813v1-manifold-constrained-mppi-real-time-sampling-based-control-under-hard-constraints)  
+   evidence：使用学习到的奖励通过强化学习改进大型行为模型用于灵巧操作
+6. [Compliant Non-Prehensile Pushing Manipulation](/202606/02/2605.25672v1-compliant-non-prehensile-pushing-manipulation)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于模型的采样控制方法用于约束操作
-7. [BORA: Bridging Offline Reinforcement Learning and Online Residual Adaptation for Real-World Dexterous VLA Models](/202606/01/2605.30226v1-bora-bridging-offline-reinforcement-learning-and-online-residual-adaptation-for-real-world-dexterous-vla-models)  
+   evidence：基于模型预测控制的合规非抓取推操作
+7. [SANTS: A State-Adaptive Scheduler for World Action Models](/202606/02/2605.27947v1-sants-a-state-adaptive-scheduler-for-world-action-models)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：离线到在线强化学习后训练用于灵巧VLA模型
-8. [Building Generalization Into Behavior Generation Via Adaptive Compositions of Regularities](/202606/01/2605.31110v1-building-generalization-into-behavior-generation-via-adaptive-compositions-of-regularities)  
+   evidence：世界动作模型用于机器人操作，与基于模型的预测控制相关
+8. [Object-Informed Model Predictive Path Integral Control for Non-Prehensile Robot Manipulation](/202606/02/2605.30778v1-object-informed-model-predictive-path-integral-control-for-non-prehensile-robot-manipulation)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：基于模型的非抓取操作控制，使用模型预测路径积分方法
+9. [Shape Your Body: Value Gradients for Multi-Embodiment Robot Design](/202606/02/2606.00702v1-shape-your-body-value-gradients-for-multi-embodiment-robot-design)  
    标签：评分：6.0/10、query:diff-physics
-   evidence：在机器人行为生成中使用可微网络
-9. [Learning Controlled Separation of Small Objects Between Two Fingers with a Tactile Skin](/202606/01/2605.31486v1-learning-controlled-separation-of-small-objects-between-two-fingers-with-a-tactile-skin)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：使用强化学习进行操作
+   evidence：使用价值函数作为可微代理进行机器人设计优化
 
 
 <div class="dpr-home-promo-card">
