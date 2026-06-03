@@ -1,0 +1,1212 @@
+Title: Behavior Cloning of MPC for 3-DOF Robotic Manipulators
+
+URL Source: https://arxiv.org/pdf/2606.00383v1
+
+Published Time: Tue, 02 Jun 2026 00:22:17 GMT
+
+Number of Pages: 7
+
+Markdown Content:
+Behavior Cloning of MPC for 3-DOF Robotic 
+
+# Manipulators 
+
+Theo Guegan 
+
+University of Waterloo 
+
+theo.guegan@etu.utc.fr 
+
+Wen Jie Dexter Teo 
+
+University of Waterloo 
+
+WTEO030@e.ntu.edu.sg 
+
+Abstract —While Model Predictive Control (MPC) provides 
+
+strong stability and robustness, it imposes a significant 
+
+computational burden on real-time systems. This paper 
+
+investigates the application of Behavior Cloning to approx -
+
+imate MPC policies for the real-time control of a 3-degree-
+
+of-freedom robotic manipulator. We present a baseline 
+
+controller combining Inverse Kinematics with MPC and 
+
+evaluate neural network architectures, ranging from classi -
+
+cal regression algorithms to deep learning models including 
+
+Deep MLPs and RNNs, to derive computationally efficient 
+
+surrogate policies. We analyze generalization capabilities, 
+
+stability considerations, and the trade-offs inherent in differ -
+
+ent architectural choices. Our empirical study employs both 
+
+online and offline evaluations to assess performance regard -
+
+ing accuracy, computational efficiency, and fidelity to the 
+
+original MPC policy. Our results demonstrate that Behavior 
+
+Cloning can effectively reduce the computational burden 
+
+of MPC policies for 3-DOF robotic manipulators, achieving 
+
+a 3x reduction in inference latency with a 84.98% success 
+
+rate under relaxed tolerances. Notably, we find that static 
+
+architectures outperform temporal variants, confirming the 
+
+sufficiency of instantaneous state observations for this task. 
+
+However, we observe a precision gap under strict tolerances, 
+
+which suggest that while Behavior Cloning captures the 
+
+global optimal trajectory, further research is needed to min -
+
+imize terminal steady-state error. 
+
+I.  Introduction 
+
+Model Predictive Control (MPC) has been widely used 
+
+for robotic manipulation  [1] , offering an optimal control 
+
+strategy with strong stability and robustness. However, the 
+
+computational cost of MPC for solving the optimization 
+
+problems limits its applicability for both real-time systems 
+
+and resource-constrained devices. Neural networks, with 
+
+their diverse architectures, offer a promising and computa -
+
+tionally efficient alternative for approximating MPC policies 
+
+[2] . We consider a 3-degree-of-freedom (3-DOF) robotic 
+
+manipulator operating in a MuJoCo simulation environment. 
+
+The simulation environment provides a realistic and control -
+
+lable environment for testing and evaluating the proposed 
+
+methodology. MuJoCo also handles gravity compensation 
+
+and joint friction, allowing us to simplify the control problem 
+
+and focus on the learning aspect. The control objective cen -
+
+ters on driving the end-effector to reach a 3D cartesian target 
+
+1 This work was conducted during an exchange program at University of 
+
+Waterloo. T. Guegan is currently with the Universite de Technologie de 
+
+Compiègne, France, and ML Intern at Opalin, Redwood City, CA. W. J. D. 
+
+Teo is currently with Nanyang Technological University, Singapore, and 
+
+Research Intern at Polytechnique Montréal, QC, Canada. 
+
+Code available :  https://github.com/theguega/neural-mpc 
+
+position within the robot’s reachable workspace. Inspired by 
+
+the recent usage of imitation learning for complex controls 
+
+[3] , we present a complete data generation pipeline for col -
+
+lecting high-quality demonstrations of the desired behavior 
+
+and an empirical evaluation of both feedforward and recur -
+
+rent neural networks for policy learning. Our experiment 
+
+focuses on minimizing the control error and testing the 
+
+ability of the learned policy to generalize in the simulation 
+
+environment. 
+
+II.  Problem Formulation 
+
+A.  System Description 
+
+We consider a 3-DOF robotic manipulator defined by 
+
+generalized coordinates  𝑞  = [𝑞 1, 𝑞 2, 𝑞 3]𝑇  ∈ ℝ3, representing 
+
+joint angles, and their time derivatives  ̇  𝑞  ∈ ℝ3. The full 
+
+observable state at discrete time step  𝑘  is 
+
+𝑥 𝑘  = [𝑞 𝑇  
+
+> 𝑘
+
+,̇ 𝑞 𝑇  
+
+> 𝑘
+
+]𝑇  ∈ ℝ6 (1) 
+
+The manipulator operates in a MuJoCo simulation envi -
+
+ronment ( Figure 2 ) governed by rigid-body dynamics with 
+
+gravity compensation. The control objective is to drive the 
+
+end-effector to track randomly sampled, reachable 3D Carte -
+
+sian target positions  𝑝 des  ∈ ℝ3 within the robot’s workspace  𝒲︀ 
+
+⊂ ℝ3.
+
+Fig. 2. 3-DOF Arm in MuJoCo  Fig. 3. 3-DOF Arm Schema  [4] 
+
+III.  Baseline Controller: MPC with Inverse Kine -
+
+matics 
+
+Our baseline controller uses a hierarchical architecture 
+
+combining an Inverse Kinematics (IK) module and a MPC 
+
+module. The IK module computes the joint angles required 
+
+to achieve the desired end-effector position, while the MPC 
+
+module optimizes the joint velocities to minimize the control 
+
+error. 
+
+A.  Inverse Kinematics Formulation 
+
+The IK module translates desired end-effector positions 
+
+into feasible joint-space configurations. Let  𝑝 (𝑞 ) : ℝ3 → ℝ3
+
+1denote the forward kinematics mapping. The Cartesian error 
+
+is defined as: 
+
+𝑒  = 𝑝 des  − 𝑝 (𝑞 ) (2) 
+
+We solve the IK problem using the Jacobian transpose 
+
+method with Damped Least Squares (DLS) for numerical 
+
+stability near singularities. The iterative update rule is: 
+
+Δ𝑞  = 𝐽  𝑇  (𝐽  𝐽  𝑇  + 𝜆 2𝐼 )−1𝑒  (3) 
+
+where  𝐽  (𝑞 ) = d(𝜕 𝑝 , 𝜕 𝑞 ) ∈ ℝ3×3 denotes the geometric 
+
+Jacobian and  𝜆  represents the damping factor. 
+
+To prevent overshooting or divergence, the joint update 
+
+is clamped to a maximum norm relative to the step size 
+
+𝛼  ∈ [0, 1]:
+
+Δ𝑞  = {Δ𝑞  if  ‖Δ𝑞 ‖ ≤ 𝛼 
+
+Δ𝑞  ∗ 𝛼  
+
+> ‖Δ𝑞 ‖
+
+otherwise  (4) 
+
+Finally, joint angles are wrapped to avoid numerical drift: 
+
+𝑞 𝑖  ← atan2 (sin (𝑞 𝑖 ), cos (𝑞 𝑖 )) (5) 
+
+B.  Model Predictive Control Formulation 
+
+The MPC module is given the desired joint angles  𝑞 des  ∈
+
+ℝ3 from the IK module and computes optimal control 
+
+torques  𝜏 MPC  with a specified prediction horizon. We sim -
+
+plify the system dynamics for the MPC formulation by 
+
+assuming unit inertia and neglecting Coriolis effects, justified 
+
+by MuJoCo’s compensation of complex dynamics. This yields 
+
+a double-integrator model where the control input  𝜏 MPC 
+
+effectively commands joint acceleration: ̈
+
+𝑞  = 𝜏 MPC  (6) 
+
+With  𝑥  = [𝑞 ,̇ 𝑞 ]𝑇  ∈ ℝ6 and discrete-time dynamics: 
+
+𝑥 𝑘 +1 = 𝑥 𝑘  + Δ𝑡  ∗ [̇ 𝑞 𝑘 
+
+𝜏 MPC,k 
+
+] = 𝑓 (𝑥 𝑘 , 𝜏 𝑘 ) (7) 
+
+The MPC solves a finite-horizon optimal control problem 
+
+with quadratic cost function: 
+
+min 
+
+> 𝜏 0:𝑁 −1
+
+∑
+
+> 𝑁 −1
+> 𝑘 =0
+
+(‖𝑥 𝑘  − 𝑥 ref ‖2 
+
+> Q
+
++ ‖𝜏 𝑘 ‖2
+
+> R
+
+) + ‖𝑥 𝑁  − 𝑥 ref ‖Q2
+
+> N
+
+(8) 
+
+subject to: 
+
+𝑥 k+1  = 𝑓 (𝑥 𝑘 , 𝜏 𝑘 ), 𝑥 0 = 𝑥 (𝑡 ), 𝜏 min  ≤ 𝜏 𝑘  ≤ 𝜏 max  (9) 
+
+Where  𝑥 ref  = [𝑞 des , 0𝑇  ]𝑇  is the target state, and  𝑸 , 𝑹 , 𝑸 𝑵 
+
+are positive definite matrices. The optimization problem is 
+
+solved using CasADI  [5]  with OSQP optimization solver. 
+
+IV.  Data Generation Pipeline 
+
+To enable behavior cloning from the expert IK–MPC con -
+
+troller, we generate a dataset of joint angles, joint velocities, 
+
+target positions, and predicted torques from a closed-loop 
+
+MuJoCo simulation. The process for each episode is: 
+
+A.  Collection process 
+
+1)  Target sampling: A reachable end-effector target 
+
+𝑝 des  ∈ ℝ3 is sampled within the workspace  𝒲︀  using 
+
+cylindrical coordinates to sample a radius  𝑟  and height 
+
+𝑧  uniformly within the workspace bounds. 
+
+2)  The IK solver computes the corresponding joint-space 
+
+reference  𝑞 des .
+
+3)  Given the current state  𝑥 𝑘  and a specified prediction 
+
+horizon  𝑁  , the MPC controller generates torque com -
+
+mands  𝜏 MPC  to achieve the desired joint angles and 
+
+velocities. 
+
+4)  For each time step  𝑘 , we record the current state 
+
+[𝑞 1, 𝑞 2, 𝑞 3,̇ 𝑞 1,̇ 𝑞 2,̇ 𝑞 3] ∈ ℝ6, the target  𝑝 des  ∈ ℝ3, and 
+
+the predicted torque  𝜏 MPC  ∈ ℝ3.
+
+5)  We step the simulation until the end of the episode 
+
+or until the target is reached using  𝜏  = 𝜏 MPC  +
+
+𝜏 env  (where  𝜏 env  represents the forces computed by 
+
+MuJoCo to compensate for Coriolis, centrifugal, and 
+
+gravitational effects, ensuring the simplified dynamics 
+
+model in the MPC controller remains valid; MuJoCo 
+
+bias force:  mjData.qfrc_bias ). 
+
+During this process, if either the MPC controller or the 
+
+IK solver fails to converge, we discard the data for that time 
+
+step to retain only high-quality samples. 
+
+B.  Dataset Structure 
+
+After generation, the data is stored in HDF5 format, 
+
+grouped by episodes containing synchronized sequences of 
+
+states ( 6𝐷 ), targets ( 3𝐷 ), and actions ( 3𝐷 ). 
+
+This hierarchical format preserves the temporal integrity 
+
+of each trial, allowing us to process the data differently 
+
+depending on the model architecture. The raw data is loaded 
+
+via a custom MPCDataset class, which constructs the input 
+
+feature vector  𝑥  by concatenating the state ( ℝ6) and the 
+
+target ( ℝ3), resulting in a 9-dimensional input vector. 
+
+> Fig. 4. Visualization of a random episode
+
+Depending on the learning algorithm, the data is 
+
+processed differently according to the model architecture. 
+
+a)  Flat Formatting: 
+
+For non-sequential algorithms (e.g., MLPs, Random 
+
+Forests), temporal dependencies are discarded to maximize 
+
+sample efficiency. We treat every timestep  𝑡  from every 
+
+episode as an independent sample (i.i.d). 
+
+𝑋 flat  ∈ ℝ𝑁 ×9, 𝑌 flat  ∈ ℝ𝑁 ×3 (10) 
+
+Where  𝑁  = ∑𝐸  
+
+> 𝑖 =0
+
+𝑇 𝑖  is the total number of timesteps 
+
+across all episodes. 
+
+2b)  Sequential Formatting: 
+
+For time-series algorithms such as GRU, preserving the 
+
+temporal dependencies is crucial. We treat every episode as 
+
+a sequence of timesteps, where each timestep is a sample. 
+
+𝑋 seq  ∈ ℝ𝐸 ×𝑇  ×9, 𝑌 seq  ∈ ℝ𝐸 ×𝑇  ×3 (11) 
+
+Where  𝐸  is the number of episodes and  𝑇  is the number 
+
+of timesteps per episode. 
+
+c)  Sliding Window Formatting: 
+
+To approximate a recurrent structure with our MLP archi -
+
+tecture, we augment each time step with its previous  𝑊 
+
+timesteps. This injects short-term memory into an otherwise 
+
+i.i.d. formulation. 
+
+For each timestep  𝑡 , we create a new input vector  𝑋 seq {𝑡 }
+
+by concatenating the current state  𝑋 {𝑡 } with the previous  𝑊 
+
+states  𝑋 {𝑡 −1}, 𝑋 {𝑡 −2}, …, 𝑋 {𝑡 −𝑊  }, and the target  ∈ 𝑅 3 only 
+
+once to avoid redundancy. 
+
+𝑋 seq  ∈ ℝ𝑁 ×(𝑊  ⋅6+3), 𝑌 seq  ∈ ℝ𝑁  (12) 
+
+C.  Data Preprocessing 
+
+Our goal is to develop a robust and reliable controller that 
+
+can handle uncertainties and disturbances in the system. To 
+
+this end, we introduce small Gaussian noise to both the input 
+
+state  [𝑞 1, 𝑞 2, 𝑞 3,̇ 𝑞 1,̇ 𝑞 2,̇ 𝑞 3] and the output action  𝜏 MPC . This 
+
+noise simulates real-world conditions such as sensor noise, 
+
+actuator noise, and environmental disturbances. Because the 
+
+data generation pipeline can produce an arbitrary number of 
+
+samples, we collect a large dataset for training and increase 
+
+the number of samples until the validation loss plateaus or 
+
+computational limits are reached. 
+
+We ran a simple experiment with both SVR and MLP 
+
+models from  Scikit-learn  and compared their performance 
+
+while increasing the number of samples progressively. 
+
+> Fig. 5. MSE vs number of samples (5 trials per model)
+
+Our experiment showed a clear plateau after 30000 sam -
+
+ples  Figure 5 , therefore we decided to use only 35000 samples 
+
+for the training of our regression algorithms. However, we 
+
+also observed that RNN models such as GRU were taking 
+
+full benefits of the full dataset by improving significantly 
+
+compared to MLP models even after 30000 samples. 
+
+Nevertheless, since our focus is on finding a suitable 
+
+architecture for a neural surrogate, we continue to utilize 
+
+the full dataset for training all of our models for a fair 
+
+comparison. 
+
+V.  Neural Network Architecture 
+
+We formulated the learning problem as a regression task, 
+
+where the goal is to predict the torque  𝜏 MPC  given the 
+
+current state  𝑥 𝑘  and the target  𝑝 des . We aimed to minimize 
+
+the error between the neural network policy  𝜋 𝜃  and the 
+
+expert MPC actions: 
+
+min  
+
+> 𝜃
+
+𝐿 (𝜋 𝜃 (𝑋 ), 𝜏 MPC ) (13) 
+
+where  𝐿  is a loss function that measures the difference 
+
+between the predicted torque and the expert MPC torque. 
+
+We investigated a range of models, from traditional machine 
+
+learning to deep learning architecture, to understand their 
+
+effectiveness in approximating the MPC policy. For this task, 
+
+we compared the performance with 2 different loss functions: 
+
+• Mean Squared Error (MSE) 
+
+• Mean Absolute Error (MAE) 
+
+A.  Regression Baselines 
+
+To establish performance benchmarks, we evaluated sev -
+
+eral standard regression algorithms from the Scikit-learn 
+
+library. These models operate on the “flat” dataset format, 
+
+treating each timestep as an independent sample. We in -
+
+cluded tree-based regressors (Random Forest and Gradient 
+
+Boosting) and a shallow MLP regressor as a lightweight 
+
+baseline to compare against our deeper custom architectures. 
+
+B.  Custom Multi-Layer Perceptron (MLP) 
+
+We implemented a custom feedforward network to explore 
+
+the impact of model capacity on cloning accuracy. This 
+
+model processes the flat input vector through a series of fully 
+
+connected linear layers with ReLU activations. We conducted 
+
+an architectural search by varying: 
+
+• Depth: Number of hidden layers 
+
+• Width: Number of neurons per layer 
+
+This memory-less architecture captures and learns directly 
+
+the mapping from the current state and target to the required 
+
+control action. 
+
+C.  Time Series Models 
+
+To investigate whether historical context improves control 
+
+fidelity, we evaluated architectures designed to capture tem -
+
+poral dependencies. 
+
+a)  Sliding Window MLP: 
+
+We implemented Sliding Window variants with the same 
+
+depth and width parameters as our custom MLP. These 
+
+variants receive a concatenated history of the past W state 
+
+observations as input, where we set  𝑊  = 5. This explicitly 
+
+injects short-term memory into the network to test if pro -
+
+viding temporal history can improve predictions. 
+
+b)  Recurrent Neural Networks (RNNs): 
+
+We evaluated Gated Recurrent Units (GRU) networks. 
+
+These models maintain a hidden state  ℎ𝑡  that summarizes 
+
+the history of the episode up to time  𝑡  − 1. The final hidden 
+
+state is then passed through a linear output layer to produce 
+
+the predicted torque  𝜋 𝜃 (𝑋 ). Here again, we varied the number 
+
+of hidden units per layer and the number of layers. 
+
+ℎ𝑡  = RNN (𝑥 𝑡 , ℎ𝑡 −1), 𝜋 𝜃 (𝑋 ) = Linear (ℎ𝑡 ) (14) 
+
+3VI.  Evaluation Methodology 
+
+We evaluated the learned policies using a combination of 
+
+offline and online metrics: 
+
+A.  Offline Metrics 
+
+We used MAE and Root Mean Squared Error (RMSE) to 
+
+measure the average deviation of the predicted torques from 
+
+the expert torques. Additionally, we defined Direction Accu -
+
+racy (DA) to evaluate whether the model correctly identifies 
+
+the sign (direction) of joint acceleration. 
+
+DA  = 1
+
+3𝑁  ∑
+
+> 𝑁
+> 𝑖 =0
+
+∑
+
+> 3
+> 𝑗 =1
+
+𝕀 (sign (𝜏 MPC,i,j ) = sign (𝜋 𝜃 (𝑋 𝑖 )𝑗 ))(15) 
+
+Finally, we measured the proportion of variance in the 
+
+expert’s action that is explained by our model, using ex -
+
+plained variance. It is a normalized, scale-invariant metric 
+
+for comparing performance defined as follows: 
+
+Explained Variance  = 1 − Var (𝜏 MPC  − 𝜋 𝜃 (𝑋 ))
+
+Var (𝜏 MPC ) (16) 
+
+B.  Online Metrics 
+
+To assess the closed-loop performance, we deployed the 
+
+trained policies in our simulation environment and evaluated 
+
+them on the following criteria: 
+
+• Success Rate: The percentage of episodes where the 
+
+end-effector’s final position converges within a speci -
+
+fied tolerance  𝜀  of the target 
+
+‖𝑝 final  − 𝑝 des ‖2 < 𝜀  (17) 
+
+• Average Position Error: The mean Euclidean distance 
+
+between the end-effector and the target across the 
+
+entire trajectory. This verifies that the model actively 
+
+minimizes error rather than just drifting near the goal. 
+
+• Computational Time Efficiency: The average inference 
+
+latency per control step. We compare this against the 
+
+baseline MPC solution time to confirm that the neural 
+
+networks achieve higher control frequencies. 
+
+• Computational Cost: Average CPU utilization during 
+
+operation, ensuring the surrogate model is sufficiently 
+
+lightweight for potential deployment on embedded 
+
+systems. 
+
+VII.  Results 
+
+A.  Regression Baseline 
+
+For our regression baseline with scikit-learn, we evaluated 
+
+several standard regression algorithms using the collected 
+
+offline dataset. As discussed before, we used only a subset 
+
+of the whole dataset for a total of  35000 samples, split into 
+
+80% for training and  20% for testing. The input feature 
+
+space  𝑋  ∈ ℝ9 consists of the robot’s current state and target 
+
+coordinates, while the output target  𝑌  ∈ ℝ3 corresponds 
+
+to the applied joint actions (torques). The data was parti -
+
+tioned into a training set ( 80%) and a test set ( 20%) via 
+
+random shuffling. To ensure the statistical significance of the 
+
+reported metrics, each model was trained and evaluated over 
+
+5 independent runs.  Table I  summarizes the performance 
+
+across MSE, MAE, Explained Variance, and Directional 
+
+Accuracy. We also tried scaling our features using Scikit-
+
+Learn’s StandardScaler, which did not significantly improve 
+
+performance.                                
+
+> TABLE I
+> Comparison of regression algorithms on the validation set (aver -
+> aged over 5 runs).
+> Model MSE
+> (Mean ±
+> CI)
+> MAE
+> (Mean ±
+> CI)
+> Expl.
+> Var Dir. Acc. MSE/
+> Torque
+> Ridge 8.729±
+> 0.098
+> 1.418±
+> 0.0090.221 0.681 [𝟺.𝟸𝟺, 𝟻.𝟻𝟺, 𝟷𝟼.𝟺𝟷 ]
+> Random
+> Forest
+> 0.097±
+> 0.003
+> 0.111±
+> 0.0020.991 0.999 [𝟶.𝟶𝟻, 𝟶.𝟶𝟾, 𝟶.𝟷𝟼 ]
+> MLP Re -
+> gressor
+> 0.053±
+> 0.013
+> 0.094±
+> 0.0090.994 0.938 [𝟶.𝟶𝟻, 𝟶.𝟶𝟹, 𝟶.𝟶𝟽 ]
+> Gra -
+> dient
+> Boost -
+> ing
+> 1.017±
+> 0.059
+> 0.243±
+> 0.0050.843 0.996 [𝟸.𝟹𝟶, 𝟶.𝟷𝟶, 𝟶.𝟼𝟻 ]
+> KNN
+> Regres -
+> sor
+> 0.237±
+> 0.038
+> 0.091±
+> 0.0020.976 0.999 [𝟶.𝟸𝟶, 𝟶.𝟷𝟷, 𝟶.𝟺𝟶 ]
+
+The results highlight the inherent non-linearity of the 
+
+inverse dynamics mapping. Linear Regression failed to 
+
+capture the underlying relationship, exhibiting high vari -
+
+ance across all torque dimensions. In contrast, non-linear 
+
+methods performed significantly better. The MLP Regressor 
+
+achieved the lowest overall MSE (0.053), indicating its 
+
+superior capability in minimizing large control deviations, 
+
+which is critical for preventing hardware damage. While 
+
+KNN Regressor achieved the highest Directional Accuracy 
+
+(99.87%) and lowest MAE, its higher MSE suggests it suffers 
+
+from occasional large prediction errors (outliers). Finally, 
+
+different SVM models with linear and radial basis function 
+
+(RBF) kernels were evaluated. However, as mentioned in the 
+
+documentation, RBF kernels cannot scale with that many 
+
+samples, whereas linear kernels yielded poor performance. 
+
+> Fig. 6. Mean Squared Error per Torque
+
+B.  Loss comparison 
+
+In this section, we compare performance of training mod -
+
+els with two different loss functions. For this part we used a 
+
+PyTorch implementation of the MLP regressor and of a GRU 
+
+4RNNs.  Table II  summarizes the results of our experiments 
+
+where the name of the model configuration is the name of 
+
+the model and the loss function used for training.                               
+
+> TABLE II
+> Loss Comparison
+> Model Config MSE (Mean ±Std) MAE (Mean ±Std)
+> MLP_mse 0.1460±0.05220.1474±0.0126
+> MLP_mae 0.2017±0.04550.0892±0.0078
+> GRU_mse 1.1442±0.14410.2581±0.0138
+> GRU_mae 2.1821±0.10010.3570±0.0101
+
+Following this experiment, we adopted the MSE loss 
+
+function for our experiments because models trained with 
+
+it consistently achieved lower test error and lower vari -
+
+ance across runs, as shown in  Table II . In particular, the 
+
+MLP_mse and GRU_mse configurations outperformed their 
+
+MAE-trained counterparts in terms of MSE, which was our 
+
+primary performance metric for policy imitation. 
+
+C.  Hyperparameters Tuning of MLP and GRU 
+
+In this section, we present the offline evaluation metrics 
+
+collected during the training of MLP and GRU models to 
+
+determine the optimal architecture for our task. 
+
+a)  Experimental Setup:  To ensure the reliability of our 
+
+results, each model configuration was trained and evaluated 
+
+5 times. The dataset was split into training (80%), valida -
+
+tion (10%), and testing (10%) sets. The results presented in 
+
+Figure 7  reflect the MSE on the test set. 
+
+We also monitored validation loss to detect potential 
+
+overfitting. No significant overfitting was observed in any 
+
+of the experiments across the tested architectures and data 
+
+augmentation strategies. As established in previous sections, 
+
+the MLP models were trained on a subset of 35,000 timesteps, 
+
+which was deemed sufficient for convergence, while the 
+
+GRU models utilized the full dataset to capture temporal 
+
+dependencies effectively. 
+
+b)  Tested Architectures:  We evaluated four variations of 
+
+the Multi-Layer Perceptron (MLP) and four variations of the 
+
+Gated Recurrent Unit (GRU) network. The specific hyperpa -
+
+rameters for each configuration are detailed in  Table III .                  
+
+> TABLE III
+> Summary of model architectures and hyperparameters used during
+> tuning.
+> Model Name Type Parameters
+> MLP_Small MLP Hidden Layers: [64, 32]
+> MLP_Medium MLP Hidden Layers: [128, 64]
+> MLP_Deep MLP Hidden Layers: [256, 128, 64, 32]
+> MLP_Deep_Scaled MLP Hidden Layers: [512, 256, 128, 64]
+> GRU_Shallow GRU Hidden Dim: 64, Layers: 1
+> GRU_Medium GRU Hidden Dim: 128, Layers: 2
+> GRU_Deep GRU Hidden Dim: 128, Layers: 4
+> GRU_Wide GRU Hidden Dim: 256, Layers: 2
+
+To approximate temporal awareness, we also implemented 
+
+Sliding Window variants (W=5) across the four MLP archi -
+
+tectures, using the same hidden layer parameters. 
+
+c)  Results Analysis: 
+
+> Fig. 7. Architecture Comparison (Metric: MSE). Error bars represent the
+> standard deviation across 5 runs. Note: GRU_Wide is plot under Deep+.
+
+The performance comparison in  Figure 7  highlights dis -
+
+tinct trends between the MLP and GRU architectures: 
+
+1)  MLP Superiority:  In our experimental setting, the 
+
+MLP architectures consistently outperformed the GRU 
+
+variants. The MLP_Deep configuration achieved the 
+
+lowest Mean MSE overall (approximately 0.05). 
+
+2)  Depth vs. Width:  For the MLP, increasing network 
+
+depth provided significant performance gains, with 
+
+MLP_Deep notably outperforming MLP_Medium and 
+
+MLP_Small. Increasing width did not improve perfor -
+
+mance as MLP_Deep_Scaled was unable to achieve 
+
+a significant reduction in MSE over MLP_Deep. This 
+
+suggests that for this task, increasing the depth of the 
+
+network is more beneficial for performance. 
+
+3)  Impact of Sliding Window:  Contrary to the expec -
+
+tation that history would aid prediction, the inclusion 
+
+of a sliding window did not result in a reduction in 
+
+MSE. In fact, the sliding window resulted in a slight 
+
+increase in MSE for medium and deep models. This 
+
+counter-intuitive result suggests that for this specific 
+
+task, the current state contains sufficient information 
+
+to determine the optimal control action (Markov 
+
+property). The sliding window likely complicated the 
+
+optimization landscape, introducing redundant noise 
+
+to the model. 
+
+4)  GRU Performance:  The GRU models struggled to 
+
+match the precision of the MLPs. GRU_Shallow per -
+
+formed the worst among all tested configurations 
+
+(MSE  ≈ 2.7). Increasing complexity helped; GRU_Deep 
+
+and GRU_Wide achieved significant improvements 
+
+upon the shallower variants, though still lagging 
+
+behind the MLP models. 
+
+Based on these results, MLP_Deep demonstrates the 
+
+strongest predictive capability and stability on the test set. 
+
+D.  Online evaluation (MuJoCo) 
+
+To validate these offline findings, we conducted a com -
+
+prehensive online evaluation. We deployed every trained 
+
+controller into the closed-loop MuJoCo simulation. These 
+
+were benchmarked against the original MPC policy (Expert). 
+
+We executed 1000 random test episodes, with a limit of 
+
+5150 steps per episode, for each model. Performance was 
+
+measured using  Success Rate , defined as the percentage of 
+
+episodes where the end-effector converges within a Euclid -
+
+ean distance  𝜀  of the target. To analyze precision, three tiers 
+
+were established: Strict ( 𝜀  = 0.02𝑚 ), Moderate ( 𝜀  = 0.03𝑚 ), 
+
+and Relaxed ( 𝜀  = 0.05𝑚 ). We also tracked  Inference La -
+
+tency  to quantify the speedup relative to the MPC solver. 
+
+a)  Success Rate Results:  While Scikit-learn baselines failed 
+
+to control the robot ( < 35% success rate), the PyTorch-based 
+
+architectures produced results comparable to the MPC. 
+
+> Fig. 8. Comparison of closed-loop success rates across different error toler -
+> ances ( 𝜀 ). The bar graphs represent the mean values across 5 runs.
+
+Figure 8  illustrates the performance of the top-performing 
+
+models. The results highlight a precision gap in behavior 
+
+cloning. MLP_Deep was able to achieve 84.98% success 
+
+rate under relaxed tolerances, but only 64.16% under strict 
+
+tolerance. However, the mean final tracking error was only 
+
+2.9 cm, confirming that the majority of failures were near-
+
+misses. This evaluation also confirms our results from earlier, 
+
+whereby static MLP outperformed temporal architectures, 
+
+validating that temporal history is unnecessary for this task. 
+
+b)  Computational Efficiency:  We compared the distribution 
+
+of solve times between the MPC and MLP_Deep. 
+
+> Fig. 9. Distribution of Inference Latency per Control Step.
+
+The MLP_Deep policy achieved a mean solve time of 1.102 
+
+±0.614ms. This is nearly one-third of the mean solve time 
+
+of the MPC Expert. Notably, the neural network offers a 
+
+much more deterministic inference time as seen in  Figure 9 ,
+
+making it more suitable for hard real-time constraints than 
+
+the MPC, whose solve time fluctuates significantly based on 
+
+the optimization landscape. Additionally, MLP_Deep utilized 
+
+significantly fewer system resources, with a 25% decrease in 
+
+CPU utilization as compared to the MPC. 
+
+E.  Discussion and Conclusion 
+
+Our results show a strong alignment between offline 
+
+regression metrics and closed-loop control performance. The 
+
+low offline MSE  ≈ 0.5 successfully translated to a robust 
+
+online policy, achieving a 84.98% success rate under relaxed 
+
+tolerances. The mean final tracking error of 2.9cm is not 
+
+a failure of generalization, but rather a direct reflection of 
+
+the resolution limit inherent in the offline data. The neural 
+
+network successfully learned the expert’s global trajectory, 
+
+but lacks the gradient-based feedback required to eliminate 
+
+the final centimeter of error. 
+
+Crucially, the failure of Sliding Window and GRU models 
+
+to outperform static MLPs confirms that the dynamics for 
+
+our specific setup are strictly Markovian and are fully cap -
+
+tured by the current state ( 𝑞 ,̇ 𝑞 ). Regarding model capacity, 
+
+while network depth proved critical for capturing the non-
+
+linear inverse dynamics, increasing width did not achieve 
+
+significant performance gains. This suggests that for this 
+
+specific task, adding more layers is far more effective than 
+
+adding more neurons. 
+
+In conclusion, a standard Feedforward Neural Network 
+
+is able to approximate an MPC policy with approximately 
+
+1ms inference latency and 2.9cm average error. MLP_Deep 
+
+emerged as the optimal architecture, achieving significant 
+
+improvements in speed and resource utilization, confirming 
+
+that the learned policy is sufficiently lightweight for deploy -
+
+ment on resource-constrained embedded systems. 
+
+VIII.  Future Work 
+
+This work establishes a foundation for behavior cloning 
+
+of MPC on 3-DOF manipulators, which can be extended 
+
+in several directions. Firstly, to bridge the precision gap 
+
+under strict tolerances, future work should incorporate Data 
+
+Aggregation (DAgger), allowing the learner to query the 
+
+expert and correct the terminal steady-state error. 
+
+Secondly, future work should investigate this approach on 
+
+robotic manipulators with higher degrees of freedom (e.g., 
+
+6-DOF). We hypothesize that increasing network depth and 
+
+dataset size will become critical when state and action space 
+
+dimensionality increases significantly. 
+
+Additionally, to advance towards real-world deployment, 
+
+the methodology should be extended to handle more com -
+
+plex control scenarios. It could be interesting to investigate 
+
+the cloning of a non-linear MPC which is capable of handling 
+
+more complex dynamics. 
+
+From a methodological perspective, exploring advanced 
+
+neural network architectures represents a promising direc -
+
+tion. Transformer models, with their self-attention mecha -
+
+nisms, could be investigated for their ability to capture com -
+
+plex, long-range dependencies. Furthermore, the Legendre 
+
+Memory Unit (LMU)  [6] , developed at the University of 
+
+Waterloo, offers a complementary, principled approach to 
+
+continuous time memory, which may prove to be well-
+
+suited for the robotic system’s underlying dynamics. Inverse 
+
+reinforcement learning  [3]  may prove to be an efficient 
+
+alternative to learn the underlying MPC cost function. 
+
+6Acknowledgments 
+
+This project is a final project for the course “Foundations 
+
+of Artificial Intelligence” - SYDE522. We would like to thank 
+
+our instructor Terry Stewart for his guidance and support. 
+
+References 
+
+[1]  Z. Zhou, Y. Zhang, and Y. Li, “Model Predictive Control Design of a 3-
+
+DOF Robot Arm Based on Recognition of Spatial Coordinates.” [Online]. 
+
+Available:  https://arxiv.org/abs/2209.01706 
+
+[2]  C. Gonzalez, H. Asadi, L. Kooijman, and C. P. Lim, “Neural Networks 
+
+for Fast Optimisation in Model Predictive Control: A Review.” [Online]. 
+
+Available:  https://arxiv.org/abs/2309.02668 
+
+[3]  V. G. de A. Porto, D. C. Melo, M. R. Maximo, and R. J. Afonso, “Imitation 
+
+learning of a model predictive controller for real-time humanoid robot 
+
+walking,”  Engineering Applications of Artificial Intelligence , vol. 143, p. 
+
+109919, Mar. 2025, doi:  10.1016/j.engappai.2024.109919 .
+
+[4]  N. Ngoc Son, H. P. H. Anh, and N. Thanh Nam, “Robot manipulator 
+
+identification based on adaptive multiple-input and multiple-output 
+
+neural model optimized by advanced differential evolution algorithm,” 
+
+International Journal of Advanced Robotic Systems , vol. 14, no. 1, Dec. 
+
+2016, doi:  10.1177/1729881416677695 .
+
+[5]  J. A. E. Andersson, J. Gillis, G. Horn, J. B. Rawlings, and M. Diehl, 
+
+“CasADi – A software framework for nonlinear optimization and 
+
+optimal control,”  Mathematical Programming Computation , 2018. 
+
+[6]  A. Voelker, I. Kajić, and C. Eliasmith, “Legendre Memory Units: Contin -
+
+uous-Time Representation in Recurrent Neural Networks,” in  Advances 
+
+in Neural Information Processing Systems , H. Wallach, H. Larochelle, A. 
+
+Beygelzimer, F. d'Alché-Buc, E. Fox, and R. Garnett, Eds., Curran Asso -
+
+ciates, Inc., 2019, p. . [Online]. Available:  https://proceedings.neurips. 
+
+cc/paper_files/paper/2019/file/952285b9b7e7a1be5aa7849f32ffff05-Paper. 
+
+pdf 
+
+7
