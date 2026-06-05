@@ -1,0 +1,181 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-05T21:57:13.011770+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.04749v1",
+      "source": "arxiv",
+      "title": "COP-Q: Safety-First Reinforcement Learning for Robot Control via Cholesky-Ordered Projection",
+      "abstract": "Safe robot control requires maximizing return while satisfying safety constraints. In off-policy safe reinforcement learning, reward and safety Q-values are commonly learned by separate critic ensembles, with uncertainty handled independently for each objective. This objective-wise treatment neglects inter-objective correlation and can lead to overly conservative value estimates, thereby reducing sample efficiency. To address this issue, we propose Cholesky-Ordered Projection Q-learning (COP-Q), a safety-first method that incorporates inter-objective covariance into vector-valued Q-value estimation. COP-Q constructs a generalized confidence bound in the joint Q-value space and uses Cholesky factorization to encode objective priority in a sequential form. This preserves conservatism on safety while adaptively reducing excessive conservatism on the reward objective. The resulting estimate is used in both temporal-difference target computation and actor optimization. COP-Q incurs minimal computational overhead and is readily compatible with most existing deep Q-learning frameworks. Experiments on robot locomotion in Brax and safe navigation in Safety-Gymnasium, covering both hard- and soft-safety settings, demonstrate that COP-Q achieves strong safety performance together with competitive or improved sample efficiency relative to representative baselines.",
+      "authors": [
+        "Guopeng Li",
+        "Moritz A. Zanger",
+        "Matthijs T. J. Spaan",
+        "Julian F. P. Kooij"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-06-03T11:30:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.04749v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for robot control with safety",
+      "llm_evidence_cn": "面向机器人控制的强化学习方法并考虑安全性",
+      "llm_evidence": "面向机器人控制的强化学习方法并考虑安全性",
+      "canonical_evidence": "面向机器人控制的强化学习方法并考虑安全性",
+      "llm_tldr_en": "COP-Q uses Cholesky factorization to capture inter-objective covariance in safe RL, improving sample efficiency while ensuring constraints for robot control.",
+      "llm_tldr_cn": "现有的安全强化学习方法独立处理奖励和安全目标，忽略相关性导致保守估计。本文提出COP-Q，利用Cholesky分解构建联合Q值空间的置信界，提升样本效率。在机器人控制任务中，该方法在满足安全约束的同时获得更高回报。该工作为安全RL提供了一种考虑目标间相关性的新思路。",
+      "llm_tldr": "现有的安全强化学习方法独立处理奖励和安全目标，忽略相关性导致保守估计。本文提出COP-Q，利用Cholesky分解构建联合Q值空间的置信界，提升样本效率。在机器人控制任务中，该方法在满足安全约束的同时获得更高回报。该工作为安全RL提供了一种考虑目标间相关性的新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.00252v1",
+      "source": "arxiv",
+      "title": "HOIST: Humanoid Optimization with Imitation and Sample-efficient Tuning for Manipulating Suspended Loads",
+      "abstract": "Manipulating suspended payloads with humanoid robots is challenging because the robot can only influence an underactuated, oscillatory load through whole-body motion and intermittent contact. Imitation learning provides safe initial behavior but does not directly optimize final placement, while reinforcement learning from scratch is unsafe and sample-inefficient on real humanoids. We present HOIST-Humanoid Optimized with Imitation and Sample-efficient Tuning for manipulating suspended loads. HOIST first finetunes a high-level vision-language-action (VLA) policy from virtual-reality (VR) teleoperation demonstrations and executes its commands through a whole-body controller. It then uses VLA rollouts and iterative batched RL to improve placement accuracy and stopping behavior. Experiments in simulation and on a real humanoid show that HOIST improves over imitation-only and additional-demonstration baselines; compared with pure VLA rollouts, HOIST reduces translational placement error by 19.9 cm and raw angular error by 3.56 degrees, demonstrating the potential of humanoids for underactuated material-handling tasks.",
+      "authors": [
+        "Songyang Liu",
+        "Shunyu Yao",
+        "Dingyuan Huang",
+        "Shuai Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-05-29T18:33:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.00252v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "combines imitation and model-based RL for humanoid arm manipulation",
+      "llm_evidence_cn": "结合模仿学习与基于模型的强化学习用于人形机械臂操作",
+      "llm_evidence": "结合模仿学习与基于模型的强化学习用于人形机械臂操作",
+      "canonical_evidence": "结合模仿学习与基于模型的强化学习用于人形机械臂操作",
+      "llm_tldr_en": "HOIST combines imitation learning and model-based reinforcement learning for humanoid robot manipulation of suspended loads, using VLA policy rollouts and iterative batch optimization for sample-efficient tuning.",
+      "llm_tldr_cn": "HOIST提出一种结合模仿学习与基于模型的强化学习方法，用于人形机器人操作悬挂载荷。该方法首先通过VR遥操作演示微调高级视觉-语言-动作（VLA）策略，然后利用VLA策略的 rollout 和迭代批量优化实现样本高效的调优，解决了直接强化学习在真实人形机器人上不安全且样本效率低的问题。实验证明该方法在悬挂载荷操作任务中有效。",
+      "llm_tldr": "HOIST提出一种结合模仿学习与基于模型的强化学习方法，用于人形机器人操作悬挂载荷。该方法首先通过VR遥操作演示微调高级视觉-语言-动作（VLA）策略，然后利用VLA策略的 rollout 和迭代批量优化实现样本高效的调优，解决了直接强化学习在真实人形机器人上不安全且样本效率低的问题。实验证明该方法在悬挂载荷操作任务中有效。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.05840v1",
+      "source": "arxiv",
+      "title": "Amortized Nonlinear Model Predictive Control",
+      "abstract": "Nonlinear Model Predictive Control requires solving a constrained nonlinear program (NLP) in real-time at every sampling instant, a computational bottleneck that limits deployment on resource-constrained hardware or at high sampling rates. We address this challenge for the broad class of input-affine nonlinear systems to show that the optimal control move can be approximated by a state-dependent quadratic program (QP) whose cost parameters depend on the current state and reference. We propose a single-network residual-corrector architecture: a state-dependent analytic baseline provides initial QP parameters, and the network learns only the corrections needed to match the full NLP solution; the QP is solved by a differentiable interior-point layer, guaranteeing constraint satisfaction for the first control action. The network is trained offline on data generated by an NLP solver using a hybrid loss that combines supervised imitation and KKT-residual penalties. We validate the approach on a three-link planar robotic arm with Cartesian end-effector tracking, demonstrating orders-of-magnitude speedup over the NLP solver while maintaining comparable tracking performance.",
+      "authors": [
+        "Francesco Pillitteri",
+        "Alberto Bemporad"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "cs.RO"
+      ],
+      "published": "2026-06-04T08:15:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.05840v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses differentiable interior-point layer for MPC, enabling fast control",
+      "llm_evidence_cn": "使用可微内点层加速MPC，实现快速控制",
+      "llm_evidence": "使用可微内点层加速MPC，实现快速控制",
+      "canonical_evidence": "使用可微内点层加速MPC，实现快速控制",
+      "llm_tldr_en": "Amortizes nonlinear MPC by learning a state-dependent QP approximation via a differentiable interior-point layer, significantly reducing computation for real-time control.",
+      "llm_tldr_cn": "针对非线性MPC实时计算瓶颈，本文提出摊销非线性MPC方法，利用可微内点层学习状态相关的二次规划（QP）近似。该方法采用单网络残差校正架构：状态依赖的解析基线提供初始QP参数，网络学习校正以匹配完整NLP解。实验表明，该框架在保证约束满足的同时大幅提升了计算效率，适用于资源受限平台。",
+      "llm_tldr": "针对非线性MPC实时计算瓶颈，本文提出摊销非线性MPC方法，利用可微内点层学习状态相关的二次规划（QP）近似。该方法采用单网络残差校正架构：状态依赖的解析基线提供初始QP参数，网络学习校正以匹配完整NLP解。实验表明，该框架在保证约束满足的同时大幅提升了计算效率，适用于资源受限平台。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05236v1",
+      "source": "arxiv",
+      "title": "A New Quaternion-Joint Cable-Driven Redundant Manipulator Configuration and its Control Through FABRIK and Residual Reinforcement Learning",
+      "abstract": "Robotic arms capable of traversing arbitrary spatial paths, especially in highly obstructed workspaces, are highly desired across several industries. Quaternion-joints have recently empowered a specific class of robotic arms -- cable-driven redundant manipulators -- beyond its prior capabilities. Specifically, quaternion-joints reduce the number of required motors per degree of freedom, paving the way for more compact solutions.An ongoing challenge is that the complexity of the kinematic model of quaternion joints challenges a priori decisions on manipulator configurations and imposes higher computational demands on the control system and its non-linearities amplify all discrepancies between design and physical artifact arising from fabrication imprecision. Here we show a that a 4-segment, 8-joint manipulator can achieve a broader workspace than extant configurations, at lower hardware cost, and that Residual Reinforcement Learning outperforms extant state-of-the-art methods -- specifically, the FABRIK algorithm -- on the control of such manipulator. Our results show that this configuration is more workspace-effective than prior designs, and that Residual Reinforcement Learning outperforms FABRIK by three orders of magnitude on positional and orientational accuracy, effecting precise control of the novel 4-segment, 8-joint manipulator. Additionally, the control implementation is simpler: we describe the complete FABRIK process for control and corresponding learning implementation. Our methodology is applicable to the design of new systems, providing designers with further tools for the development of this class of manipulators and corresponding control systems for novel configurations.",
+      "authors": [
+        "Tanapath Pornthisan",
+        "Thanapat Kemthong",
+        "Thanyapisit Kangsathien",
+        "Pasut Aranchaiya",
+        "Paulo Garcia",
+        "Viboon Sangveraphunsiri"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-06-03T03:33:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.05236v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "residual reinforcement learning for cable-driven manipulator control",
+      "llm_evidence_cn": "残差强化学习用于缆驱动机械臂控制",
+      "llm_evidence": "残差强化学习用于缆驱动机械臂控制",
+      "canonical_evidence": "残差强化学习用于缆驱动机械臂控制",
+      "llm_tldr_en": "This paper presents a quaternion-joint cable-driven redundant manipulator and its control combining FABRIK kinematic solver with residual RL to handle nonlinearities.",
+      "llm_tldr_cn": "该论文提出一种四元数关节缆驱动冗余机械臂配置，并采用FABRIK运动学求解器与残差强化学习相结合的控制方式，以处理非线性误差。残差RL补偿了建模不确定性，提升了轨迹跟踪精度。为复杂机械臂控制提供了混合方法。",
+      "llm_tldr": "该论文提出一种四元数关节缆驱动冗余机械臂配置，并采用FABRIK运动学求解器与残差强化学习相结合的控制方式，以处理非线性误差。残差RL补偿了建模不确定性，提升了轨迹跟踪精度。为复杂机械臂控制提供了混合方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
