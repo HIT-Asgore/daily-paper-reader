@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-06",
+  "date": "2026-06-06",
+  "generated_at": "2026-06-06T21:11:08",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/06/2606.00737v1-beyond-pure-sampling-hybrid-optimization-mechanisms-for-non-convex-model-predictive-control",
+      "section": "quick",
+      "title_en": "Beyond Pure Sampling: Hybrid Optimization Mechanisms for Non-Convex Model Predictive Control",
+      "authors": "Yuichiro Aoyama, Minchan Jung, Akash Ratheesh, Evangelos A. Theodorou",
+      "date": "2026-05-30",
+      "pdf": "https://arxiv.org/pdf/2606.00737v1",
+      "score": "7.0",
+      "evidence": "在非凸MPC中采用基于梯度的DDP混合优化机制，与可微控制相关",
+      "tldr": "非凸模型预测控制在非线性动力学和多障碍环境中易陷入局部最优。本文提出最大熵微分动态规划框架，结合DDP梯度利用和基于动作值函数逆海森矩阵的采样扰动两阶段优化以逃离局部陷阱。在低维系统中性能一致优于模型预测路径积分（MPPI），高维系统中成功率更高且更稳定。通过四旋翼穿越密集障碍物的硬件实验验证了框架的鲁棒性和实际部署可行性。",
+      "tags": "query:diff-physics",
+      "abstract_en": "This paper investigates the optimization mechanisms of non-convex Model Predictive Control (MPC) using the Maximum Entropy Differential Dynamic Programming (ME-DDP) framework. Navigating non-convex cost landscapes induced by nonlinear dynamics, multiple obstacles, etc. remains a fundamental challenge in robotics, where gradient-based methods frequently converge to suboptimal local minima. We demonstrate a dual-step optimization mechanism designed to overcome these traps. (1) an initial phase of using DDP to exploit the gradient of the cost landscape, followed by (2) disruption of the optimization via sampling from policies characterized by the inverse Hessian of the action-value function. We provide a rigorous analysis of this sampling mechanism of three ME-DDP variants: Unimodal Gaussian ME-DDP, Multimodal Gaussian ME-DDP, and Stein Variational DDP. Furthermore, with navigation tasks of four robotic systems under cluttered environments, we conduct extensive benchmarking of three variants of the ME-DDP, against deterministic DDP, and one of the most successful sampling-based schemes, Model Predictive Path Integral (MPPI) control with three policy parameterizations and update laws that correspond to those of ME-DDPs.   The results show that in low-dimensional systems where the cost landscapes are relatively simple and local information is sufficiently representative, our framework consistently outperforms MPPIs. In high-dimensional systems, MPPI can occasionally discover aggressive maneuvers that enable it to steer the systems faster than DDP-based methods, whereas our method maintains a higher, more stable success rate.   Finally, we validate the practical efficacy of the framework through hardware experiments with a quadrotor navigating a dense, non-convex obstacle field, confirming the robustness of the proposed framework for real-world deployment.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/06/2606.03943v1-pointaction-3d-points-as-universal-action-representations-for-robot-control",
+      "section": "quick",
+      "title_en": "PointAction: 3D Points as Universal Action Representations for Robot Control",
+      "authors": "Mutian Tong, Han Jiang, Qiao Feng, Lingjie Liu, Jiatao Gu",
+      "date": "2026-06-02",
+      "pdf": "https://arxiv.org/pdf/2606.03943v1",
+      "score": "7.0",
+      "evidence": "基于点的4D建模将视频预测桥接到机器人动作",
+      "tldr": "当前视频-动作模型仅依赖RGB预测，缺乏度量3D运动与接触几何信息，导致动作歧义。PointAction通过微调视频扩散模型联合预测RGB和动态3D点云，将点动力学作为结构化动作接口，再经扩散解码器映射为机器人动作。该方法在机器人场景4D生成质量上达到SOTA，仿真操控优于基线，并能零样本泛化到两个未见机械臂。其贡献在于以度量3D点作为通用动作表征，降低了动作监督需求，提升了跨任务与具身的泛化能力。",
+      "tags": "query:diff-physics",
+      "abstract_en": "Video-Action Models (VAMs) leverage the broad visual dynamics captured by pre-trained video diffusion models, offering a promising path toward generalizable robot manipulation. However, RGB-only video rollouts are not directly actionable: they leave metric 3D motion, contact geometry, and fine-grained spatial constraints under-specified, making action grounding ambiguous. Meanwhile, scaling action supervision across diverse tasks and embodiments remains costly. We present PointAction, a framework that bridges video predictions to robot actions through explicit point-based 4D modeling. PointAction fine-tunes a foundation video generation model to jointly predict future RGB frames and dynamic 3D pointmaps, producing temporally consistent 3D motion of task-relevant scene geometry. These point dynamics serve as a structured, embodiment-agnostic action interface, which a diffusion-based action decoder maps to executable robot actions. By using metric 3D point dynamics as the interface between video prediction and control, PointAction reduces the ambiguity of RGB-only action grounding and supports transfer across tasks and embodiments with limited action supervision. Experiments show that PointAction achieves state-of-the-art 4D generation quality on robot scenes, outperforms existing baselines in simulation, and generalizes to two real robot arms unseen during pretraining.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/06/2606.04463v2-oscar-omni-embodiment-action-conditioned-world-model-for-robotics",
+      "section": "quick",
+      "title_en": "OSCAR: Omni-Embodiment Action-Conditioned World Model for Robotics",
+      "authors": "Zhuoyuan Wu, Jun Gao",
+      "date": "2026-06-03",
+      "pdf": "https://arxiv.org/pdf/2606.04463v2",
+      "score": "7.0",
+      "evidence": "动作条件世界模型用于机器人策略评估，可应用于基于模型的强化学习",
+      "tldr": "现有机器人视频世界模型在策略评估中面临场景多样性有限、动作跟随不精确及跨本体泛化差等挑战。OSCAR构建大规模标准化数据管道，整合机器人及人体数据集，采用2D运动骨架渲染作为统一条件表示，微调Cosmos-Predict2.5-2B模型。在单个GH200 GPU上训练后，动作跟随、外观质量和运动一致性显著优于基线。实验表明，在RoboArena上的虚拟策略评估与真实世界评估高度相关，为机器人策略的纯虚拟评估奠定基础。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "We present OSCAR, a precise action-conditioned video world model that generalizes across different robot embodiments and enables robot policy evaluation. Existing video world models face three main challenges for real-world robot evaluation: limited scenario diversity in current robot training datasets, imprecise action following, and poor generalization across embodiments for broad adoption. We tackle these challenges from two perspectives. At its core is a large-scale standardized data pipeline that curates, filters, and deduplicates broad robotics and egocentric human datasets, yielding a clean joint-training dataset that spans diverse tasks, scenarios, actions, and robot embodiments. To condition the video model, we adopt 2D kinematic skeleton rendering as a unified conditioning representation that generalizes across different robot arms or even human hands. We finetune the Cosmos-Predict2.5-2B model on a single GH200 GPU. Our model achieves significant improvement on action following, appearance quality, and motion consistency, compared to existing baselines, which either have a much larger model size or require more GPUs. We further deploy OSCAR to evaluate robot policies from RoboArena. Extensive experiments demonstrate the significant correlation between our virtual policy evaluation in OSCAR and real-world evaluation, paving the way for the future where robot policies can be purely evaluated in virtual generated worlds.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/06/2606.05687v1-accelerating-and-scaling-mpc-guided-reinforcement-learning-for-humanoid-locomotion-and-manipulation",
+      "section": "quick",
+      "title_en": "Accelerating and Scaling MPC-Guided Reinforcement Learning for Humanoid Locomotion and Manipulation",
+      "authors": "Junheng Li, Liang Wu, Sergio A. Esteban, Lizhi Yang, Ján Drgoňa, Aaron D. Ames",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.05687v1",
+      "score": "7.0",
+      "evidence": "将MPC与RL结合以提升效率的模型基方法",
+      "tldr": "仿人运动控制中，MPC与RL结合面临高计算开销。本文提出MPC-RL框架，通过质心动力学MPC奖励公式引导训练，并开发并行时域GPU求解器π^nMPC加速。实验表明该方法在仿人行走、操作等任务上性能优越，且训练高效。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "In humanoid motion control, model predictive control (MPC) offers physically grounded prediction and constraint handling, while reinforcement learning (RL) enables robust whole-body skills through large-scale simulation. However, using MPC inside RL often requires time-consuming problem construction or excessive training overhead, making such frameworks difficult to justify in practice. This work studies efficient training-time MPC guidance for humanoid locomotion and manipulation, termed MPC-RL. We introduce a centroidal-dynamics MPC reward formulation that leverages guidance from MPC trajectories in training time. To make this practical in massively parallel RL, we develop $π^n$MPC, a parallel-in-horizon and construction-free batched GPU MPC solver that operates directly on time-varying dynamics to avoid high memory usage and pre-compilation. Through a variety of comparative studies and hardware validations, we have found that MPC-RL achieves superior performance in locomotion and manipulation skills. The code base is available at https://github.com/junhengl/mpc-rl.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

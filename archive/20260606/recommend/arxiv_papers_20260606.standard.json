@@ -1,0 +1,182 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-06T21:07:50.369704+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.00737v1",
+      "source": "arxiv",
+      "title": "Beyond Pure Sampling: Hybrid Optimization Mechanisms for Non-Convex Model Predictive Control",
+      "abstract": "This paper investigates the optimization mechanisms of non-convex Model Predictive Control (MPC) using the Maximum Entropy Differential Dynamic Programming (ME-DDP) framework. Navigating non-convex cost landscapes induced by nonlinear dynamics, multiple obstacles, etc. remains a fundamental challenge in robotics, where gradient-based methods frequently converge to suboptimal local minima. We demonstrate a dual-step optimization mechanism designed to overcome these traps. (1) an initial phase of using DDP to exploit the gradient of the cost landscape, followed by (2) disruption of the optimization via sampling from policies characterized by the inverse Hessian of the action-value function. We provide a rigorous analysis of this sampling mechanism of three ME-DDP variants: Unimodal Gaussian ME-DDP, Multimodal Gaussian ME-DDP, and Stein Variational DDP. Furthermore, with navigation tasks of four robotic systems under cluttered environments, we conduct extensive benchmarking of three variants of the ME-DDP, against deterministic DDP, and one of the most successful sampling-based schemes, Model Predictive Path Integral (MPPI) control with three policy parameterizations and update laws that correspond to those of ME-DDPs.   The results show that in low-dimensional systems where the cost landscapes are relatively simple and local information is sufficiently representative, our framework consistently outperforms MPPIs. In high-dimensional systems, MPPI can occasionally discover aggressive maneuvers that enable it to steer the systems faster than DDP-based methods, whereas our method maintains a higher, more stable success rate.   Finally, we validate the practical efficacy of the framework through hardware experiments with a quadrotor navigating a dense, non-convex obstacle field, confirming the robustness of the proposed framework for real-world deployment.",
+      "authors": [
+        "Yuichiro Aoyama",
+        "Minchan Jung",
+        "Akash Ratheesh",
+        "Evangelos A. Theodorou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "math.OC"
+      ],
+      "published": "2026-05-30T14:09:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.00737v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses gradient-based DDP within hybrid optimization for non-convex MPC, relevant to differentiable control",
+      "llm_evidence_cn": "在非凸MPC中采用基于梯度的DDP混合优化机制，与可微控制相关",
+      "llm_evidence": "在非凸MPC中采用基于梯度的DDP混合优化机制，与可微控制相关",
+      "canonical_evidence": "在非凸MPC中采用基于梯度的DDP混合优化机制，与可微控制相关",
+      "llm_tldr_en": "Introduces Maximum Entropy DDP with dual-step optimization combining gradient exploitation and sampling-based disruption, improving non-convex MPC for robotic control.",
+      "llm_tldr_cn": "针对非凸模型预测控制中梯度方法易陷入局部最优的问题，本文提出最大熵DDP框架，结合梯度下降和基于策略采样的扰动机制。该混合优化机制能有效逃离局部陷阱，提升机器人控制性能。方法在仿真中验证，其梯度组件与可微控制理念一致，可推广至机械臂操纵场景。",
+      "llm_tldr": "针对非凸模型预测控制中梯度方法易陷入局部最优的问题，本文提出最大熵DDP框架，结合梯度下降和基于策略采样的扰动机制。该混合优化机制能有效逃离局部陷阱，提升机器人控制性能。方法在仿真中验证，其梯度组件与可微控制理念一致，可推广至机械臂操纵场景。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.03943v1",
+      "source": "arxiv",
+      "title": "PointAction: 3D Points as Universal Action Representations for Robot Control",
+      "abstract": "Video-Action Models (VAMs) leverage the broad visual dynamics captured by pre-trained video diffusion models, offering a promising path toward generalizable robot manipulation. However, RGB-only video rollouts are not directly actionable: they leave metric 3D motion, contact geometry, and fine-grained spatial constraints under-specified, making action grounding ambiguous. Meanwhile, scaling action supervision across diverse tasks and embodiments remains costly. We present PointAction, a framework that bridges video predictions to robot actions through explicit point-based 4D modeling. PointAction fine-tunes a foundation video generation model to jointly predict future RGB frames and dynamic 3D pointmaps, producing temporally consistent 3D motion of task-relevant scene geometry. These point dynamics serve as a structured, embodiment-agnostic action interface, which a diffusion-based action decoder maps to executable robot actions. By using metric 3D point dynamics as the interface between video prediction and control, PointAction reduces the ambiguity of RGB-only action grounding and supports transfer across tasks and embodiments with limited action supervision. Experiments show that PointAction achieves state-of-the-art 4D generation quality on robot scenes, outperforms existing baselines in simulation, and generalizes to two real robot arms unseen during pretraining.",
+      "authors": [
+        "Mutian Tong",
+        "Han Jiang",
+        "Qiao Feng",
+        "Lingjie Liu",
+        "Jiatao Gu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-02T17:30:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.03943v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "bridges video predictions to robot actions with point-based 4D modeling",
+      "llm_evidence_cn": "基于点的4D建模将视频预测桥接到机器人动作",
+      "llm_evidence": "基于点的4D建模将视频预测桥接到机器人动作",
+      "canonical_evidence": "基于点的4D建模将视频预测桥接到机器人动作",
+      "llm_tldr_en": "PointAction fine-tunes a video generation model to jointly predict future RGB frames and dynamic 3D pointmaps, enabling metric action grounding from video predictions.",
+      "llm_tldr_cn": "现有视频动作模型基于RGB预测，缺少度量3D运动信息，导致动作模糊。本文提出PointAction，微调视频生成模型联合预测未来RGB帧和动态3D点图，产生时间一致的3D运动。通过显式点云表示，使视频预测可微分地转化为机器人动作，支持可微物理与操作任务的结合。在多种操作基准上优于纯RGB方法。",
+      "llm_tldr": "现有视频动作模型基于RGB预测，缺少度量3D运动信息，导致动作模糊。本文提出PointAction，微调视频生成模型联合预测未来RGB帧和动态3D点图，产生时间一致的3D运动。通过显式点云表示，使视频预测可微分地转化为机器人动作，支持可微物理与操作任务的结合。在多种操作基准上优于纯RGB方法。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.04463v2",
+      "source": "arxiv",
+      "title": "OSCAR: Omni-Embodiment Action-Conditioned World Model for Robotics",
+      "abstract": "We present OSCAR, a precise action-conditioned video world model that generalizes across different robot embodiments and enables robot policy evaluation. Existing video world models face three main challenges for real-world robot evaluation: limited scenario diversity in current robot training datasets, imprecise action following, and poor generalization across embodiments for broad adoption. We tackle these challenges from two perspectives. At its core is a large-scale standardized data pipeline that curates, filters, and deduplicates broad robotics and egocentric human datasets, yielding a clean joint-training dataset that spans diverse tasks, scenarios, actions, and robot embodiments. To condition the video model, we adopt 2D kinematic skeleton rendering as a unified conditioning representation that generalizes across different robot arms or even human hands. We finetune the Cosmos-Predict2.5-2B model on a single GH200 GPU. Our model achieves significant improvement on action following, appearance quality, and motion consistency, compared to existing baselines, which either have a much larger model size or require more GPUs. We further deploy OSCAR to evaluate robot policies from RoboArena. Extensive experiments demonstrate the significant correlation between our virtual policy evaluation in OSCAR and real-world evaluation, paving the way for the future where robot policies can be purely evaluated in virtual generated worlds.",
+      "authors": [
+        "Zhuoyuan Wu",
+        "Jun Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-03T05:16:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.04463v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "action-conditioned world model for robot policy evaluation, applicable to model-based RL",
+      "llm_evidence_cn": "动作条件世界模型用于机器人策略评估，可应用于基于模型的强化学习",
+      "llm_evidence": "动作条件世界模型用于机器人策略评估，可应用于基于模型的强化学习",
+      "canonical_evidence": "动作条件世界模型用于机器人策略评估，可应用于基于模型的强化学习",
+      "llm_tldr_en": "OSCAR proposes an action-conditioned video world model that generalizes across embodiments, enabling robot policy evaluation without interaction. A large-scale data pipeline curates diverse datasets, and 2D kinematic skeleton rendering conditions the model. This provides a reusable dynamics model for model-based RL approaches.",
+      "llm_tldr_cn": "OSCAR提出了一种跨具身泛化的动作条件视频世界模型，用于机器人策略评估，无需实际交互。通过大规模数据流水线处理多样的机器人数据集，并利用2D运动学骨架渲染进行条件建模。该模型可作为可复用的动力学模型，支持基于模型的强化学习方法在机械臂操作等任务中的应用。",
+      "llm_tldr": "OSCAR提出了一种跨具身泛化的动作条件视频世界模型，用于机器人策略评估，无需实际交互。通过大规模数据流水线处理多样的机器人数据集，并利用2D运动学骨架渲染进行条件建模。该模型可作为可复用的动力学模型，支持基于模型的强化学习方法在机械臂操作等任务中的应用。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05687v1",
+      "source": "arxiv",
+      "title": "Accelerating and Scaling MPC-Guided Reinforcement Learning for Humanoid Locomotion and Manipulation",
+      "abstract": "In humanoid motion control, model predictive control (MPC) offers physically grounded prediction and constraint handling, while reinforcement learning (RL) enables robust whole-body skills through large-scale simulation. However, using MPC inside RL often requires time-consuming problem construction or excessive training overhead, making such frameworks difficult to justify in practice. This work studies efficient training-time MPC guidance for humanoid locomotion and manipulation, termed MPC-RL. We introduce a centroidal-dynamics MPC reward formulation that leverages guidance from MPC trajectories in training time. To make this practical in massively parallel RL, we develop $π^n$MPC, a parallel-in-horizon and construction-free batched GPU MPC solver that operates directly on time-varying dynamics to avoid high memory usage and pre-compilation. Through a variety of comparative studies and hardware validations, we have found that MPC-RL achieves superior performance in locomotion and manipulation skills. The code base is available at https://github.com/junhengl/mpc-rl.",
+      "authors": [
+        "Junheng Li",
+        "Liang Wu",
+        "Sergio A. Esteban",
+        "Lizhi Yang",
+        "Ján Drgoňa",
+        "Aaron D. Ames"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-04T04:12:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.05687v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "MPC-guided RL for manipulation combining model predictive control with reinforcement learning to improve efficiency",
+      "llm_evidence_cn": "将MPC与RL结合以提升效率的模型基方法",
+      "llm_evidence": "将MPC与RL结合以提升效率的模型基方法",
+      "canonical_evidence": "将MPC与RL结合以提升效率的模型基方法",
+      "llm_tldr_en": "This paper proposes MPC-RL, a centroidal-dynamics MPC reward formulation that accelerates MPC-guided reinforcement learning for humanoid locomotion and manipulation, making such frameworks practical for massively parallel training.",
+      "llm_tldr_cn": "该论文提出MPC-RL方法，利用质心动力学模型预测控制（MPC）奖励公式，将MPC轨迹引导引入强化学习训练，以加速和扩展人形机器人行走与操作的学习。通过并行化MPC计算，该方法在保持物理一致性的同时显著提高了训练效率和策略性能，为模型基强化学习在机器人操作中的应用提供了实用范例。",
+      "llm_tldr": "该论文提出MPC-RL方法，利用质心动力学模型预测控制（MPC）奖励公式，将MPC轨迹引导引入强化学习训练，以加速和扩展人形机器人行走与操作的学习。通过并行化MPC计算，该方法在保持物理一致性的同时显著提高了训练效率和策略性能，为模型基强化学习在机器人操作中的应用提供了实用范例。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
