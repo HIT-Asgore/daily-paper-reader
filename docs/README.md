@@ -6,35 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-06
-- 运行时间：2026-06-06 21:10:56 UTC
+- 最新运行日期：2026-06-07
+- 运行时间：2026-06-07 21:12:08 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：0
+- 本次总论文数：6
+- 精读区：2
 - 速读区：4
 
 ### 今日简报（AI）
-今日速读3篇7分论文，涵盖非凸模型预测控制混合优化与机器人动作表示。
-最值得关注的方向：机器人通用动作表示（3D点云）与具身世界模型。
-建议优先阅读《PointAction》和《OSCAR》，理解动作表征与联合优化对机器人控制的潜力。
-- 详情：[/202606/06/README](/202606/06/README)
+今日聚焦机器人世界模型与动力学建模，精读两篇高分论文（各8.0分）：通用具身动作条件世界模型OSCAR，以及免数值积分的神经网络前向动力学方法。最值得关注的是世界模型在机器人操作中的泛化能力，以及用网络直接学习动力学替代传统积分这一新方向。建议读者优先精读这两篇，并快速扫描速读中动态VLA操作模型和柔性臂混合动力学，以把握当前侧重点。
+- 详情：[/202606/07/README](/202606/07/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [OSCAR: Omni-Embodiment Action-Conditioned World Model for Robotics](/202606/07/2606.04463v2-oscar-omni-embodiment-action-conditioned-world-model-for-robotics)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：动作条件视频世界模型用于机器人策略评估与控制
+2. [Neural networks learn forward dynamics when freed from numerical integration](/202606/07/biorxiv-10-64898-2026-05-27-728310-v1-neural-networks-learn-forward-dynamics-when-freed-from-numerical-integration)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：使用神经网络学习前向动力学，可应用于机器人控制
 
 ### 速读区论文标签
-1. [Beyond Pure Sampling: Hybrid Optimization Mechanisms for Non-Convex Model Predictive Control](/202606/06/2606.00737v1-beyond-pure-sampling-hybrid-optimization-mechanisms-for-non-convex-model-predictive-control)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：在非凸MPC中采用基于梯度的DDP混合优化机制，与可微控制相关
-2. [PointAction: 3D Points as Universal Action Representations for Robot Control](/202606/06/2606.03943v1-pointaction-3d-points-as-universal-action-representations-for-robot-control)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：基于点的4D建模将视频预测桥接到机器人动作
-3. [OSCAR: Omni-Embodiment Action-Conditioned World Model for Robotics](/202606/06/2606.04463v2-oscar-omni-embodiment-action-conditioned-world-model-for-robotics)  
+1. [Intercepting the Future: Latent-Space Predictive World Model for Dynamic VLA Manipulation](/202606/07/2606.02486v1-intercepting-the-future-latent-space-predictive-world-model-for-dynamic-vla-manipulation)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：动作条件世界模型用于机器人策略评估，可应用于基于模型的强化学习
-4. [Accelerating and Scaling MPC-Guided Reinforcement Learning for Humanoid Locomotion and Manipulation](/202606/06/2606.05687v1-accelerating-and-scaling-mpc-guided-reinforcement-learning-for-humanoid-locomotion-and-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：将MPC与RL结合以提升效率的模型基方法
+   evidence：用于操作任务的潜在世界模型，预测动力学
+2. [Hybrid Dynamics Modeling for a Flexible 2-DoF Robotic Arm](/202606/07/2606.02969v1-hybrid-dynamics-modeling-for-a-flexible-2-dof-robotic-arm)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：混合动力学建模用于柔性机械臂
+3. [OSCAR: Omni-Embodiment Skeleton-Conditioned World Action Model for Robotics](/202606/07/2606.04463v1-oscar-omni-embodiment-skeleton-conditioned-world-action-model-for-robotics)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：动作条件视频世界模型用于机器人策略评估，学习动力学
+4. [PiL-World: A Chunk-Wise World Model for VLA Policy-in-the-Loop Evaluation](/202606/07/2606.05773v1-pil-world-a-chunk-wise-world-model-for-vla-policy-in-the-loop-evaluation)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：世界模型可用于评估机器人动作，可作为MBRL中的动力学模型
 
 
 <div class="dpr-home-promo-card">

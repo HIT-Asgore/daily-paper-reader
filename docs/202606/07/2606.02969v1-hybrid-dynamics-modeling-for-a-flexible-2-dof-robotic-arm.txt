@@ -1,0 +1,321 @@
+Title: Hybrid Dynamics Modeling for a Flexible 2-DoF Robotic Arm
+
+URL Source: https://arxiv.org/pdf/2606.02969v1
+
+Published Time: Wed, 03 Jun 2026 00:26:00 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Hybrid Dynamics Modeling for a Flexible 2-DoF Robotic Arm 
+
+Maciek Popik, Daniel Yang, Mahdis Bisheban 
+
+Abstract —This paper examines three approaches for modeling the dynamics of a flexible-link 2-DoF robotic arm to address unmodeled dynamics not captured by rigid-body models. Two physics informed models combine rigid-body dynamics (RBD) formulations with a Gaussian Mixture Model (GMM) to capture residual model errors and linkage flexibility. A kinematics-based regression model serves as a purely data-driven baseline. Using an open-source dataset, torque predictions are first estimated using Ridge regression on kinematic features, while the physics-based baseline is constructed from published specifications, and ordinary least-squares regression is subsequently used to estimate the same parameter set directly from data. Results show that the physics-based parameters yield the poorest accuracy, while regularized and least-squares estimators align more closely with measured torques. Residual analysis and error metrics highlight the limitations of purely parametric models for flexible-link sys-tems and underscore the value of regularization and data-driven identification, supporting developments of semi-parametric resid-ual learning methods. 
+
+I. I NTRODUCTION AND PROBLEM STATEMENT 
+
+Modeling flexible robotic arms is challenging due to the presence of disturbances and unmodeled effects that cannot be realistically captured by rigid-body dynamics (RBD) alone. Model-based methods, which attempt to build a model that fully encapsulates all underlying effects, and model-free meth-ods, which base model correction on system measurements, have been previously explored [1]. Using these methods, additional sensor inputs or deformation mechanics information is often required to provide a more accurate estimate of torque. The flexible-link robotic arm developed at TU Dortmund University (TUDOR) [2], compensates for link flexibility through direct, strain-based strategies. Strain gauges embedded on the links provide measurements of elastic deformation, which are decomposed into static and dynamic components. Dynamic strain feedback is used to actively damp flexible oscillations, while static strain is mapped linearly to load-side joint torque, enabling strain-based estimation of flexibility-induced torques [3] [4] [5]. Furthermore, demonstrations have shown the implementation of Fiber Bragg Grating (FBG) sen-sors on industrial robots used to obtain strain measurements,  
+
+> Maciek Popik, Daniel Yang, Mahdis Bisheban are with the Dept. of Mechanical and Manufacturing Eng at the Schulich School of Engineering, University of Calgary, Alberta, Canada. Emails: {maciek.popik, daniel.yang2, mahdis.bisheban }@ucalgary.ca. This work was supported by the Natural Sciences and Engineering Research Council of Canada (NSERC), the Government of Alberta, Alberta Innovates, and the Schulich School of Engineering at the University of Calgary. Funding was awarded to Dr. Mahdis Bisheban, Director of the Intelligent Dynamics and Control Lab and Assistant Professor at the University of Calgary.
+
+allowing for the replication of methods from experiments [6]. Although these methods have proven to be effective, additional strain measurement sensors are required as input for compensation. For many existing robots, this requires the retrofitting of FBG or other strain measurement sensors. In ad-dition to the calibration and temperature sensitivity challenges of FBG sensors, measurement of link strain inherently does not include joint flexibility (including that of the actuating system, gear tooth compliance, and belt stretch) nor out of plane deformations. In an effort to eliminate sensor dependency, alternative approaches include fully defining linkage flexure and incorpo-rating it within a torque model through the evaluation of the robot system using finite element methods (FEM) [7]. In [7], a finite-element-based flexible link model is proposed in which, unlike strain-based measurement approaches, link flexibility is captured from first principles using structural mechanics. FEM is employed offline to derive a reduced-order flexible dynamics model that can be used efficiently for control and torque pre-diction without reliance on strain measurements. Although this approach eliminates sensor dependency, the required offline effort is significant, as it necessitates a full FEM analysis with accurate geometric and material properties. Furthermore, actuator dynamics and hardware-related nonlinearities are not explicitly modeled. Recent inverse-dynamics research has increasingly shifted toward neural-network and physics-informed neural-network (PINN) models, since these methods can achieve strong pre-dictive performance while embedding physical structure to improve learning and control behavior. Nevertheless, purely neural approaches are still commonly criticized for limited interpretability, as the literature characterizes them as black-box models with “rather uninterpretable internals” and notes that standard deep networks are black-box representations that do not transparently expose the underlying physics [8], [9]. In comparison, simpler rigid-body dynamics formulations augmented with learning-based residual models offer a middle ground between fully physics-based flexible modeling and fully data-driven approaches, which can be used to improve overall model accuracy [10] [11] [12] [13]. At the cost of initial training, accurate models can be determined without additional sensors or detailed geometric and mechanical prop-erties of the system. Although Gaussian Process models pro-vide a flexible non-parametric approach for learning residual robot dynamics, their O(N 3) training cost and O(N 2) mem-ory requirements can become prohibitively computationally-
+
+> arXiv:2606.02969v1 [cs.RO] 2 Jun 2026
+
+expensive in robotics applications [12] [14]. The method proposed in [15] adopts a semi-parametric approach, where the nominal dynamics are first expressed using a RBD model, after which the remaining residuals are captured using an Incremental Gaussian Mixture Model (IGMM) with reduced time complexity [16]. The RBD formulation is linear in the inertial parameters, allowing the dynamics to be represented as a regressor matrix and parameter vector, which can be estimated using least-squares techniques. Starting with an initial subset of pre-collected open source data [2], the semi-parametric model is then updated online as new data arrives, with a consistency transformation enabling parallel training of the GMM [15]. In this paper, three complementary modeling approaches are implemented and evaluated on the MERIt/TUDOR Dataset: TUD01, without payload, available online [2], to assess the effectiveness of data-driven, physics-based, and semi-parametric torque prediction strategies. The data-driven ap-proach employs ridge regression to approximate joint torques from kinematic features, the physics-based approach relies on RBD with parameters derived from published robot properties, and the semi-parametric approach identifies RBD parameters using unconstrained linear least-squares regression [17]. In all cases, Gaussian Mixture Regression (GMR) is used to model residual dynamics arising from typically unmodeled effects, such as link flexibility. To improve numerical stability, diagonal covariance regularization is incorporated in the resid-ual model [18]. The study further adapts an online residual learning workflow to the dataset by sequentially updating the parametric component as new data becomes available while applying the consistency transform proposed by [15] to maintain coherence between the evolving parametric model and the learned Gaussian Mixture Model (GMM). We have released the code for each of the three approaches through the IDCL project Github repository 1
+
+II. P ROBLEM FORMULATION 
+
+To highlight the challenges introduced by link flexibility in robotic arms [1], we selected data from a robotic arm system with pronounced flexible-link characteristics, using the publicly available dataset from [2]. The selected subset of experiments consists of a 3-Degree-of-Freedom (3-DoF) arm where the first actuator remains stationary, reducing the system to a planar 2-Degree-of-Freedom (2-DoF) arm with two active joints. The traditional equation for a 2-DoF robotic arm, assuming rigid body linkages is presented as 
+
+τ = M (q) ¨ q + C(q, ˙q) ˙ q + G(q) + F ( ˙ q), (1) where q ∈ Rn are joint angles, τ ∈ Rn is the joint torque vector, M (q) ∈ Rn×n is the inertia matrix, C(q, ˙q) contains Coriolis and centrifugal terms, G(q) is the gravity torque vector, and F ( ˙ q) represents joint friction, with n = 2 for     
+
+> 1Source code available at https://github.com/IDCL-UCalgary/ Hybrid-Dynamics-Modeling-of-Flexible-Robotic-Arms
+
+2 DoF. Expanding on Equation 1, a schematic based on the experimental robotic arm has been created in Figure 1 to illustrate the RBD parameters considered. 
+
+Fig. 1: Two-degree-of-freedom flexible-link robotic arm show-ing joint angles and link parameters. Original schematic from [2], modified to reflect dataset configuration. The following physical parameters are used: m1, m 2 denote the masses of links 1 and 2; l1 is the length of link 1; lc, 1, l c, 2
+
+are the centers of mass (COM) of links 1 and 2; and Ic, 1, I c, 2
+
+are the corresponding COM moments of inertia. For compactness, the shorthand variables c1 = cos( q1)
+
+c2 = cos( q2), s2 = sin( q2) and c1,2 = cos( q1 + q2) are introduced. The grouped inertial parameters are defined as 
+
+α = ( α1, α 2, α 3) and the gravity parameters as β = ( β1, β 2)
+
+The grouped parameters α and β are defined as: α1 = Ic, 1 +
+
+Ic, 2+m1l2
+
+> c, 1
+
++m2(l21 +l2
+
+> c, 2
+
+), α2 = m2l1lc, 2, α3 = Ic, 2+m2l2
+
+> c, 2
+
+,
+
+β1 = ( m1lc, 1 +m2l1)g, and β2 = m2lc, 2g, with g denoting the gravitational acceleration. Then, the expanded form becomes 
+
+M (q) = 
+
+α1 + 2 α2c2 α3 + α2c2
+
+α3 + α2c2 α3
+
+
+
+, (2) 
+
+C(q, ˙q) = 
+
+−2α2s2 ˙q2 −α2s2 ˙q2
+
+α2s2 ˙q1 0
+
+
+
+, (3) 
+
+G(q) = 
+
+(β1 + β2)c1 + β2c1,2
+
+β2c1,2
+
+
+
+, (4) 
+
+F ( ˙ q) = 
+
+fv1 ˙q1 + fc1 sgn( ˙ q1)
+
+fv2 ˙q2 + fc2 sgn( ˙ q2)
+
+
+
+, (5) for the Inertia matrix, Coriolis and centrifugal matrix, Gravity vector, and Friction vector respectively, where fv1, f v2 are viscous friction coefficients at joints 1 and 2, fc1, f c2 are Coulomb friction coefficients at joints 1 and 2, and sgn( ·)
+
+is the signum function. Substituting the matrices into the RBD equation yields the expanded form: 
+
+τ =
+
+α1 + 2 α2c2 α3 + α2c2
+
+α3 + α2c2 α3
+
+  ¨q1
+
+¨q2
+
+
+
++
+
+−2α2s2 ˙q2 −α2s2 ˙q2
+
+α2s2 ˙q1 0
+
+  ˙q1
+
+˙q2
+
+
+
++
+
+(β1 + β2)c1 + β2c1,2
+
+β2c1,2
+
+
+
++
+
+fv1 ˙q1 + fc1 sgn( ˙ q1)
+
+fv2 ˙q2 + fc2 sgn( ˙ q2)
+
+
+
+.
+
+(6) Although Equation 6 accounts for various frictional losses, flexibility in both joints and linkages is unaccounted for. As previously described, without the use of additional sensors or a deep knowledge and understanding for the robot system’s mechanics, these disturbances are difficult to incorporate into the dynamic model. III. M ETHODOLOGY 
+
+Within the context of this paper, three models are applied to the open source data [2]. Due to the complexity of explicitly modeling link bending effects within rigid-body kinematics and dynamics, any bending related effects are grouped into the non-parametric torque error component of rigid robotic arm physics [15]. This formulation enables a consistent comparison between purely parametric, purely physics-based, and semi-parametric learning approaches. Across all of the methods presented, only the provided joint position, velocity, accelera-tion and torque measurements are used. Data related to strain measurements is not accessed. TABLE I: True Joint Parameters [19]                                
+
+> Parameter Joint 1 Joint 2 Units
+> Torque Constant 4.48E-02 1.29E-02 Nm/A Gear Ratio (1:1) 230 246 –Rotor and Gear Inertia 9.41E-06 8.20E-07 kgm 2
+> Positive Viscous Friction 1.86E-05 2.60E-06 Nms/rad Negative Viscous Friction 1.86E-05 2.30E-06 Nms/rad Positive Coulomb Friction 3.34E-03 1.49E-03 Nm Negative Coulomb Friction 1.15E-03 2.40E-03 Nm Motor Diameter 40 30 mm Actuator Mass 1.6680 0.5885 kg
+> Note: Joint 1 and Joint 2 correspond to Actuator 2 and Actuator 3 from [19]
+
+A. Model 1: Ridge Regression with Gaussian Mixture Re-gressed Error 
+
+Model 1 is proposed as a black-box approach that com-bines a parametric kinematics-based torque model with a non-parametric residual model. The parametric component is formulated as a linear regression problem by constructing a feature matrix from measured joint positions, velocities, and accelerations, as follows 
+
+τ = Φkin (q, ˙q, ¨q) w. (7) Ridge regression is then employed to estimate the correspond-ing weight vector, providing a baseline torque prediction on kinematic information. As with the other models considered in this study, the resulting torque residuals, defined as the difference between measured and predicted torque, are used to train a GMM. Residual torque predictions are then obtained via GMR and added to the parametric prediction to improve overall torque estimation accuracy. Diagonal covariance regularization is included in the GMM to improve numerical stability. 
+
+B. Model 2: Dynamics Modeling with Gaussian Mixture Re-gressed Error 
+
+Model 2 employs the same GMR–based residual model-ing framework described for Model 1 in Section III-A, but couples it with a fully physics-based parametric model. The parametric torque component is obtained by evaluating the RBD formulation of the robot, as presented in Equation 6, where the grouped inertial and gravitational parameters α and 
+
+β are determined directly from the physical properties of the robot as provided in the documentation [19]. Based on the schematic shown in Figure 1, the primary actuator-related parameters governing the robot joints are summarized in Table I. While link parameters are presented in Table II. TABLE II: True Link Parameters from [19]                 
+
+> Parameter Link 1 Link 2 Units
+> Length 430 410 mm Width 15 15 mm Height 44mm Density 7.8 7.8 10 3kg/m 3
+
+To determine the true dynamic parameters of the effective 2-DoF robotic arm, several simplifying assumptions were made. Using Table I, for each link i, the mass mi, center of mass (COM) location lc,i , and Mass Moment of Inertia (MMoI) about the combined link–actuator COM Ic,i are defined. Given the physical properties of the links listed in Table II, the MMoI Il,i , was first calculated about the COM of each link i, independently of the actuators using 
+
+Il,i = 112 ml,i (h2 
+
+> l,i
+
++ l2
+
+> l,i
+
+), (8) where for isolated link i, ml,i is the mass, hl,i is the height, and ll,i is the length. The COM of each individual link was assumed to be at the midpoint of its length. The first link and the second actuator were treated as a coupled rigid body. As a result, the effective mass of the first link m1 was defined as the sum of the masses of link 1 and actuator 2. Given this mass offset, the effective COM location along link 1, lc, 1 was determined as 
+
+lc, 1 = (xl, 1)( ml, 1) + ( xa, 2)( ma, 2)
+
+ml, 1 + ma, 2
+
+, (9) where xl, 1 is the COM of link 1 on its own, xa, 2 is the COM of actuator 2 (assumed to be at the distal end of link 1), ml, 1
+
+is the mass of link 1, and ma, 2 is the mass of actuator 2. The MMoI was then updated for the coupled link 1, actuator 2 body. Assuming actuator 2 has cylindrical geometry, the MMoI for actuator 2 was determined as 
+
+Ia, 2 = 12 ma, 2r2
+
+> a, 2
+
+, (10) where ra, 2 is the radius of actuator 2. The individual MMoIs of link 1 and actuator 2 were then offset to the new COM using parallel axis theorem to determine the final effective MMoI, 
+
+Ic, 1 for the coupled link 1 and actuator 2 body as 
+
+Ic, 1 = Σ( Ii + mid2 
+
+> i
+
+), (11) where Ii is the MMoI of each item about its COM, mi is the mass of each item, and di is the distance between the item’s COM and the new effective link COM. As no actuator is present at the end of link 2, the inertia parameter, Ic, 2
+
+corresponds solely to the inertia of link 2 such that Ic, 2 = Il, 2,thus defining all values required for α and β in Equations 2 to 4. To simplify the model, the viscous ( fv ) and coulomb ( fc)frictions from Table I were averaged across positive and negative directions of rotation, yielding a single viscous and Coulomb friction coefficient for each joint, thus fully defining Equation 5. With these parameters defined, Equation 6 is fully specified and can be evaluated for each measurement sample. As link flexibility is not represented in the rigid-body formulation, substantial torque residuals are expected for the robot. These residuals are intentionally preserved and subsequently modeled using GMR to capture unmodeled elastic effects. The final parameter values used within the RBD model are presented in Table III. TABLE III: Dynamic Parameters Used in RBD Model                    
+
+> Parameter Value Parameter Value
+> m11.869 kg fv11.86E-05 N m s/rad
+> m20.192 kg fv22.45E-06 N m s/rad
+> l10.430 m fc12.25E-03 N m
+> lc 10.407 m fc21.95E-03 N m
+> lc 20.205 m Ic, 22.69E-03 kg m 2
+> Ic, 13.10E-03 kg m 2
+
+Lastly, it should be noted that the torque constant and gear ratio values for each actuator are also provided in Table I, as the dataset does not provide joint torque measurements directly, but instead reports motor current values. Joint torques were therefore computed as the product of motor current, torque constant, and gear ratio for each actuator. 
+
+C. Model 3: Physics-Based Regression with Gaussian Mixture Regressed Error 
+
+As Model 1 relies on a non-interpretable kinematics-based regression and Model 2 on a fully predefined physics-based parameter set, Model 3 is introduced as a gray-box approach adapted from the framework proposed by [15]. This model combines a physics-informed parametric structure with data-driven parameter identification. Specifically, linear regression is used to estimate the inertial and gravitational parameters 
+
+α and β, in addition to the frictional parameters, within the rigid-body dynamics formulation presented in Equation 6. In doing so, the parametric component is inferred directly from measured data while preserving the physical structure used in Model 2. Unlike Model 2, which relies on explicit physical assump-tions and parameter calculations, Model 3 estimates the dy-namic parameters directly from data using regression, thereby avoiding manual computation of masses, centers of mass loca-tions, and moments of inertia. The resulting parametric model remains physically interpretable and structurally consistent with rigid-body dynamics. To enable parameter estimation via linear regression, Equa-tion 6 is recast in a linear-in-parameters form, 
+
+τ = Y (q, ˙q, ¨q) π, (12) where Y (q, ˙q, ¨q) denotes the regressor matrix and π is the vector of unknown dynamic parameters. For compact presen-tation, the transpose of the regressor matrix is shown,                               
+
+> Y(q, ˙q, ¨q) =
+> 
+> ¨q102c2¨q1+c2¨q2−2s2˙q1˙q2−s2˙q22c2¨q1+s2˙q21
+> ¨q2¨q1+ ¨ q2
+> gc 10
+> g(c1+c12 )gc 12
+> ˙q100˙q2
+> sgn( ˙ q1)00sgn( ˙ q2)
+> 
+> ⊤
+> .(13)
+
+As with the regressor matrix, for compact presentation, the parameter vector is also shown in transposed form: 
+
+π = α1, α 2, α 3, β 1, β 2, f v1, f v2, f c1, f c2
+
+⊤ . (14) Using least-squares regression, a best-fit estimate of the parameter vector, denoted ˆπ, is obtained from training data. Similar to Model 2, Model 3 subsequently employs Gaussian Mixture Regression to model the residual torque error, which is added to the parametric prediction to obtain the final joint torque estimate. 
+
+D. Offline Training and Online Adaptation 
+
+The offline–online learning workflow for Models 1 to 3 (Sections III-A–III-C) consists of an initial offline training phase followed by an online adaptation phase in which data are processed sequentially. All models are first initialized using a training split of the selected subset of the robot arm dataset, after which predictions are generated for the remaining samples while model performance and residuals are evaluated against measured torque values. In contrast to [15], where a dedicated excitation phase based on modified Fourier trajectories was used to ensure persistently exciting training data, the dataset used does not provide a separate training sequence with structured excitation. Moreover, the dataset contains extended intervals in which only a single joint is excited. To ensure sufficient excita-tion diversity during offline identification, the available data are shuffled prior to partitioning into training and streaming subsets. Empirical evaluation across multiple runs indicated that allocating approximately 70% of the dataset for offline training, followed by 30% for online processing, provided a reliable balance between parameter convergence and general-ization performance. Gaussian mixture residual models are trained during the offline phase using the residual torque obtained from each parametric model. To prevent numerical instability arising from near-singular covariance estimates, a covariance regu-larization constant of 1e-4 is applied. This value was found to stabilize training while having minimal influence on the learned residual structure. During the online phase, samples are processed sequentially in time order. For Model 1, each new sample is appended to the existing training set and the ridge model is refit in batch using the expanded dataset. For Model 3, the physics-based model with estimated parameters ˆπ, new samples are similarly appended to the accumulated regressor system and the parameter vector is re-estimated by re-solving a bounded least-squares problem at each step. In contrast, Model 2, which uses the known physical parameter vector πT rue , remains fixed throughout the online phase and is not updated. To maintain consistency between the residual Gaussian mix-ture model and the evolving parametric component in Models 1 and 3, the mean-only consistency transform proposed in [15] is employed. When the parametric prediction changes as a result of online re-estimation, the Gaussian mixture output means are shifted by the corresponding change in predicted torque such that the residual model remains consistent with the updated parametric model. The covariance structure of the residual model is left unchanged. IV. R ESULTS AND DISCUSSION 
+
+Predicted torque outputs are plotted with respect to mea-sured torque values across the time domain. The torque estimates for all three models for joint 1 are shown in Figure 2. Red lines represent the parametric components corresponding to Models 1–3, representing a black-box data-driven approach, governed by Ridge regression; a white-box physics-based approach, governed by true physics parameters πtrue ; and a gray-box physics-informed approach, governed by least-square determined parameters ˆπ respectively. Green lines indicate model performance when GMR is used to estimate non-parametric residual dynamics. Black lines represent the measured joint torque values. Figures 2 and 3 illustrate torque deviations from the mea-sured ground truth values. Additionally, the normalized Mean-Squared Error (nMSE) for each proposed model is calculated in Table IV. TABLE IV: nMSE Calculated Across Validation of Models               
+
+> Model J1 nMSE Error J2 nMSE Error
+> RR 0.002713 0.01786 RR + GMR 0.001911 0.01243 DM 0.02326 0.03240 DM + GMR 0.01810 0.01256 PBR 0.002139 0.02711 PBR + GMR 0.001578 0.01126
+
+It is observed that with adequate training data, the Physics-Based Gaussian Mixture Regression model outperforms all other models in torque estimation accuracy across both joints. As the total normalized mean squared error is representative of all idling, actuating, and overshooting movements it is important to observe how each model performs on a per motion basis. Figure 4 and 5 illustrate the torque error across the 80 second motion trial. From these figures, it is observed that Gaussian Mixture Regression is able to correct the majority of base model deviations from the ground truth in idle positions across all three models. The largest deviations from the ground truth occur during actuations which induce oscillatory mo-tion. However, as these trends hold true across all models, the highest fitting error still occurs within physics informed dynamic modeling method. Figure 4b illustrates that although 
+
+> (a) Model 1: Ridge Regression
+> (b) Model 2: Dynamics Modeling
+> (c) Model 3: Physics-Based Regression
+
+Fig. 2: Joint 1 torque prediction results for three modeling approaches. The black curve plots ground-truth values, red is the parametric prediction of each model and green is the same prediction corrected with GMR. the resulting formulation of Equation 1 possesses the most predictable parametric torque response of all three models, it lacks estimation accuracy when compared to measured torque values (see Section: III-B for details). This is because the model neither accounts for vibrational fluctuations nor the large disturbance forces induced by the flexible joints of the robot. However, through implementing GMR this error is heavily reduced to the point in which it performs with accuracy that is comparable to that of the other models, as shown in Table IV. It should be noted however that without GMR, the predictions of Model 2 are significantly worse as compared to those from learning-based methods of Models 1 and 3. Figures 4 and 5 illustrate that the black-box Model 1 is very comparable to the least squares semi-parametric Model 3. Without the inherent understanding of the robot arm physics, this model is still capable of determining meaningful relations with minimal modeling effort compared to Models 2 and 3. (a) Model 1: Ridge Regression, joint 2 
+
+> (b) Model 2: Physics Formulation, joint 2
+> (c) Model 3: Physics-Based Regression, joint 2
+
+Fig. 3: Torque prediction results for joint 2 across the three modeling approaches.The black curve plots ground-truth val-ues, red is the parametric prediction of each model and green is the same prediction corrected with GMR. For interpreting the gray-box model regression, the mag-nitudes of the fitted parameters presented in Equations 2 to 5 are analyzed in Table V. The grouped parameters fall into three physical categories. The inertial parameters α1, α2, and 
+
+α3 represent the total effective inertia at joint 1, the inertial coupling between the two joints, and the effective inertia at joint 2, respectively. The gravity parameters β1 and β2 capture the gravitational loading at joint 1 and joint 2, respectively. Finally, fv1 and fv2 represent viscous friction at each joint, while fc1 and fc2 represent Coulomb friction at each joint. Within Table V, it was observed that, in comparison to the true parameters of Model 2, the regression overestimated the inertial parameters of both linkages, underestimated the Cori-olis effect, and heavily overestimated Coulomb and Viscous frictional forces. The overestimation of α1 and α3 suggests the model perceives the arm as more resistant to acceleration than the physical parameters indicate, while the underestimation of 
+
+> (a) Model 1: Ridge Regression
+> (b) Model 2: Physics Formulation
+> (c) Model 3: Physics-Based Regression
+
+Fig. 4: Torque error comparison for joint 1 across the three modeling approaches. Red indicates the purely parametric prediction error, while green indicates the error after applying GMR. 
+
+α2 implies the data-driven approach does not fully capture the inertial coupling between the two joints due to elastic effects. The underestimation of β1 and β2 indicates the regression attributes less gravitational loading to each joint than is physi-cally present. Bending of the robotic arm’s linkages increases the actuating torque required for a desired angular acceleration by creating a delayed inertial response. This phenomenon is likely absorbed into the model’s frictional terms, as it mainly occurs both during the starting and stopping conditions of the actuator, and scales proportionally to actuating speed, which is consistent with the observed overestimation of both fv
+
+and fc terms. However, Figures 2b and 3b, show that the regularized GMR succeeds in accounting for these modeling inconsistencies by grouping them with non-parametric errors which allows the predicted response to closely match with ground truth torque measurements. To assess the numerical stability of the least-squares iden-(a) Model 1: Ridge Regression 
+
+(b) Model 2: Physics Formulation 
+
+(c) Model 3: Physics-Based Regression 
+
+Fig. 5: Torque error comparison for joint 2 across the three modeling approaches. Red indicates the purely parametric prediction error, while green indicates the error after applying GMR. tification used in Model 3, the rigid-body dynamics regressor matrix Y was examined on the training data. The regressor was found to be full column rank, and the corresponding condition number was 23.67, indicating that the least-squares problem was not strongly ill-conditioned. This suggests that the large deviation between ˆπ and πtrue is more likely attributable to rigid-body model mismatch and the absorption of flexible-link effects into effective surrogate parameters, rather than numerical degeneracy of the regression itself. To confirm that these model parameters are converged within the provided data, Figure 6 shows 10 different seed variations with the same train-test split. A heatmap is applied to illustrate how grouped parameters differ from the observed parameter mean across all 10 seeds. Furthermore, Table VI reports the mean and variance of torque error across each seed. From Figure 6, it is observed that the majority of grouped parameters have steadily converged and show little variance in TABLE V: Linear Least Squares Solution for ˆπ, used in the Training of Model 3, Compared with True RBD Parameters, used in Model 2                                                               
+
+> Parameter ˆπValue πTrue Value Units
+> α17.6283 ×10 −13.6571 ×10 −1kg ·m2
+> α25.2071 ×10 −21.6914 ×10 −2kg ·m2
+> α34.0211 ×10 −21.0752 ×10 −2kg ·m2
+> β13.6403 8.2331 N·m
+> β23.6291 ×10 −13.8588 ×10 −1N·m
+> fv11.1537 1.8600 ×10 −5N·m·s/rad
+> fv29.7576 ×10 −22.4500 ×10 −6N·m·s/rad
+> fc19.9977 ×10 −12.2500 ×10 −3N·m
+> fc22.9952 ×10 −11.9500 ×10 −3N·m
+
+Fig. 6: Grouped Parameters Regressed across 10 different Seed Values. TABLE VI: Torque Error Statistics Across 10 Seeds                        
+
+> Method Joint Mean RMSE Std RMSE
+> Ridge Joint 1 1.26026 1.802 ×10 −2
+> Ridge Joint 2 0.58937 6.18 ×10 −3
+> RBD ( πhat )Joint 1 1.11702 2.005 ×10 −2
+> RBD ( πhat )Joint 2 0.71573 5.18 ×10 −3
+
+value across different seeds. However, certain variables such as 
+
+α2, which denotes the inertial coupling effects between joints, and fv2 which denotes the viscous friction effects within the second joint show deviations within 15% . This likely arises from the aforementioned bending effects and has little impact on predicted torque accuracy as reflected in RMSE values within Table VI having standard deviations below 2% .Of all the parity plots developed in Figure 7, the physics-based Model 2 had the worst performance without GMR. This is likely also due to the delayed inertial response introduced by the flexible linkages amplifying the real torque output of the actuators. Model 2 makes a complete RBD assumption with joint and linkage parameters taken from the online robot arm specifications sheet [19], leaving no opportunity to compensate for linkage flexibility. On the other hand, the physics-based regression model possessed the best alignment between torque estimations and measurements as it was able to capture the effects of bending in robot kinematics through compensation of predicted terms, especially overestimating the friction terms, in its model. The parity plot displayed in Figure 7 also illustrates that after applying GMR, all model predictions align well with joint 1 torque measurements as plotted data points display a linear trend with a narrow spread. The significant Model 1 Model 2 Model 3 
+
+Fig. 7: Parity plots for Joint 1 (top row) and Joint 2 (bottom row) for Model 1 (left column), Model 2 (center column) and Model 3 (right column). 
+
+(a) Actuator One 
+
+(b) Actuator Two 
+
+Fig. 8: Torque response with 95% confidence intervals for Actuators One and Two. overlap between green and red data points also indicates that due to the satisfactory performance of the parametric models, the GMM does not have to fit a significant amount of non-parametric errors. On the other hand, all models exhibit reduced performance at joint 2, as the uncertainty propagated from joint 1 is compounded by the uncertainty generated by linkage flexure in joint 2. From the previous results illustrating that the physics-based semi-parametric model provides the most accurate torque modeling along with the findings presented in [15], the model that should be applied in the online autonomous control of a robotic arm is the adapted gray-box model. Figures 8a and 8b depict the 95% confidence intervals of this model’s time response. Small confidence intervals across joint 1 indicate that the physics based regression performed in estimating the 
+
+ˆπ matrix is true to the data, such that accurate predictions can be made. Although the confidence intervals across the joint 2 response are wider, their magnitudes are comparable to measurement fluctuations such that the predicted torque values are not completely random and the systems true state may still be accurately predicted. V. C ONCLUSIONS 
+
+In this work, a semi-parametric gray-box torque model-ing framework was applied to a lightweight, flexible-link two-degree-of-freedom robotic arm. The approach combines parametric rigid-body dynamics models with non-parametric residual learning using Gaussian mixture regression, enabling improved torque prediction in the presence of structural flexibility and unmodeled dynamics. To ensure convergence stability in fitting, a regularization term of 1e − 4 is applied to the model. Classical rigid-body dynamics formulations assume rigid links, fixed inertial parameters, and simplified friction models, and thus cannot explicitly account for elastic deformation, joint compliance, or load-dependent variations in inertia. The selected data set [2] was taken from a robotic arm which was intentionally designed with a lightweight structure, making these effects significant relative to conventional rigid manip-ulators and leading to substantial prediction errors for purely physics-based models. The proposed semi-parametric approach combines the in-terpretability and structure of rigid-body dynamics with the expressive power of data-driven learning, resulting in consis-tently improved torque prediction accuracy across all evaluated models and demonstrating its suitability for modeling flexible robotic systems. Among the evaluated approaches, the gray-box physics-based regression model achieved the best overall performance, while the black-box and purely physics-based models exhibited larger baseline errors. Nevertheless, the in-clusion of Gaussian mixture regression substantially improved torque prediction accuracy for all models, highlighting the effectiveness of residual learning in compensating for unmod-eled flexible dynamics. REFERENCES [1] D. Subedi, I. Tyapin, and G. Hovland, “Review on modeling and control of flexible link manipulators,” Modeling, Identification and Control: A Norwegian Research Bulletin , vol. 41, pp. 141–163, 01 2020. [2] J. Malzahn and T. Bertram, “MERIt – a multi-elastic-link robot identi-fication dataset.” Institute of Control Theory and Systems Engineering (RST), TU Dortmund, Germany, 2014. [3] J. Malzahn and T. Bertram, “Fractional order strain feedback for oscillation damping of a multi-elastic-link arm under gravity,” in 41st International Symposium on Robotics , pp. 1–8, 2014. [4] J. Malzahn, M. Ruderman, A. S. Phung, F. Hoffmann, and T. Bertram, “Input shaping and strain gauge feedback vibration control of an elastic robotic arm,” in 2010 Conference on Control and Fault-Tolerant Systems (SysTol) , pp. 672–677, 2010. [5] J. Malzahn, R. F. Reinhart, and T. Bertram, “Dynamics identification of a damped multi elastic link robot arm under gravity,” in 2014 IEEE International Conference on Robotics and Automation (ICRA) ,pp. 2170–2175, 2014. [6] R. Franke, F. Hoffmann, and T. Bertram, “Observation of link defor-mations of a robotic manipulator with fiber bragg grating sensors,” in 2008 IEEE/ASME International Conference on Advanced Intelligent Mechatronics , pp. 90–95, 2008. [7] B. Scaglioni, L. Bascetta, M. Baur, and G. Ferretti, “Closed-form control oriented model of highly flexible manipulators,” Applied Mathematical Modelling , vol. 52, pp. 174–185, 2017. [8] M. Pikuli´ nski, P. Malczyk, and R. Aarts, “Data-driven inverse dynam-ics modeling using neural-networks and regression-based techniques,” 
+
+Multibody System Dynamics , vol. 63, pp. 341–366, 2025. [9] M. Lutter and J. Peters, “Combining physics and deep learning to learn continuous-time dynamics models,” The International Journal of Robotics Research , vol. 42, no. 3, pp. 83–107, 2023. [10] D. Nguyen-Tuong and J. Peters, “Using model knowledge for learning inverse dynamics,” in 2010 IEEE International Conference on Robotics and Automation , pp. 2677–2682, 2010. [11] T. Cederborg, M. Li, A. Baranes, and P.-Y. Oudeyer, “Incremental local online gaussian mixture regression for imitation learning of multiple tasks,” in 2010 IEEE/RSJ International Conference on Intelligent Robots and Systems , pp. 267–274, 2010. [12] D. Nguyen-Tuong, M. Seeger, and J. Peters, “Model learning with local gaussian process regression,” Advanced Robotics , vol. 23, pp. 2015– 2034, 10 2009. [13] D. Romeres, M. Zorzi, R. Camoriano, S. Traversaro, and A. Chiuso, “Derivative-free online learning of inverse dynamics models,” 02 2019. [14] K. Chalupka, M. Christopher, and I. Murray, “A framework for evalu-ating approximation methods for gaussian process regression,” Journal of Machine Learning Research , vol. 14, pp. 333–350, Jan. 2013. [15] J. Smith and M. Mistry, “Online simultaneous semi-parametric dynamics model learning,” IEEE Robotics and Automation Letters , vol. 5, no. 2, pp. 2039–2046, 2020. [16] R. Pinto and P. Engel, “Scalable and incremental learning of gaussian mixture models,” 2017. [17] S. M. Hashemi and H. Werner, “Parameter identification of a robot arm using separable least squares technique,” in 2009 European Control Conference (ECC) , pp. 2199–2204, 2009. [18] A. Wiesel, “Unified framework to regularized covariance estimation in scaled gaussian models,” IEEE Transactions on Signal Processing ,vol. 60, no. 1, pp. 29–38, 2012. [19] J. Malzahn and T. Bertram, “MERIt – a multi-elastic-link robot iden-tification dataset,” tech. rep., Institute of Control Theory and Systems Engineering (RST), Technische Universit¨ at Dortmund, Dortmund, Ger-many, Oct. 2014.

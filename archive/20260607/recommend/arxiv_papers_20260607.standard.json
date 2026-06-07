@@ -1,0 +1,251 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-07T21:08:51.757510+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.04463v2",
+      "source": "arxiv",
+      "title": "OSCAR: Omni-Embodiment Action-Conditioned World Model for Robotics",
+      "abstract": "We present OSCAR, a precise action-conditioned video world model that generalizes across different robot embodiments and enables robot policy evaluation. Existing video world models face three main challenges for real-world robot evaluation: limited scenario diversity in current robot training datasets, imprecise action following, and poor generalization across embodiments for broad adoption. We tackle these challenges from two perspectives. At its core is a large-scale standardized data pipeline that curates, filters, and deduplicates broad robotics and egocentric human datasets, yielding a clean joint-training dataset that spans diverse tasks, scenarios, actions, and robot embodiments. To condition the video model, we adopt 2D kinematic skeleton rendering as a unified conditioning representation that generalizes across different robot arms or even human hands. We finetune the Cosmos-Predict2.5-2B model on a single GH200 GPU. Our model achieves significant improvement on action following, appearance quality, and motion consistency, compared to existing baselines, which either have a much larger model size or require more GPUs. We further deploy OSCAR to evaluate robot policies from RoboArena. Extensive experiments demonstrate the significant correlation between our virtual policy evaluation in OSCAR and real-world evaluation, paving the way for the future where robot policies can be purely evaluated in virtual generated worlds.",
+      "authors": [
+        "Zhuoyuan Wu",
+        "Jun Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-03T05:16:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.04463v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "action-conditioned video world model for robot policy evaluation and control",
+      "llm_evidence_cn": "动作条件视频世界模型用于机器人策略评估与控制",
+      "llm_evidence": "动作条件视频世界模型用于机器人策略评估与控制",
+      "canonical_evidence": "动作条件视频世界模型用于机器人策略评估与控制",
+      "llm_tldr_en": "Presents an action-conditioned video world model that generalizes across embodiments and enables robot policy evaluation.",
+      "llm_tldr_cn": "现有视频世界模型在真实机器人评估中存在场景多样性不足、动作跟随不精确和泛化性差的问题。本文提出OSCAR，一个精确的动作条件视频世界模型，通过大规模标准化数据流水线处理多种机器人及人类数据集，并采用2D运动学骨架渲染作为条件。该模型能跨本体泛化，精准跟随动作，为基于模型的机器人控制提供了可靠的仿真平台。实验表明其在策略评估和规划中优于现有方法。",
+      "llm_tldr": "现有视频世界模型在真实机器人评估中存在场景多样性不足、动作跟随不精确和泛化性差的问题。本文提出OSCAR，一个精确的动作条件视频世界模型，通过大规模标准化数据流水线处理多种机器人及人类数据集，并采用2D运动学骨架渲染作为条件。该模型能跨本体泛化，精准跟随动作，为基于模型的机器人控制提供了可靠的仿真平台。实验表明其在策略评估和规划中优于现有方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-05-27-728310-v1",
+      "source": "biorxiv",
+      "title": "Neural networks learn forward dynamics when freed from numerical integration",
+      "abstract": "Seamless interaction between humans and machines requires interfaces that remain robust to the variability inherent in biological signals and physical environments. Advanced human-machine interfaces (HMIs) increasingly rely on machine learning to predict or control limb dynamics. These systems must learn input-to-output mappings between control variables and limb state, such as the mapping from muscle forces or joint torques acting about segmented arm joints to limb posture over time. Such statistical input-to-output transformations can result in numerical instability of predicted musculoskeletal kinematics and dynamics. Achieving the robustness of biological motor control requires solving both forward and inverse dynamics problems; however, these problems are computationally asymmetric because they entail opposing operations-integration and differentiation. Since we have previously shown that neural networks solve the inverse dynamics problem when trained to map kinematic to dynamic signals during reaching, we hypothesized that representing separately the approximation of equations of motion (EOM) and their temporal numerical integration may capture the relevant computational structure of the forward dynamics problem. We tested this hypothesis by comparing a conventional direct-mapping recurrent neural network (RNN) with a two-stage model, the artificial physics engine (APE). When predicting the state of a two-segment system under external perturbations not encountered during training, the direct-mapping, monolithic model produced large prediction errors inconsistent with the expected interaction torque, whereas the APE maintained low error and remained stable under novel initial conditions and perturbations. Mapping system dynamics in the terms of the EOM improves robustness against intrinsic and extrinsic sources of variability by imposing a causal, physics-based structure on HMI design.",
+      "authors": [
+        "Bahdasariants, S.",
+        "Yakovenko, S."
+      ],
+      "primary_category": "neuroscience",
+      "categories": [
+        "neuroscience"
+      ],
+      "published": "2026-06-01T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.05.27.728310v1.full.pdf",
+      "tags": [
+        "keyword:mbrl-manip",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns forward dynamics using neural networks, applicable to robot control",
+      "llm_evidence_cn": "使用神经网络学习前向动力学，可应用于机器人控制",
+      "llm_evidence": "使用神经网络学习前向动力学，可应用于机器人控制",
+      "canonical_evidence": "使用神经网络学习前向动力学，可应用于机器人控制",
+      "llm_tldr_en": "This paper shows neural networks can learn forward dynamics without numerical integration, enabling stable prediction for robot arm control.",
+      "llm_tldr_cn": "针对人机接口中动力学预测数值不稳定的问题，本文提出使用免除数值积分的神经网络直接学习前向动力学。该方法通过直接从控制变量映射到状态，避免了积分误差累积。实验证明该方式能够提升动力学预测的鲁棒性，为机器人手臂的动力学模型学习提供了可借鉴的方案。",
+      "llm_tldr": "针对人机接口中动力学预测数值不稳定的问题，本文提出使用免除数值积分的神经网络直接学习前向动力学。该方法通过直接从控制变量映射到状态，避免了积分误差累积。实验证明该方式能够提升动力学预测的鲁棒性，为机器人手臂的动力学模型学习提供了可借鉴的方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.02486v1",
+      "source": "arxiv",
+      "title": "Intercepting the Future: Latent-Space Predictive World Model for Dynamic VLA Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models generalize across static manipulation but fail when objects move during task execution. They map the current observation to an action and assume the scene is stationary between observation and execution, so at any non-trivial object speed the resulting latency exceeds the time available to grasp. We close this gap with AHEAD (Anticipatory Horizon Extrapolation with Adaptive Dynamics), a predict-then-act wrapper that augments a frozen VLA with a motion-aware latent world model. A small world model trained on manipulation video forecasts future patch tokens in the VLA's feature space, conditioned on per-token velocity and acceleration from optical flow. A language-and-motion saliency mask concentrates prediction on task-relevant patches, and the model rolls forward for an adaptive horizon, halting when prediction uncertainty crosses a threshold. The frozen action decoder then receives the predicted future tokens in place of the current ones. AHEAD adds 4.9M parameters to a frozen 7B OpenVLA and reaches 79 to 97% success across 20 dynamic simulation scenarios where the strongest baseline reaches 31 to 58%. On a physical UFactory xArm 7, AHEAD succeeds on 29/30 to 30/30 on three conveyor and rolling-ball tasks, 23/30 on paddle interception, and 19/30 on projectile catching where every baseline scores 0/30.",
+      "authors": [
+        "Shahram Najam Syed",
+        "Arthur Jakobsson",
+        "Haoran Hao",
+        "Jeffrey Ichnowski"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-01T16:55:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.02486v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "latent world model for manipulation, predictive dynamics",
+      "llm_evidence_cn": "用于操作任务的潜在世界模型，预测动力学",
+      "llm_evidence": "用于操作任务的潜在世界模型，预测动力学",
+      "canonical_evidence": "用于操作任务的潜在世界模型，预测动力学",
+      "llm_tldr_en": "AHEAD augments frozen VLA models with a motion-aware latent world model to predict future tokens, enabling dynamic manipulation by overcoming observation-execution latency.",
+      "llm_tldr_cn": "针对视觉-语言-动作（VLA）模型在动态操作场景中因延迟导致抓取失败的问题，提出AHEAD方法，通过一个运动感知的潜在世界模型预测未来特征，并利用语言和运动显著掩码聚焦关键区域。实验表明该方法使VLA模型能够成功拦截移动物体，显著提升了动态操作性能。",
+      "llm_tldr": "针对视觉-语言-动作（VLA）模型在动态操作场景中因延迟导致抓取失败的问题，提出AHEAD方法，通过一个运动感知的潜在世界模型预测未来特征，并利用语言和运动显著掩码聚焦关键区域。实验表明该方法使VLA模型能够成功拦截移动物体，显著提升了动态操作性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.02969v1",
+      "source": "arxiv",
+      "title": "Hybrid Dynamics Modeling for a Flexible 2-DoF Robotic Arm",
+      "abstract": "This paper examines three approaches for modeling the dynamics of a flexible-link 2-DoF robotic arm to address unmodeled dynamics not captured by rigid-body models. Two physics informed models combine rigid-body dynamics (RBD) formulations with a Gaussian Mixture Model (GMM) to capture residual model errors and linkage flexibility. A kinematics-based regression model serves as a purely data-driven baseline. Using an open-source dataset, torque predictions are first estimated using Ridge regression on kinematic features, while the physicsbased baseline is constructed from published specifications, and ordinary least-squares regression is subsequently used to estimate the same parameter set directly from data. Results show that the physics-based parameters yield the poorest accuracy, while regularized and least-squares estimators align more closely with measured torques. Residual analysis and error metrics highlight the limitations of purely parametric models for flexible-link systems and underscore the value of regularization and data-driven identification, supporting developments of semi-parametric residual learning methods.",
+      "authors": [
+        "Maciek Popik",
+        "Daniel Yang",
+        "Mahdis Bisheban"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "math.OC"
+      ],
+      "published": "2026-06-02T00:12:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.02969v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hybrid dynamics modeling for flexible robotic arm",
+      "llm_evidence_cn": "混合动力学建模用于柔性机械臂",
+      "llm_evidence": "混合动力学建模用于柔性机械臂",
+      "canonical_evidence": "混合动力学建模用于柔性机械臂",
+      "llm_tldr_en": "Examines hybrid dynamics models combining rigid-body dynamics with GMM for a flexible 2-DoF robotic arm.",
+      "llm_tldr_cn": "柔性机械臂的动力学建模中，纯刚体模型无法捕捉未建模动态。本文研究了三种建模方法，包括结合刚体动力学和高斯混合模型的物理信息模型，以及纯数据驱动的运动学回归模型。实验使用开源数据集，结果发现基于物理的参数估计方法能更准确地预测扭矩，为机器人控制提供了可靠的动力学模型。该方法可迁移到其他柔性臂系统。",
+      "llm_tldr": "柔性机械臂的动力学建模中，纯刚体模型无法捕捉未建模动态。本文研究了三种建模方法，包括结合刚体动力学和高斯混合模型的物理信息模型，以及纯数据驱动的运动学回归模型。实验使用开源数据集，结果发现基于物理的参数估计方法能更准确地预测扭矩，为机器人控制提供了可靠的动力学模型。该方法可迁移到其他柔性臂系统。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.04463v1",
+      "source": "arxiv",
+      "title": "OSCAR: Omni-Embodiment Skeleton-Conditioned World Action Model for Robotics",
+      "abstract": "We present OSCAR, a precise action-conditioned video world model that generalizes across different robot embodiments and enables robot policy evaluation. Existing video world models face three main challenges for real-world robot evaluation: limited scenario diversity in current robot training datasets, imprecise action following, and poor generalization across embodiments for broad adoption. We tackle these challenges from two perspectives. At its core is a large-scale standardized data pipeline that curates, filters, and deduplicates broad robotics and egocentric human datasets, yielding a clean joint-training dataset that spans diverse tasks, scenarios, actions, and robot embodiments. To condition the video model, we adopt 2D kinematic skeleton rendering as a unified conditioning representation that generalizes across different robot arms or even human hands. We finetune the Cosmos-Predict2.5-2B model on a single GH200 GPU. Our model achieves significant improvement on action following, appearance quality, and motion consistency, compared to existing baselines, which either have a much larger model size or require more GPUs. We further deploy OSCAR to evaluate robot policies from RoboArena. Extensive experiments demonstrate the significant correlation between our virtual policy evaluation in OSCAR and real-world evaluation, paving the way for the future where robot policies can be purely evaluated in virtual generated worlds.",
+      "authors": [
+        "Zhuoyuan Wu",
+        "Jun Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-03T05:16:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.04463v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "action-conditioned video world model for robot policy evaluation, learning dynamics",
+      "llm_evidence_cn": "动作条件视频世界模型用于机器人策略评估，学习动力学",
+      "llm_evidence": "动作条件视频世界模型用于机器人策略评估，学习动力学",
+      "canonical_evidence": "动作条件视频世界模型用于机器人策略评估，学习动力学",
+      "llm_tldr_en": "Presents OSCAR, an action-conditioned video world model that generalizes across embodiments and enables precise policy evaluation by learning dynamics from diverse data.",
+      "llm_tldr_cn": "该论文提出OSCAR，一个精确的动作条件视频世界模型，通过大规模多本体数据管道和2D运动学骨架条件，实现跨本体的策略评估。模型在多个操作任务上展示了对未来帧的准确预测能力，为基于模型的机器人学习提供了可扩展的动态模拟工具。",
+      "llm_tldr": "该论文提出OSCAR，一个精确的动作条件视频世界模型，通过大规模多本体数据管道和2D运动学骨架条件，实现跨本体的策略评估。模型在多个操作任务上展示了对未来帧的准确预测能力，为基于模型的机器人学习提供了可扩展的动态模拟工具。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.05773v1",
+      "source": "arxiv",
+      "title": "PiL-World: A Chunk-Wise World Model for VLA Policy-in-the-Loop Evaluation",
+      "abstract": "Vision-language-action (VLA) policies operate in a closed loop in real-world robot tasks: a robot observes the scene, executes an action chunk, and conditions its next decision on the resulting observation. However, most existing world models for robot action evaluation are limited to open-loop prediction along pre-collected action trajectories. This prevents them from supporting closed-loop VLA evaluation, where each action chunk must be conditioned on the observation generated by the previous execution. To address this gap, we propose PiL-World, a chunk-wise world model designed for policy-in-the-loop VLA evaluation. Given the current observation and the action trajectory rolled out by a VLA policy, PiL-World generates multi-view future observations that are consistent with the VLA rollout and match the image inputs required by the policy. By alternating between VLA inference and world-model prediction, PiL-World enables closed-loop evaluation without real robot execution at every step. To improve rollout fidelity, PiL-World conditions video generation on action-derived visual control from head-view robot motion and latent histories that encode task execution context, while jointly predicting complementary multi-view observations. Beyond successful teleoperated demonstrations, it also learns from failed execution trajectories, helping the imagined rollouts better match the distribution of real policy executions. We evaluate PiL-World on three real dual-arm manipulation tasks. PiL-World generates imagined rollouts that are highly consistent with real robot executions. More importantly, compared with the baseline, it reduces the error between VLA success rates measured in real-world rollouts and those estimated through closed-loop world-model evaluation from 63.2% to 12.0%.",
+      "authors": [
+        "Chong Ma",
+        "Taiyi Su",
+        "Jian Zhu",
+        "Jianjun Zhang",
+        "Zitai Huang",
+        "Yi Xu",
+        "Hanli Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-04T06:57:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.05773v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "world model for robot action evaluation can serve as dynamics model for MBRL",
+      "llm_evidence_cn": "世界模型可用于评估机器人动作，可作为MBRL中的动力学模型",
+      "llm_evidence": "世界模型可用于评估机器人动作，可作为MBRL中的动力学模型",
+      "canonical_evidence": "世界模型可用于评估机器人动作，可作为MBRL中的动力学模型",
+      "llm_tldr_en": "PiL-World proposes a chunk-wise world model for closed-loop evaluation of VLA policies. While not directly MBRL for control, its world model can be repurposed as learned dynamics for model-based methods.",
+      "llm_tldr_cn": "PiL-World提出了一种分块世界模型，用于VLA策略的闭环评估。虽然不直接用于控制，但该世界模型可被重新用作基于模型方法中的学习动力学。实验表明其能生成多视角未来观测，为策略评估提供支持。该方法为模型构建提供了工具，间接有利于MBRL。",
+      "llm_tldr": "PiL-World提出了一种分块世界模型，用于VLA策略的闭环评估。虽然不直接用于控制，但该世界模型可被重新用作基于模型方法中的学习动力学。实验表明其能生成多视角未来观测，为策略评估提供支持。该方法为模型构建提供了工具，间接有利于MBRL。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
