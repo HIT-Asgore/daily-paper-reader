@@ -1,0 +1,455 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-09T22:09:48.794881+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 4,
+    "deep_cap": 7,
+    "deep_selected": 4,
+    "quick_candidates": 6,
+    "quick_skim_target": 12,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2606.08725v1",
+      "source": "arxiv",
+      "title": "Real-Time and Accurate Collision-Free Teleoperation via Differentiable Constraint-Based Trajectory Planning",
+      "abstract": "In teleoperation, the human operator typically controls only the end-effector pose, which often leads to self-collisions of the manipulator and collisions with environmental obstacles, since joints and links are not controlled individually. A common strategy to mitigate this issue is to enhance the operator's input using optimal-control-based trajectory planning. As derivative-based solvers require differentiable constraints, existing approaches either approximate robots and obstacles with spheres, reducing geometric accuracy, or approximate derivatives, degrading convergence and increasing computation times. We address these limitations by adapting a recent formulation of differentiable collision-avoidance constraints, based on duality in convex optimization, to the teleoperation setting. The robot is approximated with capsules and the environment with polytopes. We compare the resulting trajectory planning method against state-of-the-art techniques in simulation with varying numbers of obstacles and evaluate it on a UR5e manipulator in a real-world teleoperation test. Results show that our approach achieves lower computation times while enabling more accurate obstacle modeling, leading to smoother and collision-free end-effector teleoperation.",
+      "authors": [
+        "Max Grobbel",
+        "Tristan Schneider",
+        "Daniel Flögel",
+        "Sören Hohmann"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-07T16:39:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.08725v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "differentiable collision-avoidance constraints for manipulator teleoperation",
+      "llm_evidence_cn": "可微碰撞避免约束用于机械臂遥操作",
+      "llm_evidence": "可微碰撞避免约束用于机械臂遥操作",
+      "canonical_evidence": "可微碰撞避免约束用于机械臂遥操作",
+      "llm_tldr_en": "Proposes a differentiable constraint-based trajectory planner for collision-free teleoperation of manipulators, enabling real-time and accurate avoidance by directly optimizing over differentiable constraints.",
+      "llm_tldr_cn": "针对遥操作中机械臂易发生自碰撞和环境碰撞的问题，本文提出基于可微约束的轨迹规划方法。利用可微碰撞避免约束，导数求解器能够高效优化轨迹，实现实时无碰撞控制。该方法无需简化几何模型，提升了精度和计算效率，为可微物理在机械臂操作中的应用提供了直接范例。",
+      "llm_tldr": "针对遥操作中机械臂易发生自碰撞和环境碰撞的问题，本文提出基于可微约束的轨迹规划方法。利用可微碰撞避免约束，导数求解器能够高效优化轨迹，实现实时无碰撞控制。该方法无需简化几何模型，提升了精度和计算效率，为可微物理在机械臂操作中的应用提供了直接范例。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic arm manipulation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08737v1",
+      "source": "arxiv",
+      "title": "Dream-Tac: A Unified Tactile World Action Model for Contact-Rich Robot Manipulation",
+      "abstract": "World action models inherit the predictive capability of world models, enabling action generation to be guided by anticipated future observations. However, they rely primarily on vision and often fail in contact-rich manipulation, where critical cues arise from physical interaction. In this paper, we propose Dream-Tac, a unified Tactile-World Action Model that jointly models actions, future visual observations, and tactile dynamics. Specifically, Dream-Tac introduces (i) contact-gated visuotactile fusion to selectively integrate tactile signals and (ii) a contact-aware attention bias to better regulate cross-modal interactions during manipulation. To support real-time deployment, we further design a dual-level acceleration strategy, reformulating the contact-aware bias to preserve the fused attention path during training and introducing cache-based diffusion acceleration at inference, achieving up to 2.9$\\times$ faster training and 1.8$\\times$ faster inference. Across six contact-rich manipulation tasks, Dream-Tac improves action accuracy by 31.7\\% on average, demonstrating the effectiveness of unified visuotactile world modeling.Code is available at https://github.com/LYFCLOUDFAN/Dream-Tac.",
+      "authors": [
+        "Yunfan Lou",
+        "Yifan Ye",
+        "Yankai Fu",
+        "Jun Cen",
+        "Xiaowei Chi",
+        "Yaoxu Lyu",
+        "Peidong Jia",
+        "Sirui Han",
+        "Zhihe Lu",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-07T17:18:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.08737v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world action model for manipulation, model-based RL",
+      "llm_evidence_cn": "世界动作模型用于操作，属于模型强化学习方法",
+      "llm_evidence": "世界动作模型用于操作，属于模型强化学习方法",
+      "canonical_evidence": "世界动作模型用于操作，属于模型强化学习方法",
+      "llm_tldr_en": "Proposes Dream-Tac, a tactile-world action model that jointly predicts actions, future visual observations and tactile dynamics for contact-rich manipulation.",
+      "llm_tldr_cn": "该论文提出Dream-Tac，一种统一的触觉世界动作模型，同时建模动作、未来视觉观察和触觉动力学，用于接触丰富操作。通过接触门控融合和注意力偏置，有效整合触觉信号。实验表明该模型在多个操作任务上优于仅视觉方法，并支持实时部署。",
+      "llm_tldr": "该论文提出Dream-Tac，一种统一的触觉世界动作模型，同时建模动作、未来视觉观察和触觉动力学，用于接触丰富操作。通过接触门控融合和注意力偏置，有效整合触觉信号。实验表明该模型在多个操作任务上优于仅视觉方法，并支持实时部署。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08775v1",
+      "source": "arxiv",
+      "title": "Unifying Object-Centric World Models and Diffusion Policy: A Hierarchical Framework for Multi-Stage Robotic Tasks",
+      "abstract": "Visual world models have shown great potential in learning complex system dynamics. Recent advancements leverage these models as transition functions within Model Predictive Control (MPC) frameworks to solve various control tasks. When applied to robotics, however, they are limited to single-stage tasks such as reaching or grasping, and struggle with multi-stage ones that demand complex sequential planning. In this work, we introduce WorldDP, a world model framework designed for multi-stage robotic manipulation. Our hierarchical approach utilizes a high-level world model as a transition function to optimize for feasible subgoals during runtime, which are subsequently reached by a low-level Diffusion Policy. To further aid in learning dynamics and planning, we incorporate object-centric representations that decouple environmental entities and enable us to plan sequentially with respect to each. Evaluated across several robotics benchmarks, WorldDP consistently outperforms existing baselines, validating that coupling the world model's physically grounded planning with diffusion policy's efficient execution yields superior multi-stage performance.",
+      "authors": [
+        "Raktim Gautam Goswami",
+        "Prashanth Krishnamurthy",
+        "Yann LeCun",
+        "Farshad Khorrami"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-07T18:39:45+00:00",
+      "link": "https://arxiv.org/pdf/2606.08775v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world model with diffusion policy for multi-stage manipulation",
+      "llm_evidence_cn": "世界模型结合扩散策略用于多阶段操作",
+      "llm_evidence": "世界模型结合扩散策略用于多阶段操作",
+      "canonical_evidence": "世界模型结合扩散策略用于多阶段操作",
+      "llm_tldr_en": "Introduces WorldDP, a hierarchical framework combining object-centric world models as transition functions with diffusion policy for subgoal reaching, enabling multi-stage robotic manipulation.",
+      "llm_tldr_cn": "视觉世界模型难以处理多阶段操作任务。本文提出WorldDP，一种分层框架，利用高层以对象为中心的世界模型作为转移函数在线优化可行子目标，低层扩散策略执行子目标。在多种多阶段操作任务中验证了其高效规划和执行能力。",
+      "llm_tldr": "视觉世界模型难以处理多阶段操作任务。本文提出WorldDP，一种分层框架，利用高层以对象为中心的世界模型作为转移函数在线优化可行子目标，低层扩散策略执行子目标。在多种多阶段操作任务中验证了其高效规划和执行能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.09337v1",
+      "source": "arxiv",
+      "title": "TORL-VLA: Tactile Guided Online Reinforcement Learning for Contact-Rich Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models have become a powerful framework for robotic manipulation, and recent studies have introduced tactile or force feedback into VLAs to address contact-rich tasks. However, these models are typically deployed as offline policies. When contact conditions shift from the training distribution, the policy cannot perform online adaptation, leading to problems such as inappropriate contact forces and inefficient retries. Therefore, we propose TORL-VLA, a tactile-guided online reinforcement learning framework that couples tactile feedback with policy refinement for contact-rich manipulation. Our method introduces a tactile-derived wrench-aware VLA to predict reference actions and future wrench sequences, while a lightweight online RL module is used to refine the reference actions. To stabilize learning from mixed exploratory policy-generated and human-intervention data, we introduce an intervention-censored critic that prevents post-intervention success from being wrongly credited to policy-generated actions preceding intervention. Real-robot experiments on long-horizon contact-rich tasks, including latch manipulation, coffee-cup placement, and egg handling, show that TORL-VLA improves success rates at both subtask and full-task levels, as well as time-bounded execution efficiency over strong baselines.",
+      "authors": [
+        "Huaihang Zheng",
+        "Yi Yang",
+        "Kai Ma",
+        "Shenglin Xu",
+        "Tian Xie",
+        "Guozheng Li",
+        "Xiangyu Wang",
+        "Yiren Ma",
+        "Si Liu",
+        "Yinian Mao",
+        "Baoxu Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-08T11:05:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.09337v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "online RL for contact-rich robot arm manipulation",
+      "llm_evidence_cn": "在线强化学习用于接触丰富的机械臂操作",
+      "llm_evidence": "在线强化学习用于接触丰富的机械臂操作",
+      "canonical_evidence": "在线强化学习用于接触丰富的机械臂操作",
+      "llm_tldr_en": "Proposes TORL-VLA, a tactile-guided online reinforcement learning framework that couples tactile feedback with policy refinement for contact-rich robot arm manipulation, enabling online adaptation to shifting contact conditions.",
+      "llm_tldr_cn": "现有视觉-语言-动作模型在接触丰富的操作任务中因离线部署无法在线适应接触条件变化。提出TORL-VLA框架，结合触觉反馈与在线强化学习，通过触觉导出的力觉感知VLA预测参考动作与未来力序列，并利用在线策略优化实现自适应。实验表明该方法能有效改善接触力控制并提高任务成功率，为接触丰富的机器人操作提供了一种可在线调整的强化学习方案。",
+      "llm_tldr": "现有视觉-语言-动作模型在接触丰富的操作任务中因离线部署无法在线适应接触条件变化。提出TORL-VLA框架，结合触觉反馈与在线强化学习，通过触觉导出的力觉感知VLA预测参考动作与未来力序列，并利用在线策略优化实现自适应。实验表明该方法能有效改善接触力控制并提高任务成功率，为接触丰富的机器人操作提供了一种可在线调整的强化学习方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09811v1",
+      "source": "arxiv",
+      "title": "AHA-WAM:Asynchronous Horizon-Adaptive World-Action Modeling with Observation-Guided Context Routing",
+      "abstract": "World-action models have emerged as a promising paradigm for robot manipulation, jointly modeling visual scene dynamics and actions to inject physical priors into policy learning. However, existing world-action models couple world prediction and action execution at the same temporal resolution, forcing the world branch to model near-term frame variations that are redundant and weakly informative. We posit that strictly binding world prediction and action execution to the same temporal rhythm may underutilize the potential of the video branch for embodied control. Therefore, we propose AHA-WAM, an Asynchronous Horizon-Adaptive World-Action Model built on a dual Diffusion Transformer (DiT) architecture that reorganizes world-action modeling around this temporal asymmetry. AHA-WAM instantiates the video DiT as a low-frequency world planner that maintains rolling key-value memory over past observations and exposes reusable layerwise latent context encoding long-horizon scene evolution, while a high-frequency action DiT executes short action chunks in closed loop by querying this context through layerwise joint attention. To support asynchronous execution, we introduce horizon-adaptive offset training and Observation-Guided Video-Context Routing (OVCR), which together let the action expert exploit long-horizon world context while remaining responsive to real-time execution state without rerunning the video DiT. Experiments on RoboTwin and real-world manipulation tasks show that AHA-WAM achieves state-of-the-art performance without any robot-data pretraining, attaining 92.80% average success on RoboTwin and 78.3% success across 4 real-world tasks, while reaching 24.17 Hz closed-loop control with a 4.59x speedup over Fast-WAM.",
+      "authors": [
+        "Jisong Cai",
+        "Long Ling",
+        "Shiwei Chu",
+        "Zhongshan Liu",
+        "Jiayue Kang",
+        "Zhixuan Liang",
+        "Wenjie Xu",
+        "Yinan Mao",
+        "Weinan Zhang",
+        "Xiaokang Yang",
+        "Ru Ying",
+        "Ran Zheng",
+        "Yao Mu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-06-08T17:55:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.09811v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world-action model for robot manipulation, injects physical priors",
+      "llm_evidence_cn": "世界-动作模型用于机器人操作，注入物理先验",
+      "llm_evidence": "世界-动作模型用于机器人操作，注入物理先验",
+      "canonical_evidence": "世界-动作模型用于机器人操作，注入物理先验",
+      "llm_tldr_en": "Proposes AHA-WAM, an asynchronous world-action model with dual DiT that decouples world prediction and action execution temporal resolution, improving physical prior injection for manipulation.",
+      "llm_tldr_cn": "现有世界-动作模型将世界预测与动作执行绑定在同一时间分辨率，导致冗余建模。本文提出AHA-WAM，基于双扩散Transformer架构，异步解耦时间分辨率，自适应地平线，提升物理先验的注入效率。在机器人操作任务中展示了更好的策略学习效果。",
+      "llm_tldr": "现有世界-动作模型将世界预测与动作执行绑定在同一时间分辨率，导致冗余建模。本文提出AHA-WAM，基于双扩散Transformer架构，异步解耦时间分辨率，自适应地平线，提升物理先验的注入效率。在机器人操作任务中展示了更好的策略学习效果。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08242v1",
+      "source": "arxiv",
+      "title": "Light-WAM: Efficient World Action Models with State-Fusion Action Decoding",
+      "abstract": "World Action Models (WAMs) extend robot policy learning by incorporating future prediction as an additional training objective, encouraging the policy to encode task-relevant temporal structure in its representations. Current WAMs often rely on large-scale generative architectures that incur high training costs and inference latency, making them difficult to deploy as efficient closed-loop policies. We propose Light-WAM, a lightweight World Action Model for efficient robot manipulation. Specifically, it is built with a compact video backbone and performs future-video supervision in a downsampled latent space, reducing the cost of video co-training while retaining its benefits for representation learning. For action prediction, Light-WAM introduces the StateFusionActionExpert, which reads adapted states from multiple backbone layers, fuses them through learned-query pooling, and directly predicts action chunks in a single forward pass. This design provides an efficient interface between video backbone representations and robot actions, avoiding the need for heavy generative action experts. Experiments demonstrate that Light-WAM maintains strong performance on LIBERO and achieves usable multi-task performance on RoboTwin 2.0, while using only 0.44B trainable parameters. It also achieves 72.03ms inference latency with 4.1GiB peak GPU memory and improved training throughput.",
+      "authors": [
+        "Ziang Li",
+        "Dongzhou Cheng",
+        "Yibin Wang",
+        "Shiyue Wang",
+        "Xiaoyang Xu",
+        "Lingxuan Weng",
+        "Juan Wang",
+        "Jiaqi Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-06T15:58:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.08242v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "lightweight world action model for efficient robot manipulation with future prediction",
+      "llm_evidence_cn": "用于高效机器人操作的轻量级世界动作模型，结合未来预测",
+      "llm_evidence": "用于高效机器人操作的轻量级世界动作模型，结合未来预测",
+      "canonical_evidence": "用于高效机器人操作的轻量级世界动作模型，结合未来预测",
+      "llm_tldr_en": "Light-WAM introduces a compact world action model that uses future-video supervision in a downsampled latent space for efficient robot manipulation, reducing training cost while retaining representation learning benefits.",
+      "llm_tldr_cn": "现有的世界动作模型依赖大型生成架构，训练和推理成本高，难以部署。本文提出Light-WAM，一种轻量级世界动作模型，通过紧凑的视频骨干网络和降采样潜空间的未来视频监督，降低了协同训练成本，同时保留了表示学习优势。实验表明该方法在机器人操作任务上实现了高效且准确的策略学习，为世界模型的实际部署提供了可行方案。",
+      "llm_tldr": "现有的世界动作模型依赖大型生成架构，训练和推理成本高，难以部署。本文提出Light-WAM，一种轻量级世界动作模型，通过紧凑的视频骨干网络和降采样潜空间的未来视频监督，降低了协同训练成本，同时保留了表示学习优势。实验表明该方法在机器人操作任务上实现了高效且准确的策略学习，为世界模型的实际部署提供了可行方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.09813v1",
+      "source": "arxiv",
+      "title": "iMaC: Translating Actions into Motion and Contact Images for Embodied World Models",
+      "abstract": "Embodied world models have emerged as a pivotal paradigm for visual robotic decision-making and interactive environment simulation. However, conventional embodied frameworks rely on low-dimensional structured action vectors (e.g., joint angles and end-effector poses), which suffer from limited expressive capacity, poor generalization across diverse embodiments, and unnatural dynamic modeling for complex physical interactions. To address these limitations, this paper proposesiMac (Image as Action Control), a novel unified control paradigm that treats raw visual images as native action representations for embodied world models. Departing from traditional explicit kinematic action encoding, iMac formulates continuous visual manipulation as image-based action tokens, which inherently encapsulate spatial motion intentions, interactive geometric constraints and subtle physical dynamics. We construct a dual-branch embodied architecture consisting of an image-action encoder and a dynamic world predictor: the encoder compresses target-driven visual images into compact action embeddings, while the predictor learns environment transition rules conditioned on image actions to achieve high-fidelity future state prediction and closed-loop embodied control. Extensive experiments are conducted on public embodied manipulation benchmarks and real-world robotic scenarios. The results demonstrate that iMac outperforms vector-based action control baselines in prediction accuracy, task success rate and cross-scene generalization ability. Moreover, our image-action design eliminates the reliance on manually defined action spaces, realizing flexible and universal control for heterogeneous embodied agents. This work provides an innovative visual-action perspective for embodied world models, offering a simple yet effective paradigm for scalable robotic perception and manipulation.",
+      "authors": [
+        "Zhenyu Wu",
+        "Xiuwei Xu",
+        "Yukun Zhou",
+        "Yifan Li",
+        "Qiuping Deng",
+        "Xiaofeng Wang",
+        "Zheng Zhu",
+        "Bingyao Yu",
+        "Ziwei Wang",
+        "Jiwen Lu",
+        "Haibin Yan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-06-08T17:55:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.09813v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world model using images as actions for manipulation",
+      "llm_evidence_cn": "使用图像作为动作表示的具身世界模型用于操作",
+      "llm_evidence": "使用图像作为动作表示的具身世界模型用于操作",
+      "canonical_evidence": "使用图像作为动作表示的具身世界模型用于操作",
+      "llm_tldr_en": "iMaC proposes using raw visual images as native action representations for embodied world models, enabling more expressive dynamics modeling for robotic manipulation.",
+      "llm_tldr_cn": "iMaC提出了一种新的统一控制范式，将原始视觉图像作为具身世界模型的原生动作表示。该方法将连续视觉操作转化为图像空间中的变换，从而在保留丰富几何信息的同时实现更自然的动力学建模。实验表明，iMaC在多种操作任务上取得了优异表现，为机器人决策提供了更通用的世界模型框架。",
+      "llm_tldr": "iMaC提出了一种新的统一控制范式，将原始视觉图像作为具身世界模型的原生动作表示。该方法将连续视觉操作转化为图像空间中的变换，从而在保留丰富几何信息的同时实现更自然的动力学建模。实验表明，iMaC在多种操作任务上取得了优异表现，为机器人决策提供了更通用的世界模型框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08555v1",
+      "source": "arxiv",
+      "title": "FAWAM: Force-Aware World Action Models for Closed-Loop Contact-Rich Manipulation",
+      "abstract": "Force signals provide critical interaction cues for contact-rich robotic manipulation. However, existing methods mostly use force as an additional observation modality, without fully exploiting its role in modeling future interaction dynamics or guiding execution-time feedback correction. In this paper, we propose FAWAM, a force-aware world action model that incorporates force information at three levels: perception, prediction, and closed-loop execution. FAWAM first encodes historical 6-axis force/torque signals to modulate action generation, then jointly predicts future actions and end-effector wrenches to explicitly model contact evolution. It further introduces a residual correction module that uses the predicted wrench trajectory as an execution-time reference to refine actions online based on real-time force feedback. Real-world experiments across multiple contact-rich tasks show that FAWAM improves the average success rate by 36.25% over vision-only baselines and 21.25% over existing force-aware baselines, demonstrating the effectiveness of our force-aware framework for robust contact-rich manipulation.",
+      "authors": [
+        "Haotian He",
+        "Zeyu Yan",
+        "Qipeng Liu",
+        "Ning Guo",
+        "Wenzhao Lian"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-07T10:26:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.08555v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "force-aware world model for closed-loop manipulation control",
+      "llm_evidence_cn": "力感知世界模型用于闭环操作控制",
+      "llm_evidence": "力感知世界模型用于闭环操作控制",
+      "canonical_evidence": "力感知世界模型用于闭环操作控制",
+      "llm_tldr_en": "Proposes a force-aware world action model that predicts actions and wrenches, with residual correction for closed-loop contact-rich manipulation.",
+      "llm_tldr_cn": "针对接触操作中对力信息的利用不足，提出FAWAM模型，在感知、预测和执行三个层面融合六轴力/力矩信号。模型联合预测未来动作和末端执行器力矩，并使用时序残差校正模块实现闭环控制。在多种接触任务上展示了力引导的预测和校正能力，提升了操作鲁棒性。",
+      "llm_tldr": "针对接触操作中对力信息的利用不足，提出FAWAM模型，在感知、预测和执行三个层面融合六轴力/力矩信号。模型联合预测未来动作和末端执行器力矩，并使用时序残差校正模块实现闭环控制。在多种接触任务上展示了力引导的预测和校正能力，提升了操作鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "biorxiv-10-64898-2026-06-03-729998-v1",
+      "source": "biorxiv",
+      "title": "ANNet: A first-principles neural network for forward and inverse dynamics",
+      "abstract": "Biological and robotic systems must solve two related computations to move: inverse dynamics, which determines the forces or torques needed to produce a desired movement, and forward dynamics, which maps applied forces to motion. Although these computations are coupled by the same equations of motion, they are usually estimated or implemented as distinct inverse and forward mappings, in both model-based and data-driven formulations. This separation can obscure the shared structure that constrains both problems. Here, we present ANNet, a physics-informed neural network that places both computations on a common learned representation by learning a single scalar quantity from classical mechanics--Appell acceleration energy. The network maps kinematic state and candidate accelerations to this scalar function, and inverse dynamics is obtained by differentiating the learned energy function with respect to acceleration to recover joint torques. Forward dynamics is then calculated without retraining by embedding the same learned energy landscape in an optimization objective whose unconstrained minimum satisfies the Gibbs-Appell equation. The resulting accelerations are integrated forward in time. We evaluate ANNet on a double pendulum paradigm. In trials unseen by the network during training, inverse and optimization-based forward simulations are real-time accurate. Our results provide a first-principles route for using a single learned representation to support both prediction and control.",
+      "authors": [
+        "Bahdasariants, S.",
+        "Parola, L.",
+        "Kacker, K.",
+        "Feldman, A. K.",
+        "Zdobinski, Z.",
+        "Kang, I.",
+        "Weber, D. J."
+      ],
+      "primary_category": "neuroscience",
+      "categories": [
+        "neuroscience"
+      ],
+      "published": "2026-06-08T00:00:00+00:00",
+      "link": "https://www.biorxiv.org/content/10.64898/2026.06.03.729998v1.full.pdf",
+      "tags": [
+        "keyword:mbrl-manip",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "physics-informed neural network for forward and inverse dynamics, potentially differentiable",
+      "llm_evidence_cn": "物理信息神经网络用于正逆动力学，可能可微",
+      "llm_evidence": "物理信息神经网络用于正逆动力学，可能可微",
+      "canonical_evidence": "物理信息神经网络用于正逆动力学，可能可微",
+      "llm_tldr_en": "ANNet uses Appell acceleration energy to unify forward and inverse dynamics in a physics-informed neural network, offering differentiable dynamics that can be applied to robotic control.",
+      "llm_tldr_cn": "针对正逆动力学计算分离导致效率低下的问题，本文提出ANNet，利用Appell加速度能量这一单一标量量将两种动力学耦合在一个物理信息神经网络中。该网络可微分，能够同时学习正向和逆向映射，为机器人控制提供可微的动力学模型，有望提升操控任务的规划效率。",
+      "llm_tldr": "针对正逆动力学计算分离导致效率低下的问题，本文提出ANNet，利用Appell加速度能量这一单一标量量将两种动力学耦合在一个物理信息神经网络中。该网络可微分，能够同时学习正向和逆向映射，为机器人控制提供可微的动力学模型，有望提升操控任务的规划效率。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.09640v1",
+      "source": "arxiv",
+      "title": "Physics-Aware Sparse Learning and Selective Online Adaptation for Euler-Lagrange Robot Dynamics",
+      "abstract": "Accurate dynamics models are essential for model-based robotic control, yet nominal Euler--Lagrange models often become inaccurate in the presence of payload variation, unmodeled coupling, friction, aerodynamic effects, and changing operating conditions. Most learning-based correction methods improve prediction accuracy by introducing a single additive residual, but do not preserve the internal mechanical structure of Euler--Lagrange systems. This leads to models that do not preserve symmetry, positive-definiteness, or the coupling between inertia and velocity-dependent terms, which can result in physically inconsistent predictions and reduced reliability when embedded in model-based controllers. We propose a structure-preserving residual learning framework that decomposes model mismatch into an inertia correction, the corresponding induced Coriolis term, and a generalized-force residual. The mechanical component is learned under physical constraints, while the disturbance-sensitive component is represented through a sparse history-dependent latent interaction model and adapted online using Bayesian linear regression. This separation preserves key mechanical structure while restricting adaptation to the part of the dynamics most affected by changing conditions. Experiments across multiple robotic platforms, including mobile, aerial, and manipulator systems, show that the proposed method improves dynamics prediction and trajectory tracking under coupled and time-varying dynamics. These results highlight the value of combining structured residual modeling, compact latent interaction selection, and selective online adaptation for real-world model-based control.",
+      "authors": [
+        "Rishabh Dev Yadav",
+        "Samaksh Ujjawal",
+        "Sihao Sun",
+        "Spandan Roy",
+        "Wei Pan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-08T15:36:00+00:00",
+      "link": "https://arxiv.org/pdf/2606.09640v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns dynamics models preserving physical structure for robot control",
+      "llm_evidence_cn": "学习保留物理结构的动力学模型用于机器人控制",
+      "llm_evidence": "学习保留物理结构的动力学模型用于机器人控制",
+      "canonical_evidence": "学习保留物理结构的动力学模型用于机器人控制",
+      "llm_tldr_en": "Proposes a structure-preserving learning method for Euler-Lagrange dynamics, improving accuracy and reliability for model-based control.",
+      "llm_tldr_cn": "针对机器人动力学模型不准确的问题，提出一种保留欧拉-拉格朗日机械结构的学习方法，通过稀疏残差学习和选择性在线适应，在保持物理一致性的同时提高预测精度。实验验证了该方法在变负载条件下的有效性，为基于模型的控制提供了更可靠的动力学模型。",
+      "llm_tldr": "针对机器人动力学模型不准确的问题，提出一种保留欧拉-拉格朗日机械结构的学习方法，通过稀疏残差学习和选择性在线适应，在保持物理一致性的同时提高预测精度。实验验证了该方法在变负载条件下的有效性，为基于模型的控制提供了更可靠的动力学模型。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
