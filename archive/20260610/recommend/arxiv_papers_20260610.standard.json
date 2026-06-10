@@ -1,0 +1,240 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-10T21:43:04.878606+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.10305v1",
+      "source": "arxiv",
+      "title": "SARM2: Multi-Task Stage Aware Reward Modeling for Self Improving Robotic Manipulation",
+      "abstract": "Fine-tuning vision-language-action (VLA) policies for long-horizon manipulation still relies heavily on behavior cloning, which requires costly high-quality demonstrations and keeps policies near the demonstration distribution. Reward models can reduce this dependence by reweighting demonstrations and providing dense supervision for on-robot reinforcement learning (RL), but they must be dense, accurate, and general. Existing methods fall short: task-specific stage-aware models are accurate but require per-task annotations, while general vision-language-model (VLM) reward models are broadly applicable but too coarse for fine-grained long-horizon progress. We introduce RM, a multi-task stage-aware reward model that combines an action-primitive-based stage estimator with a multi-gate Mixture-of-Experts (MMoE) value head to produce dense per-step rewards across manipulation tasks. Building on RM, we further propose SPIRAL (Self-Policy Improvement via Reward-Aligned Learning), an on-policy reward-guided framework that improves VLA policies from cheap autonomous rollouts. On a 10-task benchmark, RM reduces value-estimation MSE by 80% over the strongest baselines; when used in SPIRAL, it improves task success from around 50% to near-perfect performance on Folding Shorts (58% to 100%) and Cleaning Whiteboard (50% to 90%), showing that high-quality dense rewards are key to a stable robot data flywheel. Project website: https://qianzhong-chen.github.io/sarm2.github.io/.",
+      "authors": [
+        "Qianzhong Chen",
+        "Hau Zheng",
+        "Justin Yu",
+        "Suning Huang",
+        "Jiankai Sun",
+        "Ken Goldberg",
+        "Chuan Wen",
+        "Pieter Abbeel",
+        "Yide Shentu",
+        "Philipp Wu",
+        "Mac Schwager"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-09T01:46:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.10305v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Multi-task stage-aware reward model for robotic manipulation RL",
+      "llm_evidence_cn": "多任务阶段感知奖励模型用于机器人操作强化学习",
+      "llm_evidence": "多任务阶段感知奖励模型用于机器人操作强化学习",
+      "canonical_evidence": "多任务阶段感知奖励模型用于机器人操作强化学习",
+      "llm_tldr_en": "Proposes a multi-task stage-aware reward model to provide dense supervision for fine-grained long-horizon manipulation, enabling VLA policy self-improvement via RL.",
+      "llm_tldr_cn": "本文针对长程操作任务中行为克隆依赖大量高质量演示的问题，提出了一种多任务阶段感知奖励模型（RM）。该模型结合动作基元和阶段感知头，为VLA策略的RL微调提供密集准确的奖励信号。在多个长期操作任务上，该方法显著提升了策略性能，减少了对人工演示的依赖。",
+      "llm_tldr": "本文针对长程操作任务中行为克隆依赖大量高质量演示的问题，提出了一种多任务阶段感知奖励模型（RM）。该模型结合动作基元和阶段感知头，为VLA策略的RL微调提供密集准确的奖励信号。在多个长期操作任务上，该方法显著提升了策略性能，减少了对人工演示的依赖。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.10363v1",
+      "source": "arxiv",
+      "title": "HiMem-WAM: Hierarchical Memory-Gated World Action Models for Robotic Manipulation",
+      "abstract": "World Action Models (WAMs) have emerged as a new powerful paradigm for embodied intelligence, learning action-relevant visual dynamics that significantly enhance generalization and robustness. However, existing WAMs still struggle with task-relevant memory in long-horizon robotic manipulation. To address this, we present HiMem-WAM, a Hierarchical Memory-Gated WAM that integrates motion-centric latent actions, high-level skill latents, and boundary-triggered memory updates. Specifically, we develop a hierarchical latent action framework that jointly learns low-level motion and high-level skill latents, providing structured temporal abstraction. Meanwhile, a boundary-aware memory gate writes compact task states at predicted skill transitions, enabling causal inference without test-time generation of future video or optical flow estimation. Evaluated on LIBERO, LIBERO-PLUS, RMBench and real-world tasks, HiMem-WAM shows that hierarchical latents improve robustness under deployment perturbations, and the memory module substantially benefits memory-dependent long-horizon manipulation.",
+      "authors": [
+        "Xiaoquan Sun",
+        "Ruijian Zhang",
+        "Chen Cao",
+        "Yihan Sun",
+        "Jiahui Chen",
+        "Zetian Xu",
+        "Bo Chen",
+        "Haijier Chen",
+        "Zhen Yang",
+        "Jiarun Zhu",
+        "Yijun Hong",
+        "JingZhe Xu",
+        "Jingrui Pang",
+        "Mingqi Yuan",
+        "Jiayu Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-09T03:22:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.10363v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world action model with hierarchical memory for manipulation dynamics",
+      "llm_evidence_cn": "具有层次记忆的世界动作模型用于操作动力学学习",
+      "llm_evidence": "具有层次记忆的世界动作模型用于操作动力学学习",
+      "canonical_evidence": "具有层次记忆的世界动作模型用于操作动力学学习",
+      "llm_tldr_en": "HiMem-WAM introduces hierarchical latent actions and boundary-aware memory for long-horizon manipulation, learning structured visual dynamics.",
+      "llm_tldr_cn": "现有世界动作模型在长期机器人操作任务中缺乏任务相关记忆。本文提出层次记忆门控世界动作模型HiMem-WAM，联合学习低层运动和高层技能潜在变量，并提供边界触发的记忆更新机制，以紧凑状态表示技能转换。实验证明该方法在长序列操作中显著提升泛化能力和策略性能。",
+      "llm_tldr": "现有世界动作模型在长期机器人操作任务中缺乏任务相关记忆。本文提出层次记忆门控世界动作模型HiMem-WAM，联合学习低层运动和高层技能潜在变量，并提供边界触发的记忆更新机制，以紧凑状态表示技能转换。实验证明该方法在长序列操作中显著提升泛化能力和策略性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.03355v1",
+      "source": "arxiv",
+      "title": "APIC: Amortized Physics-Informed Calibration using Neural Processes",
+      "abstract": "Physics models are inherently imperfect due to misspecified or missing mechanisms, resulting in systematic discrepancies between model predictions and real-world observations. The Kennedy-O'Hagan (KOH) framework addresses this issue through explicit discrepancy modeling. However, its non-amortized, per-instance formulation limits scalability across families of related systems. We introduce Amortized Physics-Informed Calibration (APIC), a population-level extension of KOH that leverages Neural Processes to perform scalable Bayesian inference across realizations. Our framework employs a two-branch latent architecture to disentangle instance-specific physical parameters from shared, state-dependent structural discrepancies. By integrating differentiable physics into an amortized inference backbone, APIC enables rapid calibration of unseen realizations from sparse observations while quantifying uncertainty. Experiments on the damped spring oscillator, the Lotka-Volterra system, and the advection-diffusion PDE with misspecified physics demonstrate improved parameter recovery and consistent identification of the systemic discrepancy structure compared to other calibration approaches.",
+      "authors": [
+        "Aishwarya Venkataramanan",
+        "Sai Karthikeya Vemuri",
+        "Joachim Denzler"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-02T09:04:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.03355v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable physics calibration using Neural Processes",
+      "llm_evidence_cn": "使用神经过程进行可微物理校准",
+      "llm_evidence": "使用神经过程进行可微物理校准",
+      "canonical_evidence": "使用神经过程进行可微物理校准",
+      "llm_tldr_en": "Introduces Amortized Physics-Informed Calibration (APIC) leveraging Neural Processes for scalable Bayesian discrepancy modeling, integrating differentiable physics models.",
+      "llm_tldr_cn": "该论文针对物理模型固有的不准确性，提出了一种摊销式物理信息校准方法APIC，利用神经过程进行可扩展贝叶斯推断，该框架采用两分支潜在架构区分实例特定物理参数与共享的结构差异，并通过集成可微物理模型实现高效梯度计算。APIC是人口级扩展，可跨相关系统族应用，为机器人操作中的可微物理建模提供了可迁移的工具。",
+      "llm_tldr": "该论文针对物理模型固有的不准确性，提出了一种摊销式物理信息校准方法APIC，利用神经过程进行可扩展贝叶斯推断，该框架采用两分支潜在架构区分实例特定物理参数与共享的结构差异，并通过集成可微物理模型实现高效梯度计算。APIC是人口级扩展，可跨相关系统族应用，为机器人操作中的可微物理建模提供了可迁移的工具。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.03479v1",
+      "source": "arxiv",
+      "title": "PersistGS: Differentiable Physics for Object Permanence in 4D Gaussian Splatting",
+      "abstract": "Dynamic 3D Gaussian Splatting (3DGS) methods reconstruct time-varying scenes from synchronized multi-camera video using photometric supervision. When a moving object becomes fully occluded from all training cameras, this supervision vanishes: the Gaussians representing it receive no gradient signal and degrade. Existing approaches to incomplete observations in neural reconstruction rely on learned generative priors that prioritize visual plausibility over physical correctness.   We propose $\\textbf{PersistGS}$, a method that restores object permanence during occlusion by coupling differentiable rigid body simulation with 3D Gaussian Splatting. Our approach decomposes the scene into per-object Gaussians and collision meshes, estimates friction and velocity from the observed pre-occlusion trajectory via differentiable simulation, and uses the resulting SE(3) trajectory to position object Gaussians throughout the occlusion period. Because the predicted trajectory satisfies the governing equations of rigid body dynamics, it faithfully captures contact events (bounces, friction-based deceleration, direction changes) that kinematic extrapolation cannot model. We introduce a centroid silhouette loss that isolates positional gradients from appearance noise, yielding 40% lower trajectory error than photometric supervision. We evaluate using cameras withheld from training that observe the object during its occlusion. Experiments on synthetic scenes show that PersistGS outperforms constant velocity extrapolation by +2.46dB PSNR and comes within 0.19dB of a ground-truth trajectory upper bound.",
+      "authors": [
+        "Adrian Ramlal",
+        "John S. Zelek"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.GR"
+      ],
+      "published": "2026-06-02T10:57:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.03479v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable rigid body simulation for object permanence",
+      "llm_evidence_cn": "可微刚体模拟用于物体恒常性",
+      "llm_evidence": "可微刚体模拟用于物体恒常性",
+      "canonical_evidence": "可微刚体模拟用于物体恒常性",
+      "llm_tldr_en": "Proposes PersistGS coupling differentiable rigid body simulation with 3D Gaussian Splatting to maintain object permanence during occlusion.",
+      "llm_tldr_cn": "该论文针对动态3D高斯溅射中物体遮挡导致梯度消失的问题，提出了PersistGS方法，通过将可微刚体模拟与3D高斯溅射耦合，为每个物体分解高斯和碰撞网格，估计摩擦等物理属性。该方法恢复了遮挡期间的物体恒常性，提供了物理正确的重建，其可微物理组件可直接迁移到机器人操作中的动力学建模。",
+      "llm_tldr": "该论文针对动态3D高斯溅射中物体遮挡导致梯度消失的问题，提出了PersistGS方法，通过将可微刚体模拟与3D高斯溅射耦合，为每个物体分解高斯和碰撞网格，估计摩擦等物理属性。该方法恢复了遮挡期间的物体恒常性，提供了物理正确的重建，其可微物理组件可直接迁移到机器人操作中的动力学建模。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08104v1",
+      "source": "arxiv",
+      "title": "Reinforcement learning in linear embedding space unlocks generalizable control across soft robot configurations",
+      "abstract": "Soft-bodied organisms such as octopuses and elephant trunks exhibit remarkable morphological adaptability, dynamically reconfiguring body shape and stiffness, and flexibly adjusting their control strategies to enable versatile behaviors. Inspired by these biological systems, various soft robots have emerged in recent decades, featuring diverse materials, stiffnesses, and morphologies tailored to specific tasks. Despite substantial advances in the materials and structural designs of soft robots, developing a generalizable control framework capable of rapid adaptation across diverse configurations remains a long-standing challenge. Existing controllers are limited to fixed configurations, demanding laborious configuration-specific remodelling and policy redesign for new configurations. Here, we introduce a generalizable control system that enables rapid adaptation across diverse soft robot configurations via reinforcement learning in a shared linear Koopman embedding space. By encoding robot dynamics into this embedding space, our method decouples control policies from specific morphologies, allowing real-time, model-free policy adaptation across diverse configurations without retraining from scratch. We validate our system across 33 distinct robot configurations. Our system achieves a 75 times reduction in transfer samples across configurations, while sustaining robust performance under high-speed motion, heavy payloads, and multiactuator faults, and achieving real-world skills previously unattainable in soft robotics. This work establishes a unified and adaptable control paradigm for diverse soft robot configurations, bridging mechanical reconfigurability with control flexibility, and may offer broader insights for generalizable control in complex physical systems.",
+      "authors": [
+        "Xinglong Zhang",
+        "Cong Li",
+        "Hangjie Mo",
+        "Yue Jiang",
+        "Xin Xu",
+        "Wei Jiang",
+        "Zhenshan Bing",
+        "Yihe Yang",
+        "Xiaojian Li",
+        "Yueneng Yang",
+        "Huimin Lu",
+        "Ling-li Zeng",
+        "Alois Knoll",
+        "Dewen Hu",
+        "Li Wen",
+        "Wei Pan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-06T11:09:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.08104v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL-based control for soft robot configurations",
+      "llm_evidence_cn": "基于强化学习的软体机器人配置通用控制",
+      "llm_evidence": "基于强化学习的软体机器人配置通用控制",
+      "canonical_evidence": "基于强化学习的软体机器人配置通用控制",
+      "llm_tldr_en": "Proposes RL in a linear embedding space to achieve generalizable control across diverse soft robot configurations.",
+      "llm_tldr_cn": "针对软体机器人控制泛化难题，提出在线性嵌入空间中进行强化学习的方法，通过嵌入空间捕捉不同配置的共同结构，使学到的策略能零样本迁移至新材料、刚度和形态的软体机器人，大幅提升控制泛化能力。",
+      "llm_tldr": "针对软体机器人控制泛化难题，提出在线性嵌入空间中进行强化学习的方法，通过嵌入空间捕捉不同配置的共同结构，使学到的策略能零样本迁移至新材料、刚度和形态的软体机器人，大幅提升控制泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

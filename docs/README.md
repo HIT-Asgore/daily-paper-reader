@@ -6,50 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-09
-- 运行时间：2026-06-09 22:15:27 UTC
+- 最新运行日期：2026-06-10
+- 运行时间：2026-06-10 21:48:00 UTC
 - 运行状态：成功
-- 本次总论文数：10
-- 精读区：4
-- 速读区：6
+- 本次总论文数：5
+- 精读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日推荐涵盖10篇论文，精读4篇，聚焦实时无碰撞遥操作与触觉世界模型。最值得关注《Real-Time and Accurate Collision-Free Teleoperation》（9.0分）的可微约束轨迹规划与《Dream-Tac》（8.0分）的统一触觉行动模型。普通读者可借此了解如何借助约束优化和触觉表征提升机器人操作的实时性与安全性。
-- 详情：[/202606/09/README](/202606/09/README)
+今日精读《SARM2》和《HiMem-WAM》两项机器人操作的自改进研究，速读物理校准、4D高斯点云及软体机器人控制三篇论文。最值得关注的是多任务阶段奖励建模与层次记忆门控世界动作模型，它们分别从奖励设计和记忆机制推动机器人操作泛化。建议重点理解这两个模型如何通过阶段奖励和记忆门控实现更鲁棒的长期规划与自我改进能力。
+- 详情：[/202606/10/README](/202606/10/README)
 
 ### 精读区论文标签
-1. [Real-Time and Accurate Collision-Free Teleoperation via Differentiable Constraint-Based Trajectory Planning](/202606/09/2606.08725v1-real-time-and-accurate-collision-free-teleoperation-via-differentiable-constraint-based-trajectory-planning)  
-   标签：评分：9.0/10、query:diff-physics
-   evidence：可微碰撞避免约束用于机械臂遥操作
-2. [Dream-Tac: A Unified Tactile World Action Model for Contact-Rich Robot Manipulation](/202606/09/2606.08737v1-dream-tac-a-unified-tactile-world-action-model-for-contact-rich-robot-manipulation)  
+1. [SARM2: Multi-Task Stage Aware Reward Modeling for Self Improving Robotic Manipulation](/202606/10/2606.10305v1-sarm2-multi-task-stage-aware-reward-modeling-for-self-improving-robotic-manipulation)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：世界动作模型用于操作，属于模型强化学习方法
-3. [Unifying Object-Centric World Models and Diffusion Policy: A Hierarchical Framework for Multi-Stage Robotic Tasks](/202606/09/2606.08775v1-unifying-object-centric-world-models-and-diffusion-policy-a-hierarchical-framework-for-multi-stage-robotic-tasks)  
+   evidence：多任务阶段感知奖励模型用于机器人操作强化学习
+2. [HiMem-WAM: Hierarchical Memory-Gated World Action Models for Robotic Manipulation](/202606/10/2606.10363v1-himem-wam-hierarchical-memory-gated-world-action-models-for-robotic-manipulation)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：世界模型结合扩散策略用于多阶段操作
-4. [TORL-VLA: Tactile Guided Online Reinforcement Learning for Contact-Rich Manipulation](/202606/09/2606.09337v1-torl-vla-tactile-guided-online-reinforcement-learning-for-contact-rich-manipulation)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：在线强化学习用于接触丰富的机械臂操作
+   evidence：具有层次记忆的世界动作模型用于操作动力学学习
 
 ### 速读区论文标签
-1. [AHA-WAM:Asynchronous Horizon-Adaptive World-Action Modeling with Observation-Guided Context Routing](/202606/09/2606.09811v1-aha-wamasynchronous-horizon-adaptive-world-action-modeling-with-observation-guided-context-routing)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：世界-动作模型用于机器人操作，注入物理先验
-2. [iMaC: Translating Actions into Motion and Contact Images for Embodied World Models](/202606/09/2606.09813v1-imac-translating-actions-into-motion-and-contact-images-for-embodied-world-models)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：使用图像作为动作表示的具身世界模型用于操作
-3. [ANNet: A first-principles neural network for forward and inverse dynamics](/202606/09/biorxiv-10-64898-2026-06-03-729998-v1-annet-a-first-principles-neural-network-for-forward-and-inverse-dynamics)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：物理信息神经网络用于正逆动力学，可能可微
-4. [Light-WAM: Efficient World Action Models with State-Fusion Action Decoding](/202606/09/2606.08242v1-light-wam-efficient-world-action-models-with-state-fusion-action-decoding)  
+1. [APIC: Amortized Physics-Informed Calibration using Neural Processes](/202606/10/2606.03355v1-apic-amortized-physics-informed-calibration-using-neural-processes)  
+   标签：评分：6.0/10、query:diff-physics
+   evidence：使用神经过程进行可微物理校准
+2. [PersistGS: Differentiable Physics for Object Permanence in 4D Gaussian Splatting](/202606/10/2606.03479v1-persistgs-differentiable-physics-for-object-permanence-in-4d-gaussian-splatting)  
+   标签：评分：6.0/10、query:diff-physics
+   evidence：可微刚体模拟用于物体恒常性
+3. [Reinforcement learning in linear embedding space unlocks generalizable control across soft robot configurations](/202606/10/2606.08104v1-reinforcement-learning-in-linear-embedding-space-unlocks-generalizable-control-across-soft-robot-configurations)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：用于高效机器人操作的轻量级世界动作模型，结合未来预测
-5. [FAWAM: Force-Aware World Action Models for Closed-Loop Contact-Rich Manipulation](/202606/09/2606.08555v1-fawam-force-aware-world-action-models-for-closed-loop-contact-rich-manipulation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：力感知世界模型用于闭环操作控制
-6. [Physics-Aware Sparse Learning and Selective Online Adaptation for Euler-Lagrange Robot Dynamics](/202606/09/2606.09640v1-physics-aware-sparse-learning-and-selective-online-adaptation-for-euler-lagrange-robot-dynamics)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习保留物理结构的动力学模型用于机器人控制
+   evidence：基于强化学习的软体机器人配置通用控制
 
 
 <div class="dpr-home-promo-card">
