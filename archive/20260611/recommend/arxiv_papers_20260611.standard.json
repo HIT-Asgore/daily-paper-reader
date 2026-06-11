@@ -1,0 +1,180 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-11T21:02:05.958138+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 12,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.06832v1",
+      "source": "arxiv",
+      "title": "STRIPS-WM: Learning Grounded Propositional STRIPS-style World Models from Images",
+      "abstract": "Robots performing long-horizon visual manipulation observe high-dimensional images, but successful plans depend on action-relevant facts: what can be done now and what changes afterward. A useful planning representation should discard irrelevant visual details while preserving action applicability and effects. Classical task planners exploit this structure through symbolic operators with preconditions and effects, but obtaining such representations from raw visual experience remains challenging. We study a visual task-planning setting in which a robot receives only image transitions: the current image, executed high-level action, and the resulting image. At test time, given a start image and a goal image, the robot must produce a sequence of high-level actions that reaches the goal. To address this problem, we introduce STRIPS-WM, a framework for learning image-grounded STRIPS-style world models directly from visual transitions. STRIPS-WM first induces a finite abstract transition graph from images, then learns latent binary predicates and one grounded propositional operator per action label. The learned operators form a symbolic action model with sparse preconditions and add/delete effects. Finally, the learned predicates are distilled into a visual encoder, enabling classical planning directly from novel start and goal images. Experiments on visual rearrangement tasks show that STRIPS-WM improves image-to-plan success over the tested visual rollout, latent graph-search and latent-symbolic baselines.",
+      "authors": [
+        "Abhiroop Ajith",
+        "Constantinos Chamzas"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-05T02:16:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.06832v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns STRIPS-style world models with preconditions from visual transitions for planning in robotic manipulation",
+      "llm_evidence_cn": "从视觉转换学习具有前提条件的STRIPS风格世界模型用于机器人操作规划",
+      "llm_evidence": "从视觉转换学习具有前提条件的STRIPS风格世界模型用于机器人操作规划",
+      "canonical_evidence": "从视觉转换学习具有前提条件的STRIPS风格世界模型用于机器人操作规划",
+      "llm_tldr_en": "STRIPS-WM learns symbolic world models from image-based action effects, enabling task planning for long-horizon manipulation.",
+      "llm_tldr_cn": "针对机器人长期操作中从高维图像中提取动作相关信息的挑战，本文提出STRIPS-WM，通过观察图像转换学习创建具有前提条件和效果的符号世界模型，保留关键事实而忽略无关细节。在模拟视觉操作任务中，该方法支持高效的任务规划，相比纯视觉方法显著提高了规划成功率和效率。",
+      "llm_tldr": "针对机器人长期操作中从高维图像中提取动作相关信息的挑战，本文提出STRIPS-WM，通过观察图像转换学习创建具有前提条件和效果的符号世界模型，保留关键事实而忽略无关细节。在模拟视觉操作任务中，该方法支持高效的任务规划，相比纯视觉方法显著提高了规划成功率和效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.09337v2",
+      "source": "arxiv",
+      "title": "TORL-VLA: Tactile Guided Online Reinforcement Learning for Contact-Rich Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models have become a powerful framework for robotic manipulation, and recent studies have introduced tactile or force feedback into VLAs to address contact-rich tasks. However, these models are typically deployed as offline policies. When contact conditions shift from the training distribution, the policy cannot perform online adaptation, leading to problems such as inappropriate contact forces and inefficient retries. Therefore, we propose TORL-VLA, a tactile-guided online reinforcement learning framework that couples tactile feedback with policy refinement for contact-rich manipulation. Our method introduces a tactile-derived wrench-aware VLA to predict reference actions and future wrench sequences, while a lightweight online RL module is used to refine the reference actions. To stabilize learning from mixed exploratory policy-generated and human-intervention data, we introduce an intervention-censored critic that prevents post-intervention success from being wrongly credited to policy-generated actions preceding intervention. Real-robot experiments on long-horizon contact-rich tasks, including latch manipulation, coffee-cup placement, and egg handling, show that TORL-VLA improves success rates at both subtask and full-task levels, as well as time-bounded execution efficiency over strong baselines.",
+      "authors": [
+        "Huaihang Zheng",
+        "Yi Yang",
+        "Kai Ma",
+        "Shenglin Xu",
+        "Tian Xie",
+        "Guozheng Li",
+        "Xiangyu Wang",
+        "Yiren Ma",
+        "Si Liu",
+        "Yinian Mao",
+        "Baoxu Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-08T11:05:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.09337v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "online RL with wrench-aware VLA for contact-rich manipulation; model-based prediction of wrench sequences",
+      "llm_evidence_cn": "在线强化学习结合力觉感知VLA，预测未来力序列，属于模型基方法",
+      "llm_evidence": "在线强化学习结合力觉感知VLA，预测未来力序列，属于模型基方法",
+      "canonical_evidence": "在线强化学习结合力觉感知VLA，预测未来力序列，属于模型基方法",
+      "llm_tldr_en": "Proposes TORL-VLA, a tactile-guided online RL framework that couples tactile feedback with policy refinement. Uses a wrench-aware VLA to predict reference actions and future wrench sequences, enabling online adaptation.",
+      "llm_tldr_cn": "该论文提出TORL-VLA框架，将触觉反馈与在线强化学习相结合以解决接触丰富操作中的分布偏移问题。核心是力觉感知VLA，它预测参考动作和未来力序列，使得策略能够在接触条件变化时进行在线调整。实验表明该方法在接触丰富任务上显著提升了鲁棒性和适应能力，是模型基强化学习在机械臂操作中的有效应用。",
+      "llm_tldr": "该论文提出TORL-VLA框架，将触觉反馈与在线强化学习相结合以解决接触丰富操作中的分布偏移问题。核心是力觉感知VLA，它预测参考动作和未来力序列，使得策略能够在接触条件变化时进行在线调整。实验表明该方法在接触丰富任务上显著提升了鲁棒性和适应能力，是模型基强化学习在机械臂操作中的有效应用。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.10825v1",
+      "source": "arxiv",
+      "title": "MODIP: Efficient Model-Based Optimization for Diffusion Policies",
+      "abstract": "Diffusion policies (DPs) have emerged as expressive policy representations for robot learning, often used with imitation learning methods such as behavioral cloning (BC). However, while their success has largely been confined to BC, direct reinforcement learning (RL) fine-tuning remains challenging because actions are generated through a multi-step denoising process. In this work, we propose MODIP, a framework for the offline-to-online fine-tuning of DPs. Rather than directly applying RL to the DPs, MODIP leverages a world model (WM) to guide policy adaptation and keeps the simplicity and stability of BC. We utilize model predictive control (MPC) to generate high-quality trajectories within the WM, and use them as supervised targets for fine-tuning the DP. To make MPC planning efficient, MODIP uses a terminal state value instead of a policy-dependent state-action value, reducing inference time. Additionally, MODIP trains critics with policy-independent TD targets, reducing training time. Experiments on D4RL (MuJoCo, Kitchen) and RoboMimic tasks show that MODIP improves diffusion policies beyond BC, and is competitive with or outperforms diffusion policy RL fine-tuning methods and strong model-based baselines such as TD-MPC2.",
+      "authors": [
+        "Zakariae El Asri",
+        "Philippe Gratias-Quiquandon",
+        "Nicolas Thome",
+        "Olivier Sigaud"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-09T13:09:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.10825v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses a world model and MPC to guide diffusion policy fine-tuning, improving sample efficiency in model-based RL",
+      "llm_evidence_cn": "利用世界模型和MPC指导扩散策略微调，提高基于模型的强化学习的样本效率",
+      "llm_evidence": "利用世界模型和MPC指导扩散策略微调，提高基于模型的强化学习的样本效率",
+      "canonical_evidence": "利用世界模型和MPC指导扩散策略微调，提高基于模型的强化学习的样本效率",
+      "llm_tldr_en": "MODIP fine-tunes diffusion policies via world model and MPC, achieving sample-efficient offline-to-online adaptation without direct RL on the denoising process.",
+      "llm_tldr_cn": "扩散策略在行为克隆中表现优异，但直接强化学习微调因多步去噪过程而困难。本文提出MODIP，利用世界模型进行模型预测控制（MPC）生成高质量轨迹，并以此作为监督信号微调扩散策略，保持行为克隆的稳定性同时提升样本效率。该方法在离线到在线微调中取得了高效适应。",
+      "llm_tldr": "扩散策略在行为克隆中表现优异，但直接强化学习微调因多步去噪过程而困难。本文提出MODIP，利用世界模型进行模型预测控制（MPC）生成高质量轨迹，并以此作为监督信号微调扩散策略，保持行为克隆的稳定性同时提升样本效率。该方法在离线到在线微调中取得了高效适应。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.11396v1",
+      "source": "arxiv",
+      "title": "PLUME: Probabilistic Latent Unified World Modeling and Parameter Estimation for Multi-Finger Manipulation",
+      "abstract": "Dexterous manipulation with multi-finger hands can be sensitive to physical parameters such as object shape, pose, and friction coefficients. While simulation enables large-scale data collection with known parameter values, simulation-trained policies must still handle uncertainty at deployment, where the true parameters and therefore the true dynamics are unknown. Standard domain randomization strategies may be insufficient for precise tasks like screwdriver turning, as manipulation strategies may need to change depending on specific parameter values. To address this, we propose Probabilistic Latent Unified world Modeling and parameter Estimation (PLUME), a world model that jointly learns to evolve a belief over parameter values as well as the system dynamics conditioned on those parameters. We learn a latent space to jointly represent multiple qualitatively different physical parameters along with rewards, themselves functions of partially-observable variables, to inform planning. Our novel learning framework leads to efficient alignment of the world model to true dynamics through online parameter inference as opposed to re-training or fine-tuning. We evaluate our method on simulated screwdriver turning, valve turning, bucket lifting, and disk flicking tasks, as well as a hardware screwdriver turning task, where we achieve successful zero-shot transfer of our simulation-trained policy and outperform state-of-the-art offline reinforcement learning and world-model-augmented behavior cloning baselines. Please see our website at https://plume-world-model.github.io for videos.",
+      "authors": [
+        "Abhinav Kumar",
+        "Soshi Iba",
+        "Rana Soltani Zarrin",
+        "Dmitry Berenson"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-09T19:36:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.11396v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learns a probabilistic world model for dynamics and parameter estimation in dexterous manipulation",
+      "llm_evidence_cn": "学习一个概率世界模型，用于灵巧操作中的动力学与参数估计",
+      "llm_evidence": "学习一个概率世界模型，用于灵巧操作中的动力学与参数估计",
+      "canonical_evidence": "学习一个概率世界模型，用于灵巧操作中的动力学与参数估计",
+      "llm_tldr_en": "PLUME jointly learns a belief over physical parameters and a dynamics model for multi-finger manipulation, enabling deployment under uncertainty.",
+      "llm_tldr_cn": "该文针对灵巧操作中物理参数未知导致策略退化的问题，提出PLUME概率潜在统一世界模型与参数估计框架。该模型联合学习对物体形状、姿态、摩擦系数等参数的信念演变以及世界动力学模型，从而在部署时处理不确定性。实验证明该方法在螺丝刀旋转等精确任务中优于标准域随机化策略。",
+      "llm_tldr": "该文针对灵巧操作中物理参数未知导致策略退化的问题，提出PLUME概率潜在统一世界模型与参数估计框架。该模型联合学习对物体形状、姿态、摩擦系数等参数的信念演变以及世界动力学模型，从而在部署时处理不确定性。实验证明该方法在螺丝刀旋转等精确任务中优于标准域随机化策略。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
