@@ -1,0 +1,193 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-12T22:06:41.939776+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 1,
+    "deep_cap": 7,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.11525v1",
+      "source": "arxiv",
+      "title": "Learning Object Manipulation from Scratch via Contrastive Interaction",
+      "abstract": "Contrastive Reinforcement Learning (CRL) has seen recent success in a wide variety of goal-conditioned robotics tasks by learning structured representations of the dynamics. However, despite its success in locomotion and simpler control domains, CRL often struggles in interaction-rich manipulation. We argue that a key source of this difficulty is object-centric interaction, such as contact or grasping, that induces distinct changes in the underlying dynamic modes. In this work, we formulate manipulation dynamics as a piecewise-smooth Markov process and show that interaction-induced mode changes create piecewise nonlinear reachability structures that are difficult for standard CRL energy functions to represent and plan over. Based on this analysis, we introduce Interaction-weighted Resampling (IWR). IWR performs interaction-aware resampling around phases before, during, and after interactions, encouraging the learned representation to preserve the mode boundaries that determine future reachability to capture multi-modal and piecewise nonlinear reachability. Across interaction-centric environments, including 2D dynamic control, robotic manipulation, and robot air hockey, IWR improves both sample efficiency and overall performance over prior CRL methods, with 19.8% average improvement in simulation. Finally, using a sim-to-real pipeline with policies trained by IWR, we demonstrate the first real-world goal-conditioned robot air hockey agent capable of hitting goals, improving success from 25% to 60%. Project Page: IWR-arxiv.github.io.",
+      "authors": [
+        "Tongle Shen",
+        "Caleb Chuck",
+        "Fan Feng",
+        "Biwei Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-06-10T00:06:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.11525v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "contrastive reinforcement learning for object manipulation",
+      "llm_evidence_cn": "对比强化学习用于物体操作",
+      "llm_evidence": "对比强化学习用于物体操作",
+      "canonical_evidence": "对比强化学习用于物体操作",
+      "llm_tldr_en": "Contrastive RL often struggles in manipulation due to piecewise smooth dynamics; this paper analyzes and improves CRL for object manipulation from scratch.",
+      "llm_tldr_cn": "对比强化学习在接触丰富的操作任务中表现不佳，原因是操作动力学是分段光滑的。该工作将操作建模为分段光滑马尔可夫过程，分析模式切换对可达结构的影响，并提出改进的对比学习目标。在多种物体操作任务中，该方法从零开始学习，性能显著优于标准CRL，为强化学习在灵巧操作中的应用提供了新思路。",
+      "llm_tldr": "对比强化学习在接触丰富的操作任务中表现不佳，原因是操作动力学是分段光滑的。该工作将操作建模为分段光滑马尔可夫过程，分析模式切换对可达结构的影响，并提出改进的对比学习目标。在多种物体操作任务中，该方法从零开始学习，性能显著优于标准CRL，为强化学习在灵巧操作中的应用提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.05699v1",
+      "source": "arxiv",
+      "title": "DexFuture: Hierarchical Future-State Visuomotor Targeting for Bimanual Dexterous Tool Use",
+      "abstract": "Bimanual dexterous tool use remains challenging for robots due to high-dimensional hand configurations and complex hand-tool-object dynamics and contact. Most existing control policies depend on future configuration references provided from demonstrations, while future action-conditioned world models require slow online planning over high-dimensional action sequences. A significant challenge is generating a dynamically consistent future reference trajectory without relying on privileged states from demonstrations or slow counterfactual planning. We propose DexFuture, a hierarchical system that couples a high-level Future-State Visuomotor Target Predictor with a low-level Target-Conditioned Structured Dexterous Policy. Conditioned on egocentric RGB, proprioceptive and geometric history, the high-level predictor constructs structured hand-tool-object visuomotor embeddings and uses a horizon-conditioned transformer to generate a multi-step future target trajectory. Then, the low-level policy tracks them with a target-conditioned per-link transformer. This hierarchy decouples coarse future reference generation from fine-grained action control, and slow long-horizon semantic prediction from high-frequency execution. On OakInk2 bimanual tool-use tasks, DexFuture achieves 90% of the privileged-oracle performance, compared to 7% for a no-reference policy. DexFuture operates at 60 Hz, approximately 250 times faster than DexWM-style Cross-Entropy Method (CEM) planning with a future action-conditioned world model.",
+      "authors": [
+        "Runfa Blark Li",
+        "Kuang-Ting Tu",
+        "Nikola Raicevic",
+        "Dwait Bhatt",
+        "Xinshuang Liu",
+        "Keito Suzuki",
+        "Ki Myung Brian Lee",
+        "Nikolay Atanasov",
+        "Truong Nguyen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-04T04:37:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.05699v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hierarchical future-state predictor for bimanual dexterous tool use",
+      "llm_evidence_cn": "层级未来状态预测器用于双臂灵巧工具使用",
+      "llm_evidence": "层级未来状态预测器用于双臂灵巧工具使用",
+      "canonical_evidence": "层级未来状态预测器用于双臂灵巧工具使用",
+      "llm_tldr_en": "DexFuture predicts future-state visuomotor targets without demonstrations or planning, enabling bimanual dexterous tool use.",
+      "llm_tldr_cn": "现有策略需要演示或规划器提供未来参考，本文提出DexFuture层级系统，包含高级未来状态视觉运动目标预测器和低级目标条件策略，无需演示或规划即可生成动态一致的未来轨迹。在双臂灵巧工具使用任务上验证了有效性。",
+      "llm_tldr": "现有策略需要演示或规划器提供未来参考，本文提出DexFuture层级系统，包含高级未来状态视觉运动目标预测器和低级目标条件策略，无需演示或规划即可生成动态一致的未来轨迹。在双臂灵巧工具使用任务上验证了有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08610v1",
+      "source": "arxiv",
+      "title": "HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning",
+      "abstract": "Reinforcement learning (RL) has become a powerful paradigm for robot learning, particularly in sim-to-real settings, but its broader adoption remains limited by the engineering pipeline surrounding the algorithms. Building tasks, shaping rewards, and tuning hyperparameters require substantial expert effort, making RL workflows costly and difficult to scale. We introduce HARBOR, an agentic framework that frames robot RL automation as a harness-engineering problem: given a simulator codebase and a task specification, it automates the workflow from environment setup to policy training in simulation. HARBOR decomposes such high-level objectives into bounded stages executed by specialized agents through standardized commands, persistent artifacts, executable gates, and reusable knowledge, and scales iteration via decentralized parallel trials and experience learning across runs. We evaluate HARBOR across 6 benchmarks and 16 tasks in total, spanning manipulation, locomotion, and bimanual dexterous control. We demonstrate that HARBOR automates the simulation RL workflow end-to-end, designs rewards, tunes algorithms to match or improve over default configurations, and reduces engineering effort at practical token and wall-clock cost; the resulting policies can also be transferred to real robots.",
+      "authors": [
+        "Zechu Li",
+        "Yufeng Jin",
+        "Xiaoyang Liu",
+        "Puze Liu",
+        "Vignesh Prasad",
+        "Carlo D'Eramo",
+        "Georgia Chalvatzaki"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-07T12:49:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.08610v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "automates RL workflow for robot learning in simulation",
+      "llm_evidence_cn": "自动化模拟中机器人强化学习的工作流",
+      "llm_evidence": "自动化模拟中机器人强化学习的工作流",
+      "canonical_evidence": "自动化模拟中机器人强化学习的工作流",
+      "llm_tldr_en": "HARBOR automates the RL pipeline from environment setup to policy training using specialized agents, reducing engineering effort for robotics RL.",
+      "llm_tldr_cn": "强化学习在机器人学中应用广泛但工程开销大。HARBOR将RL自动化建模为框架工程问题，通过多智能体分解任务，自动完成模拟环境搭建、奖励塑造、超参数调优等步骤，最终输出训练好的策略。该框架降低了RL应用的入门门槛，可加速机械臂操作任务的RL研究。",
+      "llm_tldr": "强化学习在机器人学中应用广泛但工程开销大。HARBOR将RL自动化建模为框架工程问题，通过多智能体分解任务，自动完成模拟环境搭建、奖励塑造、超参数调优等步骤，最终输出训练好的策略。该框架降低了RL应用的入门门槛，可加速机械臂操作任务的RL研究。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11743v1",
+      "source": "arxiv",
+      "title": "TacCoRL: Integrating Tactile Feedback into VLA via Simulation",
+      "abstract": "Vision-language-action (VLA) models provide strong visual, language, and action priors for robot manipulation, but visual observations alone often miss the local contact state required for contact-rich tasks. We present TacCoRL, a scalable framework that injects Tactile feedback into VLA policies and improves them through sim-real Co-training and simulation-based reinforcement learning (RL), without requiring large-scale tactile pretraining or extensive real-world contact exploration. The key idea is not only adding touch as an input, but learning how contact readings should modulate action responses in near-failure states that are rare in demonstrations and risky to collect on hardware. We use a real-aligned simulator as a closed-loop training environment for contact interaction. Mixed simulated and real trajectories first warm-start tactile-conditioned actions in the pretrained policy. Reinforcement learning with verifiable task rewards then optimizes the policy using simulated contact rollouts. It reinforces tactile-conditioned actions that lead to task completion, while a supervised objective on real trajectories keeps the refined policy anchored to deployment visual, tactile, and action distributions. The resulting policy transfers directly to the real robot without privileged simulation state or online real-world RL. Across four bimanual contact-rich tasks, the final visuo-tactile policy achieves an average success rate of 72.5%, compared to baseline of 50.0%. Result videos and more details are available at https://tac-corl.github.io/",
+      "authors": [
+        "Siyu Ma",
+        "Yuqi Liang",
+        "Chang Yu",
+        "Yunuo Chen",
+        "Hao Su",
+        "Yixin Zhu",
+        "Yin Yang",
+        "Chenfanfu Jiang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.GR",
+        "cs.LG"
+      ],
+      "published": "2026-06-10T07:20:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.11743v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "simulation-based reinforcement learning for robot manipulation policies",
+      "llm_evidence_cn": "基于模拟的强化学习用于机器人操作策略",
+      "llm_evidence": "基于模拟的强化学习用于机器人操作策略",
+      "canonical_evidence": "基于模拟的强化学习用于机器人操作策略",
+      "llm_tldr_en": "TacCoRL integrates tactile feedback into VLA policies via sim-real co-training and simulation-based RL, enabling robust manipulation without large-scale tactile pretraining.",
+      "llm_tldr_cn": "视觉-语言-动作模型在接触密集任务中缺乏局部接触信息。TacCoRL通过模拟与真实协同训练和基于模拟的强化学习，将触觉反馈注入策略，无需大规模触觉预训练。该框架在近失败状态下学习接触读数如何调节动作响应，并在真实对齐模拟器中闭环训练，有效提升操作鲁棒性。",
+      "llm_tldr": "视觉-语言-动作模型在接触密集任务中缺乏局部接触信息。TacCoRL通过模拟与真实协同训练和基于模拟的强化学习，将触觉反馈注入策略，无需大规模触觉预训练。该框架在近失败状态下学习接触读数如何调节动作响应，并在真实对齐模拟器中闭环训练，有效提升操作鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

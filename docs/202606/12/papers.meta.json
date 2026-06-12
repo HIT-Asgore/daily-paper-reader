@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-12",
+  "date": "2026-06-12",
+  "generated_at": "2026-06-12T22:10:47",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/12/2606.11525v1-learning-object-manipulation-from-scratch-via-contrastive-interaction",
+      "section": "deep",
+      "title_en": "Learning Object Manipulation from Scratch via Contrastive Interaction",
+      "authors": "Tongle Shen, Caleb Chuck, Fan Feng, Biwei Huang",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.11525v1",
+      "score": "8.0",
+      "evidence": "对比强化学习用于物体操作",
+      "tldr": "对比强化学习在物体交互丰富的操作任务中常因动态模式突变而表现不佳。本文分析发现交互导致的模式变化破坏了标准能量函数的可达性表示。为此提出Interaction-weighted Resampling（IWR），在交互前后进行加权重采样以保留模式边界。在2D控制、机器人操作和空气曲棍球等环境中，IWR平均提升19.8%的仿真性能，并首次在真实世界中将机器人空气曲棍球成功率从25%提升至60%。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Contrastive Reinforcement Learning (CRL) has seen recent success in a wide variety of goal-conditioned robotics tasks by learning structured representations of the dynamics. However, despite its success in locomotion and simpler control domains, CRL often struggles in interaction-rich manipulation. We argue that a key source of this difficulty is object-centric interaction, such as contact or grasping, that induces distinct changes in the underlying dynamic modes. In this work, we formulate manipulation dynamics as a piecewise-smooth Markov process and show that interaction-induced mode changes create piecewise nonlinear reachability structures that are difficult for standard CRL energy functions to represent and plan over. Based on this analysis, we introduce Interaction-weighted Resampling (IWR). IWR performs interaction-aware resampling around phases before, during, and after interactions, encouraging the learned representation to preserve the mode boundaries that determine future reachability to capture multi-modal and piecewise nonlinear reachability. Across interaction-centric environments, including 2D dynamic control, robotic manipulation, and robot air hockey, IWR improves both sample efficiency and overall performance over prior CRL methods, with 19.8% average improvement in simulation. Finally, using a sim-to-real pipeline with policies trained by IWR, we demonstrate the first real-world goal-conditioned robot air hockey agent capable of hitting goals, improving success from 25% to 60%. Project Page: IWR-arxiv.github.io.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.05699v1-dexfuture-hierarchical-future-state-visuomotor-targeting-for-bimanual-dexterous-tool-use",
+      "section": "quick",
+      "title_en": "DexFuture: Hierarchical Future-State Visuomotor Targeting for Bimanual Dexterous Tool Use",
+      "authors": "Runfa Blark Li, Kuang-Ting Tu, Nikola Raicevic, Dwait Bhatt, Xinshuang Liu, Keito Suzuki, Ki Myung Brian Lee, Nikolay Atanasov, Truong Nguyen",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.05699v1",
+      "score": "6.0",
+      "evidence": "层级未来状态预测器用于双臂灵巧工具使用",
+      "tldr": "灵巧双手工具操作面临高维动作和复杂接触动力学挑战。现有方法依赖示教未来状态或缓慢在线规划。本文提出DexFuture，通过高层未来状态视觉运动目标预测器生成多步未来轨迹，再由低层目标条件策略高频跟踪。在OakInk2双灵巧手工具任务中达到90%特权预言性能，且速度比基于世界模型的规划快250倍。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Bimanual dexterous tool use remains challenging for robots due to high-dimensional hand configurations and complex hand-tool-object dynamics and contact. Most existing control policies depend on future configuration references provided from demonstrations, while future action-conditioned world models require slow online planning over high-dimensional action sequences. A significant challenge is generating a dynamically consistent future reference trajectory without relying on privileged states from demonstrations or slow counterfactual planning. We propose DexFuture, a hierarchical system that couples a high-level Future-State Visuomotor Target Predictor with a low-level Target-Conditioned Structured Dexterous Policy. Conditioned on egocentric RGB, proprioceptive and geometric history, the high-level predictor constructs structured hand-tool-object visuomotor embeddings and uses a horizon-conditioned transformer to generate a multi-step future target trajectory. Then, the low-level policy tracks them with a target-conditioned per-link transformer. This hierarchy decouples coarse future reference generation from fine-grained action control, and slow long-horizon semantic prediction from high-frequency execution. On OakInk2 bimanual tool-use tasks, DexFuture achieves 90% of the privileged-oracle performance, compared to 7% for a no-reference policy. DexFuture operates at 60 Hz, approximately 250 times faster than DexWM-style Cross-Entropy Method (CEM) planning with a future action-conditioned world model.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.08610v1-harbor-a-harness-framework-for-agentic-robot-reinforcement-learning",
+      "section": "quick",
+      "title_en": "HARBOR: A Harness Framework for Agentic Robot Reinforcement Learning",
+      "authors": "Zechu Li, Yufeng Jin, Xiaoyang Liu, Puze Liu, Vignesh Prasad, Carlo D'Eramo, Georgia Chalvatzaki",
+      "date": "2026-06-07",
+      "pdf": "https://arxiv.org/pdf/2606.08610v1",
+      "score": "6.0",
+      "evidence": "自动化模拟中机器人强化学习的工作流",
+      "tldr": "强化学习（RL）已成为机器人学习的有力范式，但工程管线（如任务构建、奖励设计、超参数调优）依赖大量专家工作，难以规模化。HARBOR将机器人RL自动化视为线束工程问题，提出自主框架，通过代理化、标准化命令、持久化工件、可执行门和可重用知识，将高级目标分解为有界阶段执行，并通过分散的并行试验和跨运行经验学习加速迭代。在6个基准测试16个任务（涵盖操作、移动、双手灵巧控制）上，HARBOR端到端自动化模拟RL工作流，自动设计奖励与调优算法，匹配或改进默认配置，且策略可零样本迁移至真实机器人。HARBOR以实际token和时间成本大幅降低工程工作量，为机器人RL的自动化与可扩展性提供了有效框架。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Reinforcement learning (RL) has become a powerful paradigm for robot learning, particularly in sim-to-real settings, but its broader adoption remains limited by the engineering pipeline surrounding the algorithms. Building tasks, shaping rewards, and tuning hyperparameters require substantial expert effort, making RL workflows costly and difficult to scale. We introduce HARBOR, an agentic framework that frames robot RL automation as a harness-engineering problem: given a simulator codebase and a task specification, it automates the workflow from environment setup to policy training in simulation. HARBOR decomposes such high-level objectives into bounded stages executed by specialized agents through standardized commands, persistent artifacts, executable gates, and reusable knowledge, and scales iteration via decentralized parallel trials and experience learning across runs. We evaluate HARBOR across 6 benchmarks and 16 tasks in total, spanning manipulation, locomotion, and bimanual dexterous control. We demonstrate that HARBOR automates the simulation RL workflow end-to-end, designs rewards, tunes algorithms to match or improve over default configurations, and reduces engineering effort at practical token and wall-clock cost; the resulting policies can also be transferred to real robots.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.11743v1-taccorl-integrating-tactile-feedback-into-vla-via-simulation",
+      "section": "quick",
+      "title_en": "TacCoRL: Integrating Tactile Feedback into VLA via Simulation",
+      "authors": "Siyu Ma, Yuqi Liang, Chang Yu, Yunuo Chen, Hao Su, Yixin Zhu, Yin Yang, Chenfanfu Jiang",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.11743v1",
+      "score": "6.0",
+      "evidence": "基于模拟的强化学习用于机器人操作策略",
+      "tldr": "针对视觉-语言-动作模型缺乏触觉反馈导致接触任务失败的问题，提出TacCoRL框架。该方法通过仿真-真实协同训练和模拟强化学习，将触觉注入预训练VLA策略，无需大规模触觉数据。在四个双手接触任务上，成功率从50.0%提升至72.5%。证明了仿真触觉训练可高效迁移到真实机器人，为触觉增强策略提供了可扩展方案。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Vision-language-action (VLA) models provide strong visual, language, and action priors for robot manipulation, but visual observations alone often miss the local contact state required for contact-rich tasks. We present TacCoRL, a scalable framework that injects Tactile feedback into VLA policies and improves them through sim-real Co-training and simulation-based reinforcement learning (RL), without requiring large-scale tactile pretraining or extensive real-world contact exploration. The key idea is not only adding touch as an input, but learning how contact readings should modulate action responses in near-failure states that are rare in demonstrations and risky to collect on hardware. We use a real-aligned simulator as a closed-loop training environment for contact interaction. Mixed simulated and real trajectories first warm-start tactile-conditioned actions in the pretrained policy. Reinforcement learning with verifiable task rewards then optimizes the policy using simulated contact rollouts. It reinforces tactile-conditioned actions that lead to task completion, while a supervised objective on real trajectories keeps the refined policy anchored to deployment visual, tactile, and action distributions. The resulting policy transfers directly to the real robot without privileged simulation state or online real-world RL. Across four bimanual contact-rich tasks, the final visuo-tactile policy achieves an average success rate of 72.5%, compared to baseline of 50.0%. Result videos and more details are available at https://tac-corl.github.io/",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
