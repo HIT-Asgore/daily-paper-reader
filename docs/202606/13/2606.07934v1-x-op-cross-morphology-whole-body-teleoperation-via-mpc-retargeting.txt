@@ -1,0 +1,352 @@
+Title: X-OP: Cross-Morphology Whole-Body Teleoperation via MPC Retargeting
+
+URL Source: https://arxiv.org/pdf/2606.07934v1
+
+Published Time: Tue, 09 Jun 2026 00:25:09 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# X-OP: Cross-Morphology Whole-Body Teleoperation via MPC Retargeting 
+
+Jen-Wei Wang 1,2, Sarthak Kaingade 1, Andrea Tagliabue 1, and Nicholas Morozovsky 11Amazon, 2University of California, Berkeley 
+
+Fig. 1: Each row shows a teleoperation sequence on either the Unitree G1 humanoid or the Rainbow RB-Y1 mobile manipulator, performing dual-point touch (touching two holes on separate boxes) or box pick-and-place (transferring a box to a target table). 
+
+Abstract — Whole-body teleoperation is essential for scalable robot data collection in loco-manipulation tasks, yet existing approaches relying on exoskeleton suits or multi-camera setups impose prohibitive cost, complexity, and environmental con-straints. Recent methods employing single extended reality (XR) devices with end-to-end reinforcement learning policies partially address these limitations but require robot-specific retraining, suffer from out-of-distribution failures, and depend on motion retargeting that neglects dynamic feasibility. To overcome these challenges, we propose a hierarchical whole-body teleoperation framework driven by a single XR device that generalizes across diverse robot morphologies without retraining robot-specific policies. At its core, the framework employs a Model Predictive Control (MPC)-based motion retargeter that jointly optimizes alignment with the operator’s intent and the robot’s dynamic feasibility, generating optimal commands for existing low-level controllers. To ensure robust online execution, we introduce a state synchronization method that properly resets the simulator state at each MPC step to handle noisy real-world measurements and contact sensitivity, and integrate SLAM-based global pose feedback to mitigate drift during long-term teleoperation. Simulation results demonstrate that our method achieves higher success rates across whole-body control tasks for both a humanoid—with over 30% reduced completion time and 20% lower power consumption—and a mobile manipula-tor—with zero collisions—compared to baselines. Real-world experiments further validate the effectiveness and flexibility of our method, demonstrating the successful deployment of the proposed retargeter on both platforms for whole-body control tasks and the ease of allowing users to adjust teleoper-ation behavior based on their preferences. This plug-and-play framework offers a scalable, flexible, and morphology-agnostic solution for whole-body robot teleoperation, enabling real-time behavioral customization and broad applicability across platforms. 
+
+I. INTRODUCTION Many manipulation tasks in both domestic and indus-trial environments require whole-body coordination skills. For instance, relocating an object placed on the ground involves squatting to grasp it, standing while maintain-ing hold, navigating to a new location, and placing it on a surface. Enabling such loco-manipulation capabilities in robots, whether humanoids or mobile manipulators, has become a key research objective. Consequently, numerous  
+
+> arXiv:2606.07934v1 [cs.RO] 6 Jun 2026 Fig. 2: Our framework achieves superior precision and safety over methods without MPC. Such methods directly transform human motion to robot motion using heuristic rules in an open-loop manner, causing gradual drift even when the operator is stationary, whereas our framework maintains reliable positioning. For safety, when the operator commands destabilizing upper-body configurations, our framework prevents falls by proactively squatting and rotating the torso, deviating slightly from the intended pose but keeping the robot stable.
+
+robot learning algorithms aim to achieve this by training foundation models on large-scale real-world data. Efficient data collection for this objective necessitates a whole-body teleoperation system that is easy to use, generalizable across robot morphologies, and adaptable to varying tasks and user preferences. Prior teleoperation methods typically rely on exoskeleton suits [1] or multi-camera setups [2] such as OptiTrack or VICON [2], both of which impose complex and restrictive requirements. Specifically, exoskeleton suits are bulky and expensive, making data collection difficult to scale and requiring operators to have large workspace for maneuvering. Multi-camera setups, on the other hand, demand careful camera placement and calibration prior to operation, and constrain the operator to work strictly within the cameras’ field of view. Recent works [3]–[5] adopt a single extended reality (XR) device—a headset equipped with built-in cameras and inertial sensors for spatial tracking—that operates in diverse environments with minimal setup. Since a single XR headset cannot directly estimate foot placements, posing a significant challenge for whole-body teleoperation, these methods train end-to-end reinforcement learning (RL) policies for whole-body control, enabling a robot to track end-effector poses streamed from the XR device—such as headset, left wrist, and right wrist poses—while simultaneously coordinating lower-body movements to maintain balance and locomotion. Training such policies typically requires a human motion library [6], where motions captured from humans must be retargeted from human morphology to robot morphology using existing retargeters [7], [8]. However, these retargeters primarily focus on preserving geometric similarity such as joint angles and end-effector positions, without considering whether the resulting motions are dynamically feasible for the robot, and potentially leading to physically unrealizable motions for RL policies. Beyond this challenge, these ap-proaches have several notable limitations: they require re-training robot-specific policies for teleoperation, may fail on out-of-distribution (OOD) targets, leading to imprecise and unstable control (Figure 2), and preclude real-time behavioral adjustments due to their offline training paradigm. To address these challenges, we propose a hierarchical whole-body teleoperation framework (Figure 3) that general-izes across diverse robot morphologies by leveraging exist-ing low-level policies (e.g., model-based controllers or RL policies) not originally developed for teleoperation. Rather than learning an end-to-end model to track teleoperation targets, we employ a Model Predictive Control (MPC)-based retargeter that generates optimal commands for the low-level policy by jointly considering alignment with the operator’s motions and the robot’s dynamic feasibility. Because low-level policies accepting high-level commands—such as de-sired base linear velocity or head height—are now widely available [4], [9], our framework serves as a plug-and-play module compatible with various controllers and robot platforms. Moreover, since MPC explicitly optimizes ac-tions online over cost functions and constraints, both the formulation and parameters can be adjusted in real time, enabling flexible and customizable teleoperation. To solve online the optimization problem associated with MPC, we employ Model Predictive Path Integral (MPPI) [10] with a digital twin comprising the MuJoCo simulator, a model of the robot, and the low-level policy to predict future rollouts. Given that real-world measurements are noisy and rollout predictions are sensitive to robot-ground contact, we propose a state synchronization method that properly resets the simulator state at each MPC step. In both simulation and real-world experiments, we show that our approach outperforms baselines in whole-body control tasks, achieving higher success rates while signif-icantly reducing completion time by over 30% and power consumption by over 20% on a humanoid, and avoiding all collisions on a mobile manipulator. We demonstrate Fig. 3: Overview of our hierarchical whole-body teleoperation framework. An operator wearing an XR device streams headset, left-wrist, and right-wrist target poses to the MPC-based retargeter, which uses a closed-loop MuJoCo simulation with the low-level policy as its dynamics model. The retargeter optimizes commands a∗ balancing goal alignment with safety. An optimization-based reset procedure synchronizes the simulation state at each MPC step. The framework is platform-agnostic, supporting arbitrary low-level policies and robot morphologies. 
+
+successful teleoperation on two robotic platforms for whole-body control tasks in real-world, and also highlight its flex-ibility, allowing users to choose between single- and multi-target-pose alignment, incorporate additional constraints, and tune the aggressiveness or conservativeness of the retargeted motion. The ablation study confirms that the proposed state synchronization method is essential for ensuring reliable ground contact conditions in MPPI when relying on noisy sensor inputs such as SLAM, IMU, and motor encoders. In summary, our contributions are:  
+
+> •
+
+A hierarchical whole-body teleoperation framework driven by a single XR device that decouples retargeting from low-level control loop, enabling generalization across diverse robot morphologies by aligning the re-targeter’s output with the command interface of off-the-shelf low-level policies without retraining.  
+
+> •
+
+An MPC-based motion retargeter with a state synchro-nization method that enables precise and safe teleoper-ation by jointly optimizing operator intent tracking and dynamic feasibility.  
+
+> •
+
+Comprehensive simulation and real-world experiments under realistic sensing on a humanoid robot and a mobile manipulator, validating the effectiveness and versatility of our framework across various whole-body control tasks. II. R ELATED WORKS 
+
+Existing whole-body teleoperation systems rely on ex-oskeleton suits [1], motion capture systems [2], or mixed device combinations [11], all requiring elaborate setup and restrictive environments. Single RGB camera methods [12], [13] reduce hardware needs but suffer from occlusion arti-facts. Single XR device approaches [3], [4] offer portability, yet require robot-specific retraining and lack guarantees on tracking precision or safety. Universal frameworks [14] ac-cept arbitrary inputs but still require retraining for each robot morphology. In contrast, our modular framework supports plug-and-play integration across input devices and robot platforms while explicitly enforcing precision and safety without retraining. For motion retargeting, it transforms hu-man motion into corresponding robot motion. End-effector-centric methods [5] use whole-body inverse kinematics for joint position tracking, while end-to-end approaches [7], [8] transfer human motion libraries into robot trajecto-ries as reference signals for reinforcement learning. These methods primarily adopt a geometric perspective—defining morphing functions or learned mappings between kinematic structures—but neglect dynamic feasibility of the retargeted motions. In contrast, our retargeting formulation accounts for the robot’s dynamics, solves the mapping online, and jointly enforces safety constraints and motion alignment with the operator. III. MPC-BASED RETARGETER 
+
+This section presents the proposed MPC-based formula-tion for whole-body teleoperation. We model teleoperation as a goal-reaching problem, where the operator continuously specifies time-varying goals during operation. Unlike previ-ous approaches [2]–[4] that directly map operator motions to the command space via hand-designed retargeting functions, our method solves an MPC optimization problem that explic-itly accounts for the closed-loop dynamics of the whole-body policy and robotic system. Through appropriate cost function design, the MPC generates optimal commands that balance operator motion alignment with closed-loop system safety. Figure 3 illustrates the proposed hierarchical framework. The MPC-retargeter serves as a high-level controller that maps operator motions to the command space of a low-level policy, which in turn generates motor torques. Notably, the low-level policy can be either a learning-based policy or a traditional model-based controller. Since mature whole-body controllers with basic functionalities (e.g., velocity tracking or body pose tracking) are readily available across various platforms—such as whole-body RL policies for humanoid robots [4], [9], [15]—our framework can leverage these existing policies in the teleoperation system. 
+
+A. Problem Formulation 
+
+min 
+
+> a0,...,a H−1
+> H−1
+
+X
+
+> k=0
+
+l(xk, a k, G (t)) + Vf (xH , G (t)) (1a) s.t. τk = π(xk, a k, h k), k = 0 , . . . , H − 1 (1b) 
+
+xk+1 = g(xk, τ k), k = 0 , . . . , H − 1 (1c) 
+
+ak ∈ A , k = 0 , . . . , H − 1 (1d) 
+
+x0 = x(t) (1e) 
+
+h0 = h(t) (1f) where ak denotes the high-level action generated by the MPC at time step k, and A = {a | amin ≤ a ≤ amax }
+
+represents the admissible action set defined by the lower bound amin and upper bound amax . xk denotes current state consisting of robot base position p ∈ R3, robot base orientation θ ∈ R3, robot joint position q ∈ Rn, robot base linear velocity v ∈ R3, robot base angular velocity 
+
+ω ∈ R3 and joint velocity ˙q ∈ Rn. The function π(·, ·)
+
+represents the low-level policy that maps the current state, high-level action and hidden parameter hk to joint torques τk.In RL policy, the hidden parameter hk can be the state-action history. The function g(·, ·) corresponds to the simulator dynamics, which computes the next state xk+1 given the current state and applied torques. The stage cost is captured by l(·, ·, ·), while Vf (·, ·) denotes the terminal cost function. 
+
+G(t) denotes the teleoperation goal specified by operators. The optimization is performed over a prediction horizon of length H. We solve the optimization problem (1) using kernel interpolation Model Predictive Path Integral (KMPPI) control [16], a sampling-based MPC algorithm that extends Model Predictive Path Integral (MPPI) [10] with kernel smoothing for temporally correlated action sequences. Equations 1b and 1c together constitute the dynamics model within the MPC framework, enabling the retargeter to regulate the low-level closed-loop dynamics. We adopt MuJoCo as the simulation dynamics g for two reasons. First, prior work has demonstrated that policies evaluated in MuJoCo can achieve zero-shot transfer to real-world hardware [4], [15]. Second, MuJoCo offers efficient parallel simulation capabilities that are well-suited for integration into MPC-based whole-body control frameworks [17]. 
+
+B. State Synchronization 
+
+Since our MPC framework treats the closed-loop system comprising the low-level policy and simulation dynamics as its internal model, synchronizing both the hidden parameter 
+
+h and robot state x between the simulator and real world at each control step is essential. Equations 1f and 1e describe the synchronization of the hidden parameter and robot state, respectively. To enhance generalization, we employ the high-fidelity MuJoCo simulator as the dynamics model rather than deriving explicit analytical equations. Consequently, Equation 1e becomes the problem of synchronizing the MuJoCo robot state with real-world measurements. Given the inherent noise in these measurements, this synchronization becomes a state estimation problem aimed at determining accurate initial conditions for the MuJoCo simulation at each MPC step. This process is particularly critical for legged robots, which are highly sensitive to foot-ground contact conditions. We formulate the state estimation problem as the following nonlinear least-squares optimization problem: 
+
+min 
+
+> p,θ,q
+
+12 ∥p − ˜p∥2 
+
+> Wp
+
++ 12 ∥θ − ˜θ∥2 
+
+> Wθ
+
++ 12 ∥q − ˜q∥2
+
+> Wq
+
++ X
+
+> i∈C
+
+12 ∥hpos  
+
+> i
+
+(p, θ, q )∥2  
+
+> Wpos
+> c
+
++ X
+
+> i∈C
+
+12 ∥hori  
+
+> i
+
+(p, θ, q )∥2 
+
+> Wori
+> c
+
+s.t. q ≤ q ≤ q (2) The measurements ˜p and ˜θ are noisy observations from SLAM algorithm using LiDAR sensors and ˜q is the noisy measurement from motor encoder. Wp, Wθ , Wq are positive definite weight matrices reflecting measurement confidence. The set C contains the indices of active contact points. The functions hpos  
+
+> i
+
+(·) and hori  
+
+> i
+
+(·) represent the contact position and orientation residuals, respectively, with corresponding weight matrices W pos  
+
+> c
+
+and W ori  
+
+> c
+
+that penalize constraint violations. 
+
+q and q denote the lower and upper joint angle limits, respectively. Notably, the contact constraints are formulated as soft constraints, as jointly satisfying both the measurement alignment and contact constraints is often infeasible. We denote the position and orientation of the i-th contact point in the body frame, computed via forward kinematics, as pc,i (q) and Rc,i (q), respectively. The rotation matrix R(θ)
+
+maps from body to world frame, and ez = [0 , 0, 1] ⊤ is the vertical unit vector. 
+
+Humanoid: The position residual enforces that each foot remains at its known stance location pworld  
+
+> c,i
+
+: hpos  
+
+> i
+
+= p + R(θ) ·
+
+pc,i (q) − pworld  
+
+> c,i
+
+, and the orientation residual enforces flat ground contact: hori  
+
+> i
+
+= R(θ) · Rc,i (q) · ez − ez . We assume rigid foot contact during stance. The active contact set is C =
+
+{left , right } in standing mode, and C = {arg min i e⊤ 
+
+> z
+
+(p +
+
+R(θ) · pc,i (q)) } in walking mode (i.e., only the lower foot). 
+
+Wheeled robot: The position residual enforces ground contact at wheel radius ri: hpos  
+
+> i
+
+= e⊤ 
+
+> z
+
+(p + R(θ) · pc,i (q)) − ri,and the orientation residual enforces that the wheel axle ey
+
+remains horizontal: hori  
+
+> i
+
+= e⊤ 
+
+> z
+
+(R(θ)·Rc,i (q)·ey ). The contact set includes all wheels: C = {1, . . . , n wheel }.We solve the state estimation problem (2) via Sequen-tial Quadratic Programming (SQP) using the DAQP solver through Mink [19]. 
+
+C. Design of Cost Function 
+
+The running cost l(xk, a k, G (t)) is designed to be gen-eral across different robotic platforms and consists of four TABLE I: Experimental setups on two platforms. In the retargeter commands: h ∈ R: desired waist height; ϕ ∈ R3: desired waist angles; 
+
+V ∈ R2: desired base linear velocity (x, y) for the humanoid, V ∈ R: desired base linear velocity for the mobile manipulator; Ω ∈ R:desired base yaw rate; qtorso ∈ R6: torso joint positions; qleftarm ∈ R7: left-arm joint positions; qarm ∈ R14 : joint positions of both arms.                                                                               
+
+> Parameter Unitree G1 (Humanoid) Rainbow RB-Y1 (Mobile Manipulator)
+> Robot Configuration
+> DoF; breakdown 29; 6/leg, 3 waist, 7/arm 22; 2 wheel, 6 torso, 7/arm Low-level policy π(type); hidden param hkFALCON [9] (RL); state-action history Differential drive (proportional control); gain Kp(fixed)
+> High-Level Action ak
+> Retargeter commands (same as inputs to π)h1, ϕ 3, V 2,Ω1(7-dim, from Thead )V1: V1,Ω1, q 6
+> torso (8-dim, from Thead ); V2: q7
+> leftarm , q 6
+> torso (13-dim, from Tlw )IK commands q14
+> arm (from Tlw , T rw )V1: q14
+> arm (from Tlw , T rw ); V2: N/A Mode switch σStanding / Walking (from ς)Stationary / Mobile (from ς)
+> State Estimation (Real World)
+> p, θ, v, ω LiDAR-Inertial SLAM [18] ( p, θ, v ); IMU ( ω)LiDAR-Inertial SLAM [18] ( p, θ, v ); IMU ( ω)
+> q, ˙qMotor encoders Motor encoders
+> MPPI Parameters
+> Horizon H(low-level control step); samples N3; 30 (Standing), 5; 30 (Walking) V1: 3; 30 (Stationary), 10; 30 (Mobile); V2: 3; 50 Temperature λ; noise std σmppi 0.001; 0.001 (Standing), 0.001; 0.05 (Walking) V1: 0.001, 0.01 (Stationary), 0.001, 0.01 (Mobile); V2: 0.001; 0.01 Control rate (Hz): MPC / low-level policy 25 / 50 (Standing), 10 / 50 (Walking) 25 / 50 (Stationary), 10 / 50 (Mobile)
+> Cost Function Weights (Eq. 3)
+> Tracking: wp;wθ; Energy wa; Contact: ws1.0; 1.0; 0.1; 0.1 1.0; 1.0; 0.1; 0.1 Collision: wc;wv;α;βN/A 1.0; 1.0; 1.0; 10.0 Upright constraint (V2 only) N/A 1.0 Primary safety concern Balance (measured by ABP) Collision avoidance (measured by CR)
+
+components: 
+
+l(xk, a k, G (t)) = ltrack (xk, G (t)) + lstance (xk)+ lcol (xk) + lctrl (ak) (3) 
+
+a) Goal Tracking Cost.: The tracking cost ltrack pe-nalizes weighted deviations of the base position pk and orientation θk from the desired references pd(t) and θd(t)
+
+specified by the teleoperation goal G(t), i.e., ltrack = wp∥pk −
+
+pd(t)∥2 + wθ ∥θk − θd(t)∥2.
+
+b) Contact Point Cost.: The contact point cost lstance 
+
+encourages stability during stance phases by penalizing non-zero velocities ˙pci,k for all active contact points i ∈ C k at each time step, i.e., lstance = ws
+
+P 
+
+> i∈C k
+
+∥ ˙pci,k ∥2.
+
+c) Collision Avoidance Cost.: The collision avoidance cost lcol employs exponential barrier functions over all obstacles, combining a proximity penalty with a velocity-dependent term: lcol =PNobs 
+
+> j=1
+
+wc exp( −α · dj (xk)) + wv ∥vk∥2 exp( −β · dj (xk)) ,where dj (xk) is the distance to the j-th obstacle, vk is the robot velocity, and α, β > 0 control the influence range of each term. 
+
+d) Control Energy Cost.: The control energy cost lctrl =
+
+wa∥ak∥2 penalizes the squared magnitude of high-level actions to encourage energy-efficient motions. 
+
+e) Terminal Cost.: The terminal cost Vf (xH , G (t)) = 
+
+wf · ltrack (xH , G (t)) applies a scaled version of the tracking cost at the end of the planning horizon to encourage conver-gence toward the desired goal state. 
+
+D. Input device and input signals 
+
+We employ the Apple Vision Pro (AVP) as the input XR device, leveraging its accurate hand/finger tracking and global headset pose estimation via Visual-Inertial SLAM. The framework uses the headset pose Thead , left wrist pose 
+
+Tlw , and right wrist pose Trw to control the robot. The flexibility of our proposed retargeter allows users to select any subset of targets from G(t) to control any subset of body parts based on preference or task characteristics. For most of robots, the primary embodiment gap arises from the 
+
+Fig. 4: Experimental settings and common failure cases of the direct mapping method. In pick-and-place tasks, the green box is the object and the red box is the table. On the humanoid, unstable upper-body configurations cause loss of balance. On the mobile manipulator, the primary failure mode is collision with surrounding walls (blue boundaries). 
+
+mobile base. Therefore, in most of the whole-body control tasks, Tlw and Trw control each arm’s joint positions qarm 
+
+via inverse kinematics [19], while the retargeter focuses on precisely and safely controlling the base pose ( p, θ) and non-arm joints ( qmobility , qtorso ) using Thead . However, this is not the only configuration; we also show that for certain tasks, using only Tlw to control all whole-body joints is preferable. A single AVP cannot directly detect foot motions. Prior works infer foot states from fisheye cameras [20] or teacher-student frameworks [3], but such indirect measurements introduce substantial uncertainty—e.g., the system may confuse bend-ing with walking intent. We instead use a double-pinch gesture ς to toggle between stationary and mobile modes. IV. E XPERIMENTS 
+
+This section presents experiments conducted in both sim-ulation and real-world environments on two platforms: the Unitree G1 humanoid and the Rainbow RB-Y1 dual-arm mobile manipulator. The experiments address the following questions:  
+
+> •
+
+How well does the proposed framework perform on various whole-body control (WBC) tasks across the two TABLE II: Results on Humanoid platform. TSR: Touch Success Rate (%), PSR: Pickup Success Rate, PPSR: Pick-and-Place Success Rate, CT: Completion Time (s), ABP: Average Balance Power (W).                                                             
+
+> Dual-point Touch Box Pick-and-Place Setting Method TSR ↑CT (s) ↓ABP (W) ↓PSR ↑PPSR ↑CT (s) ↓ABP (W) ↓
+> Sim Direct mapping with AMO 10/10 69.62 ± 38.36 0.17 ± 0.07 10/10 1/10 49.84 ± 00.00 0.28 ± 0.05 Direct mapping with FALCON 10/10 38.30 ± 16.42 0.24 ± 0.26 8/10 1/10 78.16 ± 00.00 0.57 ± 0.15 Ours w/o state sync 10/10 52.66 ± 31.44 0.43 ± 0.09 10/10 10/10 38.43 ± 8.32 1.56 ± 0.04 Ours 10/10 26.58 ± 6.60 0.14 ± 0.06 10/10 10/10 30.75 ± 7.99 0.17 ± 0.05
+> Real Direct mapping with FALCON 6/10 106.36 ± 35.10 0.63 ± 0.06 10/10 5/10 60.34 ± 18.55 0.70 ± 0.11 Ours 10/10 55.83 ± 43.20 0.38 ± 0.08 10/10 9/10 41.95 ± 3.90 0.39 ± 0.08
+
+robotic platforms?  
+
+> •
+
+Compared to other baselines, can the MPC-based re-targeter better assist users in teleoperating robots to achieve WBC tasks with greater precision and safety?  
+
+> •
+
+Can the MPC-based retargeter provide users with a flexible and customizable teleoperation experience? 
+
+A. Experimental Tasks 
+
+We select representative WBC tasks from previous re-search work [21] that require coordinated arm movements and base mobility. All experiments presented in this paper were conducted as research experiments in controlled lab-oratory settings and are not a production deployment. The tasks are defined as follows: 
+
+Dual-point touch : Two points (in simulation) or two box holes (in the real world) are sampled in the world space outside the workspace of the robot’s initial pose. The operator must reposition the robot such that both points fall within the workspace and then use the arms to pinpoint each target. This task evaluates the precision of the teleoperation system. 
+
+Box pick-and-place : A box is initially placed on a sup-port, with a table positioned at a distance of around 1 m. The operator must teleoperate the robot to grasp the box with two arms, transport it to the table by moving the base, and place it on the surface. This task evaluates the overall functionality of the teleoperation system. 
+
+Non-prehensile transport : A toy is placed on the open palm without grasping. The user teleoperates the robot to transport the toy to a container with a 10 cm × 5 cm opening, avoiding obstacles along the path while maintaining balance to prevent dropping, and precisely releases it into the hole. This task evaluates the flexibility of the proposed retargeter. 
+
+B. Experimental Metrics 
+
+All metrics are reported over 10 trials with meth-ods randomly assigned across trials to mitigate familiar-ity bias. Touch Success Rate (TSR, %): For dual-point touch—percentage of trials where both arms reach within 5 cm of their targets and hold for 3 s (simulation), or suc-cessfully insert into the holes and lift the box (real world). 
+
+Pickup / Pick-and-Place Success Rate (PSR / PPSR, %): For box pick-and-place—PSR measures successful box lifting (held above support for 3 s); PPSR measures suc-cessful grasping and placement on the table without drop-ping. Delivery Success Rate (DSR, %): For non-prehensile transport—percentage of trials where the toy is transported without dropping or hitting obstacles and released into the container. Completion Time (CT, s): Time to complete each task; for pick-and-place, recorded upon successful table placement. Average Balance Power (ABP, W): Average motor power of lower-body joints during standing mode, ABP = 1
+
+> K
+
+PKk=1 1
+
+> m
+
+Pml=1 Pl(tk), where K is the number of standing-mode time steps, m the number of lower-body joints, and Pl the motor power (torque × velocity). This quantifies corrective movements and instability. Collision Rate (CR, %): Percentage of trials with robot-obstacle collisions. Tilt Angle (TA, rad) and Jerk (m/s 3): For non-prehensile transport—TA measures average palm deviation from the upright orientation; Jerk measures average palm motion jerk. Both are computed during transport prior to the release motion, reflecting the ability to incorporate additional objectives and tune motion smoothness, respectively. 
+
+C. Teleoperation on Humanoid 1) Setup: We adopt the FALCON RL policy [9] for force-adaptive loco-manipulation. The retargeter optimizes 7-dim commands ( h, ϕ, V, Ω) from Thead , while arm joints are set via IK from Tlw and Trw . The detailed setups are listed in Table I. 
+
+2) Baseline: To benchmark our MPC-based retargeter, we implement a direct mapping baseline following prior work [4], which maps Thead directly to the high-level action space: h is obtained via inverse kinematics using human kinematic models, ϕ is derived from the orientation of Thead ,and V and Ω are computed through finite differencing of 
+
+Thead across consecutive time frames. We test the direct mapping method with both the FALCON [9] and AMO [4] policies. AMO is a whole-body control framework that com-bines RL with trajectory optimization and includes explicit adaptation to out-of-distribution (OOD) commands. Both policies share the same input command space. Notably, we pair our method only with the FALCON [9] policy. We compare our method against the following baselines: 
+
+Direct mapping with AMO [4]: This baseline demon-strates why the proposed retargeter remains necessary for precise and safe teleoperation, even when the policy itself can handle a certain degree of OOD commands. 
+
+Direct mapping with FALCON [9]: This baseline high-lights the capability of our method in handling OOD com-mands and compensating for imprecise velocity tracking in walking mode. TABLE III: Results on Mobile Manipulator platform. TSR: Touch Success Rate (%), PSR: Pickup Success Rate, PPSR: Pick-and-Place Success Rate, CT: Completion Time (s), CR: Collision Rate.                                               
+
+> Dual-point Touch Box Pick-and-Place Setting Method TSR ↑CR ↓CT (s) ↓PSR ↑PPSR ↑CR ↓CT (s) ↓
+> Sim Direct mapping with diffdrive 6/10 4/10 21.08 ± 8.89 6/10 1/10 9/10 109.28 ± 0.00
+> Ours 10/10 0/10 26.49 ± 13.69 10/10 10/10 0/10 139.07 ± 4.32 Real Direct mapping with diffdrive 9/10 1/10 38.48 ± 10.76 10/10 1/10 5/10 95.73 ± 0.00
+> Ours 10/10 0/10 56.75 ± 19.14 10/10 7/10 0/10 116.5 ± 37.48
+
+MPC-based retargeter without state synchronization :Our MPC-based retargeter using noisy measurements di-rectly from the robot to synchronize the simulated robot at each MPC step. 
+
+3) Discussion: Table II presents the performance results for two whole-body control tasks—dual-point touch and box pick-and-place—on the humanoid robot in both simulation and real-world settings. The direct mapping methods with AMO and FALCON suffer from several key limitations. First, they exhibit severe drift without a consistent bias, making it difficult for operators to correct; coupled with the inability of human-in-the-loop control to provide the high-frequency adjustments required for precise reposition-ing during walking, this renders teleoperation intractable and prolongs completion times. Second, because the lower body is controlled by Thead and the operator’s head moves continuously, the direct mapping method amplifies uninten-tional noise, resulting in unstable squatting. Third, even when the robot successfully grasps objects, jerky movements and imprecise velocity tracking cause placement failures—for example, dropping the box or failing to guide the robot near the target table. Fourth, the resulting inefficient and prolonged motions lead to motor overheating, which we observed multiple times in real-world trials. In contrast, our MPC-based retargeter addresses these issues by enabling drift-free repositioning, precisely tracking desired height and waist angles, and regularizing the low-level policy to produce more energy-efficient motions. Although average body power depends on the choice of low-level RL policy—with FAL-CON producing more aggressive motions than AMO—the retargeter consistently regularizes policy behavior across both, yielding shorter completion times, higher pick-and-place success rates, and reduced energy consumption. Fi-nally, without state synchronization, incorrect foot-ground contact estimation and imprecise future predictions impair the robot’s ability to determine optimal actions, substantially degrading performance on the precision-demanding dual-point touch task; the effect is less pronounced for pick-and-place since precise pinpointing is not required, though energy consumption increases due to continuous corrective movements. 
+
+D. Teleoperation on Mobile Manipulator 1) Setup: We adopt a differential drive controller that first converts the desired base velocity (V, Ω) into desired wheel speeds via kinematic equations, then uses a proportional controller with gain Kp to compute torques that drive the actual wheel speeds toward the desired ones. We define two retargeter variants to demonstrate framework flexibility. 
+
+Version 1 mirrors the humanoid setup: Thead controls 8-dim actions ( V, Ω, q torso ) while arms are set via IK. Version 2 
+
+uses Tlw alone to control all 13 whole-body joints (left arm + torso), with an optional upright constraint hori  
+
+> ee ,L
+
+=
+
+R(θ) · Ree ,L (q) · ez − ez added to the cost for non-prehensile transport. This variant demonstrates the ease of changing the number of alignment targets, action space, and cost function online. In simulation, the robot operates in a walled room to test obstacle avoidance in confined environments. The detailed setups are listed in Table I. 
+
+2) Baseline: On this platform, we compare our method against a direct mapping baseline in which V and Ω are calculated via finite differences across consecutive Thead 
+
+values, and qtorso is computed via inverse kinematics from 
+
+Thead . Our method can integrate with any low-level policy without retraining for this morphology. Since the AMO and FALCON policies are trained specifically for humanoid robots, combining the direct mapping method with these policies on this platform is non-trivial. Consequently, we compare our method only against the direct mapping method combined with the differential drive controller. 
+
+3) Discussion: Table III presents a comparison between our method and the baseline on two whole-body control tasks—dual-point touch and box pick-and-place—for the mobile manipulator. The direct mapping method suffers from two primary limitations. First, the limited field of view from the AVP can occlude obstacles, making it inherently difficult for operators to maneuver safely through the environment; this leads to frequent collisions, particularly in simulation where pinpoint targets are located near walls. Second, these challenges are compounded in the multi-step box pick-and-place task, which requires the robot to navigate toward the box, rotate to avoid collisions, and approach the table without contacting obstacles—resulting in notably low pick and place success rates under direct mapping. While careful human-in-the-loop control can occasionally avoid collisions, the direct mapping results overall reflect the difficulty operators face without active assistance. In contrast, our MPC-based retargeter incorporates a collision avoidance term that con-tinuously repels the robot from obstacles, yielding higher success rates and lower collision rates across both tasks. This collision avoidance behavior does introduce a trade-off: in the simulator, operators require time to adapt to the repulsive forces near walls, resulting in slightly longer com-pletion times for successful trials. In the real world, where TABLE IV: Non-prehensile transport task on mobile manipulator in real-world. DSR: Delivery Success Rate (%), CT: Completion Time (s), TA: Tilt Angle (rad), Jerk ( m/s 3).                         
+
+> Setting DSR ↑CT (s) ↓TA (rad) ↓Jerk ( m/s 3)↓
+> 3-Point Alignment w/o Upright Constraint 1/10 30.80 ± 0.00 0.41 ± 0.12 1259.51 ± 256.05 1-Point Alignment w/ Upright Constraint 10/10 34.50 ± 6.37 0.03 ± 0.03 1059.44 ± 191.45 Conservative 7/10 40.75 ± 1.06 0.05 ± 0.03 769.99 ± 11.02
+> Aggressive 6/10 24.50 ± 3.50 0.01 ± 0.01 2144.55 ± 87.80
+
+maneuvering is considerably easier, both methods achieve high success rates on the dual-point touch task, though our method retains its advantage on the more demanding pick-and-place task. The real-world failure cases for our method resulted from an unstable grasp on the box rather than a navigation or collision issue. Table IV demonstrates the flexibility of our framework for a real-world non-prehensile transport task on the mobile manipulator. We first vary the weight of the control energy cost (Section III-C) to adjust the conservativeness of the motion. A larger weight ( wa = 0 .5) yields smoother, more conservative motion (lower jerk) at the expense of longer completion time; however, the slow response introduces de-lay, leading to collisions with the surrounding environment. Conversely, a smaller weight ( wa = 0 .02 ) produces more aggressive and responsive motion with shorter completion time but higher jerk. Failures in this setting correspond to the toy being dropped during transport due to the jerky motions. We further demonstrate the ease of changing the number of alignment targets and the cost function online. In the 3-point alignment setting, no upright constraint is applied, requiring the user to manually keep the end-effector level based on experience. In the 1-point alignment setting, an upright constraint is imposed on the end-effector during transport; once the robot reaches the container opening, the user removes this constraint online via a gesture to perform the releasing motion. The results show that incorporating the upright constraint significantly improves the success rate, as evidenced by smaller tilt angle (TA) and lower jerk values during transport. V. C ONCLUSION 
+
+We presented a hierarchical whole-body teleoperation framework that consists of an MPC-based motion retargeter to control diverse robot morphologies from a single XR device without retraining low-level policies. A state synchro-nization method ensures robust online execution under noisy measurements and contact sensitivity. Experiments on a Uni-tree G1 humanoid and a Rainbow RB-Y1 mobile manipulator demonstrated higher success rates with improved precision and safety over direct mapping baselines. As a plug-and-play module compatible with arbitrary controllers and platforms, our framework offers a scalable, morphology-agnostic solu-tion for whole-body teleoperation. Looking ahead, we plan to improve control rate and responsiveness by distilling the MPC policy into a neural network for real-time execution, and to enable compliant behavior during contact-rich tasks by integrating force sensing into the framework. ACKNOWLEDGMENT The authors would like to thank Haowen Liu, Bharath Masetty, and Yinai Fan for their assistance with the setup of experiments, Bill Smart, Roberto Martin-Martin, Taskin Padir, and Shang Meng for their review, and our colleagues at Amazon for their support. Jen-Wei Wang thanks Shao-Yi Yu for her constant encouragement during this project. REFERENCES [1] Q. Ben, F. Jia, J. Zeng, J. Dong, D. Lin, and J. Pang, “Homie: Humanoid loco-manipulation with isomorphic exoskeleton cockpit,” 
+
+arXiv preprint arXiv:2502.13013 , 2025. [2] Y. Ze, Z. Chen, J. P. Ara´ ujo, Z.-a. Cao, X. B. Peng, J. Wu, and C. K. Liu, “Twist: Teleoperated whole-body imitation system,” arXiv preprint arXiv:2505.02833 , 2025. [3] Y. Li, Y. Lin, J. Cui, T. Liu, W. Liang, Y. Zhu, and S. Huang, “Clone: Closed-loop whole-body humanoid teleoperation for long-horizon tasks,” arXiv preprint arXiv:2506.08931 , 2025. [4] J. Li, X. Cheng, T. Huang, S. Yang, R.-Z. Qiu, and X. Wang, “Amo: Adaptive motion optimization for hyper-dexterous humanoid whole-body control,” arXiv preprint arXiv:2505.03738 , 2025. [5] M. Seo, H. A. Park, S. Yuan, Y. Zhu, and L. Sentis, “Legato: Cross-embodiment imitation using a grasping tool,” IEEE Robotics and Automation Letters , 2025. [6] N. Mahmood, N. Ghorbani, N. F. Troje, G. Pons-Moll, and M. J. Black, “Amass: Archive of motion capture as surface shapes,” in Proceedings of the IEEE/CVF international conference on computer vision , 2019, pp. 5442–5451. [7] K. Darvish, Y. Tirupachuri, G. Romualdi, L. Rapetti, D. Ferigo, F. J. A. Chavez, and D. Pucci, “Whole-body geometric retargeting for humanoid robots,” in 2019 IEEE-RAS 19th International Conference on Humanoid Robots (Humanoids) . IEEE, 2019, pp. 679–686. [8] J. P. Araujo, Y. Ze, P. Xu, J. Wu, and C. K. Liu, “Retargeting matters: General motion retargeting for humanoid motion tracking,” 
+
+arXiv preprint arXiv:2510.02252 , 2025. [9] Y. Zhang, Y. Yuan, P. Gurunath, I. Gupta, S. Omidshafiei, A.-a. Agha-mohammadi, M. Vazquez-Chanlatte, L. Pedersen, T. He, and G. Shi, “Falcon: Learning force-adaptive humanoid loco-manipulation,” arXiv preprint arXiv:2505.06776 , 2025. [10] G. Williams, N. Wagener, B. Goldfain, P. Drews, J. M. Rehg, B. Boots, and E. A. Theodorou, “Information theoretic mpc for model-based reinforcement learning,” in 2017 IEEE international conference on robotics and automation (ICRA) . IEEE, 2017, pp. 1714–1721. [11] C. Lu, X. Cheng, J. Li, S. Yang, M. Ji, C. Yuan, G. Yang, S. Yi, and X. Wang, “Mobile-television: Predictive motion priors for humanoid whole-body control,” in 2025 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2025, pp. 5364–5371. [12] T. He, J. Gao, W. Xiao, Y. Zhang, Z. Wang, J. Wang, Z. Luo, G. He, N. Sobanbab, C. Pan et al. , “Asap: Aligning simulation and real-world physics for learning agile humanoid whole-body skills,” arXiv preprint arXiv:2502.01143 , 2025. [13] T. He, Z. Luo, W. Xiao, C. Zhang, K. Kitani, C. Liu, and G. Shi, “Learning human-to-humanoid real-time whole-body teleoperation,” in 2024 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2024, pp. 8944–8951. [14] T. He, Z. Luo, X. He, W. Xiao, C. Zhang, W. Zhang, K. Kitani, C. Liu, and G. Shi, “Omnih2o: Universal and dexterous human-to-humanoid whole-body teleoperation and learning,” arXiv preprint arXiv:2406.08858 , 2024. [15] X. Cheng, Y. Ji, J. Chen, R. Yang, G. Yang, and X. Wang, “Ex-pressive whole-body control for humanoid robots,” arXiv preprint arXiv:2402.16796 , 2024. [16] S. Zhong, N. Fazeli, and D. Berenson, “Rumi: Rummaging using mutual information,” IEEE Transactions on Robotics , 2025. [17] J. Alvarez-Padilla, J. Z. Zhang, S. Kwok, J. M. Dolan, and Z. Manch-ester, “Real-time whole-body control of legged robots with model-predictive path integral control,” in 2025 IEEE International Confer-ence on Robotics and Automation (ICRA) . IEEE, 2025, pp. 14 721– 14 727. [18] W. Xu and F. Zhang, “Fast-lio: A fast, robust lidar-inertial odometry package by tightly-coupled iterated kalman filter,” IEEE Robotics and Automation Letters , vol. 6, no. 2, pp. 3317–3324, 2021. [19] K. Zakka, “Mink: Python inverse kinematics based on mujoco,” 2025. [20] J. Wang, Z. Cao, D. Luvizon, L. Liu, K. Sarkar, D. Tang, T. Beeler, and C. Theobalt, “Egocentric whole-body motion capture with fisheye-vit and diffusion-based motion refinement,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition ,2024, pp. 777–787. [21] Z. Zhang, C. Chen, H. Xue, J. Wang, S. Liang, Y. Liu, Z. Zhang, H. Wang, and L. Yi, “Unleashing humanoid reaching potential via real-world-ready skill space,” IEEE Robotics and Automation Letters ,vol. 11, no. 2, pp. 2082–2089, 2025.

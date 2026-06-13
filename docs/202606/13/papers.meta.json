@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-13",
+  "date": "2026-06-13",
+  "generated_at": "2026-06-13T21:23:41",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/13/2606.10818v1-impact-learning-internal-model-predictive-control-for-forceful-robotic-manipulation",
+      "section": "deep",
+      "title_en": "IMPACT: Learning Internal-Model Predictive Control for Forceful Robotic Manipulation",
+      "authors": "Jiawei Gao, Chaoqi Liu, Peilin Wu, Haonan Chen, Yilun Du",
+      "date": "2026-06-09",
+      "pdf": "https://arxiv.org/pdf/2606.10818v1",
+      "score": "9.0",
+      "evidence": "学习内部动力学模型用于机械臂操作的模型预测控制",
+      "tldr": "真实世界机器人操作常需强力交互，如使用不同重量工具或擦桌子。现有方法或依赖稳态误差隐式处理导致泛化差，或需额外硬件显式控制增加复杂性。IMPACT框架将任务解耦为规划层与基于内部模型的预测控制，在模拟和实物实验中显著提升成功率、泛化到未见过物体重量的能力，并优化安全性与能效。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Real-world robotic manipulation tasks often involve forceful interactions with the environment, such as using tools of varying weights, transporting objects with different masses, and performing contact-rich tasks like table wiping. Previous learning-based approaches typically employ imitation learning policies that output target end-effector poses tracked by low-level impedance controllers. In these systems, forceful interactions are either implicitly realized through steady-state tracking errors or explicitly commanded using wrist force/torque or tactile sensors. However, implicit approaches generalize poorly across object weights, while explicit approaches require specialized hardware and increase system complexity. In this work, we propose IMPACT, a framework that decouples these forceful tasks into task-planning and internal-model-based predictive control. Extensive simulation and real-world experiments demonstrate that the proposed framework achieves higher success rates and improved generalization to unseen object weights, as well as better safety and energy efficiency.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/13/2606.10040v1-efficient-wam-a-1b-parameter-world-action-model-with-low-cost-future-imagination",
+      "section": "deep",
+      "title_en": "Efficient-WAM: A 1B-Parameter World-Action Model with Low-Cost Future Imagination",
+      "authors": "Jiajun Li, Tiecheng Guo, Yifan Ye, Rongyu Zhang, Xiaowei Chi, Qianpu Sun, Ying Li, Yunfan Lou, Yan Huang, Zhihe Lu, Meng Guo, Shanghang Zhang",
+      "date": "2026-06-08",
+      "pdf": "https://arxiv.org/pdf/2606.10040v1",
+      "score": "8.0",
+      "evidence": "高效的世界-动作模型用于未来预测和动作生成",
+      "tldr": "现有世界动作模型依赖逼真未来预测导致高延迟，难以实时部署。Efficient-WAM通过紧凑视频专家、稀疏视频潜变量和非对称去噪，以低质量未来预测作为紧凑引导，显著降低推理成本。在保持控制性能的同时，实现每块约100ms延迟，相比现有方法提速30倍，推动机器人实时部署。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World-Action Models (WAMs) have emerged as a promising paradigm for embodied control by coupling future visual prediction with action generation. However, most existing WAMs rely on photorealistic future prediction, which incurs high inference latency and makes real-time robot deployment difficult. This motivates a more efficient WAM design that preserves the control benefits of future visual prediction while reducing its inference cost. We introduce Efficient-WAM, a World-Action Model that reduces the cost of future imagination while preserving its control benefit. Efficient-WAM improves inference efficiency via a compact video expert transferred from WAN-2.2-5B, token-sparse video latents, and asymmetric video-action denoising that allocates fewer sampling steps to video than to actions. Instead of optimizing the future branch for visual fidelity, Efficient-WAM treats future video prediction as a compact guidance signal for action generation. Comprehensive experiments on RoboTwin 2.0 and real-world manipulation tasks show that Efficient-WAM maintains strong action performance despite visibly coarse future predictions. While maintaining competitive control capabilities, our 1B-parameter model can reduce per-chunk latency to around 100 ms during physical deployment, achieving a 30x speedup over existing WAMs.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/13/2606.07934v1-x-op-cross-morphology-whole-body-teleoperation-via-mpc-retargeting",
+      "section": "quick",
+      "title_en": "X-OP: Cross-Morphology Whole-Body Teleoperation via MPC Retargeting",
+      "authors": "Jen-Wei Wang, Sarthak Kaingade, Andrea Tagliabue, Nicholas Morozovsky",
+      "date": "2026-06-06",
+      "pdf": "https://arxiv.org/pdf/2606.07934v1",
+      "score": "6.0",
+      "evidence": "基于MPC的运动重定向实现全身遥操作",
+      "tldr": "现有全身遥操作成本高、需重新训练或忽略动态可行性。本文提出分层框架X-OP，仅用单个XR设备，通过MPC运动重定向联合优化操作者意图和机器人动态可行性，并引入状态同步与SLAM反馈实现鲁棒执行。仿真结果显示，人形机器人完成时间降低30%以上、功耗降低20%，移动机械臂零碰撞；真实实验验证跨形态泛化能力。该框架可扩展、形态无关，支持实时行为定制，为全身遥操作提供即插即用解决方案。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Whole-body teleoperation is essential for scalable robot data collection in loco-manipulation tasks, yet existing approaches relying on exoskeleton suits or multi-camera setups impose prohibitive cost, complexity, and environmental constraints. Recent methods using a single extended reality (XR) device with end-to-end reinforcement learning policies partially address these limitations but require robot-specific retraining, suffer from out-of-distribution failures, and rely on motion retargeting that neglects dynamic feasibility. We propose a hierarchical whole-body teleoperation framework driven by a single XR device that generalizes across diverse robot morphologies without retraining robot-specific policies. A Model Predictive Control (MPC)-based motion retargeter jointly optimizes alignment with the operator's intent and the robot's dynamic feasibility, generating optimal commands for existing low-level controllers. To ensure robust online execution, we introduce a state synchronization method that resets the simulator state at each MPC step to handle noisy real-world measurements and contact sensitivity, and integrate SLAM-based global pose feedback to mitigate long-term drift. Simulation results show higher success rates on whole-body control tasks for both a humanoid (over 30% lower completion time and 20% lower power consumption) and a mobile manipulator (zero collisions) compared to baselines. Real-world experiments further validate the effectiveness and flexibility of our method, demonstrating the successful deployment of the proposed retargeter on both platforms for whole-body control tasks and the ease of allowing users to adjust teleoperation behavior based on their preferences. This plug-and-play framework offers a scalable, morphology-agnostic solution for whole-body robot teleoperation, enabling real-time behavioral customization and broad applicability across platforms.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
