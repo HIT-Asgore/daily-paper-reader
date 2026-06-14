@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-14",
+  "date": "2026-06-14",
+  "generated_at": "2026-06-14T21:28:28",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/14/2606.12372v1-uniintervene-agentic-intervention-for-efficient-real-world-reinforcement-learning",
+      "section": "quick",
+      "title_en": "UniIntervene: Agentic Intervention for Efficient Real-World Reinforcement Learning",
+      "authors": "Haoyuan Deng, Yitong Gao, Yudong Lin, Haichao Liu, Zhenyu Wu, Ziwei Wang",
+      "date": "2026-06-10",
+      "pdf": "https://arxiv.org/pdf/2606.12372v1",
+      "score": "7.0",
+      "evidence": "强化学习用于机器人操作，人机回环干预",
+      "tldr": "现有的人类参与强化学习框架依赖频繁人工纠正，成本高。UniIntervene通过未来条件动作价值估计检测低效探索，并自动将策略恢复至高价值状态。实验在真实世界操作任务中实现平均成功率提升8.6%，同时人类干预减少57%。该方法将干预从被动纠正转变为价值感知的恢复过程，提升了现实RL的可扩展性。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Human-in-the-loop reinforcement learning (HiL-RL) has emerged as an effective paradigm for real-world robotic manipulation, enabling online policy improvement with human guidance. However, current HiL-RL frameworks remain intervention-intensive, relying on frequent human corrections to redirect the policy out of unproductive exploration, which incurs high labor cost and limits real-world scalability. To address this, we propose UniIntervene, an agentic intervention model that detects unproductive exploration and autonomously recovers the policy toward high-value states, taking over the bulk of interventions from human operators. Specifically, UniIntervene first performs future-conditioned action-value estimation, predicting the latent consequence of the current action and evaluating its induced value, which provides a more stable progress signal. Building on this, a temporal value-risk critic aggregates recent value dynamics and triggers intervention when the estimated value exhibits sustained stagnation or degradation. When intervention is required, UniIntervene retrieves a high-value recovery target from a memory of past intervention episodes and produces executable corrective actions through a goal-conditioned recovery policy. In this way, UniIntervene turns intervention from passive human correction into a value-aware recovery process for efficient real-world RL. Extensive experiments on diverse real-world manipulation tasks demonstrate that UniIntervene improves the average success rate by 8.6% while reducing human interventions by 57% relative to state-of-the-art HiL-RL baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/14/2606.11184v1-tacforesight-force-guided-tactile-world-model-for-contact-rich-manipulation",
+      "section": "quick",
+      "title_en": "TacForeSight: Force-Guided Tactile World Model for Contact-Rich Manipulation",
+      "authors": "Yujie Zang, Yuhang Zheng, Xian Nie, Yupeng Zheng, Shuai Tian, Songen Gu, Chen Gao, Zining Wang, Shuicheng Yan, Wenchao Ding",
+      "date": "2026-06-09",
+      "pdf": "https://arxiv.org/pdf/2606.11184v1",
+      "score": "6.0",
+      "evidence": "力条件触觉世界模型预测触觉动力学用于接触丰富操作",
+      "tldr": "接触丰富操作中，全局力与局部触觉的时空作用不对称，现有方法建模不足。本文提出TacForeSight，包含TacForceWM触觉世界模型预测短时触觉潜在动态，以及预测性触觉条件策略通过交叉注意力与门控融合预测特征。在5个任务和3种扰动设置下，TacForeSight优于现有基线，尤其在动态接触干扰下表现更优。该方法实现实时高效的前瞻接触推理，适用于高频操作控制。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Contact-rich manipulation requires robots to continuously perceive and regulate evolving physical interactions under dynamic contact transitions or complex surface geometries. Recent imitation learning methods improve contact-aware control by incorporating tactile or force feedback, but they rarely model the asymmetric spatiotemporal roles of global force and local tactile sensing. To address this, we propose TacForeSight, a lightweight force-conditioned tactile foresight framework for real-time manipulation. The core component is TacForceWM, a tactile world model that predicts short-horizon tactile latent dynamics from dual-finger tactile observations conditioned on high-frequency wrist force and torque signals. Another key component, the Predictive Tactile-Conditioned Policy, leverages the predicted latents as anticipatory contact priors, models the current-to-future tactile evolution via cross-attention, and adaptively fuses visuo-tactile features through a tactile-guided gating module. By forecasting purely within a compact latent space, TacForeSight enables proactive contact reasoning with efficient real-time inference suitable for high-frequency manipulation control. Real-robot experiments on five representative tasks and three in-process perturbation settings show that TacForeSight consistently outperforms existing baselines, particularly under dynamic contact disturbances. All models and datasets will be made publicly available on the project website at https://tacforesight.github.io/ProjectPage.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
