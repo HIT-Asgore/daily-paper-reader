@@ -1,0 +1,273 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-15T22:12:05.891169+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.14188v1",
+      "source": "arxiv",
+      "title": "Robustness without Wrinkles: Parallel Simulation and Robust MPC for Certified Deformable Manipulation",
+      "abstract": "We present CORD-SLS, a real-time control method for safe deformable object manipulation, with a focus on ropes and cloth. At its core is a GPU-parallel differentiable simulator with contact smoothing which enables efficient gradient-based planning through intermittent contact. To robustly satisfy constraints under model and sensing uncertainty, we develop a real-time, GPU-parallel output-feedback robust model predictive control (MPC) algorithm that plans with this simulator. We further show that the simulator accelerates model-based RL for training neural manipulation policies. To improve real-world robustness, we use conformal prediction to calibrate visual-feedback and perception-error bounds for MPC, producing reachable tubes that enable high-probability safe control. We evaluate CORD-SLS on high-dimensional, contact-rich rope and cloth manipulation tasks in simulation and hardware, including obstacle avoidance, routing, folding, and smoothing. Across settings, CORD-SLS achieves millisecond-speed planning, exceeding baselines in safety, speed, and task success.",
+      "authors": [
+        "Wei-Chen Li",
+        "Jeffrey Fang",
+        "Sasanka Polisetti",
+        "Yuexi Song",
+        "Glen Chou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-06-12T07:10:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.14188v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "differentiable simulator for deformable object manipulation with MPC",
+      "llm_evidence_cn": "可微仿真器用于可变形物体操作",
+      "llm_evidence": "可微仿真器用于可变形物体操作",
+      "canonical_evidence": "可微仿真器用于可变形物体操作",
+      "llm_tldr_en": "CORD-SLS uses a GPU-parallel differentiable simulator with contact smoothing for robust MPC and model-based RL in rope and cloth manipulation tasks.",
+      "llm_tldr_cn": "针对可变形物体操作中安全约束和不确定性问题，提出CORD-SLS，核心是GPU并行的可微仿真器（带接触平滑），用于梯度优化的鲁棒MPC，并加速基于模型的RL。在绳索和布料操作中实现了实时安全规划，同时验证了仿真器对RL的加速作用。",
+      "llm_tldr": "针对可变形物体操作中安全约束和不确定性问题，提出CORD-SLS，核心是GPU并行的可微仿真器（带接触平滑），用于梯度优化的鲁棒MPC，并加速基于模型的RL。在绳索和布料操作中实现了实时安全规划，同时验证了仿真器对RL的加速作用。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation of robotic manipulation",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14418v1",
+      "source": "arxiv",
+      "title": "Causal Object-Centric Models for Planning with Monte Carlo Tree Search",
+      "abstract": "We introduce COMET (Causal Object-centric Model for Efficient Tree search), a model-based reinforcement learning algorithm that performs Monte Carlo Tree Search in a slot-structured latent space. COMET pairs a frozen unsupervised object-centric encoder with a transformer-based world model, in which actions are bound to objects through a novel action-slot fusion mechanism that is used in slot transition prediction. Policy and value heads use object-causal attention, modulating token interactions by learned per-slot relevance scores so that decision-making concentrates on task-relevant entities. COMET adds an explicit object-level inductive bias to MuZero-style latent planning. Across eight visually and dynamically diverse tasks from the Object-Centric Visual RL benchmark, ManiSkill, Robosuite, and VizDoom, COMET achieves a higher mean normalized score during the early stages of training compared to object-centric and monolithic baselines.",
+      "authors": [
+        "Rodion Vakhitov",
+        "Leonid Ugadiarov",
+        "Alexey Skrynnik",
+        "Aleksandr Panov"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-06-12T12:55:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.14418v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "model-based RL with object-centric MCTS for manipulation",
+      "llm_evidence_cn": "基于模型的强化学习用于操作",
+      "llm_evidence": "基于模型的强化学习用于操作",
+      "canonical_evidence": "基于模型的强化学习用于操作",
+      "llm_tldr_en": "COMET combines object-centric encoding, transformer world model, and Monte Carlo Tree Search for sample-efficient model-based RL in visually diverse manipulation tasks.",
+      "llm_tldr_cn": "针对基于模型的规划中缺乏对象级先验的问题，提出COMET算法，使用冻结的对象中心编码器结合Transformer世界模型，并在槽潜空间执行MCTS。在8个操作任务上，COMET显著优于MuZero等基线，展现出更高效的学习和更好的泛化能力。",
+      "llm_tldr": "针对基于模型的规划中缺乏对象级先验的问题，提出COMET算法，使用冻结的对象中心编码器结合Transformer世界模型，并在槽潜空间执行MCTS。在8个操作任务上，COMET显著优于MuZero等基线，展现出更高效的学习和更好的泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08555v2",
+      "source": "arxiv",
+      "title": "FAWAM: Force-Aware World Action Models for Closed-Loop Contact-Rich Manipulation",
+      "abstract": "Force signals provide critical interaction cues for contact-rich robotic manipulation. However, existing methods mostly use force as an additional observation modality, without fully exploiting its role in modeling future interaction dynamics or guiding execution-time feedback correction. In this paper, we propose FAWAM, a force-aware world action model that incorporates force information at three levels: perception, prediction, and closed-loop execution. FAWAM first encodes historical 6-axis force/torque signals to modulate action generation, then jointly predicts future actions and end-effector wrenches to explicitly model contact evolution. It further introduces a residual correction module that uses the predicted wrench trajectory as an execution-time reference to refine actions online based on real-time force feedback. Real-world experiments across multiple contact-rich tasks show that FAWAM improves the average success rate by 36.25% over vision-only baselines and 21.25% over existing force-aware baselines, demonstrating the effectiveness of our force-aware framework for robust contact-rich manipulation.",
+      "authors": [
+        "Haotian He",
+        "Zeyu Yan",
+        "Qipeng Liu",
+        "Ning Guo",
+        "Wenzhao Lian"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-07T10:26:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.08555v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "force-aware world action model predicts contact dynamics for closed-loop manipulation",
+      "llm_evidence_cn": "力感知世界动作模型预测接触动力学用于闭环操作",
+      "llm_evidence": "力感知世界动作模型预测接触动力学用于闭环操作",
+      "canonical_evidence": "力感知世界动作模型预测接触动力学用于闭环操作",
+      "llm_tldr_en": "FAWAM introduces a force-aware world action model that jointly predicts future actions and end-effector wrenches, providing closed-loop correction for contact-rich manipulation.",
+      "llm_tldr_cn": "针对接触密集操作中现有方法未充分利用力信号建模未来交互的问题，提出力感知世界动作模型FAWAM，在感知、预测和闭环执行三个层面融合力信息，联合预测未来动作和末端执行器力，并通过残差校正模块实现闭环控制。实验表明该方法在多项接触操作任务上表现优异，证明了力感知世界模型对提升接触操作性能的有效性。",
+      "llm_tldr": "针对接触密集操作中现有方法未充分利用力信号建模未来交互的问题，提出力感知世界动作模型FAWAM，在感知、预测和闭环执行三个层面融合力信息，联合预测未来动作和末端执行器力，并通过残差校正模块实现闭环控制。实验表明该方法在多项接触操作任务上表现优异，证明了力感知世界模型对提升接触操作性能的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.13886v1",
+      "source": "arxiv",
+      "title": "PhysVLA: Towards Physically-Grounded VLA for Embodied Robotic Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models excel at mapping visual inputs and natural language instructions directly to robotic control policies. However, because they are trained primarily to fit behavioural demonstration data, they do not explicitly enforce fundamental physical principles such as rigid-body dynamics or contact constraints. This exposes a critical physics gap: standard temporal smoothing applied on top of single-step or chunked VLAs trades trajectory quality for added failures that short-term memory cannot resolve. To bridge this gap, we introduce PhysVLA (Physics-VLA), a plug-and-play, inference-time framework designed to wrap any frozen VLA backbone without retraining, fine-tuning, or weight access, with less than 1 ms of overhead per control step. PhysVLA intercepts the predicted control action, captures only the simulator or system state, and applies a dual-layered correction: (i) a phase-aware finite-state machine that structures discrete task segments (approach, grasp, transport, and place), and (ii) a selective Euler-Lagrange gate that activates only when a dynamics oracle detects kinodynamic inconsistency. Evaluated across OpenVLA, OpenVLA-OFT, Force-VLA, and Generalist-VLA on LIBERO-Spatial with a 7-DoF Franka Panda, the framework delivers absolute success rate increases of up to 17% and stability increases of up to 19% with no per-task regressions, improves trajectory efficiency by up to 15% across all four backbones, and shows up to a 10x improvement in trajectory jerk robustness on a Robosuite Lift cross-simulator sweep. We further validate the framework on a real Agilex Piper arm with a pick-and-place task, confirming that PhysVLA transfers to physical hardware without retraining, with success-rate improvements of up to 50%, establishing physical awareness as a composable, backbone-agnostic runtime module.",
+      "authors": [
+        "Namai Chandra",
+        "Shriram Damodaran",
+        "Lin Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T20:23:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.13886v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "apply physics constraints to VLA for manipulation",
+      "llm_evidence_cn": "为VLA注入物理约束",
+      "llm_evidence": "为VLA注入物理约束",
+      "canonical_evidence": "为VLA注入物理约束",
+      "llm_tldr_en": "PhysVLA adds physical priors (rigid-body dynamics, contact) to frozen VLA models at inference, reducing physics-violating actions in robotic manipulation tasks.",
+      "llm_tldr_cn": "针对VLA模型缺乏物理先验的问题，提出PhysVLA框架，在推理时通过添加刚体动力学和接触约束来增强动作的物理合理性，无需重训练，计算开销极小。实验表明该方法有效减少了违反物理规律的抓取和移动操作，提升了VLA在机器人操作任务中的安全性和鲁棒性。",
+      "llm_tldr": "针对VLA模型缺乏物理先验的问题，提出PhysVLA框架，在推理时通过添加刚体动力学和接触约束来增强动作的物理合理性，无需重训练，计算开销极小。实验表明该方法有效减少了违反物理规律的抓取和移动操作，提升了VLA在机器人操作任务中的安全性和鲁棒性。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.13769v1",
+      "source": "arxiv",
+      "title": "$μ_0$: A Scalable 3D Interaction-Trace World Model",
+      "abstract": "World models that capture how actions induce physical change enable scalable robot learning without reliance on embodiment-specific action labels. Pixel-space video models provide broad visual priors but expend model capacity on dense appearance reconstruction, while direct action models require embodiment-specific labels that hinder scalability. We present $μ_0$, a scalable world model based on 3D traces. Rather than predicting dense pixels or directly modeling actions, $μ_0$ forecasts smooth 3D trajectories for salient interaction points such as objects, tools, hands, and contact regions, yielding a compact, embodiment-agnostic motion interface. To enable training from diverse video sources, our TraceExtract system automatically extracts 3D supervision by selecting keypoints, constructing globally aligned traces, and associating motion segments with hierarchical language captions. This TraceExtract supervision pretrains $μ_0$ by combining a pretrained vision-language backbone with a modular trace expert, which represents each query via B-spline control points and predicts future traces. Experiments show that $μ_0$ outperforms baselines in both 2D and 3D trace prediction, including trace prediction models and tokenized VLM methods. Because $μ_0$ is frozen and reusable, it can be paired with action experts for downstream robot embodiments. Despite action-free pretraining, the resulting trace-conditioned policies achieve performance competitive with VLA models pretrained with action supervision, such as $π_0$. These results establish 3D traces as a scalable and transferable representation for cross-embodiment manipulation.",
+      "authors": [
+        "Seungjae Lee",
+        "Yoonkyo Jung",
+        "Jusuk Lee",
+        "Jonghun Shin",
+        "Amir Hossein Shahidzadeh",
+        "Yao-Chih Lee",
+        "H. Jin Kim",
+        "Jia-Bin Huang",
+        "Furong Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T17:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.13769v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "scalable world model based on 3D traces for learning physical dynamics",
+      "llm_evidence_cn": "基于3D轨迹的可扩展世界模型学习物理动力学",
+      "llm_evidence": "基于3D轨迹的可扩展世界模型学习物理动力学",
+      "canonical_evidence": "基于3D轨迹的可扩展世界模型学习物理动力学",
+      "llm_tldr_en": "Mu0 predicts 3D interaction traces as a compact world model, enabling training from diverse video without action labels.",
+      "llm_tldr_cn": "针对现有世界模型依赖像素重建或动作标签的局限，本文提出μ0，一种基于3D轨迹的可扩展世界模型。它预测关键交互点的平滑3D轨迹，避免密集像素预测，且不依赖具体动作标注。利用TraceExtract自动从视频提取3D监督，适用于多种机器人学习场景。实验表明其高效性和泛化性，为动力学建模提供了轻量化替代。",
+      "llm_tldr": "针对现有世界模型依赖像素重建或动作标签的局限，本文提出μ0，一种基于3D轨迹的可扩展世界模型。它预测关键交互点的平滑3D轨迹，避免密集像素预测，且不依赖具体动作标注。利用TraceExtract自动从视频提取3D监督，适用于多种机器人学习场景。实验表明其高效性和泛化性，为动力学建模提供了轻量化替代。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.14585v1",
+      "source": "arxiv",
+      "title": "Sensitivity Shaping for Latent Modeling",
+      "abstract": "Generative dynamics models enable planning in challenging robotic systems, but safe deployment requires reliably detecting policy-induced out-of-distribution (OOD) transitions. Existing methods typically treat the learned dynamics as fixed and attach post hoc support surrogates. We show that these surrogates can fail when the dynamics are locally insensitive to critical action choices: unsupported control actions may produce latent predictions that resemble demonstrated transitions, suppressing OOD signals despite large true predictive errors. To address this, we introduce support-conditioned control-sensitivity regularization, which promotes sensitive local response to control input changes in learned dynamics in high-support training regions. This preserves control-induced variation while limiting unstable extrapolation due to weak empirical support. Experiments in vision-based obstacle avoidance, manipulation, and real-robot navigation show improved OOD detection and safer closed-loop planning.",
+      "authors": [
+        "Hongzhan Yu",
+        "Chenghao Li",
+        "Ruipeng Zhang",
+        "Henrik Christensen",
+        "Sicun Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-12T16:01:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.14585v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns generative dynamics models for planning, addresses OOD detection",
+      "llm_evidence_cn": "学习生成动力学模型用于规划，处理分布外检测",
+      "llm_evidence": "学习生成动力学模型用于规划，处理分布外检测",
+      "canonical_evidence": "学习生成动力学模型用于规划，处理分布外检测",
+      "llm_tldr_en": "Proposes support-conditioned control-sensitivity regularization to improve OOD detection in learned dynamics models for safer planning in robotics.",
+      "llm_tldr_cn": "针对生成动力学模型在安全部署中的分布外检测问题，本文提出支持条件控制灵敏度正则化方法，增强学习动力学对控制输入的局部敏感响应，从而在规划任务中更可靠地检测未支持的动作，避免因模型局部不敏感导致的漏检。实验表明该方法能有效提升分布外检测性能，为基于模型的机器人控制提供了更安全的保障。",
+      "llm_tldr": "针对生成动力学模型在安全部署中的分布外检测问题，本文提出支持条件控制灵敏度正则化方法，增强学习动力学对控制输入的局部敏感响应，从而在规划任务中更可靠地检测未支持的动作，避免因模型局部不敏感导致的漏检。实验表明该方法能有效提升分布外检测性能，为基于模型的机器人控制提供了更安全的保障。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
