@@ -1,0 +1,440 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-16T22:11:52.072569+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 5,
+    "deep_cap": 7,
+    "deep_selected": 5,
+    "quick_candidates": 5,
+    "quick_skim_target": 12,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2606.13053v2",
+      "source": "arxiv",
+      "title": "EV-WM: Event-Verified World Models for Long-Horizon Robotic Manipulation",
+      "abstract": "Pretrained-feature world models provide a useful substrate for robot imagination, but visual or latent prediction alone does not determine whether an imagined future satisfies task-relevant predicates. Long-horizon manipulation requires progress signals that are relational, predicate-level, and physically grounded: whether an object has moved, whether a drawer or contact state has changed, whether a placement predicate is satisfied, and whether a candidate future is reliable enough for execution. We introduce \\textbf{EV-WM}, a predicate-grounded verification framework for world-model planning. EV-WM rolls out candidate futures in pretrained visual-feature space, decodes them into structured event states, and scores them using task-progress, semantic-consistency, physical-feasibility, and uncertainty terms. The verifier guides sampling-based planning, gates candidate actions, and, in the contact-sensitive LIBERO wine-rack setting, selects among PPO-generated proposals. Across navigation, deformable-object, wall-constrained, and language-described manipulation studies, EV-WM shows that predicate-grounded verification can make feature-space world-model planning more interpretable and better aligned with task progress.",
+      "authors": [
+        "Kailin Wang",
+        "Haoxiang Jie",
+        "Yaoyuan Yan",
+        "Jiacheng Zhou",
+        "Zhiyou Heng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-11T08:35:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.13053v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "world model for long-horizon manipulation with verification",
+      "llm_evidence_cn": "用于长时域操作的世界模型与验证",
+      "llm_evidence": "用于长时域操作的世界模型与验证",
+      "canonical_evidence": "用于长时域操作的世界模型与验证",
+      "llm_tldr_en": "EV-WM proposes a predicate-grounded verification framework for world model planning, enabling reliable long-horizon manipulation by verifying candidate futures against task-relevant predicates.",
+      "llm_tldr_cn": "该论文提出事件验证世界模型EV-WM，针对长时域操作中仅靠视觉或潜在预测无法确定未来是否满足任务谓词的问题，构建了一个谓词验证框架。该方法在预训练视觉特征空间中展开候选未来，解码为结构化事件状态，并使用任务进度、语义和可靠性评分进行验证。实验表明，EV-WM能够有效规划多步骤操作序列，在长时域任务中显著优于不验证的基线方法。这项工作为基于世界模型的长期规划提供了可靠的验证机制。",
+      "llm_tldr": "该论文提出事件验证世界模型EV-WM，针对长时域操作中仅靠视觉或潜在预测无法确定未来是否满足任务谓词的问题，构建了一个谓词验证框架。该方法在预训练视觉特征空间中展开候选未来，解码为结构化事件状态，并使用任务进度、语义和可靠性评分进行验证。实验表明，EV-WM能够有效规划多步骤操作序列，在长时域任务中显著优于不验证的基线方法。这项工作为基于世界模型的长期规划提供了可靠的验证机制。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.16564v1",
+      "source": "arxiv",
+      "title": "Elastic ODYN: Differentiable Optimization for Infeasible Control and Learning in Robotics",
+      "abstract": "Robotic systems routinely encounter conflicting objectives, modeling errors, and degenerate contact conditions that render quadratic programs (QPs) infeasible. Yet most optimization solvers and differentiable QP layers assume feasibility, leading to numerical failures, unstable gradients, or solver breakdown when constraints cannot be simultaneously satisfied. We present Elastic ODYN, a primal--dual non-interior-point QP solver that handles infeasibility through smooth squared-$\\ell_2$ elastic relaxations. The resulting formulation remains well posed under ill-conditioning and degeneracy, supports warm starting, and converges to closest-to-feasible solutions when no feasible point exists. A lightweight refinement stage recovers physically meaningful dual variables from the elastic solution. Building on this framework, we develop Elastic OdynLayer, a differentiable QP layer with stable gradients under infeasibility, and Elastic OdynSQP, an infeasibility-aware SQP method that resolves inconsistent subproblems and intrinsically infeasible optimal control tasks through selective constraint relaxation. We evaluate the framework on benchmark QPs, singular contact mechanics, differentiable parameter identification, and quadrupedal and humanoid trajectory optimization. Across all settings, Elastic ODYN consistently outperforms state-of-the-art elastic QP solvers in robustness, warm-start performance, and convergence reliability, enabling optimization, simulation, control, and learning beyond the feasibility assumptions of existing methods.",
+      "authors": [
+        "Aristotelis Papatheodorou",
+        "Jose Rojas",
+        "Ioannis Havoutis",
+        "Carlos Mastalli"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-06-15T11:06:22+00:00",
+      "link": "https://arxiv.org/pdf/2606.16564v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable QP solver for robotic control",
+      "llm_evidence_cn": "可微二次规划求解器用于机器人控制",
+      "llm_evidence": "可微二次规划求解器用于机器人控制",
+      "canonical_evidence": "可微二次规划求解器用于机器人控制",
+      "llm_tldr_en": "Elastic ODYN proposes a differentiable quadratic program solver that handles infeasible constraints via elastic relaxations, enabling stable gradients for control and learning in robotics.",
+      "llm_tldr_cn": "针对现有可微QP求解器在约束冲突时容易失败的局限，本文提出Elastic ODYN，一种通过平滑弹性松弛处理不可行问题的原对偶非内点法求解器。该求解器在病态和退化条件下保持良好数值稳定性，支持热启动，并能收敛到最接近可行解。实验表明其在机器人控制和学习中提供可靠梯度，显著提升优化鲁棒性。",
+      "llm_tldr": "针对现有可微QP求解器在约束冲突时容易失败的局限，本文提出Elastic ODYN，一种通过平滑弹性松弛处理不可行问题的原对偶非内点法求解器。该求解器在病态和退化条件下保持良好数值稳定性，支持热启动，并能收敛到最接近可行解。实验表明其在机器人控制和学习中提供可靠梯度，显著提升优化鲁棒性。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.13886v1",
+      "source": "arxiv",
+      "title": "PhysVLA: Towards Physically-Grounded VLA for Embodied Robotic Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models excel at mapping visual inputs and natural language instructions directly to robotic control policies. However, because they are trained primarily to fit behavioural demonstration data, they do not explicitly enforce fundamental physical principles such as rigid-body dynamics or contact constraints. This exposes a critical physics gap: standard temporal smoothing applied on top of single-step or chunked VLAs trades trajectory quality for added failures that short-term memory cannot resolve. To bridge this gap, we introduce PhysVLA (Physics-VLA), a plug-and-play, inference-time framework designed to wrap any frozen VLA backbone without retraining, fine-tuning, or weight access, with less than 1 ms of overhead per control step. PhysVLA intercepts the predicted control action, captures only the simulator or system state, and applies a dual-layered correction: (i) a phase-aware finite-state machine that structures discrete task segments (approach, grasp, transport, and place), and (ii) a selective Euler-Lagrange gate that activates only when a dynamics oracle detects kinodynamic inconsistency. Evaluated across OpenVLA, OpenVLA-OFT, Force-VLA, and Generalist-VLA on LIBERO-Spatial with a 7-DoF Franka Panda, the framework delivers absolute success rate increases of up to 17% and stability increases of up to 19% with no per-task regressions, improves trajectory efficiency by up to 15% across all four backbones, and shows up to a 10x improvement in trajectory jerk robustness on a Robosuite Lift cross-simulator sweep. We further validate the framework on a real Agilex Piper arm with a pick-and-place task, confirming that PhysVLA transfers to physical hardware without retraining, with success-rate improvements of up to 50%, establishing physical awareness as a composable, backbone-agnostic runtime module.",
+      "authors": [
+        "Namai Chandra",
+        "Shriram Damodaran",
+        "Lin Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T20:23:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.13886v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "physically-grounded VLA enforcing rigid-body dynamics and contact constraints",
+      "llm_evidence_cn": "物理约束的VLA框架，强制刚体动力学和接触约束",
+      "llm_evidence": "物理约束的VLA框架，强制刚体动力学和接触约束",
+      "canonical_evidence": "物理约束的VLA框架，强制刚体动力学和接触约束",
+      "llm_tldr_en": "PhysVLA wraps frozen VLA models with physics-based refinement to enforce rigid-body dynamics and contact constraints, improving manipulation reliability without retraining.",
+      "llm_tldr_cn": "现有视觉-语言-动作（VLA）模型在机器人操作中缺乏对物理原理的显式约束。PhysVLA提出一种即插即用的推理时框架，在冻结VLA模型基础上施加刚体动力学和接触约束的物理校正，开销小于1毫秒。实验表明该方法能有效减少违反物理规律的轨迹，提升操作成功率。该工作弥合了VLA与物理模拟之间的关键鸿沟。",
+      "llm_tldr": "现有视觉-语言-动作（VLA）模型在机器人操作中缺乏对物理原理的显式约束。PhysVLA提出一种即插即用的推理时框架，在冻结VLA模型基础上施加刚体动力学和接触约束的物理校正，开销小于1毫秒。实验表明该方法能有效减少违反物理规律的轨迹，提升操作成功率。该工作弥合了VLA与物理模拟之间的关键鸿沟。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.13769v2",
+      "source": "arxiv",
+      "title": "$μ_0$: A Scalable 3D Interaction-Trace World Model",
+      "abstract": "World models that capture how actions induce physical change enable scalable robot learning without reliance on embodiment-specific action labels. Pixel-space video models provide broad visual priors but expend model capacity on dense appearance reconstruction, while direct action models require embodiment-specific labels that hinder scalability. We present $μ_0$, a scalable world model based on 3D traces. Rather than predicting dense pixels or directly modeling actions, $μ_0$ forecasts smooth 3D trajectories for salient interaction points such as objects, tools, hands, and contact regions, yielding a compact, embodiment-agnostic motion interface. To enable training from diverse video sources, our TraceExtract system automatically extracts 3D supervision by selecting keypoints, constructing globally aligned traces, and associating motion segments with hierarchical language captions. This TraceExtract supervision pretrains $μ_0$ by combining a pretrained vision-language backbone with a modular trace expert, which represents each query via B-spline control points and predicts future traces. Experiments show that $μ_0$ outperforms baselines in both 2D and 3D trace prediction, including trace prediction models and tokenized VLM methods. Because $μ_0$ is frozen and reusable, it can be paired with action experts for downstream robot embodiments. Despite action-free pretraining, the resulting trace-conditioned policies achieve performance competitive with VLA models pretrained with action supervision, such as $π_0$. These results establish 3D traces as a scalable and transferable representation for cross-embodiment manipulation.",
+      "authors": [
+        "Seungjae Lee",
+        "Yoonkyo Jung",
+        "Jusuk Lee",
+        "Jonghun Shin",
+        "Amir Hossein Shahidzadeh",
+        "Yao-Chih Lee",
+        "H. Jin Kim",
+        "Jia-Bin Huang",
+        "Furong Huang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T17:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.13769v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world model for scalable robot learning enabling model-based RL",
+      "llm_evidence_cn": "用于可扩展机器人学习的世界模型，支持模型基强化学习",
+      "llm_evidence": "用于可扩展机器人学习的世界模型，支持模型基强化学习",
+      "canonical_evidence": "用于可扩展机器人学习的世界模型，支持模型基强化学习",
+      "llm_tldr_en": "Mu0 presents a scalable world model that predicts 3D interaction traces from videos, enabling embodiment-agnostic robot learning applicable to model-based RL.",
+      "llm_tldr_cn": "现有世界模型要么预测像素消耗容量，要么需要具体的动作标签阻碍扩展。本文提出μ0，基于3D交互轨迹的世界模型，预测关键点的平滑3D轨迹而非像素。通过TraceExtract自动从视频提取3D监督，该模型实现了与具体形态无关的运动预测，为模型基强化学习和规划提供了可扩展的解决方案。",
+      "llm_tldr": "现有世界模型要么预测像素消耗容量，要么需要具体的动作标签阻碍扩展。本文提出μ0，基于3D交互轨迹的世界模型，预测关键点的平滑3D轨迹而非像素。通过TraceExtract自动从视频提取3D监督，该模型实现了与具体形态无关的运动预测，为模型基强化学习和规划提供了可扩展的解决方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.15469v1",
+      "source": "arxiv",
+      "title": "Learning Context-Aware Neural ODE Dynamics for Adaptive Robotic Control",
+      "abstract": "Robotic systems deployed in uncertain and dynamically changing environments often face variations in contact conditions, aerodynamic effects, and external disturbances that challenge reliable control. To remain effective under model-based control, these systems require dynamics models that can adapt to such changes, especially when direct access to complete environmental information is limited. To enable adaptability and facilitate integration with model predictive control, we propose a context-aware dynamics model based on neural ordinary differential equations, which infers environmental factors from state-action histories using a two-phase training procedure. We validate the approach across diverse robotic platforms, including a quadrotor in simulation, as well as a Sphero BOLT robot and a Fanuc manipulator in real-world experiments. The results demonstrate that our method effectively adapts to temporally and spatially varying environmental changes across different tasks. Videos are available at https://youtu.be/PY0sNyF2rqE , and the source code is available at https://github.com/syyu410-yu/context-aware-neural-ode-control.git .",
+      "authors": [
+        "Shao-Yi Yu",
+        "Jen-Wei Wang",
+        "Maya Horii",
+        "Masayoshi Tomizuka",
+        "Vikas Garg"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-13T20:55:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.15469v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "neural ODE dynamics model for adaptive robotic control",
+      "llm_evidence_cn": "用于自适应机器人控制的神经ODE动力学模型",
+      "llm_evidence": "用于自适应机器人控制的神经ODE动力学模型",
+      "canonical_evidence": "用于自适应机器人控制的神经ODE动力学模型",
+      "llm_tldr_en": "Proposes context-aware neural ODE dynamics for model-based control, adapting to environmental changes via two-phase training, validated on quadrotor and manipulator.",
+      "llm_tldr_cn": "面向不确定动态环境，现有模型不够自适应。本文提出上下文感知的神经ODE动力学模型，通过两阶段训练从状态-动作历史推断环境因子，并与模型预测控制结合。在四旋翼和机械臂平台上验证了其适应性，优于传统方法。该方法弥合了模型基控制与动态环境之间的差距。",
+      "llm_tldr": "面向不确定动态环境，现有模型不够自适应。本文提出上下文感知的神经ODE动力学模型，通过两阶段训练从状态-动作历史推断环境因子，并与模型预测控制结合。在四旋翼和机械臂平台上验证了其适应性，优于传统方法。该方法弥合了模型基控制与动态环境之间的差距。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09381v1",
+      "source": "arxiv",
+      "title": "ReGIL: Retrieval-Guided Imitation Learning from a Single Demonstration",
+      "abstract": "Learning robot manipulation policies with deep neural networks from a single demonstration remains highly challenging, as even small deviations from the demonstrated trajectory can quickly compound into failure, while collecting substantial online interaction data is costly. We propose ReGIL, a retrieval-guided imitation learning framework that treats a single demonstration as an external memory. ReGIL repeatedly queries this static memory throughout training to simultaneously guide exploration, generate the regularization buffer, and construct rewards. Specifically, it computes rewards through local temporal alignment between the current trajectory and the retrieved segment, providing step-wise and informative feedback for policy improvement. We evaluate ReGIL on robotic manipulation tasks from the LIBERO and Meta-World benchmarks under the single demonstration setting. ReGIL outperforms prior baselines in both success rate and training efficiency. In real-robot experiments, using only one demonstration and less than one hour of online training, ReGIL achieves over 75% success rate across three manipulation tasks with randomness in both initial robot pose and target position. These results demonstrate that leveraging the single demonstration as reusable memory can provide more than static supervision for efficient robot learning. More details can be found on our website: https://regil2026.github.io/",
+      "authors": [
+        "Yuying Zhang",
+        "Francesco Verdoja",
+        "Wenyan Yang",
+        "Ville Kyrki"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-08T11:57:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.09381v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "imitation learning for robotic manipulation with retrieval-guided exploration",
+      "llm_evidence_cn": "基于检索引导探索的机器人操作模仿学习",
+      "llm_evidence": "基于检索引导探索的机器人操作模仿学习",
+      "canonical_evidence": "基于检索引导探索的机器人操作模仿学习",
+      "llm_tldr_en": "ReGIL learns manipulation policies from a single demonstration by using it as external memory to guide exploration and compute rewards via temporal alignment.",
+      "llm_tldr_cn": "从单次演示学习机器人操作策略极具挑战，因为微小偏差就会累积错误。本文提出ReGIL框架，将单次演示作为外部记忆库，在训练中反复查询，使用局部时间对齐计算奖励，从而提供密集、逐步的反馈信号。在多种操作任务上，ReGIL仅需一次演示即可习得有效策略，大幅降低了数据需求。",
+      "llm_tldr": "从单次演示学习机器人操作策略极具挑战，因为微小偏差就会累积错误。本文提出ReGIL框架，将单次演示作为外部记忆库，在训练中反复查询，使用局部时间对齐计算奖励，从而提供密集、逐步的反馈信号。在多种操作任务上，ReGIL仅需一次演示即可习得有效策略，大幅降低了数据需求。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.15768v1",
+      "source": "arxiv",
+      "title": "LaWAM: Latent World Action Models for Efficient Dynamics-Aware Robot Policies",
+      "abstract": "Vision-Language-Action models (VLAs) leverage large-scale vision-language pretraining for semantic robot control, but often lack explicit foresight into how robot actions change the scene. World-Action Models (WAMs) address this limitation by conditioning policies on predicted futures, yet existing approaches typically rely on computationally expensive video generation with substantial pixel-level redundancy. We present LaWAM, a Latent World Action Model that exposes predictive dynamics to robot policies through compact latent visual subgoals instead of reconstructed future video. At the core of LaWAM is a latent-action-conditioned Latent World Model (LaWM). We obtain LaWM by training a latent action model in the latent space of a pretrained vision foundation model and repurposing its forward decoder to predict future observation features for scene evolution. LaWAM then conditions action generation on these predicted latent visual subgoals to enable dynamics-aware robot control. LaWAM achieves state-of-the-art or competitive success rates (SRs) across LIBERO (98.6% SR), RoboTwin (91.22% SR), and real-world manipulation tasks while retaining low-latency inference. LaWAM runs in 187 ms per action-chunk prediction and achieves up to 24x lower wall-clock latency than pixel-space WAMs.",
+      "authors": [
+        "Jialei Chen",
+        "Kai Wang",
+        "Kang Chen",
+        "Shuaihang Chen",
+        "Feng Gao",
+        "Wenhao Tang",
+        "Zhiyuan Li",
+        "Weilin Liu",
+        "Zhuyu Yao",
+        "Boxun Li",
+        "Yuanbo Xu",
+        "Chao Yu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-14T12:06:58+00:00",
+      "link": "https://arxiv.org/pdf/2606.15768v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based approach for robot control",
+      "llm_evidence_cn": "基于模型的机器人控制方法",
+      "llm_evidence": "基于模型的机器人控制方法",
+      "canonical_evidence": "基于模型的机器人控制方法",
+      "llm_tldr_en": "LaWAM uses a latent world model to provide predictive dynamics for robot policies without expensive video generation, enabling efficient dynamics-aware control.",
+      "llm_tldr_cn": "现有世界-动作模型依赖计算开销大的视频生成来预测未来状态，难以用于实时机器人策略。本文提出LaWAM，利用预训练视觉编码器构建潜在世界模型，在紧凑的潜在空间中预测动作后果，并以潜在视觉子目标形式指导策略。该方法在多种操作任务上实现了更高效的动力学感知控制，同时保持了良好的泛化性能。",
+      "llm_tldr": "现有世界-动作模型依赖计算开销大的视频生成来预测未来状态，难以用于实时机器人策略。本文提出LaWAM，利用预训练视觉编码器构建潜在世界模型，在紧凑的潜在空间中预测动作后果，并以潜在视觉子目标形式指导策略。该方法在多种操作任务上实现了更高效的动力学感知控制，同时保持了良好的泛化性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.15918v1",
+      "source": "arxiv",
+      "title": "Energy-Efficient Arm Reaching for a Humanoid Robot via Deep Reinforcement Learning with Identified Power Models",
+      "abstract": "Humanoid robots performing in-field manipulation tasks, such as robotic apple harvesting, face severe energy constraints that directly limit the number of reaching motions that can be executed per battery charge. This paper presents an end-to-end, energy-aware reinforcement learning framework for the 7-degree-of-freedom left arm of the Unitree~G1 humanoid robot, combining a physics-based, experimentally identified electrical power model with a Soft Actor-Critic (SAC) policy trained in a Pinocchio-based rigid-body dynamics simulator. The RL policy operates on an incremental joint-position action space and is trained with a Hybrid Constellation Reward that combines a four-point end-effector constellation distance with a torque-norm energy proxy; after % $5\\times10^6$ training it reaches a $69.9\\%$ success rate over $1\\,000$ random targets in kinematic simulation, at a mean energy of \\SI{98.16}{\\joule} on successful episodes. Finally, on the physical Unitree~G1, the policy is validated over three independent 10-target batches, achieving a mean energy of $71.5 \\pm 48.3$\\,J, an end-effector position error of $2.64 \\pm 1.04$\\,cm, and an orientation error of $6.92 \\pm 1.33^\\circ$ -- within the \\SI{4}{\\centi\\metre}/$8.6^\\circ$ training tolerance. These results constitute a first step toward energy-aware reinforcement-learning-based arm reaching for humanoid robots.",
+      "authors": [
+        "Nestor N. Deniz",
+        "Simon Parsons",
+        "Fernando Auat Cheein"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-14T16:46:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.15918v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "energy-aware RL with physics-based power model for humanoid arm reaching",
+      "llm_evidence_cn": "结合物理基功率模型的能量感知强化学习用于人形机器人手臂到达",
+      "llm_evidence": "结合物理基功率模型的能量感知强化学习用于人形机器人手臂到达",
+      "canonical_evidence": "结合物理基功率模型的能量感知强化学习用于人形机器人手臂到达",
+      "llm_tldr_en": "Proposes an end-to-end energy-aware RL framework combining a physics-based power model with SAC policy for humanoid arm reaching, trained in Pinocchio rigid-body simulator.",
+      "llm_tldr_cn": "针对人形机器人在野外作业时能量受限的问题，提出了一种端到端能量感知强化学习框架，该框架将基于物理的电力模型与SAC策略相结合，并在Pinocchio刚体动力学仿真器中进行训练。通过混合星座奖励函数指导增量关节动作，实现了能量高效的手臂到达运动，减少了电池消耗。",
+      "llm_tldr": "针对人形机器人在野外作业时能量受限的问题，提出了一种端到端能量感知强化学习框架，该框架将基于物理的电力模型与SAC策略相结合，并在Pinocchio刚体动力学仿真器中进行训练。通过混合星座奖励函数指导增量关节动作，实现了能量高效的手臂到达运动，减少了电池消耗。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.16621v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning with Inner-loop Dynamics Estimator for Aerial Manipulation under Uncertainty",
+      "abstract": "Aerial manipulators enable physical interaction in hard-to-reach environments; however, the combined problem of direct whole-body aerial manipulation under rapid arm motion, payload changes, and related unknown dynamic uncertainty remains a largely unsolved problem. We present a hierarchical control framework that combines Reinforcement Learning (RL) with an inner-loop dynamics estimator to address this problem. The RL outer loop maps desired 6-degrees-of-freedom (DOF) end-effector targets to coordinated whole-body commands, enabling direct task-driven control without relying on a fully accurate coupled dynamic model in the policy layer. An inner loop then tracks these commands while compensating for transient inertial shifts and uncertainty during execution via a dynamics estimator scheme without requiring system model knowledge. We validate the proposed approach on a custom quadrotor equipped with a 3-DoF manipulator through hardware experiments under varying payload conditions. Compared with RL+PID and RL+INDI+PID baselines, the proposed method reduces end-effector tracking error and improves task success rate across the tested hardware conditions. These results show that combining learned whole-body coordination with estimator-based low-level compensation improves the precision and robustness of aerial manipulation under changing operating conditions.",
+      "authors": [
+        "Shivansh Pratap Singh",
+        "Samaksh Ujjwal",
+        "Ishita Chaudhary",
+        "V R Vasudevan",
+        "Rishabh Dev Yadav",
+        "Spandan Roy"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-15T12:16:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.16621v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL with inner-loop dynamics estimator for aerial arm manipulation under uncertainty",
+      "llm_evidence_cn": "结合内环动力学估计器的强化学习用于不确定性下的空中机械臂操作",
+      "llm_evidence": "结合内环动力学估计器的强化学习用于不确定性下的空中机械臂操作",
+      "canonical_evidence": "结合内环动力学估计器的强化学习用于不确定性下的空中机械臂操作",
+      "llm_tldr_en": "Hierarchical RL with an inner-loop dynamics estimator for whole-body aerial manipulation under dynamic uncertainty, demonstrated on real aerial manipulator.",
+      "llm_tldr_cn": "针对空中操纵器在快速臂运动、载荷变化等动态不确定性下的直接全身操纵难题，提出了层次控制框架，将RL外环与内环动力学估计器相结合。RL外环将末端执行器目标映射为全身命令，内环通过估计动态补偿跟踪，无需完全准确的耦合动态模型。实验验证了该方法在任务完成和抗扰动方面的有效性。",
+      "llm_tldr": "针对空中操纵器在快速臂运动、载荷变化等动态不确定性下的直接全身操纵难题，提出了层次控制框架，将RL外环与内环动力学估计器相结合。RL外环将末端执行器目标映射为全身命令，内环通过估计动态补偿跟踪，无需完全准确的耦合动态模型。实验验证了该方法在任务完成和抗扰动方面的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16272v1",
+      "source": "arxiv",
+      "title": "TopoRetarget: Interaction-Preserving Retargeting for Dexterous Manipulation",
+      "abstract": "Human hand-object demonstrations provide dense reference motions for training dexterous manipulation reinforcement learning (RL) policies through reference tracking. However, to use such demonstrations for RL policy learning, retargeting must preserve hand pose and task-relevant hand-object contact structure. Otherwise, contact and feasibility artifacts can degrade downstream RL policy performance. We introduce TopoRetarget, an interaction-preserving retargeting framework that uses a single set of parameters across diverse retargeting conditions while maintaining task-relevant hand-object interaction and adapting human demonstrations to dexterous robot hands. The method constructs a sparse interaction graph over hand and object keypoints and optimizes distance-weighted Laplacian deformation with directional consistency, kinematic constraints, and penetration handling. Evaluations show that the generated references improve both interaction fidelity and policy learning: TopoRetarget achieves the best contact precision and alignment over all baselines on the ContactPose Dataset, improves Pen-Spin training success by 40.6 percentage points over the existing baseline methods, and enables zero-shot transfer to Wuji Hand hardware on cube reorientation and pen spinning.",
+      "authors": [
+        "Jielin Wu",
+        "Shenzhe Yao",
+        "Guanqi He",
+        "Xiaohan Liu",
+        "Zhaoqing Zeng",
+        "Xiangrui Jiang",
+        "Han Yang",
+        "Wentao Zhang",
+        "Hang Zhao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-15T06:20:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.16272v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning policy for dexterous manipulation",
+      "llm_evidence_cn": "用于灵巧操作的强化学习策略",
+      "llm_evidence": "用于灵巧操作的强化学习策略",
+      "canonical_evidence": "用于灵巧操作的强化学习策略",
+      "llm_tldr_en": "Human demonstrations for dexterous manipulation RL require retargeting that preserves hand-object contact; TopoRetarget uses a sparse interaction graph to maintain task-relevant contact structure across different robot hands.",
+      "llm_tldr_cn": "利用人类演示训练灵巧操作强化学习策略时，重定向过程必须保持手-物体交互结构。当前方法常因接触和可行性伪影导致下游策略退化。本文提出TopoRetarget，通过构建稀疏交互图并优化顶点位置，在多种灵巧手之间保持任务相关的接触模式。实验表明，该框架显著提升了RL策略的成功率和自然度，为跨形态灵巧操作学习提供了有效的数据接口。",
+      "llm_tldr": "利用人类演示训练灵巧操作强化学习策略时，重定向过程必须保持手-物体交互结构。当前方法常因接触和可行性伪影导致下游策略退化。本文提出TopoRetarget，通过构建稀疏交互图并优化顶点位置，在多种灵巧手之间保持任务相关的接触模式。实验表明，该框架显著提升了RL策略的成功率和自然度，为跨形态灵巧操作学习提供了有效的数据接口。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
