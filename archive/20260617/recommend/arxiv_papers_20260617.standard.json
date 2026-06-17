@@ -1,0 +1,327 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-17T22:13:04.163054+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 7,
+    "quick_skim_target": 12,
+    "quick_selected": 7
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.13886v1",
+      "source": "arxiv",
+      "title": "PhysVLA: Towards Physically-Grounded VLA for Embodied Robotic Manipulation",
+      "abstract": "Vision-Language-Action (VLA) models excel at mapping visual inputs and natural language instructions directly to robotic control policies. However, because they are trained primarily to fit behavioural demonstration data, they do not explicitly enforce fundamental physical principles such as rigid-body dynamics or contact constraints. This exposes a critical physics gap: standard temporal smoothing applied on top of single-step or chunked VLAs trades trajectory quality for added failures that short-term memory cannot resolve. To bridge this gap, we introduce PhysVLA (Physics-VLA), a plug-and-play, inference-time framework designed to wrap any frozen VLA backbone without retraining, fine-tuning, or weight access, with less than 1 ms of overhead per control step. PhysVLA intercepts the predicted control action, captures only the simulator or system state, and applies a dual-layered correction: (i) a phase-aware finite-state machine that structures discrete task segments (approach, grasp, transport, and place), and (ii) a selective Euler-Lagrange gate that activates only when a dynamics oracle detects kinodynamic inconsistency. Evaluated across OpenVLA, OpenVLA-OFT, Force-VLA, and Generalist-VLA on LIBERO-Spatial with a 7-DoF Franka Panda, the framework delivers absolute success rate increases of up to 17% and stability increases of up to 19% with no per-task regressions, improves trajectory efficiency by up to 15% across all four backbones, and shows up to a 10x improvement in trajectory jerk robustness on a Robosuite Lift cross-simulator sweep. We further validate the framework on a real Agilex Piper arm with a pick-and-place task, confirming that PhysVLA transfers to physical hardware without retraining, with success-rate improvements of up to 50%, establishing physical awareness as a composable, backbone-agnostic runtime module.",
+      "authors": [
+        "Namai Chandra",
+        "Shriram Damodaran",
+        "Lin Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T20:23:09+00:00",
+      "link": "https://arxiv.org/pdf/2606.13886v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Physically-grounded VLA enforcing rigid-body dynamics and contact constraints for manipulation",
+      "llm_evidence_cn": "将刚体动力学和接触约束注入VLA模型以实现物理一致的操作",
+      "llm_evidence": "将刚体动力学和接触约束注入VLA模型以实现物理一致的操作",
+      "canonical_evidence": "将刚体动力学和接触约束注入VLA模型以实现物理一致的操作",
+      "llm_tldr_en": "PhysVLA wraps any frozen VLA backbone with a plug-and-play inference framework that enforces rigid-body dynamics and contact constraints, improving physical plausibility without retraining.",
+      "llm_tldr_cn": "现有的视觉-语言-动作（VLA）模型在机器人操作中缺乏物理约束，导致轨迹质量下降。PhysVLA提出一种即插即用的推理时框架，无需重新训练即可为任意VLA模型注入刚体动力学和接触约束，计算开销极低。实验证明该方法能有效减少违反物理规律的动作，提升操作成功率。",
+      "llm_tldr": "现有的视觉-语言-动作（VLA）模型在机器人操作中缺乏物理约束，导致轨迹质量下降。PhysVLA提出一种即插即用的推理时框架，无需重新训练即可为任意VLA模型注入刚体动力学和接触约束，计算开销极低。实验证明该方法能有效减少违反物理规律的动作，提升操作成功率。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.11767v2",
+      "source": "arxiv",
+      "title": "Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning",
+      "abstract": "Blind grasping with a dexterous hand is a crucial manipulation capability. Nevertheless, learning such tactile-only policies for real robots remains challenging due to the tactile sim-to-real gap and the limited expressiveness of sparse tactile signals. To bridge this gap, we propose a framework for tactile-only blind grasping that is deployable on a physical multi-fingered robotic hand. Our approach combines three key components. First, we introduce a Real2Sim tactile calibration pipeline that constructs a contact-calibrated digital-twin simulator capable of reproducing real tactile signals. Second, we improve the expressiveness of sparse tactile observations using a layout-aware tactile encoder, which incorporates sensor-geometry priors through self-supervised pretraining. Third, to improve generalization to unseen objects, we train object-specific reinforcement-learning experts in the calibrated simulator and aggregate their successful grasp trajectories into a tactile-conditioned Diffusion Policy. We evaluate our method on a physical LEAP Hand equipped with distributed tactile sensing across 10 seen and 10 unseen objects. The deployed policy achieves a 27\\% real-world grasp success rate across all 20 objects, without real-world grasping demonstrations or visual input. Simulation ablations show that layout-aware tactile pretraining improves grasping performance, while sensing-level evaluations confirm that Real2Sim calibration increases the consistency of tactile contact events between simulation and hardware. Together, these results suggest that contact-event calibration, geometry-aware tactile representation learning, and diffusion-based policy aggregation provide an effective path toward tactile-only blind grasping on real dexterous robotic hands. Project page:Dex-Blind-Grasp.github.io.",
+      "authors": [
+        "Shengcheng Luo",
+        "Xiyan Huang",
+        "Zhe Xu",
+        "Wanlin Li",
+        "Ziyuan Jiao",
+        "Chenxi Xiao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-10T07:46:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.11767v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learning tactile policies for dexterous blind grasping via real2sim2real",
+      "llm_evidence_cn": "通过真实到模拟再到真实的触觉策略学习实现灵巧手盲抓取",
+      "llm_evidence": "通过真实到模拟再到真实的触觉策略学习实现灵巧手盲抓取",
+      "canonical_evidence": "通过真实到模拟再到真实的触觉策略学习实现灵巧手盲抓取",
+      "llm_tldr_en": "Proposes a framework for tactile-only blind dexterous grasping combining Real2Sim calibration, layout-aware tactile encoder, and policy learning deployable on real hardware.",
+      "llm_tldr_cn": "针对触觉策略从仿真到真实迁移困难的问题，提出Real2Sim触觉标定管道构建接触校准的数字孪生仿真器，结合布局感知触觉编码器提升稀疏触觉表达的丰富性，最终在真实多指手上实现了仅基于触觉的盲抓取。",
+      "llm_tldr": "针对触觉策略从仿真到真实迁移困难的问题，提出Real2Sim触觉标定管道构建接触校准的数字孪生仿真器，结合布局感知触觉编码器提升稀疏触觉表达的丰富性，最终在真实多指手上实现了仅基于触觉的盲抓取。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16917v2",
+      "source": "arxiv",
+      "title": "Unified Motion-Action Modeling for Heterogeneous Robot Learning",
+      "abstract": "We present Unified Motion-Action (UMA) Model, an approach that uses 3D object motion trajectories as a shared interface to bridge visuomotor control and dynamics modeling. UMA treats object motion and robot actions as co-evolving variables under a masked generative objective, in which the mask pattern determines both the supervision regime during pretraining and the inference mode at deployment. Using hindsight-relabeled motion contexts and a contrastive objective that disentangles task intent from scene geometry, UMA enables multi-task pretraining across heterogeneous data sources without requiring manually annotated task instructions. At deployment, the same pretrained parameters support motion-conditioned visuomotor control, motion-based dynamics modeling, and task adaptation from few-shot demonstrations. Pretrained on a mixture of robot demonstrations, human videos, and simulated data, UMA consistently outperforms state-of-the-art baselines specialized for each inference mode.",
+      "authors": [
+        "Yunhao Cao",
+        "Shitong Liu",
+        "Chao Feng",
+        "Meryl Zhang",
+        "Xuanchen Lu",
+        "Andrew Owens",
+        "Kuan Fang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-15T16:23:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.16917v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "proposes UMA model that uses 3D object motion trajectories for unified dynamics modeling and control, directly applicable to model-based robot learning",
+      "llm_evidence_cn": "提出UMA模型，利用3D物体运动轨迹进行统一动力学建模与控制，可直接用于基于模型的机器人学习",
+      "llm_evidence": "提出UMA模型，利用3D物体运动轨迹进行统一动力学建模与控制，可直接用于基于模型的机器人学习",
+      "canonical_evidence": "提出UMA模型，利用3D物体运动轨迹进行统一动力学建模与控制，可直接用于基于模型的机器人学习",
+      "llm_tldr_en": "Unified Motion-Action (UMA) model uses 3D object motion as shared interface for dynamics modeling and visuomotor control, enabling multi-task pretraining from heterogeneous data and supporting model-based planning.",
+      "llm_tldr_cn": "该论文提出统一运动-动作（UMA）模型，以3D物体运动轨迹为共享接口，桥接视觉运动控制与动力学建模。UMA采用掩码生成目标，通过事后重标运动上下文和对比学习解耦任务意图与场景几何，支持异构数据多任务预训练。部署时，同一模型可实现运动条件化控制与基于运动的动力学预测，为机械臂操作提供统一的模型基础。",
+      "llm_tldr": "该论文提出统一运动-动作（UMA）模型，以3D物体运动轨迹为共享接口，桥接视觉运动控制与动力学建模。UMA采用掩码生成目标，通过事后重标运动上下文和对比学习解耦任务意图与场景几何，支持异构数据多任务预训练。部署时，同一模型可实现运动条件化控制与基于运动的动力学预测，为机械臂操作提供统一的模型基础。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.12406v1",
+      "source": "arxiv",
+      "title": "FACTR 2: Learning External Force Sensing for Commodity Robot Arms Improves Policy Learning",
+      "abstract": "Contact-rich manipulation requires force sensitivity, but many robot arms lack dedicated force sensors due to their high cost. We present Neural External Torque Estimation (NEXT), a data-driven method that estimates external joint torques without needing any dedicated force sensors. NEXT trains in 1 minute from only 10 minutes of free-motion data, yet achieves estimates comparable to dedicated joint-torque sensors. NEXT enables force-feedback teleoperation on low-cost arms and improves policy learning through Force-Informed Re-Sampling Training (FIRST), which up-samples pre-contact and contact segments during behavior cloning. Across five long-horizon tasks, FIRST outperforms prior force-aware policies by over 17% in task progress. Together, NEXT and FIRST bring force-aware teleoperation and policy learning to off-the-shelf robots without additional sensing hardware. Video results and code are available at https://jasonjzliu.com/factr2",
+      "authors": [
+        "Steven Oh",
+        "Jason Jingzhou Liu",
+        "Tony Tao",
+        "Philip Han",
+        "Kenneth Shaw",
+        "Satoshi Funabashi",
+        "Ruslan Salakhutdinov",
+        "Deepak Pathak"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY"
+      ],
+      "published": "2026-06-10T17:59:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.12406v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "force-aware policy learning for robot arm manipulation using RL",
+      "llm_evidence_cn": "使用强化学习进行力感知策略学习的机械臂操作",
+      "llm_evidence": "使用强化学习进行力感知策略学习的机械臂操作",
+      "canonical_evidence": "使用强化学习进行力感知策略学习的机械臂操作",
+      "llm_tldr_en": "FACTR 2 learns external torque estimation without sensors and improves policy learning via force-informed resampling, outperforming prior force-aware policies by 17%.",
+      "llm_tldr_cn": "该论文提出了一种数据驱动的方法NEXT，无需专用力传感器即可估计外力矩，并利用FIRST方法在行为克隆中重采样接触片段，从而提升策略学习效果。在多个长时程任务上，该方法比先前的力感知策略在任务进度上提升超过17%。该方法降低了力传感成本，提高了接触丰富操作策略的学习效率。",
+      "llm_tldr": "该论文提出了一种数据驱动的方法NEXT，无需专用力传感器即可估计外力矩，并利用FIRST方法在行为克隆中重采样接触片段，从而提升策略学习效果。在多个长时程任务上，该方法比先前的力感知策略在任务进度上提升超过17%。该方法降低了力传感成本，提高了接触丰富操作策略的学习效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.14375v1",
+      "source": "arxiv",
+      "title": "Elastic Queries Reinforcement Learning: Self-Aware Policy Execution for VLA Models",
+      "abstract": "Vision-language-action (VLA) models are powerful action generators for robot manipulation, but they are typically executed with fixed inference and replanning schedules. This rigidity ignores the uneven difficulty of robot control: contact-rich or uncertain states may need more computation and fresher feedback, while easier states can often be handled with fewer inference steps and longer open-loop execution. We propose Elastic Queries Reinforcement Learning (EQRL), a framework that makes each VLA policy query elastic. A lightweight latent-schedule adaptor jointly selects the latent input, denoising budget, and action chunk length, without fine-tuning the underlying VLA model. To make scheduling difficulty-aware, EQRL trains a critic over the joint latent-schedule action and derives a state difficulty signal from critic ensemble disagreement. This signal guides compute toward difficult states, while a learned residual allows task-driven correction. We formulate variable chunk execution as query-level macro-action RL with chunk-dependent discounting and an amortized number-of-function-evaluations (NFE) budget. Across simulation and real-robot manipulation, EQRL reduces amortized inference cost while preserving or improving task success.",
+      "authors": [
+        "Ge Wang",
+        "Xinyu Tan",
+        "Xiang Li",
+        "Man Luo",
+        "Chengsi Yao",
+        "Shenhao Yan",
+        "Jiahao Yang",
+        "Fan Feng",
+        "Honghao Cai",
+        "Xiangyuan Wang",
+        "Zhixin Mai",
+        "Yiming Zhao",
+        "Yatong Han",
+        "Zhen Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-12T12:06:41+00:00",
+      "link": "https://arxiv.org/pdf/2606.14375v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL adjustment of inference schedule for VLA models, sample efficiency",
+      "llm_evidence_cn": "通过RL调整VLA模型推理调度，提高样本效率",
+      "llm_evidence": "通过RL调整VLA模型推理调度，提高样本效率",
+      "canonical_evidence": "通过RL调整VLA模型推理调度，提高样本效率",
+      "llm_tldr_en": "EQRL uses a critic to dynamically select latent input, denoising budget, and action chunk length for VLA models, improving efficiency and difficulty-awareness.",
+      "llm_tldr_cn": "该论文提出弹性查询强化学习（EQRL），通过轻量级潜在调度适配器联合选择VLA策略的输入、去噪预算和动作块长度，并根据任务难度动态调整。训练一个评论家来评估状态难度，使推理预算适应不同复杂度，在保持性能的同时提高计算效率。",
+      "llm_tldr": "该论文提出弹性查询强化学习（EQRL），通过轻量级潜在调度适配器联合选择VLA策略的输入、去噪预算和动作块长度，并根据任务难度动态调整。训练一个评论家来评估状态难度，使推理预算适应不同复杂度，在保持性能的同时提高计算效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.14981v1",
+      "source": "arxiv",
+      "title": "Inference-time Policy Steering via Vision and Touch",
+      "abstract": "Inference-time steering adapts pre-trained generative robot policies during deployment by verifying candidate actions before execution. While prior methods typically perform this verification only with visual observations, vision alone is often insufficient for contact-rich manipulation, where success depends on both global task progress and subtle local interactions such as contact force. We introduce ViTaL, a visuo-tactile inference-time steering framework that formulates multimodal guidance as a bi-level optimization problem. At the high level, visual sampling-and-verification performs long-horizon mode selection, deciding what behavior the robot should execute. At the low level, tactile-guided diffusion editing refines the selected action sequence over a shorter horizon to satisfy local contact requirements. To support outcome-based steering, ViTaL learns a visuo-tactile latent world model and employs semantically aligned visual and tactile verifiers, including a novel text-conditioned tactile reward that scores predicted tactile futures directly in latent space. Across three real-world contact-rich manipulation tasks, ViTaL improves overall success by 51% over the base policy, outperforms unimodal steering by at least 33%, and exceeds naive multimodal fusion by at least 20%. Website: https://yilin-wu98.github.io/vital_website.",
+      "authors": [
+        "Yilin Wu",
+        "Zilin Si",
+        "Zeynep Temel",
+        "Oliver Kroemer",
+        "Andrea Bajcsy"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-12T22:03:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.14981v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "visuo-tactile inference-time steering for contact-rich manipulation",
+      "llm_evidence_cn": "利用视觉和触觉在推理时引导接触丰富的操作",
+      "llm_evidence": "利用视觉和触觉在推理时引导接触丰富的操作",
+      "canonical_evidence": "利用视觉和触觉在推理时引导接触丰富的操作",
+      "llm_tldr_en": "Introduces ViTaL, a visuo-tactile inference-time steering framework that formulates multimodal guidance as bi-level optimization for pre-trained robot policies.",
+      "llm_tldr_cn": "针对纯视觉在接触丰富操作中不足的问题，提出ViTaL框架，将多模态引导形式化为双层优化：高层视觉采样与验证进行长期行为选择，底层触觉引导扩散编辑优化短期动作序列，提升了预训练策略在部署时的适应性。",
+      "llm_tldr": "针对纯视觉在接触丰富操作中不足的问题，提出ViTaL框架，将多模态引导形式化为双层优化：高层视觉采样与验证进行长期行为选择，底层触觉引导扩散编辑优化短期动作序列，提升了预训练策略在部署时的适应性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.15133v1",
+      "source": "arxiv",
+      "title": "DragMesh-2: Physically Plausible Dexterous Hand-Object Interaction with Articulated Objects",
+      "abstract": "Dexterous interaction with articulated objects is important for household, assistive, and humanoid manipulation, where multi-finger hands can provide compliant contact patterns beyond parallel-jaw grasping. However, articulated-object manipulation differs from static-object manipulation: the target part cannot be directly actuated, and its motion must emerge through sustained physical hand--handle contact. This makes the transition from object-centric articulated generation to hand-driven dexterous hand--object interaction non-trivial, since geometric trajectory replay or open-loop execution does not model the contact dynamics required to move the articulated part. Moreover, policies trained only for task completion under fixed dynamics can overfit nominal contact loads, especially without tactile or force feedback, and may degrade when the contact load changes. To address these challenges, we present DragMesh-2, a contact-driven framework for dexterous interaction with articulated objects that extends articulated interaction from object-centric generation to hand-driven dexterous hand--object interaction, where articulated motion must arise through physical contact. We further propose PICA, a physically informed contact-aware training mechanism that injects physical signals into policy learning without tactile or force feedback, improving robustness and task success under changing contact loads. Finally, we conduct systematic evaluation across multiple damping conditions and articulated-object categories to study robustness under contact-load variation, and provide a pure-geometry dexterous interaction resource to support future loco-manipulation and humanoid hand--object interaction research. Across seven GAPartNet objects, DragMesh-2 achieves stronger robustness under contact-load variation than the compared methods while maintaining high task success across damping conditions.",
+      "authors": [
+        "Tianshan Zhang",
+        "Yijia Duan",
+        "Yanjun Li",
+        "Zeyu Zhang",
+        "Hao Tang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-06-13T05:47:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.15133v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "physically plausible dexterous hand-object interaction with articulated objects, contact dynamics",
+      "llm_evidence_cn": "物理合理的灵巧手与铰接物体交互，接触动力学",
+      "llm_evidence": "物理合理的灵巧手与铰接物体交互，接触动力学",
+      "canonical_evidence": "物理合理的灵巧手与铰接物体交互，接触动力学",
+      "llm_tldr_en": "DragMesh-2 generates physically plausible dexterous hand-object interaction with articulated objects by modeling contact dynamics.",
+      "llm_tldr_cn": "该论文提出DragMesh-2，针对铰接物体的灵巧手交互，通过建模持续物理接触动力学来生成物理合理的运动。与仅依赖几何轨迹重放的方法不同，该方法考虑了接触力传递，使手部动作能够实际驱动铰接部件运动，实现了从静态生成到动态交互的过渡。",
+      "llm_tldr": "该论文提出DragMesh-2，针对铰接物体的灵巧手交互，通过建模持续物理接触动力学来生成物理合理的运动。与仅依赖几何轨迹重放的方法不同，该方法考虑了接触力传递，使手部动作能够实际驱动铰接部件运动，实现了从静态生成到动态交互的过渡。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

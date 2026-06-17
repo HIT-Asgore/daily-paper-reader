@@ -1,0 +1,697 @@
+Title: Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning
+
+URL Source: https://arxiv.org/pdf/2606.11767v2
+
+Published Time: Fri, 12 Jun 2026 00:34:40 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning 
+
+Shengcheng Luo 1,2,∗, Xiyan Huang 1,∗, Zhe Xu 1, Wanlin Li 2, Ziyuan Jiao 2,†, Chenxi Xiao 1,†
+
+> 1
+
+ShanghaiTech University 2Beijing Institute for General Artificial Intelligence 
+
+> ∗
+
+Equal contribution. †Corresponding authors. Simulation Real World 
+
+> Zero -Shot
+
+Trajectory Visualization           
+
+> Robot State
+> Tactile Signal
+> Privileged Tactile
+> Representation Learning
+> Init Search Contact Adjust Lift Success
+> Reactive Dexterous Blind Grasping with Sparse Tactile Feedback
+> General
+> E2E Policy
+> Expert
+> RL Agent
+> Privileged
+> Knowledge
+
+Figure 1: Zero-shot sim-to-real transfer of a tactile-conditioned control policy for reactive blind grasping. The sequence demonstrates the deployed policy’s ability to perform blind object interac-tion, including dynamically searching for the object, adjusting grasp contacts, and lifting, all without visual input and using only robot state and sparse tactile feedback. 
+
+Abstract: Blind grasping with a dexterous hand is a crucial manipulation capa-bility. Nevertheless, learning such tactile-only policies for real robots remains challenging due to the tactile sim-to-real gap and the limited expressiveness of sparse tactile signals. To bridge this gap, we propose a framework for tactile-only blind grasping that is deployable on a physical multi-fingered robotic hand. Our approach combines three key components. First, we introduce a Real2Sim tac-tile calibration pipeline that constructs a contact-calibrated digital-twin simulator capable of reproducing real tactile signals. Second, we improve the expressive-ness of sparse tactile observations using a layout-aware tactile encoder, which in-corporates sensor-geometry priors through self-supervised pretraining. Third, to improve generalization to unseen objects, we train object-specific reinforcement-learning experts in the calibrated simulator and aggregate their successful grasp trajectories into a tactile-conditioned Diffusion Policy. We evaluate our method on a physical LEAP Hand equipped with distributed tactile sensing across 10 seen and 10 unseen objects. The deployed policy achieves a 27% real-world grasp success rate across all 20 objects, without real-world grasping demonstra-tions or visual input. Simulation ablations show that layout-aware tactile pre-training improves grasping performance, while sensing-level evaluations confirm that Real2Sim calibration increases the consistency of tactile contact events be-tween simulation and hardware. Together, these results suggest that contact-event calibration, geometry-aware tactile representation learning, and diffusion-based policy aggregation provide an effective path toward tactile-only blind grasping on real dexterous robotic hands. Project page: Dex-Blind-Grasp.github.io. 
+
+Keywords: Dexterous Manipulation, Sim-to-Real Gap 
+
+> arXiv:2606.11767v2 [cs.RO] 11 Jun 2026
+
+## 1 Introduction 
+
+Blind grasping is essential for human and robot manipulation when vision is unreliable, occluded, or unavailable [1, 2, 3]. Rather than relying on visual estimates of object pose or geometry, blind grasp-ing uses contact feedback to form stable grasps through reactive physical interaction. It is therefore well suited to darkness, clutter, narrow spaces, and severe occlusion, where camera-based percep-tion often fails [4]. This makes tactile-only blind grasping a promising capability for dexterous manipulation under visual uncertainty. Despite these advantages, achieving tactile-only blind grasping on physical robotic hands remains challenging. Demonstration-based learning via teleoperation is difficult to scale, as dexterous in-hand object search and adjustment under blind conditions require substantial human situational awareness and effort. Simulation and reinforcement learning offer scalable alternatives, but tac-tile policies remain difficult to transfer to real hardware for two main reasons. First, tactile sensing is highly sensitive to material properties, sensor placement, manufacturing variation, and contact mechanics, all of which are difficult to model accurately [5, 6]. Second, sparse tactile arrays provide limited geometric information and only partial observations of the hand–object state. The same tac-tile reading may correspond to many object poses, contact configurations, and grasping motions [7]. Thus, tactile-only grasping requires both well-calibrated contact simulation and policies that can reason under partial tactile observability. In this work, we propose a hardware-deployable framework for tactile-only blind grasping with a physical dexterous hand. Our first goal is to build a digital-twin environment with a minimal tactile sim-to-real gap. Prior work has used binary tactile signals to reduce domain shift [8, 9], showing that contact-event abstractions are more transferable than high-dimensional tactile measurements. How-ever, we find that even binary tactile signals exhibit a non-negligible sim-to-real discrepancy, mainly due to differences in contact onset and offset timing. To address this, we introduce a lightweight Real2Sim tactile calibration procedure that aligns simulated and real contact events by tuning contact margins and activation thresholds. This produces a calibrated digital-twin simulator that reproduces real tactile contact timing without complex soft-body modeling or real-world grasping demonstra-tions. Our second goal is to improve the expressiveness of sparse tactile observations. Since raw binary contacts provide limited information about object geometry and hand–object configuration, we aug-ment the policy with a layout-aware encoder that incorporates each sensor’s 3D location on the hand. This enables the policy to reason about where contacts occur. We further pretrain the encoder in simulation using privileged geometric supervision, including object shape, hand–object contact labels, and object pose. This encourages the latent representation to capture object- and contact-level structure that is not directly observable from sparse tactile inputs alone. Finally, to handle diverse object geometries and multimodal grasping strategies, we combine rein-forcement learning with diffusion-based policy learning. We first train object-specific RL experts in the calibrated simulator to discover successful tactile grasping behaviors. We then aggregate their successful trajectories and distill them into a tactile-conditioned Diffusion Policy [10]. This enables the deployed controller to generate multiple valid grasping motions conditioned on tactile history, improving robustness when grasping unseen objects under partial observability. We evaluate our framework on a physical LEAP Hand equipped with distributed tactile sensing. Across 20 diverse objects, including 10 seen and 10 unseen instances, our deployed policy achieves 
+
+27% grasp success. These results demonstrate the feasibility of transferring tactile-only blind grasp-ing policies to real hardware using contact-event calibration, layout-aware tactile representation learning, and tactile-conditioned diffusion policy learning. Our main contributions are summarized as follows: • We propose a Real2Sim2Real framework for tactile-only blind dexterous grasping that en-ables deployment on a physical robotic hand without real-world grasping demonstrations. 2• We introduce a lightweight contact-event calibration method that reduces the binary tac-tile sim-to-real gap by aligning contact onset and offset timing between simulation and hardware. • We develop a layout-aware tactile encoder that exploits the spatial layout of tactile sensors and uses privileged pretraining to improve reasoning from sparse tactile observations. • We introduce an expert-to-diffusion policy learning scheme that distills diverse object-specific RL grasping behaviors into a unified tactile-conditioned Diffusion Policy, enabling multimodal grasp generation under partial tactile observability. 
+
+## 2 Related Works 
+
+Tactile-Driven Dexterous Manipulation. Tactile sensing provides direct contact information that is difficult to obtain from vision alone, especially under occlusion, self-occlusion, and uncertain con-tact conditions. It has therefore become an important modality for dexterous manipulation, support-ing grasp stability estimation [1, 2], slip detection [11, 12], in-hand manipulation [13], and contact-rich dexterous control [14, 15]. Recent high-resolution fingertip sensors further extend tactile per-ception beyond binary or force-level feedback, enabling richer local contact understanding such as contact geometry reconstruction [16], shear estimation [17], and object pose estimation [18, 19]. Despite these advances, most existing work still relies on visuotactile fusion, while vision-free dex-terous grasping remains relatively underexplored. 
+
+Tactile Calibration and Sim-to-Real Transfer. For tactile policies, the sim-to-real gap remains a major challenge due to the limited fidelity of soft-material and contact simulation. Existing cal-ibration methods typically identify physical parameters for specific sensors and use them in simu-lation [20, 21, 22]. However, scaling such continuous system identification to dozens of heteroge-neous sensors across a dexterous hand is difficult and has been only minimally explored [23, 24]. Recent work has instead explored domain-invariant sensory abstractions, such as binary tactile sig-nals, which have proven effective for sim-to-real transfer [25, 26]. However, even binary event streams can exhibit temporal mismatches between simulation and the real world, an issue that re-mains largely unaddressed. To address this gap, we present a lightweight Real2Sim calibration pipeline for full-hand binary tactile event streams, enabling efficient calibration for zero-shot sim-to-real transfer. 
+
+Geometric Priors in Tactile Representation. Dexterous grasping requires reasoning about object geometry and contact layout [27]. Vision-based policies can access global shape from visual obser-vations [28, 29, 30], whereas tactile-only methods often encode sparse activations directly [31, 25], making their spatial context on an articulated hand ambiguous. Prior work has shown that tactile feedback can infer object shape and pose [32, 18, 33], and recent methods spatially anchor high-resolution visuotactile signals using hand kinematics [34, 35]. However, these approaches rely on locally dense fingertip tactile readings and are not directly applicable to sparse binary sensors dis-tributed across a full hand. To fill this gap, we introduce a layout-aware tactile encoder pretrained with privileged simulator supervision, injecting object geometry and dense contact priors into sparse full-hand tactile observations. 
+
+## 3 Learning Tactile Blind Grasping 
+
+An overview of our blind grasping method is shown in Fig. 2. The goal is to stably lift objects with a physical multi-fingered dexterous hand using only proprioceptive and tactile feedback, without visual observations, object pose estimates, or object geometry. To achieve the goal, our proposed framework consists of three stages. First, we construct a paired simulator with the same nominal robot kinematics and tactile sensor layout as the hardware, and cal-ibrate its binary tactile events to match the contact-onset behavior of the physical sensors (Sec. 3.1). Second, we pretrain a layout-aware tactile encoder using simulation-only geometric and contact su-pervision from the collected dataset (Sec. 3.2). Third, we generate an offline dataset of successful 3TwinTac                   
+
+> FSR
+> 1. Real2Sim Calibration
+> Expert
+> RL Agent
+> Privileged
+> Knowledge
+> Real -World
+> Contact Motion
+> Simulator
+> Paired Motion
+> Robot State
+> Binary Tactile
+> Forward
+> Kinematics
+> Spatial Tactile
+> 3.Privileged Tactile Learning
+> Spatial Tactile
+> Tactile
+> Encoder
+> Prior
+> Decoder
+> Diffusion Policy
+> 2. Expert Data Generation 4. Diffusion Policy Distillation
+> Tactile
+> Encoder
+> Zero -shot
+> Deployment
+> State
+> Encoder
+> Contact
+> Alignment
+
+Figure 2: Overview of the proposed Real2Sim2Real framework for blind dexterous grasping. We calibrate tactile events in a paired simulator, generate simulated grasping demonstrations with privi-leged labels, pretrain a layout-aware tactile encoder, and train a tactile-conditioned Diffusion Policy for real-world deployment. tactile-proprioceptive grasping trajectories in the calibrated simulator and train a tactile-conditioned Diffusion Policy that can be deployed on the physical hand (Sec. 3.3). 
+
+3.1 Hardware and Paired Simulator Hardware Setup. We first describe the hardware setup used for blind grasping. Our physical platform consists of a 6-DoF xArm6 manipulator equipped with a 16-DoF LEAP Hand [36]. The hand is instrumented with distributed tactile sensing across the fingertips, phalanges, and palm. Specifically, we mount four custom-built TwinTac sensors [37] on the fingertips and 12 commercial force-sensing resistors (FSRs) on the palm and finger surfaces. Each TwinTac sensor provides eight binary contact channels, and each FSR provides one binary channel, yielding Ntac = 44 tactile channels in total. The robot receives proprioceptive feedback from its actuated joints and binary tactile activations from these heterogeneous sensors. Additional details are provided in Appendix A. 
+
+Contact Modeling. Following prior work [25], our policy uses binary contact events to simplify sim-to-real transfer. However, differences in sensor sensitivity, material properties, and contact mechanics can cause the onset and offset of binary contact activations to differ substantially between simulation and real hardware. To reduce this discrepancy, we introduce a tactile contact model in our simulation environment. Specifically, we discretize each sensing region into 3D surface nodes and query their proximity to the object using signed distance fields (SDFs) [38]. For the FSR sensors on the palm and phalanges, which require a minimum actuation force to register contact, we approximate activation using a calibrated spatial threshold. An FSR is marked as active if any node in its sensing region has an SDF value below λcon .For the fingertip TwinTac sensors, contact-induced deformation can propagate through the soft elas-tomer layer, causing adjacent taxels to respond even without direct geometric intersection [39]. To model this cross-talk, we first compute the raw contact pressure fj at each simulated surface node 
+
+pj using a penalty-based model [40]. We then define virtual taxels T = {t1, t2, . . . , t8} according to the hardware layout. The propagated pressure at the i-th taxel is computed as 
+
+f ti =
+
+> n
+
+X
+
+> j=1
+
+exp ( −α ∥pj − ti∥) fj , (1) where α controls the spatial decay rate. The i-th taxel is activated if f ti > λ pre . This spatial aggregation reduces sensitivity to minor mesh penetrations while preserving correlated multi-taxel activation patterns. 4Real-to-Sim Tactile Sensor Calibration. Next, we calibrate the simulator at the level of binary tactile events. Let θ = ( λcon , α, λ pre ) denote the tactile simulation parameters. We collect cali-bration data by executing task-agnostic primitive motions on the real hand, including tapping and sliding against a known surface, and record synchronized joint trajectories and binary tactile read-ings yreal 1: T . We then replay the same joint trajectories in simulation to obtain the corresponding simulated tactile readings ysim 1: T (θ). The parameters are estimated by minimizing the ℓ1 mismatch between the real and simulated binary event sequences: 
+
+θ⋆ = arg min 
+
+> θT
+
+X
+
+> t=1
+
+ysim  
+
+> t
+
+(θ) − yreal   
+
+> t1
+
+. (2) We solve this low-dimensional optimization using grid search over bounded ranges of θ.
+
+Simulation Demonstration Data. After tactile calibration, we use the calibrated simulator to col-lect successful grasping trajectories. We train object-specific PPO experts solely as data-generation policies. The expert actors receive only deployable observations, namely proprioception and bi-nary tactile activations. During training, we use an asymmetric actor-critic setup, where the critic and reward computation access privileged simulator quantities to improve sample efficiency. After convergence, we roll out the expert actors from randomized initial object placements and retain suc-cessful grasp-and-lift trajectories. This yields an offline dataset D containing observation-action tra-jectories together with synchronized simulator-only labels, including object states, geometry, robot states, and contact information. The PPO experts are used only for data generation and are discarded after dataset collection. More details please refer to Appendix E. 
+
+3.2 Privileged Tactile Representation Learning 
+
+Stable dexterous grasping requires knowing not only whether contact occurs, but also where it occurs on the hand. Raw tactile observations bt ∈ { 0, 1}44 are flat binary taxel activations and do not explicitly encode taxel locations. We address this by (i) augmenting tactile signals with 3D taxel positions and (ii) pretraining a tactile encoder with geometric supervision. For each tactile channel, we pair its binary activation with the 3D position of the corresponding taxel. Given the hand configuration, forward kinematics maps each taxel from its local link frame to a common hand-centric frame: 
+
+siτ = [FK i(qτ ; ri), b iτ ] ∈ R4. (3) We stack these kinematically grounded tactile points over all taxels and a short history window to form the tactile input St. This representation preserves contact geometry while using only proprio-ception and binary tactile feedback, both available at deployment. We encode St with a lightweight temporal Transformer: 
+
+zt = gψ (St), (4) where zt conditions the grasping policy. Because the input is grounded in a consistent hand-centric frame, the encoder can infer spatial contact relationships from the fixed ordering of entries in the vector. As shown by our experiments, directly learning a policy from sparse binary contacts using imitation is difficult. In simulation, we therefore pretrain a encoder with privileged labels that are unavail-able on the real robot, including object pose, object geometry, robot state, and contact annotations. Specifically, we attach a decoder to the tactile encoder and train the resulting encoder–decoder model to predict these simulator-only geometric and contact targets from tactile history. After pretraining, the decoder is discarded, and only the encoder gψ is used for policy learning and deployment. No-tably, privileged information is used only as simulation-time supervision; the deployed policy still receives only proprioception and binary tactile observations. Pretraining details, architectures, and loss definitions are provided in Appendix F. 5Table 1: Per-object real-world blind grasping success of our full system. All results use the tactile-calibrated simulator and privileged tactile encoder pretraining.                                             
+
+> Seen Objects Unseen Objects Object Success Object Success Object Success Object Success
+> Cube 4/5 Ball 0/5 Hash-Shape 1/5 C-Shape 1/5 Box 1/5 Cross 1/5 E-Shape 1/5 T-Shape 2/5 CubeBall 1/5 Egg 1/5 Cylinder 0/5 Fork 3/5 Big Egg 1/5 H-shape 2/5 Ring 1/5 Snowman 1/5 Hollow Cube 4/5 Hourglass 1/5 Tetrahedral 1/5 Triple 0/5
+> Seen Overall: 16/50 Unseen Overall: 11/50
+
+3.3 Policy Learning and Real-World Deployment 
+
+Blind tactile grasping is inherently multimodal in action distribution: the same sparse contact his-tory can correspond to different object poses, shapes, and feasible grasp motions. We model this ambiguity with a tactile-conditioned Diffusion Policy [10]. At each control step t, the pretrained tactile encoder maps the spatially grounded tactile history St to a feature zt, which is concatenated with the proprioceptive state xt:
+
+ct = [ zt, x t]. (5) Conditioned on ct, the policy predicts a future action chunk, 
+
+At = [ at, a t+1 , . . . , a t+Tp−1], (6) and is trained on expert action chunks from the simulated demonstration dataset D using the standard diffusion denoising objective. At deployment, the policy runs as a closed-loop receding-horizon controller on the physical robot. At each step, the robot updates proprioception and tactile history, computes zt, samples an action chunk, and executes the first few actions before replanning. Actions command incremental arm and hand joint motions tracked by low-level joint controllers. This closed-loop execution lets the policy react to new tactile contacts, refine finger coordination, and lift objects without vision or object pose estimates. Implementation details are provided in Appendix G. 
+
+## 4 Experiments 
+
+In this section, we evaluate whether our proposed policy enables blind grasping (i.e., grasping with-out visual input, object pose estimates, or geometry priors). We conduct simulation and real-world experiments to assess end-to-end grasping performance and compare the full system with ablated variants to study: 1) whether the calibrated simulator reproduces real tactile observations, and 2) whether tactile encoder pretraining improves policy learning. We use a benchmark of 20 objects: 10 seen and 10 unseen. The seen objects are used only in simu-lation for expert demonstration generation, tactile encoder pretraining, and diffusion policy training; no real-world data is used for training. The unseen objects are held out from all training stages and used exclusively for evaluation, testing zero-shot generalization to novel objects. Additional setup details and metric definitions are provided in Appendix B. 
+
+Q1: Does the complete system enable real-world blind grasping? We first evaluate whether the complete system can effectively achieve blind grasping of real-world objects. The evaluation results are shown in Table 1. Specifically, our method achieves a 27% overall success rate, with successful blind grasps on both seen and unseen objects. It is also noteworthy that when objects are not centered in the hand, the policy exhibits tactile exploration behavior to align the object with the palm. Successful and failure demonstrations can be found in our supplementary video. 6Cube Ball Box Cross CubeBall                
+
+> Egg Big Egg H-Shape HolloCube Hourglass
+> Unseen region Seen region
+> (A) Tactile layout and
+> hand kinematics
+> (B) Real -robot setup and
+> placement regions (C) Seen and unseen object sets
+> TwinTac fingertip sensing region
+> FSR palm/phalange sensing region
+> DIP
+> DIP
+> PIP
+> MCP
+> MCP
+> MCP
+> DoF 1
+> DoF 2
+> DoF 3
+> DoF 4
+> DoF 5
+> DoF 6
+> Seen objects
+> T-Shape Fork Ring C-Shape Cylinder
+> Hash -Shape Tetrahedral Triple Snowman E-Shape
+> Unseen objects
+
+Figure 3: Hardware setup, tactile layout, and object sets for blind dexterous grasping. (A) Tactile sensing layout on the 16-DoF LEAP Hand. Four TwinTac sensors are mounted on the fingertips, and FSR sensors are distributed over the palm and phalanges, forming a 44-channel binary tactile observation together with proprioceptive feedback. (B) Physical xArm6–LEAP Hand platform used for real-world deployment. The colored regions indicate training and held-out object-placement regions for evaluating spatial generalization under blind tactile control. (C) Object sets used in the experiments. Seen objects are used for simulated demonstration generation and policy learning, while unseen objects are held out to evaluate shape generalization. 
+
+Q2: Does Real2Sim calibration improve tactile event fidelity? Reliable sim-to-real transfer re-quires simulated tactile events to match real sensor events in both timing and taxel location. Contacts that occur too early, too late, or at incorrect taxels can lead the policy to learn contact-conditioned actions that do not transfer to hardware. We therefore validate the fidelity of tactile simulation before and after Real2Sim calibration. Specifically, we measure whether the calibrated simulator produces tactile observations that better match the physical sensors. We use three metrics: contact onset error, activation F1, and false positive rate (FPR). Contact onset error measures the temporal alignment of the first contact event; activation F1 measures taxel-level agreement between simulated and real contact patterns; and FPR measures erroneous simulated activations when the real sensor is inac-tive. Metric definitions are provided in Appendix B.2. As shown in Table 2, the calibrated simulator achieves a low contact onset error, a higher activation F1 score, and a lower false positive rate. These results indicate that the calibrated simulator improves tactile event fidelity, supporting downstream policy learning and real-world transfer. 
+
+Q3: Does privileged pretraining improve tactile representation learning? Sparse binary tactile events provide intermittent, weakly structured information about hand–object interactions. With-out the additional priors provided by pretraining, the policy must learn both tactile representations and grasping behavior from the downstream imitation loss alone, making representation learning extremely difficult and inefficient. Keeping the tactile input, policy architecture, and demonstration data fixed, we compare policies trained with and without privileged pretraining. For a controlled evaluation, we conduct these ex-periments in simulation to isolate variability from the real world. As shown in Table 3, pretraining improves success on both seen and unseen objects, indicating that simulator-only geometric super-vision helps the encoder learn more structured representations of sparse contact events before policy learning. This trend is consistent with the hardware results, where removing privileged pretraining reduces real-world grasping performance. Together, these results show that privileged pretraining improves tactile representation learning and leads to more robust blind grasping after transfer to physical robot hand. 7Table 2: Effect of Real2Sim tactile calibration.           
+
+> Method ∆ton (ms) F1 (%) FPR (%) Nominal Sim. 426 64.2 4.2
+> Calibrated Sim. 96 70.5 2.2
+
+Table 3: Effect of tactile encoder pretraining.          
+
+> Method Seen Unseen Overall
+> w/o Pretrain 36.2% 20.0% 28.1%
+> w/ Pretrain 60.4% 43.2% 51.8%
+
+Summary and Additional Ablations. Taken together, the experiments demonstrate successful grasping and support the design choices used in the deployed system. Real2Sim calibration im-proves the simulator’s tactile event fidelity, while the pretraining ablations show that privileged tactile encoder pretraining improves policy learning from sparse tactile observations. Additional ablations, including real-world pretraining results, policy architecture, tactile signal representation, and kinematically grounded tactile inputs, are provided in Appendix C. 
+
+## 5 Limitations 
+
+Our system has several limitations. First, the overall success rate is 27%. While this remains modest, the evaluation is challenging because it uses a large and diverse object set. To better understand these challenges, we provide a comprehensive failure mode analysis in Appendix D. From our observations, many failures occur because the policy does not establish stable grasp points within the fixed execution horizon. Although the hand may initially contact the object, subsequent finger motions do not always reposition the contacts into stable grasp configurations, leading to empty grasps or object slip/drop during lifting. These failures are observed in both simulation and the real system, suggesting that they arise from limitations in the policy, the hardware, or both. Moreover, the current hardware provides incomplete tactile coverage. During interaction, contacts frequently occur in unsensed regions of the hand, causing the policy to execute actions based on par-tial or ambiguous contact observations. This limitation likely contributes to unstable grasp formation and reduced robustness. These observations suggest several directions for future work. One promising direction is improving tactile sensing quality and coverage. Integrating full-hand tactile skins [41] could provide denser spatial feedback and reduce failures caused by contacts in currently unsensed regions. Incorporating explicit shear or slip sensing may further enable earlier detection of incipient grasp failure and reduce spatial aliasing in tactile observations. Another direction is improving control and policy design. Tactile-only grasping may benefit from a two-timescale control architecture consisting of a slower high-level policy for contact search and grasp formation, combined with a faster tactile reflex or servo controller for grip-force regulation and slip recovery. Such a reactive layer could be implemented either as a learned module or as an adaptive low-level controller, and may help bridge the residual contact-dynamics gap between simulation and the physical world. Future work could also improve grasp stability through richer tactile representations, stronger contact or object priors, recovery and regrasp behaviors, and more diverse simulated demonstrations. 
+
+## 6 Conclusions 
+
+This paper presents a complete pipeline for learning and deploying a blind grasping policy on a robotic dexterous hand. Our pipeline combines a tactile-enabled dexterous hand platform, a high-fidelity tactile simulation environment calibrated via Real2Sim, and an RL expert policy with a distillation framework for Sim2Real deployment. Through experiments and ablations, we find that successful blind grasping depends critically on aligning contact-event observations between simu-lation and the real system, as well as incorporating a pretrained tactile encoder into the policy. By jointly leveraging these components, our system achieves a 27% grasp success rate on a large and diverse real-world object set. Future work will focus on improving grasp robustness through richer tactile representations, recovery and regrasp behaviors, and denser full-hand tactile sensing. 8Acknowledgments 
+
+This work was supported by the National Natural Science Foundation of China (Grant No. 52305007), the Natural Science Foundation of Shanghai (Grant No. 25ZR1402370), the Artificial Intelligence Project of the State Key Laboratory of General Artificial Intelligence, BIGAI, Peking University, Beijing, China (Project No. SKLAGI20250P19), the State Key Laboratory of Mechan-ical System and Vibration (Grant No. MSV202519) and the MoE Key Laboratory of Intelligent Perception and Human-Machine Collaboration (KLIP-HuMaCo). 
+
+## References 
+
+[1] C. Roberto, O. Andrew, J. Dinesh, L. Justin, Y. Wenzhen, M. Jitendra, E. H. Adelson, and L. Sergey. More than a feeling: Learning to grasp and regrasp using vision and touch. IEEE Robotics & Automation Letters , 3(4):3300–3307, 2018. [2] B. Ward-Cherrier, N. Pestell, L. Cramphorn, B. Winstone, M. E. Giannaccini, J. Rossiter, and N. F. Lepora. The tactip family: Soft optical tactile sensors with 3d-printed biomimetic morphologies. Soft Robotics , pages 216–227, 2018. [3] Z.-H. Yin, B. Huang, Y. Qin, Q. Chen, and X. Wang. Rotating without seeing: Towards in-hand dexterity through touch, 2023. URL https://arxiv.org/abs/2303.10880 .[4] H. Dang, J. Weisz, and P. K. Allen. Blind grasping: Stable robotic grasping using tactile feedback and hand kinematics. In ICRA , pages 5917–5922. IEEE, 2011. URL http://dblp. uni-trier.de/db/conf/icra/icra2011.html#DangWA11 .[5] Z. Kappassov, J.-A. Corrales, and V. Perdereau. Tactile sensing in dexterous robot hands -review. Robot. Auton. Syst. , 74(PA):195–220, Dec. 2015. ISSN 0921-8890. doi:10.1016/j. robot.2015.07.015. URL https://doi.org/10.1016/j.robot.2015.07.015 .[6] A. Church, J. Lloyd, raia hadsell, and N. F. Lepora. Tactile sim-to-real policy transfer via real-to-sim image translation. In 5th Annual Conference on Robot Learning , 2021. URL 
+
+https://openreview.net/forum?id=2NcPgLa7yqD .[7] A. Garcia-Garcia, B. S. Zapata-Impata, S. Orts-Escolano, P. Gil, and J. Garcia-Rodriguez. Tactilegcn: A graph convolutional network for predicting grasp stability with tactile sensors, 2019. URL https://arxiv.org/abs/1901.06181 .[8] Y. Li, W. Du, C. Yu, P. Li, Z. Zhao, T. Liu, C. Jiang, Y. Zhu, and S. Huang. Taccel: Scaling up vision-based tactile robotics via high-performance GPU simulation. In The Thirty-ninth Annual Conference on Neural Information Processing Systems , 2025. URL https://openreview. net/forum?id=PtGMadeONU .[9] Z. Si and W. Yuan. Taxim: An example-based simulation model for gelsight tactile sensors, 2021. URL https://arxiv.org/abs/2109.04027 .[10] C. Chi, Z. Xu, S. Feng, E. Cousineau, Y. Du, B. Burchfiel, R. Tedrake, and S. Song. Diffusion policy: Visuomotor policy learning via action diffusion, 2024. URL https://arxiv.org/ abs/2303.04137 .[11] X. Hu, A. Venkatesh, Y. Wan, G. Zheng, N. Jawale, N. Kaur, X. Chen, and P. Birkmeyer. Learning to detect slip through tactile estimation of the contact force field and its entropy, 2024. URL https://arxiv.org/abs/2303.00935 .[12] E. Holweg, H. Hoeve, W. Jongkind, L. Marconi, C. Melchiorri, and C. Bonivento. Slip de-tection by tactile sensors: algorithms and experimental results. In Proceedings of IEEE Inter-national Conference on Robotics and Automation , volume 4, pages 3234–3239 vol.4, 1996. doi:10.1109/ROBOT.1996.509205. 9[13] T. Lin, Z.-H. Yin, H. Qi, P. Abbeel, and J. Malik. Twisting lids off with two hands. 
+
+arXiv:2403.02338 , 2024. [14] Y. Yuan, H. Che, Y. Qin, B. Huang, Z.-H. Yin, K.-W. Lee, Y. Wu, S.-C. Lim, and X. Wang. Robot synesthesia: In-hand manipulation with visuotactile sensing, 2024. URL https:// arxiv.org/abs/2312.01853 .[15] P. Lin, Y. Huang, W. Li, J. Ma, C. Xiao, and Z. Jiao. Pp-tac: Paper picking using tactile feedback in dexterous robotic hands. arXiv preprint arXiv:2504.16649 , 2025. [16] H.-J. Huang, M. A. Mirzaee, M. Kaess, and W. Yuan. Gelslam: A real-time, high-fidelity, and robust 3d tactile slam system, 2026. URL https://arxiv.org/abs/2508.15990 .[17] W. Yuan, R. Li, M. A. Srinivasan, and E. H. Adelson. Measurement of shear and slip with a gelsight tactile sensor. In 2015 IEEE International Conference on Robotics and Automation (ICRA) , pages 304–311, 2015. doi:10.1109/ICRA.2015.7139016. [18] M. Bauza, E. Valls, B. Lim, T. Sechopoulos, and A. Rodriguez. Tactile object pose estimation from the first touch with geometric contact rendering, 2020. URL https://arxiv.org/abs/ 2012.05205 .[19] A. Yamaguchi and C. G. Atkeson. Implementing tactile behaviors using fingervision. In 2017 IEEE-RAS 17th International Conference on Humanoid Robotics (Humanoids) , pages 241– 248, 2017. doi:10.1109/HUMANOIDS.2017.8246881. [20] Z. Ding, Y.-Y. Tsai, W. W. Lee, and B. Huang. Sim-to-real transfer for robotic manipulation with tactile sensory, 2021. URL https://arxiv.org/abs/2103.00410 .[21] L. Lach, R. Haschke, D. Tateo, J. Peters, H. J. Ritter, J. B. Sol, and C. Torras. To-wards transferring tactile-based continuous force control policies from simulation to robot. 
+
+ArXiv , abs/2311.07245, 2023. URL https://api.semanticscholar.org/CorpusID: 265149679 .[22] W. Chen, J. Xu, F. Xiang, X. Yuan, H. Su, and R. Chen. General-purpose sim2real protocol for learning contact-rich manipulation with marker-based visuotactile sensors. IEEE Transactions on Robotics , 40:1509–1526, 2024. URL https://api.semanticscholar.org/CorpusID: 267005473 .[23] Y. Narang, B. Sundaralingam, M. Macklin, A. Mousavian, and D. Fox. Sim-to-real for robotic tactile sensing via physics-based simulation and learned latent projections, 2021. URL https: //arxiv.org/abs/2103.16747 .[24] A. Church, J. Lloyd, R. Hadsell, and N. F. Lepora. Tactile sim-to-real policy transfer via real-to-sim image translation. In Conference on Robot Learning , 2021. URL https://api. semanticscholar.org/CorpusID:240354208 .[25] K.-W. Lee, Y. Qin, X. Wang, and S.-C. Lim. Dextouch: Learning to seek and manipulate objects with tactile dexterity. IEEE Robotics and Automation Letters , 9(12):10772–10779, Dec. 2024. ISSN 2377-3774. doi:10.1109/lra.2024.3478571. URL http://dx.doi.org/ 10.1109/LRA.2024.3478571 .[26] Z.-H. Yin, B. Huang, Y. Qin, Q. Chen, and X. Wang. Rotating without seeing: Towards in-hand dexterity through touch. Robotics: Science and Systems , 2023. [27] T. Liu, Z. Liu, Z. Jiao, Y. Zhu, and S.-C. Zhu. Synthesizing diverse and physically stable grasps with arbitrary hand structures using differentiable force closure estimator. IEEE Robotics and Automation Letters , 7(1):470–477, Jan. 2022. ISSN 2377-3774. doi:10.1109/lra.2021. 3129138. URL http://dx.doi.org/10.1109/LRA.2021.3129138 .10 [28] J. Chen, Y. Ke, and H. Wang. Bodex: Scalable and efficient robotic dexterous grasp synthesis using bilevel optimization, 2025. URL https://arxiv.org/abs/2412.16490 .[29] J. Chen, Y. Ke, L. Peng, and H. Wang. Dexonomy: Synthesizing all dexterous grasp types in a grasp taxonomy. Robotics: Science and Systems , 2025. [30] X. Fei, Z. Xu, H. Fang, T. Zhang, and L. Shao. T(r,o) grasp: Efficient graph diffusion of robot-object spatial transformation for cross-embodiment dexterous grasping, 2025. URL https: //arxiv.org/abs/2510.12724 .[31] M. Yang, C. Lu, A. Church, Y. Lin, C. Ford, H. Li, E. Psomopoulou, D. A. W. Barton, and N. F. Lepora. Anyrotate: Gravity-invariant in-hand object rotation with sim-to-real touch, 2024. URL https://arxiv.org/abs/2405.07391 .[32] J. Lee and N. Fazeli. Vitascope: Visuo-tactile implicit representation for in-hand pose and extrinsic contact estimation, 2025. URL https://arxiv.org/abs/2506.12239 .[33] H. Li, S. Dikhale, S. Iba, and N. Jamali. Vihope: Visuotactile in-hand object 6d pose estimation with shape completion. IEEE Robotics and Automation Letters , 8(11):6963–6970, 2023. doi: 10.1109/LRA.2023.3313941. [34] J. Huang, Y. Ye, Y. Gong, X. Zhu, Y. Gao, and K. Zhang. Spatially anchored tactile awareness for robust dexterous manipulation, 2026. URL https://arxiv.org/abs/2510.14647 .[35] B. Huang, Y. Wang, X. Yang, Y. Luo, and Y. Li. 3d-vitac: Learning fine-grained manipulation with visuo-tactile sensing, 2025. URL https://arxiv.org/abs/2410.24091 .[36] K. Shaw, A. Agarwal, and D. Pathak. Leap hand: Low-cost, efficient, and anthropomorphic hand for robot learning, 2023. URL https://arxiv.org/abs/2309.06440 .[37] X. Huang, Z. Xu, and C. Xiao. Twintac: A wide-range, highly sensitive tactile sensor with real-to-sim digital twin sensor model. In 2025 IEEE/RSJ International Conference on Intelli-gent Robots and Systems (IROS) , pages 12286–12292, 2025. doi:10.1109/IROS60139.2025. 11247002. [38] C. Fuji Tsang, M. Shugrina, J. F. Lafleche, T. Takikawa, J. Wang, and C. e. a. Loop. Kaolin: A pytorch library for accelerating 3d deep learning research. https://github. com/NVIDIAGameWorks/kaolin , 2022. [39] O. I. Vinogradova and F. Feuillebois. Interaction of elastic bodies via surface forces: 2. expo-nential decay. Journal of colloid and interface science , 268(2):464–475, 2003. [40] J. Xu, S. Kim, T. Chen, A. R. Garcia, P. Agrawal, W. Matusik, and S. Sueda. Efficient tactile simulation with differentiability for robotic manipulation. In 6th Annual Conference on Robot Learning , 2022. URL https://openreview.net/forum?id=6BIffCl6gsM .[41] Z. Zhao, W. Li, Y. Li, T. Liu, B. Li, M. Wang, K. Du, H. Liu, Y. Zhu, Q. Wang, K. Althoefer, and S.-C. Zhu. Embedding high-resolution touch across robotic hands enables adaptive human-like grasping. Nature Machine Intelligence , 7(6):889–900, 2025. ISSN 2522-5839. doi:10. 1038/s42256-025-01053-3. URL http://dx.doi.org/10.1038/s42256-025-01053-3 .[42] T. Z. Zhao, V. Kumar, S. Levine, and C. Finn. Learning fine-grained bimanual manipulation with low-cost hardware, 2023. URL https://arxiv.org/abs/2304.13705 .[43] K. Zakka, B. Tabanpour, Q. Liao, M. Haiderbhai, S. Holt, J. Y. Luo, A. Allshire, E. Frey, K. Sreenath, L. A. Kahrs, C. Sferrazza, Y. Tassa, and P. Abbeel. Mujoco playground, 2025. URL https://arxiv.org/abs/2502.08844 .[44] I. Loshchilov and F. Hutter. Decoupled weight decay regularization, 2019. URL https: //arxiv.org/abs/1711.05101 .11 Appendix Overview 
+
+This appendix provides additional details for hardware design, evaluation protocol, failure analysis, ablations, expert data generation, tactile encoder pretraining, and policy deployment. 
+
+A. Hardware and Tactile Sensing System describes the tactile hardware, including the customized TwinTac fingertip sensors and FSR patches on the palm and links. It also details the Real2Sim tactile calibration procedure and the construction of the binary tactile observation used by the policy. 
+
+B. Evaluation Protocol and Metrics details the grasp evaluation setup, success criterion, and tactile event fidelity metrics used to compare real and simulated tactile streams. 
+
+C. Additional Ablation Studies reports additional simulation and real-world ablations on privileged tactile encoder pretraining, tactile signal representation, kinematically grounded tactile inputs, and policy architecture. 
+
+D. Detailed Real-World Failure Mode Analysis analyzes the dominant failure modes observed in real-world trials, including empty grasps, slips during lifting, and emergency stops. 
+
+E. RL Expert Training Details describes the PPO experts used for demonstration collection, in-cluding actor and critic observations, task and domain randomization, and PPO hyperparameters. 
+
+F. Privileged Tactile Encoder Pretraining Details provides details on the tactile input representa-tion, Transformer encoder, privileged decoder targets, pretraining losses, and training hyperparame-ters. 
+
+G. Diffusion Policy Training and Deployment Details describes the diffusion policy training ob-jective, receding-horizon execution, and action parameterization used for real-world deployment. 
+
+## A Hardware and Tactile Sensing System 
+
+To provide tactile perception for dexterous manipulation, we augment the Leap Hand with a hybrid tactile sensing system consisting of four customized TwinTac fingertip sensors [37] and 12 dis-tributed force-sensitive resistor (FSR) patches mounted on the finger links and palm. Each TwinTac sensor contains eight pressure-sensitive taxels, providing 32 fingertip tactile channels in total. We use TwinTac sensors and FSRs because they are low-cost, customizable, and vision-free (i.e., they do not require the visual processing pipeline used by vision-based tactile sensors). These proper-ties make them easy to integrate with the Leap Hand geometry. The sensor integration details are described below. 
+
+A.1 Customized Fingertip TwinTac Sensors 
+
+We customize the TwinTac [37] fingertip sensors in two main ways. First, we recast the gel elastomer into a curved sensing surface, which increases the effective contact area compared with the original flat TwinTac design. This is important for multi-finger manipulation, where contacts frequently occur on the side regions of the fingertip rather than only on the frontal surface. Second, we integrate an Seeed XIAO microcontroller on the rear side of each sensor, enabling direct USB communication via VCP UART instead of the original I2C interface. This simplifies wiring and reduces cable interference with finger motion. To gel-cast the curved elastomer, we use three 3D-printed PLA parts: a bottom sensor shell, a removable top mold, and a vertical casting fixture. The TwinTac PCB is fixed inside the bottom shell, and the top mold is aligned with it to define the curved fingertip geometry. The assembly is then placed vertically in the casting fixture, and mixed EcoFlex 00-31 is poured from the top opening and cured in place. After curing, the sensor is removed from the fixture, and the top mold 12 file:///C:/Users/LENOVO/AppData/Roaming/LarkShell/sdk_storage/acacef0fa61ae9fb118deececafa6157/resou     
+
+> rces/images/img_v3_02124_23c6ae93-4c54-41fd-898d-370ea330b26g.jpg
+> (A) Full-hand tactile LeapHand platform (B) Curved TwinTac fingertip tactile module
+> (C) Finger-level integration and wiring
+> (D) Sandwiched FSR patch module
+> TwinTac v1
+> Flat module Top shell
+> Elastomer
+> PCB
+> Bottom shell
+> Seeed XIAO
+> Ecoflex
+> 00-31
+> Mix &
+> degas
+> Pour
+> elastomer Support frame Cure for 6 h
+
+Top contact pad 
+
+4 × TwinTac fingertip sensors 
+
+12 × FSR 
+
+patches   
+
+> TwinTac fingertip sensor
+> 8 channels each
+> FSR patch
+> 1 channel each
+> Seeed X IAO
+> 50 Hz
+> ESP32 40 Hz
+> Host PC
+
+FSR film 
+
+Bottom support pad  
+
+> Twin Tac readings
+> 4 x 8 = 32 ch
+> FSR readings
+> 12 x 1 = 12 ch
+> Total ：44 ch
+> Expanded contact
+> area
+> Stable force
+> transfer
+> Side-contact
+> coverage
+> Curved surface
+> Flat surface
+
+Figure 4: Full-hand tactile LeapHand platform. The platform integrates four curved TwinTac fingertip sensors and twelve distributed FSR patches, forming a 44-channel tactile sensing system. The curved TwinTac module provides high-resolution fingertip contact measurements through an 8-taxel pressure array, while the FSR patches extend tactile coverage to non-fingertip regions including finger links and the palm. The tactile signals are routed through the acquisition electronics and streamed to the host computer for policy execution. is detached through the reserved edge, leaving a curved elastomeric sensing surface integrated with the bottom shell. Rear screw holes allow direct mounting onto the Leap Hand fingertip transmission element while preserving the tactile sensing surface. 
+
+A.2 Palm and Link FSR Sensors 
+
+For non-fingertip contact sensing, we use 12 low-cost force-sensitive resistor (FSR) patches. Each FSR measures local normal pressure through a voltage-divider circuit. To improve mechanical cou-pling on the curved Leap Hand servo housings, each patch is sandwiched between two 3D-printed layers: a bottom layer for stable mounting and a top cap for force transmission, a larger effective con-tact area, and improved contact conformity (Fig. 4). This compact assembly fits on the finger links and palm. Finally, the 12 FSR voltage signals are digitized by an STM32 microcontroller, streamed to the host via serial at approximately 40 Hz, and thresholded into binary contact indicators for each sensing location. 
+
+A.3 Tactile Signal Calibration and Observation Construction 
+
+Our calibration in main paper is performed as follows. We first subtract the initial reference val-ues from all raw tactile readings. During policy execution, the corrected signals are binarized and concatenated in a fixed order: the first 32 entries correspond to TwinTac measurements, and the remaining 12 entries correspond to FSR measurements. The resulting tactile vector is included in the policy observation. 13 3. Learn tactile alignment parameters 
+
+> from paired sequences
+
+00-4ce6-bc21-530309f9327g.png 
+
+Sphere Cylinder    
+
+> (B) Calibration Fixtures and Objects
+> (C) Real2Sim Tactile Alignment
+> Calibration improves tactile event consistency between simulated and real sensors
+> Real Sim Real Sim
+> Aligned trajectories in real and simulation ensure rich, diverse contact on many tactile sensors.
+> (A) Paired Real--Sim Calibration Setup
+> TwinTac
+> FSR
+> TwinTac
+> FSR
+> Real
+> 1. Collect controlled-contact
+> trajectories
+> 2. Replay hand qpos in
+> simulation
+> contact region
+
+3D-printed fixture for repeatable object placement 
+
+> Real
+> Sim
+> Sim
+> Aligned
+> Sim
+
+Figure 5: Real2Sim tactile alignment system. (A) Paired calibration trajectories are collected in the real setup and replayed in simulation under matched object poses. During real-world collection, the hand interacts with fixed calibration objects while raw tactile readings and hand joint positions (qpos ) are recorded; the recorded qpos are then replayed in simulation to obtain temporally aligned real–sim tactile sequences. (B) 3D-printed fixtures are used to place the calibration objects at re-peatable poses consistent with the simulator. We use two simple calibration geometries: a sphere with radius 5 cm and a cylinder with radius 2.5 cm and height 10 cm . (C) The paired sequences are used to learn the tactile alignment network gϕ, which maps raw real tactile readings to simulation-compatible contact features. The calibration motions are task-agnostic controlled-contact trajec-tories rather than grasping demonstrations or policy rollouts. In total, we collect nine calibration trajectories across the two objects at approximately 10 Hz , using arm lead-through and UI-based hand joint control to induce contacts across different tactile regions. For calibration, we use two objects with simple geometries: a sphere of radius 5 cm and a cylinder of radius 2.5 cm and height 10 cm . We collect nine calibration trajectories with varying durations. The tactile and joint-state data are recorded at approximately 10 Hz . In total, the sphere trajectories contain 325 .5 s of calibration data, corresponding to 3,255 frames, while the cylinder trajectories contain 241 .9 s of calibration data, corresponding to 2,419 frames. This results in 5,674 calibration frames across the two objects. We then replay the recorded hand joint positions in simulation to ob-tain temporally aligned real–sim tactile sequences for parameter fitting and sensing-level evaluation. The calibration trajectories are collected semi-manually to ensure diverse tactile excitation. The robot arm is moved in teleoperation mode, allowing the operator to guide the hand around the fixed calibration object. Meanwhile, the tactile collection process follows a two-stage control sequence. The robot is first manually guided to a starting pose via a standard user interface. Once positioned, it executes a predetermined trajectory designed to bring specific tactile regions into controlled contact with the object. This procedure provides practical coverage of different tactile regions while keeping the calibration data independent of the downstream grasping policy. 14 0 500 1000 1500 2000 2500 3000 3500        
+
+> calibrated
+> uncalibrated
+> real
+> FSR trigger events (6 trajectories)
+> 0500 1000 1500 2000 2500
+> Concatenated calibration frames
+> calibrated
+> uncalibrated
+> real
+> Fingertip taxel trigger events (4 trajectories)
+> real uncalibrated calibrated
+
+Figure 6: Tactile activation alignment before and after calibration. Binary tactile trigger events are shown for calibration trajectories, with FSR responses on top and fingertip taxel responses on bottom. Each vertical mark denotes a frame where at least one valid tactile channel in that modal-ity is active. Black indicates real tactile measurements, orange indicates the nominal uncalibrated simulation, and blue indicates the calibrated simulation. After calibration, the simulated activation pattern better matches real contact onset timing and suppresses spurious activations. Fig. 6 visualizes tactile trigger events before and after Real2Sim calibration. For each trajectory, we show frames in which at least one valid tactile channel is active, separately for the FSR sensors and fingertip taxels. Compared with the nominal uncalibrated simulator, the calibrated simulator better aligns simulated contact onset with real tactile measurements and suppresses many spurious activations, particularly in the FSR responses. This qualitative result is consistent with the sensing-level metrics reported in Table 2. 
+
+## B Evaluation Protocol and Metrics 
+
+B.1 Evaluation Protocol 
+
+This section describes the experimental setup used for evaluation. For both simulation and real-world trials, the object pose is randomized at the start of each grasp attempt. In simulation, the object’s in-plane position is sampled within a 4 cm × 4 cm region and its 3D orientation is sampled from physically stable resting poses. In real-world trials, the object is randomly placed within the same workspace region with a stable resting orientation. The robot starts from a fixed open-hand pre-grasp pose above the workspace. From this state, the policy is expected to establish contact with the object, close the hand to form a grasp, and lift the object using only proprioceptive feedback and binary tactile observations, without visual input, object pose estimates, or object geometry priors. The success criterion differs between simulation and real-world evaluation. In simulation, each episode has a maximum duration of 10 s , including the final holding period. A simulated trial is considered successful only if the hand contacts the object, grasps it, lifts it by at least 1.5 cm above its initial height, and keeps it above this threshold for 1 s without dropping it. In real-world evalua-tion, we define a task-level success criterion based on physical lifting metrics: a trial is considered successful if the robot successfully lifts the object to a height of at least 3.0 cm and maintains a stable grasp for over 1 s without dropping it. 15 Unless otherwise specified, simulation evaluations use 50 randomized trials per object. Since each split contains 10 objects, this corresponds to 500 simulation trials for the seen split and 500 trials for the unseen split. For real-world evaluation, we perform 5 hardware trials per object, resulting in 50 trials for seen objects and 50 trials for unseen objects for each method. The final real-world success rates are therefore reported as successful trials over 50 trials per split. 
+
+B.2 Tactile Event Fidelity Metrics 
+
+Inspired by prior work in tactile sim-to-real transfer [20], we use the following metrics to evaluate tactile calibration fidelity in Table 2. For each controlled contact trial, we record the real tactile activation yreal  
+
+> i,t
+
+∈ { 0, 1} and the corresponding simulated activation ysim  
+
+> i,t
+
+∈ { 0, 1} for taxel i at time 
+
+t, using the real tactile stream as reference. 
+
+Contact Onset Error ∆ton is the absolute time difference between the real and simulated onset contact events, averaged over trials. It measures whether simulated contact appears at the correct time. 
+
+Activation F1 measures taxel-time agreement between simulated and real tactile events: 
+
+F1 = 2TP 2TP + FP + FN , (7) where TP, FP, and FN are counted over all taxel-time activation labels. It measures whether simula-tion activates the same tactile regions as the real sensor. 
+
+False Positive Rate (FPR) measures the fraction of real inactive taxel-time samples that are incor-rectly active in simulation: 
+
+FPR = FP FP + TN . (8) 
+
+## C Additional Ablation Studies on Performance and Design Choices 
+
+C.1 Additional Results on Privileged Tactile Encoder Pretraining 
+
+We provide additional results for privileged tactile encoder pretraining beyond the compact simula-tion ablation reported in the main manuscript. We compare policies with and without the pretrained tactile encoder while keeping the spatial tactile representation, diffusion policy, inputs, and demon-stration dataset fixed. Thus, the only variable is whether the tactile encoder is pretrained. Without pretraining, the encoder must learn tactile geometry solely from the imitation objective, which provides weak and indirect supervision for object-level structure. As shown in Table 4, priv-ileged pretraining improves average success rates on both seen and unseen objects, indicating that simulator-only geometric and contact labels provide useful supervision for tactile representation learning. We further evaluate the effect of privileged tactile encoder pretraining on the real robot. To iso-late the contribution of pretraining, tactile calibration is disabled in both variants. As shown in Table 5, privileged pretraining improves real-world grasp success from 6/100 to 27/100. These re-sults suggest that the pretrained tactile encoder learns transferable tactile representations that benefit hardware performance even without tactile event calibration. 
+
+C.2 Binary versus Continuous Tactile Signals 
+
+We compare binary contact events with continuous tactile magnitudes as policy inputs. Although continuous signals may encode force intensity, their values are sensitive to sensor mounting, contact geometry, and simulator-specific contact parameters, making calibration and transfer difficult. Specifically, we created the following continuous variant for comparison. Each tactile channel uses a clipped and per-channel normalized contact magnitude rτ,i ∈ [0 , 1] :
+
+scont  
+
+> τ,i
+
+= [ pxτ,i , p yτ,i , p zτ,i , r τ,i ], (9) 16 Table 4: Per-object simulation success rate with and without privileged tactile encoder pretraining.                                                                                      
+
+> Seen Objects Unseen Objects
+> Object w/o Pretrain w/ Pretrain Improve. Object w/o Pretrain w/ Pretrain Improve. Cube 60% 62% +2% Hash-Shape 22% 42% +20% Ball 8% 56% +48% C-Shape 18% 34% +16% Box 30% 48% +18% E-Shape 18% 38% +20% Cross 52% 66% +14% T-Shape 28% 56% +28% CubeBall 38% 100% +62% Cylinder 2% 14% +12% Egg 16% 24% +8% Fork 20% 62% +42% Big Egg 0% 8% +8% Ring 50% 80% +30% H-shape 44% 76% +32% Snowman 22% 48% +26% Hollow Cube 70% 98% +28% Tetrahedral 8% 28% +20% Hourglass 44% 66% +22% Triple 12% 30% +18%
+> Seen Avg. 36.2% 60.4% +24.2% Unseen Avg. 20.0% 43.2% +23.2%
+
+Table 5: Real-world performance comparison with and without privileged tactile encoder pretraining.          
+
+> Method Seen Unseen Overall
+> w/o Pretrain 4/50 2/50 6/100 (6%) w/ Pretrain 16/50 11/50 27/100 (27%)
+
+Table 6: Binary vs. continuous tactile input in simulation on seen objects.    
+
+> Tactile signal Success
+> Continuous magnitudes 59.2% Binary contact events 60.4%
+
+where pτ,i is the forward-kinematics position of tactile site i. Our binary representation replaces this magnitude with a contact indicator: 
+
+sbin  
+
+> τ,i
+
+= [ pxτ,i , p yτ,i , p zτ,i , a τ,i ], aτ,i ∈ { 0, 1}. (10) For a controlled comparison, both tactile representations are evaluated under the same pretrained setting. Each representation uses its own tactile encoder pretrained with the same privileged super-vision, and the downstream Diffusion Policy is trained using the same demonstrations and archi-tecture. We evaluate both variants on seen objects over 500 simulated grasp trials. Table 6 shows that continuous magnitudes achieve a comparable success rate. This suggests for blind grasping, the contact occurrence, timing, and location are already sufficient for task execution. We therefore use binary contacts as a more robust interface to reduce sim-to-real gaps. 
+
+C.3 Ablation on Policy Architecture 
+
+Our main policy uses Diffusion Policy. To assess this design choice, we compare it with determin-istic behavior cloning (BC) and ACT [42]. All policies are trained on the same simulated expert trajectories and use the same pretrained tactile encoder. As shown in Table 7, Diffusion Policy matches the best seen-object performance and achieves the highest unseen-object success rate, sug-gesting that its multimodal action modeling capability improves generalization under partial tactile observability. 
+
+C.4 Ablation on Kinematically Grounded Tactile Inputs 
+
+We assess whether grounding tactile activations in the hand coordinate frame improves over unstruc-tured binary contact histories. For this purpose, we compare our FK-grounded tactile input against a raw tactile baseline using only the 44-dimensional binary tactile history, without mapping taxels to their forward-kinematics positions. To isolate the representation effect, this ablation excludes priv-ileged encoder pretraining. As shown in Table 8, FK grounding improves grasping performance, indicating that spatially locating contact events yields a more enriched tactile representation than an unordered taxel vector. 17 Table 7: Ablation on policy architecture.             
+
+> Policy Seen Unseen Avg.
+> BC 59.4% 30.2% 45.8% ACT 45.0% 24.8% 34.9% Diffusion Policy 60.4% 43.2% 51.8%
+
+Table 8: Ablation on kinematically grounded tac-tile inputs.          
+
+> Tactile Input Seen Unseen Avg.
+> Raw tactile vector 33.8% 19.8% 26.8% FK-grounded tactile 36.2% 20.0% 28.1%
+
+Table 9: Failure mode analysis over 73 failed real-world trials out of 100 attempts. EG: Empty Grasp; SL: Slip during Lifting; ES: Emergency Stop.                                                                                                                      
+
+> Seen Objects Unseen Objects Object EG SL ES Fail. Object EG SL ES Fail.
+> Cube 0011Hash-Shape 1214Ball 0505C-Shape 1214Box 2114E-Shape 0134Cross 0224T-Shape 0213CubeBall 0224Cylinder 0505Egg 4004Fork 0022Big Egg 4004Ring 0314H-shape 1113Snowman 0224Hollow Cube 0011Tetrahedral 2204Hourglass 0044Triple 0505
+> Seen Total 11 11 12 34 Unseen Total 424 11 39 Overall: EG = 15 (20.5%), SL = 35 (47.9%), ES = 23 (31.5%), Total = 73
+
+## D Detailed Real-World Failure Mode Analysis 
+
+To better understand the remaining bottlenecks of tactile-only blind grasping, we analyze the 73 failed trials among all 100 real-world attempts. Each failure is assigned to one of the following modes: Empty Grasp (EG), where the hand fails to establish sufficient object contact; Slip during Lifting (SL), where the object is initially grasped but drops during lifting; and Emergency Stop (ES), where low-level safety limits are triggered. As shown in Table 9, the most common failure mode is slip during lifting, accounting for 35/73 failures (47.9%). This indicates that the policy often establishes initial contact, but maintaining a stable grasp under real contact dynamics remains challenging. Slip failures are especially common for smooth or rounded objects such as balls, cylinders, and other geometries that induce point or line contacts. For these objects, small errors in friction, compliance, and contact location can substan-tially change grasp stability, suggesting that the contact-mechanics sim-to-real gap can dominate over representation or policy differences. Our benchmark primarily uses rigid 3D-printed objects, which provide limited compliance and can amplify low-friction slip failures. More compliant ob-jects, such as foam or sponge objects, would likely reduce slip, but would also define an easier benchmark with different contact mechanics. Emergency stops account for 23/73 failures (31.5%). These failures typically occur when sparse tactile feedback and partial observability lead to unsafe arm-hand configurations or workspace-limit violations. Empty grasps account for 15/73 failures (20.5%) and are more common for smooth or hard-to-localize objects such as Egg , Big Egg , and Cylinder , where tactile-only exploration can miss the object before a stable contact is formed. 18 E Reinforcement Learning Expert Training Details 
+
+To generate successful contact-rich demonstrations for the downstream Diffusion Policy, we train object-specific RL experts with PPO in a parallelized MuJoCo simulation [43]. We use an asym-metric actor-critic setup: the critic receives privileged simulator states, while the actor uses only deployable sensory observations. Both networks are MLPs with hidden sizes [512 , 256 , 128] . Train-ing uses 2,048 parallel environments for broad state-space exploration. Hyperparameters are listed in Table 11. To support sim-to-real transfer, we use an asymmetric actor–critic architecture. The actor observa-tion Oactor  
+
+> t
+
+contains only hardware-available signals: joint angles, previous joint commands, current and historical binary tactile activations, and proprioceptive tracking errors. The critic state Scritic 
+
+> t
+
+additionally includes privileged simulator information for value estimation, including noiseless joint positions and velocities, 3D fingertip positions, palm-to-object displacement, object velocities, and external perturbation forces. We apply task and domain randomization at the start of each episode. The object pose is randomized with planar translation within ±5 cm and arbitrary 3D rotation, and the hand pre-grasp configuration is perturbed by joint noise within ±0.05 rad. We also randomize friction, object mass, and actuator dynamics to reduce overfitting to nominal simulation parameters. The full randomization ranges are listed in Table 10. Table 10: Domain Randomization Parameters.                     
+
+> Parameter Randomization Range
+> Fingertip Friction U[0 .5,1.0]
+> Object Mass [0 .8×,1.2×]base mass Object Center of Mass Offset ±5mm Hand Joint Friction Loss [0 .5×,2.0×]base value Hand Actuator Gain ( Kp)[0 .8×,1.2×]base value Hand Joint Damping [0 .8×,1.2×]base value Hand Link Masses [0 .9×,1.1×]base mass
+
+Table 11: Hyperparameters for RL Expert Training (PPO).                   
+
+> Hyperparameter Value
+> Algorithm Proximal Policy Optimization (PPO) Total Timesteps 200 ,000 ,000
+> Parallel Environments 2048
+> Batch Size 2048
+> Minibatches 16
+> Epochs (Updates per batch) 16
+> Unroll Length 40 for compact objects, 60 for elongated or rolling objects Learning Rate 3×10 −4
+> Discount Factor ( γ)0.99
+> Entropy Coefficient 0.01
+
+## F Privileged Tactile Encoder Pretraining Details 
+
+We pretrain the tactile encoder using simulator-only privileged supervision to encode object geom-etry, hand–object contact, and grasp-relevant spatial structure. These privileged labels are used only during pretraining and are unavailable during real-world deployment. During final policy learning, the pretrained tactile encoder is frozen, and only the policy is optimized. 
+
+Input representation. At each time step t, the encoder receives a history window of H = 16 tac-tile frames. Each frame contains Ntac = 44 tactile sites. For tactile site i at time τ , we concatenate 19 its 3D position from hand forward kinematics and its binary activation: 
+
+sτ,i = [ pxτ,i , p yτ,i , p zτ,i , a τ,i ] ∈ R4. (11) Thus, the tactile history is represented as 
+
+St = {sτ,i }τ =t−H+1: t, i =1: Ntac ∈ RH×Ntac ×4. (12) For the first few steps of an episode, we left-pad the history by repeating the earliest available frame. 
+
+Tactile encoder. We treat each tactile frame as one temporal token. The Ntac × 4 features in each frame are flattened and linearly projected to a d = 384 dimensional embedding. After adding learned temporal positional embeddings, the sequence is processed by a Transformer encoder: 
+
+Zt = gψ (St) ∈ RH×d. (13) The encoder uses 6 Transformer layers, 6 attention heads, hidden dimension 384 , and feed-forward dimension 1536 . The latent feature of the latest frame, zt = ZHt , is used as the tactile representation for downstream policy learning. 
+
+Privileged decoder. During pretraining, we attach a query-based Transformer decoder to the tac-tile encoder. The decoder cross-attends to Zt and predicts simulator-only privileged quantities: 
+
+ˆP hand  
+
+> t
+
+∈ R1024 ×3, ˆP obj  
+
+> t
+
+∈ R1024 ×3, (14) 
+
+ˆypose  
+
+> t
+
+∈ R7, ˆqrobot  
+
+> t
+
+∈ R22 , ˆct ∈ RNtac . (15) Here ˆP hand  
+
+> t
+
+and ˆP obj  
+
+> t
+
+are hand and object point clouds, ˆypose  
+
+> t
+
+contains object translation and quater-nion, ˆqrobot  
+
+> t
+
+is the robot joint configuration, and ˆct are contact logits for the tactile channels. The decoder has the same Transformer width as the encoder and is discarded after pretraining. 
+
+Privileged targets. All pretraining targets are obtained from simulation. We use dense hand and object point clouds, object pose, robot joint configuration, and binary contact labels. Let at,i ∈{0, 1} denote the binary tactile activation of channel i at time t, where at,i = 1 indicates that the channel is active and at,i = 0 indicates no contact. Since the tactile observation is binary, the contact label is directly given by the tactile activation, 
+
+ct,i = at,i , at,i ∈ { 0, 1}. (16) and we define a frame-level contact mask 
+
+mt = I
+
+"Ntac X
+
+> i=1
+
+ct,i > 0
+
+#
+
+. (17) Object geometry and pose losses are applied only when mt = 1 , since tactile observations provide little object information before contact. 
+
+Pretraining losses. We supervise hand and object geometry using symmetric Chamfer distance: 
+
+Lpc = λhand CD( ˆP hand  
+
+> t
+
+, P hand  
+
+> t
+
+) + mtλobj CD( ˆP obj  
+
+> t
+
+, P obj  
+
+> t
+
+). (18) For object pose, we use an ℓ1 loss on translation and a sign-invariant quaternion loss on rotation: 
+
+Lpose = mt ∥ˆpobj  
+
+> t
+
+− pobj  
+
+> t
+
+∥1 + λrot 1 −
+
+*
+
+ˆqobj 
+
+> t
+
+∥ˆqobj  
+
+> t
+
+∥2 + ϵ , qobj 
+
+> t
+
+∥qobj  
+
+> t
+
+∥2 + ϵ
+
++ !! 
+
+. (19) Robot configuration and contact prediction are supervised by 
+
+Lstate = λqpos ∥ˆqrobot  
+
+> t
+
+− qrobot  
+
+> t
+
+∥22 + λcontact FL(ˆ ct, c t), (20) where FL denotes focal loss, used to handle the sparsity of tactile contacts. 20 We additionally use two light geometric regularizers on the predicted object point cloud. A repulsion loss prevents point collapse, and a hand-object penetration loss discourages predicted object points from lying inside the predicted hand: 
+
+Lgeo = mt (λrep Lrep + λpen Lpen ) . (21) For frames without contact, we penalize hallucinated object predictions by encouraging the object point cloud and object translation to remain near the origin: 
+
+Lempty = (1 − mt)
+
+λempty obj 
+
+1
+
+Nobj 
+
+X  
+
+> ˆx∈ˆPobj
+> t
+
+∥ˆx∥2 + λempty pose ∥ˆpobj  
+
+> t
+
+∥1
+
+ . (22) The final pretraining objective is 
+
+Lpre = Lpc + Lpose + Lstate + Lgeo + Lempty . (23) In our implementation, we use λhand = 5 .0, λobj = 5 .0, λrot = 0 .1, λqpos = 1 .0, λcontact = 2 .0,
+
+λrep = 0 .5, λpen = 0 .5, λempty obj = 5 .0, and λempty pose = 2 .0.We train the encoder and decoder jointly for 200 epochs using AdamW [44] with learning rate 
+
+3 × 10 −4. The per-GPU batch size is 256. We use mixed-precision training and clip gradients with maximum norm 1.0. The model is trained with distributed data parallelism across 4 Nvidia A40 GPUs. After pretraining, the decoder dω and all prediction heads are discarded. Only the tactile encoder gψ is retained and used to compute the tactile feature zt for policy learning and real-world deployment. No object point cloud, object pose, robot-state label, or simulator contact label is used during deployment. Table 12: Hyperparameters for privileged tactile encoder pretraining. 
+
+Hyperparameter Value Hyperparameter Value 
+
+History length H 16 Tactile sites Ntac 44 Per-site input dim. 4 Hidden dimension 384 Encoder layers / heads 6/6 Decoder layers / heads 6/6
+
+FFN dimension 1536 Point queries 64 + 64 
+
+Points per query 16 Point outputs 1024 + 1024 
+
+Pose / robot / contact dim. 7/22 /44 Optimizer AdamW Learning rate 3×10 −4 Epochs 200 Batch size / GPU 256 Grad. clipping 1.0 Focal loss (α, γ ) (0 .25 , 2.0) Repulsion radius 0.015 Penetration margin 0.005 
+
+## G Diffusion Policy Training and Deployment Details 
+
+Diffusion Policy Setup. The diffusion policy is conditioned on separate proprioceptive and tactile observations. At each timestep, the proprioceptive state is 
+
+qt = [ st, ˙st] ∈ R44 ,
+
+where st, ˙st ∈ R22 denote joint positions and velocities of the 6-DoF arm and 16-DoF hand. The raw tactile observation is 
+
+ut = [ tt, ft] ∈ R44 ,
+
+where tt ∈ R32 and ft ∈ R12 are TwinTac and FSR tactile readings, respectively. For kinematically grounded tactile inputs, each tactile site is augmented with its forward-kinematics position, forming 
+
+Pt ∈ R44 ×4,
+
+where each row contains the 3D tactile-site position and the corresponding tactile value. For the main policy, this value is a binary contact indicator; for the continuous tactile ablation baseline, it 21 is a normalized contact magnitude. Unless otherwise specified, policies condition on To = 5 past observations, predict an action chunk of horizon H = 8 , and execute Na = 3 actions before replan-ning. Each action at ∈ R22 represents incremental arm and hand joint motion. The commanded joint position is computed as 
+
+qcmd  
+
+> t
+
+= clip( qt + at, q min , q max ), (24) where qmin and qmax are joint limits. The commanded positions are tracked by low-level PD con-trollers. We apply the same action scaling and joint-limit constraints in simulation and hardware. 
+
+Policy variants. The policy variants used in the aforementioned experiments differ in three as-pects: tactile input representation, the use of a privileged-pretrained tactile encoder, and the down-stream action head. They are used in three ablation studies: Raw-Tactile DP and Kinematic-Tactile DP are compared for kinematically grounded tactile inputs in Section C.4; Kinematic-Tactile DP 
+
+and Pretrained Kinematic-Tactile DP are compared for privileged tactile encoder pretraining in Sec-tion C.1; and Pretrained Kinematic-Tactile DP , Pretrained Kinematic-Tactile ACT , and Pretrained Kinematic-Tactile BC are compared for policy architecture in Section C.3. Table 13 summarizes the controlled differences among these policy variants. Table 13: Policy variants used in different ablation studies.                             
+
+> Policy Tactile input Pretrained encoder Action head
+> Raw-Tactile DP ut∈R44 No DP
+> Kinematic-Tactile DP Pt∈R44 ×4No DP
+> Pretrained Kinematic-Tactile DP Pt∈R44 ×4Yes DP
+> Pretrained Kinematic-Tactile ACT Pt∈R44 ×4Yes ACT
+> Pretrained Kinematic-Tactile BC Pt∈R44 ×4Yes MLP
+
+Notably, the tactile representation are different across the variants. Raw-Tactile DP uses the un-ordered 44-D tactile vector, Kinematic-Tactile DP represents the same activations as 44 × 4 tactile points with spatial coordinates, and Pretrained Kinematic-Tactile DP further processes these tactile points with the privileged-pretrained encoder gψ . After pretraining, the decoder is discarded and the encoder is frozen for downstream policy learning. In the full diffusion-policy variant, the low-dimensional observations are encoded by a 3-layer MLP, while the kinematic tactile points are encoded by the frozen tactile encoder into a 384-D feature. The two streams are mean-pooled over the observation window and concatenated into a 896-D global condition c. The diffusion action head generates a ∈ RH×22 conditioned on c and is deployed with receding-horizon execution. For the policy-head ablation, we keep the same pretrained tactile representation and replace only the downstream action head with ACT or MLP regression. The network details of the action heads are summarized in Table 14. Table 14: Network details of the downstream action heads.                        
+
+> Head Architecture Objective
+> DP 1D conditional U-Net [256 ,512] , FiLM ϵ-prediction ACT 4-layer Transformer decoder, d=512 ,nhead =8 ,dff =2048 MSE MLP 896 →2048 →1024 →512 →256 →8×22 MSE
+
+Training details. All downstream policies are trained on 10,000 simulated expert trajectories gen-erated as described in Appendix E. We use the same optimizer, learning-rate schedule, batch size, and evaluation protocol across variants, as listed in Table 15. Unless otherwise stated, diffusion-policy variants are trained with the standard noise-prediction objective, while ACT and MLP base-lines are trained with direct MSE loss on action chunks. 22 Table 15: Shared downstream training settings. 
+
+Hyperparameter Value 
+
+Demonstrations 10,000 simulated trajectories Observation horizon To 5Prediction horizon H 8Executed actions Na 3Action dimension 22 Optimizer AdamW Learning rate 1 × 10 −4
+
+AdamW β (0 .95 , 0.999) 
+
+Weight decay 1 × 10 −6
+
+LR schedule Cosine decay Warmup steps 2,000 Batch size 512 Precision bfloat16 AMP Evaluation interval 40k steps 
+
+23
