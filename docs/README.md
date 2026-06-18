@@ -6,42 +6,50 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-17
-- 运行时间：2026-06-17 22:18:05 UTC
+- 最新运行日期：2026-06-18
+- 运行时间：2026-06-18 22:29:34 UTC
 - 运行状态：成功
-- 本次总论文数：7
-- 精读区：0
-- 速读区：7
+- 本次总论文数：10
+- 精读区：4
+- 速读区：6
 
 ### 今日简报（AI）
-今日速读7篇论文，聚焦物理化VLA操控、异构机器人统一建模及触觉策略学习。最值得关注的是《PhysVLA》与《Unified Motion-Action Modeling》两篇7分论文，分别解决具身操控的物理基础与异构机器人动作建模问题。建议优先精读这两篇高分论文。
-- 详情：[/202606/17/README](/202606/17/README)
+今日精选2篇高分论文，聚焦机器人操作中的世界模型与URDF合成。值得关注基于能量一致性的URDF合成方法与具备记忆增强的世界模型。建议深入阅读精读论文，了解如何通过微分联合推断提升机器人感知与操控持久性。
+- 详情：[/202606/18/README](/202606/18/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [URDF Synthesis from RGB-D Sequences via Differentiable Joint Inference and Energy-Consistent Verification](/202606/18/2606.18861v1-urdf-synthesis-from-rgb-d-sequences-via-differentiable-joint-inference-and-energy-consistent-verification)  
+   标签：评分：9.0/10、query:diff-physics
+   evidence：使用可微刚体动力学进行URDF合成
+2. [Mem-World: Memory-Augmented Action-Conditioned World Models for Persistent Robot Manipulation](/202606/18/2606.18960v1-mem-world-memory-augmented-action-conditioned-world-models-for-persistent-robot-manipulation)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：动作条件世界模型用于机器人操纵
+3. [Causal Object-Centric Models for Planning with Monte Carlo Tree Search](/202606/18/2606.14418v1-causal-object-centric-models-for-planning-with-monte-carlo-tree-search)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：基于模型的强化学习结合蒙特卡洛树搜索用于以物体为中心的操作
+4. [Impedance MPC with Disturbance Estimation for Dexterous Hand Control](/202606/18/2606.14606v1-impedance-mpc-with-disturbance-estimation-for-dexterous-hand-control)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：阻抗模型预测控制作为一种模型基控制方法用于灵巧手操作
 
 ### 速读区论文标签
-1. [PhysVLA: Towards Physically-Grounded VLA for Embodied Robotic Manipulation](/202606/17/2606.13886v1-physvla-towards-physically-grounded-vla-for-embodied-robotic-manipulation)  
+1. [EquiDexFlow: Contact-Grounded SE(3)-Equivariant Dexterous Grasp Generative Flows](/202606/18/2606.12728v2-equidexflow-contact-grounded-se3-equivariant-dexterous-grasp-generative-flows)  
    标签：评分：7.0/10、query:diff-physics
-   evidence：将刚体动力学和接触约束注入VLA模型以实现物理一致的操作
-2. [Unified Motion-Action Modeling for Heterogeneous Robot Learning](/202606/17/2606.16917v2-unified-motion-action-modeling-for-heterogeneous-robot-learning)  
+   evidence：可微流匹配用于灵巧抓取并预测接触力
+2. [Steering Generative Reinforcement Learning into Stable Robotic Controller](/202606/18/2606.16572v1-steering-generative-reinforcement-learning-into-stable-robotic-controller)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：提出UMA模型，利用3D物体运动轨迹进行统一动力学建模与控制，可直接用于基于模型的机器人学习
-3. [Blind Dexterous Grasping via Real2Sim2Real Tactile Policy Learning](/202606/17/2606.11767v2-blind-dexterous-grasping-via-real2sim2real-tactile-policy-learning)  
+   evidence：使用潜在空间引导的生成式强化学习实现稳定机器人控制
+3. [DREAM-Chunk: Reactive Action Chunking with Latent World Model](/202606/18/2606.18589v1-dream-chunk-reactive-action-chunking-with-latent-world-model)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：使用潜在世界模型进行机器人执行中的动作选择
+4. [Benchmarking Action Spaces in Reinforcement Learning for Vision-based Robotic Manipulation](/202606/18/2606.18594v1-benchmarking-action-spaces-in-reinforcement-learning-for-vision-based-robotic-manipulation)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：评估视觉机械臂操作任务中强化学习的动作空间
+5. [Mana: Dexterous Manipulation of Articulated Tools](/202606/18/2606.13677v1-mana-dexterous-manipulation-of-articulated-tools)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：通过真实到模拟再到真实的触觉策略学习实现灵巧手盲抓取
-4. [FACTR 2: Learning External Force Sensing for Commodity Robot Arms Improves Policy Learning](/202606/17/2606.12406v1-factr-2-learning-external-force-sensing-for-commodity-robot-arms-improves-policy-learning)  
+   evidence：使用强化学习和sim-to-real学习灵巧操作策略
+6. [Unified Motion-Action Modeling for Heterogeneous Robot Learning](/202606/18/2606.16917v1-unified-motion-action-modeling-for-heterogeneous-robot-learning)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：使用强化学习进行力感知策略学习的机械臂操作
-5. [Elastic Queries Reinforcement Learning: Self-Aware Policy Execution for VLA Models](/202606/17/2606.14375v1-elastic-queries-reinforcement-learning-self-aware-policy-execution-for-vla-models)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：通过RL调整VLA模型推理调度，提高样本效率
-6. [Inference-time Policy Steering via Vision and Touch](/202606/17/2606.14981v1-inference-time-policy-steering-via-vision-and-touch)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：利用视觉和触觉在推理时引导接触丰富的操作
-7. [DragMesh-2: Physically Plausible Dexterous Hand-Object Interaction with Articulated Objects](/202606/17/2606.15133v1-dragmesh-2-physically-plausible-dexterous-hand-object-interaction-with-articulated-objects)  
-   标签：评分：6.0/10、query:diff-physics
-   evidence：物理合理的灵巧手与铰接物体交互，接触动力学
+   evidence：学习机器人控制的动力学模型
 
 
 <div class="dpr-home-promo-card">

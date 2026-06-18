@@ -1,0 +1,434 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-18T22:24:21.646642+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 4,
+    "deep_cap": 7,
+    "deep_selected": 4,
+    "quick_candidates": 6,
+    "quick_skim_target": 12,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2606.18861v1",
+      "source": "arxiv",
+      "title": "URDF Synthesis from RGB-D Sequences via Differentiable Joint Inference and Energy-Consistent Verification",
+      "abstract": "Reconstructing simulation-ready digital twins of articulated objects from sensor observations remains constrained by two persistent gaps: (i) part-level geometric reconstruction is decoupled from kinematic-parameter estimation, and (ii) the recovered models often violate basic dynamic invariants such as energy conservation, leading to drift when the URDF is replayed in physics simulators. We present KinemaForge, a constraint-driven pipeline that jointly infers part-level shape, joint topology, and joint parameters from short RGB-D sequences and validates the result against an energy-consistent verifier built on differentiable rigid-body dynamics. The pipeline introduces three components: a kinematic constraint graph that encodes joint-part incidences as soft edges; a differentiable screw-axis solver that backpropagates from rendered observations through Featherstone's articulated-body algorithm to joint parameters; and an energy residual loss that penalises non-physical free responses of the reconstructed model. Across five PartNet-Mobility categories and an internal RGB-D benchmark, KinemaForge reduces the average joint-axis error from 4.52 degrees to 2.83 degrees (-37.4%) over the strongest geometric baseline (PARIS) and from 5.30 degrees to 2.83 degrees (-46.6%) over the interaction-based Ditto baseline, lowers long-horizon simulation drift by 64% (vs. PARIS) over 50 s rollouts, and yields URDFs whose closed-loop manipulation success rate improves by 14.6 percentage points over Ditto in our preliminary evaluation. Code and reconstruction data will be released upon acceptance.",
+      "authors": [
+        "Xinze Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-06-17T09:42:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.18861v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses differentiable rigid-body dynamics for URDF synthesis",
+      "llm_evidence_cn": "使用可微刚体动力学进行URDF合成",
+      "llm_evidence": "使用可微刚体动力学进行URDF合成",
+      "canonical_evidence": "使用可微刚体动力学进行URDF合成",
+      "llm_tldr_en": "Proposes KinemaForge, a pipeline that jointly infers part shape, joint topology and parameters from RGB-D sequences using differentiable rigid-body dynamics and energy-consistent verification, enabling simulation-ready digital twins.",
+      "llm_tldr_cn": "针对从传感器观测重建仿真就绪的铰接物体数字孪生时几何重建与运动学估计相分离以及动态不守恒导致漂移的问题，本文提出了KinemaForge管道。该管道联合推断部件形状、关节拓扑和参数，并基于可微刚体动力学构建能量一致性验证器。实验表明该管道能生成符合能量守恒的URDF模型，在物理仿真中稳定运行。该工作为机器人操作仿真提供了可微动力学工具。",
+      "llm_tldr": "针对从传感器观测重建仿真就绪的铰接物体数字孪生时几何重建与运动学估计相分离以及动态不守恒导致漂移的问题，本文提出了KinemaForge管道。该管道联合推断部件形状、关节拓扑和参数，并基于可微刚体动力学构建能量一致性验证器。实验表明该管道能生成符合能量守恒的URDF模型，在物理仿真中稳定运行。该工作为机器人操作仿真提供了可微动力学工具。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable dynamics for robot arms",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.18960v1",
+      "source": "arxiv",
+      "title": "Mem-World: Memory-Augmented Action-Conditioned World Models for Persistent Robot Manipulation",
+      "abstract": "Action-conditioned world models have emerged as a promising paradigm for robot learning, offering a scalable alternative to costly real-world experimentation by generating action-consistent video rollouts. However, persistent world modeling remains challenging in manipulation: frequent end-effector occlusions and rapid wrist-camera motion make the current observation insufficient for predicting future views, causing models to forget or hallucinate scene details seen in earlier frames. Existing memory retrieval strategies often fail to identify informative history in dynamic manipulation scenarios. To address this limitation, we propose Mem-World, a memory-augmented multi-view action-conditioned world model. At its core, we present W-VMem, a 4D wrist-view-centered surfel-indexed memory that anchors historical observations to temporally evolving surface elements. By explicitly modeling when and where scene elements are observed, W-VMem enables geometry-aware retrieval of relevant history frames conditioned on future actions. During generation, relevant history frames are selected via surfel-based rendering and scoring, providing informative and non-redundant context for prediction. Extensive experiments show that Mem-World generates persistent rollouts in complex manipulation scenarios, enables more reliable policy evaluation than Ctrl-World, improving the Pearson correlation with real-world performance by 14.5\\%, and supports effective policy improvement through synthetic data generation, increasing success rates from 58\\% to 72\\% on long-horizon tasks.",
+      "authors": [
+        "Zirui Zheng",
+        "Jiaqian Yu",
+        "Xiongfeng Peng",
+        "jun shi",
+        "Mingyi Li",
+        "Chao Zhang",
+        "Weiming Li",
+        "Dong Wang",
+        "Huchuan Lu",
+        "Xu Jia"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-06-17T11:42:00+00:00",
+      "link": "https://arxiv.org/pdf/2606.18960v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "action-conditioned world model for robot manipulation",
+      "llm_evidence_cn": "动作条件世界模型用于机器人操纵",
+      "llm_evidence": "动作条件世界模型用于机器人操纵",
+      "canonical_evidence": "动作条件世界模型用于机器人操纵",
+      "llm_tldr_en": "Proposes Mem-World, a memory-augmented multi-view action-conditioned world model for persistent manipulation. Addresses occlusion and forgetting by retrieving informative history. A model-based RL approach for robot arm manipulation.",
+      "llm_tldr_cn": "针对机器人操纵中因末端遮挡和快速运动导致的世界模型遗忘问题，提出Mem-World。该模型是记忆增强的多视图动作条件世界模型，通过检索信息性历史帧维持场景记忆。在操纵任务中生成一致的动作视频 rollout，属于基于模型的强化学习框架，可提升持久建模能力。",
+      "llm_tldr": "针对机器人操纵中因末端遮挡和快速运动导致的世界模型遗忘问题，提出Mem-World。该模型是记忆增强的多视图动作条件世界模型，通过检索信息性历史帧维持场景记忆。在操纵任务中生成一致的动作视频 rollout，属于基于模型的强化学习框架，可提升持久建模能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14418v1",
+      "source": "arxiv",
+      "title": "Causal Object-Centric Models for Planning with Monte Carlo Tree Search",
+      "abstract": "We introduce COMET (Causal Object-centric Model for Efficient Tree search), a model-based reinforcement learning algorithm that performs Monte Carlo Tree Search in a slot-structured latent space. COMET pairs a frozen unsupervised object-centric encoder with a transformer-based world model, in which actions are bound to objects through a novel action-slot fusion mechanism that is used in slot transition prediction. Policy and value heads use object-causal attention, modulating token interactions by learned per-slot relevance scores so that decision-making concentrates on task-relevant entities. COMET adds an explicit object-level inductive bias to MuZero-style latent planning. Across eight visually and dynamically diverse tasks from the Object-Centric Visual RL benchmark, ManiSkill, Robosuite, and VizDoom, COMET achieves a higher mean normalized score during the early stages of training compared to object-centric and monolithic baselines.",
+      "authors": [
+        "Rodion Vakhitov",
+        "Leonid Ugadiarov",
+        "Alexey Skrynnik",
+        "Aleksandr Panov"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-06-12T12:55:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.14418v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "model-based RL with Monte Carlo Tree Search for object-centric manipulation",
+      "llm_evidence_cn": "基于模型的强化学习结合蒙特卡洛树搜索用于以物体为中心的操作",
+      "llm_evidence": "基于模型的强化学习结合蒙特卡洛树搜索用于以物体为中心的操作",
+      "canonical_evidence": "基于模型的强化学习结合蒙特卡洛树搜索用于以物体为中心的操作",
+      "llm_tldr_en": "Introduces COMET, a model-based RL algorithm that performs MCTS in slot-structured latent space, adding object-level inductive bias to MuZero-style planning.",
+      "llm_tldr_cn": "该论文提出COMET，一种基于模型的强化学习算法，在槽结构潜空间中进行蒙特卡洛树搜索。通过冻结的无监督物体中心编码器和Transformer世界模型，并引入动作-槽融合机制，策略和价值头使用物体因果注意力。在八项物体中心视觉任务上验证了其在规划效率和解耦方面的优势，为机械臂操作提供了高效模型基方法。",
+      "llm_tldr": "该论文提出COMET，一种基于模型的强化学习算法，在槽结构潜空间中进行蒙特卡洛树搜索。通过冻结的无监督物体中心编码器和Transformer世界模型，并引入动作-槽融合机制，策略和价值头使用物体因果注意力。在八项物体中心视觉任务上验证了其在规划效率和解耦方面的优势，为机械臂操作提供了高效模型基方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model based reinforcement learning methods for robotic arm manipulation tasks",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.14606v1",
+      "source": "arxiv",
+      "title": "Impedance MPC with Disturbance Estimation for Dexterous Hand Control",
+      "abstract": "Dexterous hands must simultaneously track precise finger trajectories and maintain safe, compliant contact -- objectives in tension for any fixed-gain controller. We present an actuator-agnostic Impedance Model Predictive Control (Impedance MPC) framework for dexterous fingers, instantiating the constant-$A_d$ offset-free architecture established for physical human-robot interaction (pHRI); its stability, recursive-feasibility, and input-to-state-stability guarantees are inherited by preserving the architectural assumptions. An algebraic feedforward reduces the tendon transmission -- hydraulic, cable, pneumatic, twisted-string, or series-elastic -- to a constant-coefficient double integrator, so the QP cost inverse is precomputed offline and a 10-step receding-horizon quadratic program runs at 500\\,Hz while enforcing hard constraints on contact force (ISO/TS 15066), actuation limits, and jerk. An encoder-only augmented-Kalman disturbance state drives steady-state error to zero under any constant contact load. On a hydraulically actuated finger -- the worked example platform, adding pressure and cavitation constraints -- the 500\\,Hz Kalman MPC attains 0.5\\,mrad RMS, 0.1\\,mrad steady-state, and 6.6\\,mrad peak deflection under 1.5\\,Nm contact: 183$\\times$, 1500$\\times$, and 23$\\times$ better than classical impedance. The realized first-move stiffness (18$\\to$323\\,Nm/rad with update rate) is independently verified. The architecture scales to a 16-DOF LEAP Hand MuJoCo simulation, recovering from 2.5\\,N grasp-load disturbances within 0.7\\,s.",
+      "authors": [
+        "Yongyan Cao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-12T16:28:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.14606v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Impedance MPC as a model-based control method for dexterous hand manipulation",
+      "llm_evidence_cn": "阻抗模型预测控制作为一种模型基控制方法用于灵巧手操作",
+      "llm_evidence": "阻抗模型预测控制作为一种模型基控制方法用于灵巧手操作",
+      "canonical_evidence": "阻抗模型预测控制作为一种模型基控制方法用于灵巧手操作",
+      "llm_tldr_en": "An actuator-agnostic Impedance MPC framework for dexterous fingers, with disturbance estimation and precomputed QP cost.",
+      "llm_tldr_cn": "针对灵巧手需要同时跟踪精确轨迹和保持安全接触的难题，本文提出一种与执行器无关的阻抗模型预测控制框架。该框架通过代数前馈将肌腱传动简化为常系数双积分器，实现在线QP求解的离线预计算。实验验证了其在多种灵巧手上的稳定性和递归可行性，为灵巧操作提供了一种高效的模型基控制方案。",
+      "llm_tldr": "针对灵巧手需要同时跟踪精确轨迹和保持安全接触的难题，本文提出一种与执行器无关的阻抗模型预测控制框架。该框架通过代数前馈将肌腱传动简化为常系数双积分器，实现在线QP求解的离线预计算。实验验证了其在多种灵巧手上的稳定性和递归可行性，为灵巧操作提供了一种高效的模型基控制方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.12728v2",
+      "source": "arxiv",
+      "title": "EquiDexFlow: Contact-Grounded SE(3)-Equivariant Dexterous Grasp Generative Flows",
+      "abstract": "Most learned dexterous grasp generators relegate contact forces to a downstream verification step, so a kinematically-plausible pose can still violate the conditions for a stable physical grasp. We address this with EquiDexFlow, an SE(3)-equivariant flow-matching model that jointly predicts wrist pose, joint angles, fingertip contacts, surface normals, and contact forces from an object point cloud. Our architecture projects contacts onto the object surface and forces into the Coulomb friction cone by construction, so placement and friction compliance hold without loss penalties. We prove end-to-end SE(3) equivariance and verify it empirically over 200 rotations, with wrist residuals below $0.04^\\circ$ and exactly zero joint deviation. Trained on 8,100 force-closure grasps across 81 objects for the 16-DoF Allegro Hand, our model achieves zero friction violations, the best composite score, and the lowest wrench residual among all ablation variants. We retarget decoded fingertip contacts to a 16-DoF LEAP Hand via per-finger inverse kinematics, and our hardware-feasible refinement places every joint at least 5% inside its actuator envelope while preserving wrench balance. On the physical robot, retargeted EquiDexFlow-decoded grasps complete open-loop pick-and-hold trials on all six test objects, with every asymmetric object succeeding at both the canonical pose and a $120^\\circ$ co-rotation. Videos, code, and checkpoints are available at https://equidexflow.github.io.",
+      "authors": [
+        "Clinton Enwerem",
+        "John S. Baras",
+        "Calin Belta"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-10T22:27:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.12728v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "differentiable flow matching for dexterous grasp with contact forces",
+      "llm_evidence_cn": "可微流匹配用于灵巧抓取并预测接触力",
+      "llm_evidence": "可微流匹配用于灵巧抓取并预测接触力",
+      "canonical_evidence": "可微流匹配用于灵巧抓取并预测接触力",
+      "llm_tldr_en": "Presents an SE(3)-equivariant flow-matching model that jointly predicts grasp pose, contacts, and forces, enforcing physical constraints by construction.",
+      "llm_tldr_cn": "该论文提出EquiDexFlow，一个SE(3)等变流匹配模型，从物体点云联合预测手腕位姿、关节角、指尖接触、法向和接触力。通过将接触投影到物体表面、力投影到库仑摩擦锥内，无需额外损失即可保证物理合理性。在200次旋转等变测试中误差极低，为可微物理在机器人抓取中的应用提供了新范例。",
+      "llm_tldr": "该论文提出EquiDexFlow，一个SE(3)等变流匹配模型，从物体点云联合预测手腕位姿、关节角、指尖接触、法向和接触力。通过将接触投影到物体表面、力投影到库仑摩擦锥内，无需额外损失即可保证物理合理性。在200次旋转等变测试中误差极低，为可微物理在机器人抓取中的应用提供了新范例。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic arm manipulation",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.13677v1",
+      "source": "arxiv",
+      "title": "Mana: Dexterous Manipulation of Articulated Tools",
+      "abstract": "Articulated tool manipulation remains a major challenge in dexterous robotics due to the need to coordinate internal degrees of freedom and contact-rich interactions. While prior work has largely focused on rigid objects, articulated tool use remains underexplored because of its physical complexity and the difficulty of learning functional grasping and manipulation policies. We present Mana (Manipulation Animator), a general sim-to-real framework that reinterprets dexterous manipulation as an animation problem. Inspired by computer animation, Mana employs a coarse-to-fine pipeline that transforms procedurally-generated grasp keyframes into manipulation trajectories through motion planning and reinforcement learning. The data generation process is largely automatic, requiring only a few mouse clicks to specify functional affordances (<1 minute per tool). Across four articulated tools spanning different scales and joint types, Mana achieves zero-shot sim-to-real transfer for both grasping and in-hand manipulation, demonstrating a scalable approach to dexterous articulated tool use.",
+      "authors": [
+        "Zhao-Heng Yin",
+        "Guanya Shi",
+        "Pieter Abbeel",
+        "C. Karen Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T17:59:49+00:00",
+      "link": "https://arxiv.org/pdf/2606.13677v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns dexterous manipulation policies using reinforcement learning and sim-to-real",
+      "llm_evidence_cn": "使用强化学习和sim-to-real学习灵巧操作策略",
+      "llm_evidence": "使用强化学习和sim-to-real学习灵巧操作策略",
+      "canonical_evidence": "使用强化学习和sim-to-real学习灵巧操作策略",
+      "llm_tldr_en": "Mana reinterprets dexterous manipulation as an animation problem, using a coarse-to-fine pipeline with motion planning and RL to generate manipulation trajectories for articulated tools.",
+      "llm_tldr_cn": "关节工具操作因需协调内部自由度而极具挑战。本文提出Mana框架，将灵巧操作视为动画问题，通过粗到细的流水线结合运动规划和强化学习，自动生成抓取关键帧并优化操作轨迹。实验验证了该方法在多种关节工具上的有效性，为灵巧操作提供了新范式。",
+      "llm_tldr": "关节工具操作因需协调内部自由度而极具挑战。本文提出Mana框架，将灵巧操作视为动画问题，通过粗到细的流水线结合运动规划和强化学习，自动生成抓取关键帧并优化操作轨迹。实验验证了该方法在多种关节工具上的有效性，为灵巧操作提供了新范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16572v1",
+      "source": "arxiv",
+      "title": "Steering Generative Reinforcement Learning into Stable Robotic Controller",
+      "abstract": "Diffusion and flow-based generative policies provide a powerful policy class for reinforcement learning by inducing rich stochastic exploration through iterative action generation. However, the stochasticity of diffusion policies is not suitable for stable and precise control in high-dimensional robotic systems, where small action variations can accumulate into inconsistent motion and reduced robustness. To address this issue, we propose SteerGenPO, a latent-space reinforcement learning framework that steers a trained generative policy into a robust deterministic robotic controller. The key idea is to replace stochastic latent sampling of the trained generative policy with a learned latent actor that predicts a state-dependent latent input for the generative policies. This separates exploration and control: stochastic generative sampling provides diverse action proposals during policy learning, while deterministic latent steering provides stable and adaptive control at deployment. We evaluate SteerGenPO on six Isaac Lab benchmarks and a Unitree G1 locomotion task. The results show SteerGenPO improves over both classical RL and generative RL baselines, while its deterministic latent steering produces more stable inference-time behaviors and more reliable command responses.",
+      "authors": [
+        "Yixuan Wang",
+        "Shutong Ding",
+        "Ke Hu",
+        "Tianxiang Gui",
+        "Jingya Wang",
+        "Ye Shi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-15T11:16:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.16572v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for robotic control with latent-space steering",
+      "llm_evidence_cn": "使用潜在空间引导的生成式强化学习实现稳定机器人控制",
+      "llm_evidence": "使用潜在空间引导的生成式强化学习实现稳定机器人控制",
+      "canonical_evidence": "使用潜在空间引导的生成式强化学习实现稳定机器人控制",
+      "llm_tldr_en": "SteerGenPO transforms stochastic generative policies into deterministic robotic controllers via a learned latent actor, improving stability and precision for high-dimensional systems.",
+      "llm_tldr_cn": "针对生成式策略在机器人控制中因随机性导致的不稳定问题，提出SteerGenPO框架，通过在潜在空间训练一个状态相关的潜在actor来替代随机采样，将扩散策略转化为确定性控制器。实验证明该方法有效提升了高维机器人系统的控制稳定性和精确度。",
+      "llm_tldr": "针对生成式策略在机器人控制中因随机性导致的不稳定问题，提出SteerGenPO框架，通过在潜在空间训练一个状态相关的潜在actor来替代随机采样，将扩散策略转化为确定性控制器。实验证明该方法有效提升了高维机器人系统的控制稳定性和精确度。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.16917v1",
+      "source": "arxiv",
+      "title": "Unified Motion-Action Modeling for Heterogeneous Robot Learning",
+      "abstract": "We present Unified Motion-Action (UMA) Model, an approach that uses 3D object motion trajectories as a shared interface to bridge visuomotor control and dynamics modeling. UMA treats object motion and robot actions as co-evolving variables under a masked generative objective, in which the mask pattern determines both the supervision regime during pretraining and the inference mode at deployment. Using hindsight-relabeled motion contexts and a contrastive objective that disentangles task intent from scene geometry, UMA enables multi-task pretraining across heterogeneous data sources without requiring manually annotated task instructions. At deployment, the same pretrained parameters support motion-conditioned visuomotor control, motion-based dynamics modeling, and task adaptation from few-shot demonstrations. Pretrained on a mixture of robot demonstrations, human videos, and simulated data, UMA consistently outperforms state-of-the-art baselines specialized for each inference mode.",
+      "authors": [
+        "Yunhao Cao",
+        "Shitong Liu",
+        "Chao Feng",
+        "Meryl Zhang",
+        "Xuanchen Lu",
+        "Andrew Owens",
+        "Kuan Fang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-15T16:23:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.16917v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learning dynamics models for robot control",
+      "llm_evidence_cn": "学习机器人控制的动力学模型",
+      "llm_evidence": "学习机器人控制的动力学模型",
+      "canonical_evidence": "学习机器人控制的动力学模型",
+      "llm_tldr_en": "UMA model learns dynamics from object motion, supporting motion-based dynamics modeling for robot control.",
+      "llm_tldr_cn": "该文提出统一运动-动作（UMA）模型，利用3D物体运动轨迹作为共享接口，通过掩码生成目标联合建模物体运动与机器人动作。模型支持基于运动的动力学建模，可学习机器人控制的动力学模型，为多任务预训练和异构数据提供统一框架。实验表明该模型能有效预测物体运动并生成条件动作，填补了动力学学习与视觉运动控制之间的鸿沟。",
+      "llm_tldr": "该文提出统一运动-动作（UMA）模型，利用3D物体运动轨迹作为共享接口，通过掩码生成目标联合建模物体运动与机器人动作。模型支持基于运动的动力学建模，可学习机器人控制的动力学模型，为多任务预训练和异构数据提供统一框架。实验表明该模型能有效预测物体运动并生成条件动作，填补了动力学学习与视觉运动控制之间的鸿沟。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.18589v1",
+      "source": "arxiv",
+      "title": "DREAM-Chunk: Reactive Action Chunking with Latent World Model",
+      "abstract": "Action chunking has become a common interface for vision-language-action (VLA) models, enabling low-frequency policy inference to drive high-frequency robot execution. However, once an action chunk is committed, its open-loop execution can be brittle under stochastic dynamics, hardware execution errors, and partial observability. We propose DREAM-Chunk, a test-time scaling method that augments chunking-based policies with a lightweight latent world model, without requiring additional policy fine-tuning. At test time, DREAM-Chunk samples multiple candidate action chunks, rolls out their predicted latent futures, and selects actions from the chunk whose predicted state best matches the observed rollout. In this way, DREAM-Chunk uses additional test-time computation to cover multiple plausible stochastic futures and improve reactivity during long-horizon chunk execution. On the Kinetix benchmark, DREAM-Chunk improves robustness under increasing action noise and benefits from larger candidate sample sizes, especially when demonstrations contain corrective behaviors. We further validate DREAM-Chunk on four manipulation tasks across two robot platforms and two VLA policies under various sources of stochasticity. Across simulation and hardware experiments, DREAM-Chunk improves the robustness of action-chunking policies in stochastic dynamics.",
+      "authors": [
+        "Wenxi Chen",
+        "Kaidi Zhang",
+        "Chi Lin",
+        "Zhiyuan Zhang",
+        "Yu She",
+        "Yuejiang Liu",
+        "Raymond A. Yeh",
+        "Shaoshuai Mou",
+        "Yan Gu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-17T01:28:07+00:00",
+      "link": "https://arxiv.org/pdf/2606.18589v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses a latent world model for action selection in robot execution",
+      "llm_evidence_cn": "使用潜在世界模型进行机器人执行中的动作选择",
+      "llm_evidence": "使用潜在世界模型进行机器人执行中的动作选择",
+      "canonical_evidence": "使用潜在世界模型进行机器人执行中的动作选择",
+      "llm_tldr_en": "DREAM-Chunk enhances action chunking policies with a lightweight latent world model, sampling multiple chunks and selecting the one whose predicted future best matches the observed rollout, improving robustness without retraining.",
+      "llm_tldr_cn": "现有动作分块策略在开环执行中易受随机动力学和部分可观测性影响。本文提出DREAM-Chunk，通过在测试时附加轻量级潜在世界模型，采样多个候选动作块并选择预测未来与真实观察最匹配的块，从而提升鲁棒性。实验表明该方法无需重新训练即可显著提高任务成功率，为模型基强化学习在机器人控制中的应用提供了高效测试时优化手段。",
+      "llm_tldr": "现有动作分块策略在开环执行中易受随机动力学和部分可观测性影响。本文提出DREAM-Chunk，通过在测试时附加轻量级潜在世界模型，采样多个候选动作块并选择预测未来与真实观察最匹配的块，从而提升鲁棒性。实验表明该方法无需重新训练即可显著提高任务成功率，为模型基强化学习在机器人控制中的应用提供了高效测试时优化手段。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.18594v1",
+      "source": "arxiv",
+      "title": "Benchmarking Action Spaces in Reinforcement Learning for Vision-based Robotic Manipulation",
+      "abstract": "In real-world reinforcement learning (RL), the choice of action space can play a key role in shaping motion smoothness, safety, and overall task performance. In this study, we evaluate pose increment, pose velocity, joint position increment, and joint velocity across two vision-based manipulation tasks: object picking and pushing. We train policies in simulation and deploy them to the real world using sim-to-real transfer. We find that action-space representation indeed significantly affects sim-to-real performance. In particular, we find that the joint velocity action space is best for the vision-based picking and pushing tasks in terms of smoothness and final task performance. We also provide practical guidance for RL practitioners in choosing action spaces for both simulation and real-world experiments.",
+      "authors": [
+        "Seyed Alireza Azimi",
+        "Homayoon Farrahi",
+        "Abhishek Naik",
+        "Colin Bellinger",
+        "A. Rupam Mahmood"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-17T01:45:13+00:00",
+      "link": "https://arxiv.org/pdf/2606.18594v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluates RL action spaces for vision-based robotic manipulation tasks",
+      "llm_evidence_cn": "评估视觉机械臂操作任务中强化学习的动作空间",
+      "llm_evidence": "评估视觉机械臂操作任务中强化学习的动作空间",
+      "canonical_evidence": "评估视觉机械臂操作任务中强化学习的动作空间",
+      "llm_tldr_en": "Benchmarking four action spaces in RL for vision-based picking and pushing tasks shows joint velocity achieves best smoothness and performance, providing practical guidance for RL practitioners.",
+      "llm_tldr_cn": "强化学习在视觉机械臂操作中选择合适的动作空间至关重要。本文在模拟中比较了位姿增量、位姿速度、关节位置增量和关节速度四种动作空间，并通过sim-to-real迁移到真实世界。结果发现关节速度动作空间在平滑性和任务性能上最优，为机器人强化学习实践者提供了实用指导。",
+      "llm_tldr": "强化学习在视觉机械臂操作中选择合适的动作空间至关重要。本文在模拟中比较了位姿增量、位姿速度、关节位置增量和关节速度四种动作空间，并通过sim-to-real迁移到真实世界。结果发现关节速度动作空间在平滑性和任务性能上最优，为机器人强化学习实践者提供了实用指导。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

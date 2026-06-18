@@ -1,0 +1,589 @@
+Title: Impedance MPC with Disturbance Estimation for Dexterous Hand Control
+
+URL Source: https://arxiv.org/pdf/2606.14606v1
+
+Published Time: Mon, 15 Jun 2026 01:14:08 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+> PREPRINT 1
+
+# Impedance MPC with Disturbance Estimation for Dexterous Hand Control 
+
+Yongyan Cao 
+
+Abstract —Dexterous hands must simultaneously track pre-cise finger trajectories and maintain safe, compliant contact— objectives in tension for any fixed-gain controller. We present an actuator-agnostic Impedance Model Predictive Control (Impedance MPC) framework for dexterous fingers, instanti-ating the constant-Ad offset-free architecture established for physical human–robot interaction (pHRI); its stability, recursive-feasibility, and input-to-state-stability guarantees are inherited by preserving the architectural assumptions. An algebraic feedfor-ward reduces the tendon transmission—hydraulic, cable, pneu-matic, twisted-string, or series-elastic—to a constant-coefficient double integrator, so the QP cost inverse is precomputed offline and a 10-step receding-horizon quadratic program runs at 500 Hz while enforcing hard constraints on contact force (ISO/TS 15066), actuation limits, and jerk. An encoder-only augmented-Kalman disturbance state drives steady-state error to zero under any constant contact load. On a hydraulically actuated finger— the worked example platform, adding pressure and cavitation constraints—the 500 Hz Kalman MPC attains 0.5 mrad RMS, 0.1 mrad steady-state, and 6.6 mrad peak deflection under 1.5 Nm contact: 183 ×, 1500 ×, and 23 × better than classical impedance. The realized first-move stiffness (18 →323 Nm/rad with update rate) is independently verified. The architecture scales to a 16-DOF LEAP Hand MuJoCo simulation, recovering from 2.5 N grasp-load disturbances within 0.7 s. 
+
+Index Terms —Dexterous manipulation, impedance control, model predictive control, Kalman filter, disturbance rejection, tendon-driven hands, hydraulic actuation, LEAP Hand. 
+
+I. I NTRODUCTION 
+
+# DEXTEROUS robotic hands route actuation to the pha-langes through tendon transmissions—hydraulic, cable, pneumatic, twisted-string, or series-elastic—each of which in-troduces reflected inertia, transmission damping, and platform-specific nonlinearities that complicate high-bandwidth finger control. At the same time, safe operation with grasped objects and human co-workers demands predictable, bounded contact forces, motivating the ISO/TS 15066 limit of 140 N at robot– human contact points [2]. Throughout this paper a hydrauli-cally actuated finger serves as the worked example platform: hydraulics offers the highest force density but is also the most demanding transmission to control, introducing coupled pressure dynamics, configuration-dependent effective inertia, and compressibility resonance [1]. The framework itself is actuator-agnostic; Section III gives the substitutions for the other tendon architectures. Classical impedance control [3] resolves the accuracy– safety trade-off by shaping the mechanical port behavior at 
+
+Preprint, June 2026. This work has been submitted for possible publication; copyright may be transferred without notice. Corresponding author: Yongyan Cao (e-mail: yongyancao@gmail.com). 
+
+the joint, but stiffness and disturbance rejection cannot be opti-mized simultaneously: for Kd = 10 Nm/rad and τext = 1 .5 Nm the steady-state error is e∞ = τext /K d = 150 mrad, indepen-dent of loop bandwidth, while integral action (PI impedance) introduces windup across sequential contact events [27], [28]. Admittance control [4], [5] instead yields toward contact— correct for rehabilitation and pHRI, but wrong for autonomous grasping, where contact is a disturbance to be rejected. MPC can resolve both objectives—predictive constraint enforcement plus offset-free disturbance rejection through an augmented estimator state [6]—but existing impedance MPC formulations either optimize impedance parameters as decision variables, limiting update rates to 10–30 Hz [7], [8], or compensate the estimated disturbance only reactively at the current step [9]. Neither achieves the sub-15 mrad precision window required for dexterous finger positioning under contact. This paper takes as its base the constant-Ad offset-free Impedance MPC framework established for redundant-manipulator pHRI [29]—a two-layer design (feedforward re-duction to a configuration-independent double integrator, plus a receding-horizon QP with an encoder-only Kalman distur-bance state) whose stability, recursive feasibility, and input-to-state stability (ISS) are analyzed at the architecture level— and develops it for dexterous hands. Because the architecture operates on the residual error dynamics after feedforward reduction, it is independent of the actuation technology. The contributions of the present paper are the parts not contained in [29]: 1) Platform reduction and substitution map (Sec-tions III–IV): an algebraic feedforward cancels the transmission’s reflected inertia and damping—derived in detail for the hydraulic example, with the substitu-tions for cable, pneumatic, twisted-string, and series-elastic tendons in Table I—reducing every platform to the constant-Ad double integrator of [29] and enabling 500 Hz operation with a precomputed QP cost inverse. 2) Optional platform contact channel (Section IV-B): the encoder-only offset-free Kalman estimator is inherited unchanged; where the hydraulic platform instruments slave-piston pressure P2 for safety interlocks, a sen-sorless contact-torque estimate ˆτext = A2P2Jf becomes available as an optional third measurement that shortens the contact-onset transient. It is not required for the offset-free guarantee and is not used in the reported results. 3) Platform constraint embedding with recursive fea-sibility (Section V): the actuation platform’s physical  
+
+> arXiv:2606.14606v1 [cs.RO] 12 Jun 2026 PREPRINT 2
+
+limits enter the QP as constraints rather than post-hoc saturation—on the hydraulic example, cavitation, seal pressure, and the ISO/TS 15066 contact-force limit— with a soft-constraint relaxation that keeps the QP fea-sible under rigid impact. 4) Benchmarks with independently verified realized impedance (Sections VI–VII): seven-controller studies on sinusoidal tracking and precision reach-and-hold identify the 500 Hz update rate as the minimum re-quirement, for this plant and tuning, to suppress both contact-onset and release transients below a 15 mrad criterion; the realized first-move stiffness driving the no-Kalman results is verified by three independent routes (Section VI-C). 5) 16-DOF extension with a diagnosis and fix for the full-hand Kalman (Section VIII): per-joint Impedance MPC scales to a LEAP Hand MuJoCo simulation; the three reasons the na¨ ıve per-joint Kalman fails on the cou-pled, contacting thumb—inertia mismatch, off-diagonal coupling, grasp self-contact—are isolated and removed in turn by gain scheduling, a coupled block estimator, and contact-aware conditional integration (thumb devi-ation 2329 → 650 → 236 → 133 mrad, the last below 
+
+the 203 mrad no-Kalman baseline). Section II surveys related work; Section III presents the tendon dynamics; Section IV the controller and the inheri-tance of its guarantees; Section V the platform constraints; Sections VI–VIII the simulation studies; Section IX concludes. II. R ELATED WORK 
+
+Impedance MPC. Cao et al. [7] optimize impedance pa-rameters {Md, D d} over a receding horizon with energy-tank passivity; because the parameters enter the prediction model nonlinearly, an iterative solver limits updates to 10– 30 Hz. Here the decision variables are corrective torques and the constant Ad permits offline H−1 precomputation—a 15– 50 × update-rate advantage—while the energy-tank constraint of Section V is directly inspired by [7]. Haninger et al. [8] jointly optimize force reference and impedance with Gaussian-process task models and probabilistic chance constraints; the present work instead uses a two-parameter analytic plant model, a hard deterministic ISO/TS 15066 bound, and an integrating disturbance state that achieves exactly zero steady-state error. Roveda et al. [10] adapt impedance parameters by model-based reinforcement learning, without per-step hard contact constraints or an offset-free estimator. Wu et al. [9] combine a linear MPIC with ADRC at 500 Hz, but the ESO compensates the disturbance only at the current step; here the estimate is propagated through all N prediction steps, which is why the controller pre-loads corrective torque and suppresses the contact-release transient to 6.6 mrad where reactive compensation retains 150 mrad peaks. 
+
+Dexterous hands. The LEAP Hand [11] trades accuracy for safety with intentionally compliant joints ( Kp = 3 Nm/rad)— precisely the trade-off Impedance MPC removes by enforcing contact force as a constraint independent of tracking stiffness; its MuJoCo model is the baseline throughout. RL-based in-hand manipulation [12] achieves impressive policies without formal guarantees on contact force or steady-state error, and safe contact reaction remains an open challenge [16]. Hogan’s impedance formulation [3], the force-control survey [18], and Merritt’s hydraulic text [1] underpin the models of Section III. III. T ENDON DYNAMICS 
+
+The controller of Section IV requires from the transmission only two scalar parameters—the effective joint inertia Ieff  
+
+> f
+
+and damping beff  
+
+> f
+
+—which exist for every tendon architecture. This section derives them for the hydraulic example platform and summarizes the substitutions for the alternatives (Table I). 
+
+A. Hydraulic Tendon (Example Platform) 1) Lumped Model and Joint-Space Reduction: The motor– piston–fluid–finger transmission is modeled as a lumped second-order plant in the incompressible limit [1]: 
+
+Me ¨x2 + Be ˙x2 = A2
+
+A1
+
+F − Fext (1) where x2 is the slave-piston displacement, Me = M2 +
+
+M1(A2/A 1)2 and Be = b2 + b1(A2/A 1)2 are the effective piston inertia and damping (master quantities reflected to the slave), F is the motor drive force (control input), Fext the external contact force at the slave piston, and A1, A 2 the piston areas. The finger linkage maps piston to joint motion through a scalar mechanism Jacobian Jf (θf ) ( ˙x2 = Jf ˙θf ; Jf = rf
+
+constant for a linear tendon). Substituting and applying the virtual-work identity τ = Jf F yields the joint-space equation of motion 
+
+Ieff  
+
+> f
+
+¨θf + beff  
+
+> f
+
+˙θf = A2
+
+A1
+
+F J f − τext (2) with Ieff  
+
+> f
+
+= MeJ2 
+
+> f
+
+, beff  
+
+> f
+
+= BeJ2 
+
+> f
+
+, and τext = Fext Jf ; the centripetal-like term MeJf ˙Jf ˙θ2 
+
+> f
+
+vanishes for a linear ten-don and is absorbed into the lumped disturbance otherwise. The effective compliance Γe = 1/I eff  
+
+> f
+
+plays the role of the operational-space inertia inverse Λ−1(q) in the Cartesian formulation of [29]. 
+
+2) Sensorless Contact-Torque Estimation: No dedicated force sensor is assumed. The slave pressure P2 provides a contact-force estimate from Newton’s law at the slave piston: 
+
+ˆFext = A2 P2 − M2 ¨x2 − b2 ˙x2 ≈ A2 P2 (quasi-static) (3) and ˆτext = ˆFext Jf (θf ) in joint space. Pascal’s law ( P1A1 =
+
+P2A2 at quasi-static steady state) provides a redundancy check. 
+
+3) Hydraulic Resonance and Bandwidth: With finite bulk modulus β, the fluid column resonates at 
+
+ωh =
+
+s
+
+βVe
+
+ A21
+
+M1
+
++ A22
+
+M2
+
+
+
+(4) 
+
+≈ 3900 rad/s ( ≈ 620 Hz) at typical values ( β = 1 .5 × 10 9 Pa, 
+
+A = 100 mm 2, Ve = 10 mL, M = 0.1 kg)—well above the closed-loop bandwidth realized at the 100–500 Hz QP rates targeted here (dominant pole ≈615 rad/s at 500 Hz, Section VI-C). PREPRINT 3
+
+Modeling limitations. The lumped plant (1) omits the servo-valve square-root flow nonlinearity, the temperature depen-dence of viscosity and bulk modulus, and finite-bandwidth compressibility. The first two are slowly varying and absorbed by the disturbance state ˆd; the third is benign while ωh ≫
+
+bandwidth, but stiff, fast rigid impacts that excite the com-pressibility mode fall outside the quasi-static pressure map of Section V-A and require an augmented-pressure-state model, left to future work. The present results are the rigid-fluid, in-bandwidth limit. 
+
+B. Other Tendon Architectures 
+
+Only the feedforward inversion, the values of (Ieff  
+
+> f
+
+, b eff  
+
+> f
+
+), and the optional contact-measurement channel change across plat-forms; the error dynamics (6)–(7), estimator (8)–(9), and QP are untouched. Cable tendons [22]—the most common archi-tecture (Allegro, LEAP [11], Shadow)—give Ieff  
+
+> f
+
+= Imr2 
+
+> f
+
+/r 2
+
+> m
+
+from motor and capstan geometry, with motor current or cable tension as the contact channel. Pneumatic McKibben muscles [23] require inverting the nonlinear force–pressure– length map in the feedforward and are bandwidth-limited to 5–10 Hz by air compressibility. Twisted-string actuators 
+
+[24] require the nonlinear twist kinematics in the feedforward and suffer preload-dependent stiffness and wear. Series-elastic actuators [25] provide the cleanest contact channel—spring deflection measures transmitted torque directly—at the lowest bandwidth. Table I summarizes. IV. I MPEDANCE MPC D ESIGN 
+
+The two-layer architecture, force-form disturbance repre-sentation, offset-free Kalman estimator, and condensed-QP machinery are those of [29] and are only summarized here to fix notation; the reader is referred to [29] for derivations. New in this section are the hydraulic feedforward (5), the optional pressure measurement channel, the first-move characterization of the realized impedance (Section IV-D), and the explicit assumption-preservation argument under which the closed-loop guarantees of [29] transfer (Section IV-E). 
+
+A. Architecture and Error Dynamics 
+
+Layer 1 — Feedforward. An algebraic term cancels the known transmission dynamics, leaving a scalar double inte-grator as the residual plant: 
+
+Fff = A1
+
+A2 Jf
+
+h
+
+Ieff  
+
+> f
+
+¨θd + beff  
+
+> f
+
+˙θf
+
+i
+
+(5) The inertia term uses the reference acceleration ¨θd; the damp-ing term uses the actual velocity ˙θf so the physical damping cancels exactly. Only the two parameters (Ieff  
+
+> f
+
+, b eff  
+
+> f
+
+), identified from a step response, are required. 
+
+Layer 2 — Impedance MPC. With e = θd − θf and F =
+
+Fff + Fmpc , the residual error dynamics are 
+
+¨e = −Γe(θf ) Fmpc + d(t) (6) where d(t) = τext /I eff  
+
+> f
+
+lumps contact torque and unmodeled terms. The state xe = [ e, ˙e]⊤ obeys ˙xe = Acxe + BcFmpc +
+
+Ecd with Ac the nilpotent double integrator, Bc = [0; −Γe],
+
+Ec = [0; 1] . As in [29], the estimator and QP operate on the equivalent force-form disturbance dF ≡ − Ieff  
+
+> f
+
+d (= −τext for a pure contact torque), which enters through the same input matrix as the control and is the quantity denoted ˆd below. Discretization is exact ( A2 
+
+> c
+
+= 0 ) and rate-independent in form: 
+
+Ad =
+
+1 ∆t
+
+0 1
+
+
+
+, Bd =
+
+− ∆t2 
+
+> 2
+
+Γe
+
+−∆t Γe
+
+
+
+(7) The constancy of Ad is the structural key inherited from [29]: the prediction matrices and the QP cost inverse H−1
+
+are computed once offline, reducing each MPC step to a matrix–vector multiply ( < 0.1 ms on embedded hardware). For configuration-varying mechanisms (slider-crank linkages; the thumb axle of Section VIII, whose inertia varies 26 ×), Ad
+
+remains exactly constant and only Bd(θf )—hence Γ, H −1 and the Kalman input blocks—is rescheduled online, an O(N 2)
+
+update per step. 
+
+B. Offset-Free Disturbance Estimation 
+
+An integrating disturbance state is appended to the error state and estimated by a steady-state Kalman filter from joint encoders alone [29], [6], [20]: 
+
+xe(k+1) ˆd(k+1) 
+
+
+
+=
+
+Ad Bd
+
+0 1
+
+  xe(k)ˆd(k)
+
+
+
++
+
+Bd
+
+0
+
+
+
+Fmpc (k) + 
+
+ 0
+
+wk
+
+
+
+(8) 
+
+yk =
+
+1 0 00 1 0
+
+
+
+[e, ˙e, ˆd]⊤ 
+
+> k
+
++ vk (9) where the zero-mean white process noise wk, of variance 
+
+Qproc ,d , drives only the disturbance state—the random-walk model ˆd(k+1) = ˆd(k) + wk (continuous time ˙d = w)—since the error states evolve deterministically once all unmodeled effects are lumped into d; vk is zero-mean white measurement noise with covariance Robs . The random walk lets ˆd track constant and slowly varying contact loads. Zero steady-state error under constant disturbances requires detectability of the augmented pair [6], [21], which here reduces to the rank condition 
+
+rank 
+
+I − Ad −Bd
+
+Cxe 0
+
+
+
+= nx + nd (10) satisfied whenever Γe > 0. The estimate converges in 5–10 QP periods; the convergence rate—hence the contact-onset peak—is set by the noise ratio Qproc ,d /R obs (Section VI). Unlike PI impedance, the structured observer gain prevents wind-up across sequential contact events [27], [28]. A closed-loop analysis of the coupled observer–QP loop under active 
+
+input saturation remains open, as in [29]; offset-free behaviour is established in the nominal (constraint-inactive, detectable) limit and verified numerically. 
+
+Remark 1 (Estimator-agnostic offset-free property). The offset-free property rests on the integrating internal model (8), not on the Kalman filter specifically: it holds for any asymptotically unbiased estimator of the augmented state satisfying the detectability condition (10) [6], [21]—e.g. a momentum observer or an ESO in the ADRC sense [9]. The PREPRINT 4                               
+
+> TABLE I TENDON ARCHITECTURE COMPARISON
+> Architecture Peak force density Control bandwidth Contact channel (replacing P2)Main limitation Hydraulic (example platform) High 50–500 Hz Slave pressure P2Compressibility resonance; sealing Cable tendon Medium 100–1000 Hz Motor current imor cable tension Back-drivability; cable stretch Pneumatic PAM Medium 5–10 Hz PAM gauge pressure Low bandwidth; nonlinear map Twisted-string High 20–100 Hz Motor current or string tension Nonlinear kinematics; wear Series-elastic Low–Medium 10–30 Hz Spring deflection δLow bandwidth; added compliance
+
+estimator choice sets only the transient convergence rate and noise response. 
+
+Optional platform contact channel. Where slave pressure P2
+
+is instrumented (it typically already is, for safety interlocks), 
+
+y3 = A2P2 ≈ − ˆd supplies a direct, low-latency third measurement of the same force-form disturbance, shortening estimator lag from 5–10 QP periods to ≈ 1. It is optional—the offset-free guarantee holds from encoders alone—and is not 
+
+exercised in the reported simulations; the term “sensorless” in Section III-A2 refers to the absence of a force/torque transducer. On other platforms the channel is replaced per Table I. 
+
+C. Receding-Horizon QP 
+
+Stacking N predicted states gives Y = Φ x0+Γ U + ¯D ˆd, with 
+
+Φ, Γ the standard prediction matrices built from (7) and ¯Dk =Pk−1 
+
+> l=0
+
+AldBd the cumulative disturbance propagator of [29] (the force-form ˆd enters through the same Bd as the control). Condensing the stage cost P 
+
+> k
+
+x⊤ 
+
+> e
+
+Qx e + RuF 2 
+
+> mpc
+
+(terminal weight Qf ) yields 
+
+H = Γ ⊤ ¯QΓ + RuIN , f = Γ ⊤ ¯Q Φx0 + ¯D ˆd (11) and the QP min U 12 U ⊤HU + f ⊤U subject to 
+
+Fff (k) + Fmpc (k) ∈ [Fmin , F max ] (motor bounds) 
+
+> A2
+> A1
+
+ Fff (k) + Fmpc (k) ≤ 140 N (ISO/TS 15066) 
+
+|∆Fmpc (k)| ≤ ∆Fmax (jerk limit) 
+
+Pvap ≤ P2,k ≤ Pmax (cavitation/seal) (12) Only Fmpc (0) is applied. The optional energy-tank passivity constraint of Section V-B, when enabled, adds one further row to (12). H−1 is precomputed; when no constraint is active the solve is the single multiply U ∗ = −H−1f , and otherwise OSQP [13] or qpOASES [14] solves the small (N =10 ) QP warm-started in < 0.05 ms on a Raspberry Pi 4. The constant Ad is also what collapses the min–max LPV saturation formulation of [26] to a single nominal QP. 
+
+D. Equivalence to Classical Impedance and Realized Stiffness 
+
+In the unconstrained, disturbance-free, infinite-horizon limit with Q = diag (Kd, D d), Ru → 0, the Impedance MPC recovers the classical impedance law τ cmd = Ieff  
+
+> f
+
+¨θd + beff  
+
+> f
+
+˙θd +
+
+Kde + Dd ˙e, giving the design rule Qpos = Kd, Qvel = Dd. At finite horizon and sampling rate the realized impedance differs from the target; we characterize it by the first-move gain 
+
+[ke de] = − H−1Γ⊤ ¯Q Φ 
+
+> 1,:
+
+(13) so that the applied input is Fmpc (0) = kee + de ˙e when unconstrained. For the horizon, weights, and plant used in this paper, ke increases with the QP update rate and saturates in Qpos ; this monotonic rate dependence is a property of the specific tuning, established by direct computation and pole analysis in Section VI-C—not claimed as universal. 
+
+E. Stability, Recursive Feasibility, and ISS: Inheritance 
+
+No closed-loop guarantees are re-derived in this paper. The base framework [29] establishes, on the reduced system (6)– (8), (i) nominal asymptotic stability under the terminal Riccati cost with sufficient horizon, (ii) recursive feasibility via soft-constraint relaxation, and (iii) an ISS bound with respect to the estimation error d − ˆd. That analysis is embodiment-independent provided the following are preserved: 
+
+A1 Bounded-error cancellation: the feedforward (5) reduces the plant to (6) with residual mismatch absorbed into a bounded d(t).
+
+A2 Stabilizable residual dynamics: the double integrator (6) with Γe > 0, or its block-diagonal multi-finger extension. 
+
+A3 Positive-definite cost: Q ≻ 0, Ru > 0, Qf ⪰ Q.
+
+A4 Convex constraints: all rows of (12) linear in U , with the physical limits slack-relaxed (Section V-A) so the feasible set is never empty. The hand embodiments satisfy A1–A4; in particular the hy-draulic pressure limits enter as quasi-static output constraints 
+
+on the same residual dynamics—pressure is not a prediction-model state—so the closed-loop system analyzed in [29] is structurally unchanged and the guarantees transfer directly; proofs are omitted. By Remark 1 the offset-free property like-wise transfers under any detectable, asymptotically unbiased estimator. One boundary is explicit: in the compressibility regime of Section III-A3, P2 must become a prediction state, the augmented model differs from the one analyzed in [29], and the inherited guarantees would require re-verification; that regime is excluded here. V. P LATFORM CONSTRAINTS : T HE HYDRAULIC EXAMPLE 
+
+The constraint-embedding pattern is platform-independent—any actuation technology contributes its physical limits as linear (or linearized quasi-static) inequalities on U , e.g. cable-tension positivity, PAM pressure bounds, SEA deflection limits. This section instantiates it on the hydraulic example. PREPRINT 5
+
+A. Pressure Constraint and Recursive Feasibility 
+
+The seal limit P2,k ≤ Pmax maps to a linear inequality on the command: 
+
+Fff (k) + Fmpc (k) ≤ A1
+
+A2
+
+"
+
+A2 Pmax − Ieff 
+
+> f
+
+Jf
+
+ˆdk − Be ˙x2,k 
+
+#
+
+(14) (the factor Ieff  
+
+> f
+
+/J f converts the Kalman estimate to piston-space force), and likewise for cavitation P2,k ≥ Pvap . En-forcing these inside the QP guarantees satisfaction at every predicted step—unlike post-hoc saturation, which alters the applied torque after the solve and violates passivity [17]. Two caveats: (i) the map is quasi-static —P2 is treated as an algebraic output of the force balance, not as a state— justified by the timescale separation of Section III-A3: the fluid mode at ωh ≈ 3900 rad/s settles within a fraction of each control interval, lying a factor ≈6 above the realized closed-loop bandwidth (dominant pole ≈615 rad/s at the 500 Hz rate, Section VI-C), so the pressure transient has decayed by the time the next QP samples it. When that separation fails, P2
+
+must be predicted as a state, with the consequence noted in Section IV-E. (ii) Hard physical limits can render the QP infeasible under rigid impact—if Fff alone exceeds the pressure budget, no admissible Fmpc exists. The physical limits are therefore relaxed to penalized soft constraints, 
+
+min  
+
+> U,s
+> 12
+
+U ⊤HU + f ⊤U + ρ P 
+
+> k
+
+s2
+
+> k
+
+,
+
+> A2
+> A1
+
+ Fff (k) + Fmpc (k) ≤ Fcontact,max + sk, sk ≥ 0
+
+(15) (and likewise for the pressure rows), keeping the torque/jerk box hard. This preserves the constant-Ad structure and guaran-tees recursive feasibility: the QP returns the minimum-violation 
+
+command rather than faulting. A one-step check confirms the mechanism: under an impact feedforward that empties the hard set, the hard QP reports primal infeasible while the slacked QP returns the motor-saturated command with s equal to the unavoidable over-pressure. This is the same device used for the torque limit in [29] and is how assumption A4 is maintained. 
+
+B. Further Extensions Passivity. An energy-tank constraint Tk+1 = Tk +
+
+τext ,k ˙θf,k ∆t − Fmpc ,k Jf ˙θf,k ∆t ≥ 0, linear in Fmpc , bounds the energy injected into the environment, extending [19], [7] to the receding-horizon setting. Variable impedance. Task-dependent compliance is obtained by scheduling Q(t) =
+
+diag (Kd(t), D d(t)) , e.g. lowering Kd when ∥ˆτext ∥ exceeds a contact threshold; the QP re-solves from the current state with no discontinuity. Multi-finger. Each finger runs an independent scalar QP; object-level grasp coordination adds a wrench condition coupling them into an nN -variable QP, solvable in 
+
+< 1 ms for n = 5 , N = 10 .VI. S IMULATION STUDY : D ISTURBANCE REJECTION 
+
+UNDER SINUSOIDAL TRAJECTORY 
+
+A. Scenario and Controllers 
+
+Seven controllers (Table II) track θd(t) = 0.8 + 
+
+r(t) 0 .4 sin( π 
+
+> 2
+
+t) rad ( r(t) = min(1 , t ), smooth start) while a                                                                        
+
+> TABLE II CONTROLLERS EVALUATED IN SIMULATION
+> ID Controller Rate Dist. est. Paradigm D1 Classical impedance ( Kd=10 )1 kHz None Reactive D2 Admittance ( Ka=3 )1 kHz None Yield to contact D3 PI impedance ( Kint =4 )1 kHz Integral React. + integral D4 Impedance MPC 100 Hz None Predictive D5 Impedance MPC + Kalman 100 Hz Kalman ˆdPred. + offset-free D6 Impedance MPC 500 Hz None Predictive, fast D7 Impedance MPC + Kalman 500 Hz Kalman ˆdPred. + offset-free TABLE III SINUSOIDAL TRACKING RESULTS (τEXT = 1 .5NM, 16 S/ 4 C YCLES )Controller RMS tot. (mrad) RMS cont. (mrad) Peak (mrad) SS (mrad) D1 — Impedance 91.7 149.1 150.6 150.1 D2 — Admittance 299.0 482.9 495.0 494.9 D3 — PI Impedance 72.3 98.8 147.3 74.4 D4 — MPC (no Kalman) 52.1 84.5 150.5 83.3 D5 — MPC + Kalman 100 Hz 10.3 15.3 150.6 0.1
+> D6 — MPC 500 Hz 3.1 5.1 6.4 4.7 D7 — MPC + Kalman 500 Hz 0.5 0.6 6.6 0.1
+
+step contact torque τext = 1 .5 Nm is applied from t = 1 .5 to 
+
+3.0 s of each 4 s cycle and released; four cycles are simulated. Plant: Ieff = 10 −3 kg ·m2, beff = 2 × 10 −3 Nm ·s/rad, Γe =10 3 rad 2/Nm; the normalized disturbance d = 1500 rad/s 2
+
+is large relative to the torque limit. All MPC variants use 
+
+N = 10 , Qpos = 10 8, Qvel = 30 , Qf, scale = 5 , Ru = 10 −6,
+
+τmax = 3 Nm; D4/D5 run at 100 Hz, D6/D7 at 500 Hz, D5/D7 with the Kalman estimator. The weight Qpos is set near the sampling-rate stiffness ceiling: for this tuning the realized first-move stiffness (13) saturates at ke ≈ 18 Nm/rad at 100 Hz and reaches ke ≈
+
+323 Nm/rad at 500 Hz (verified in Section VI-C), both above the classical Kd = 10 . Pushing Qpos higher only saturates ke
+
+(the 100 Hz ceiling is ≈ 20 , beyond which the discrete loop overshoots) while growing the Hessian conditioning (measured 
+
+cond( H) ≈ 1.3 × 10 6 at 100 Hz, 1.1 × 10 5 at 500 Hz). The torque box is inactive in these tracking tasks, so the analytic 
+
+H−1 solve is exact. 
+
+B. Results and Analysis 
+
+Table III reports RMS error over the full run, RMS and peak deflection within the force-on windows, and steady-state (SS) error at the end of each contact window; Fig. 1 shows the traces. 
+
+Baselines match theory. D1 reaches 150.1 mrad SS, match-ing τext /K d = 150 mrad and validating the plant; D2 yields 
+
+≈ τext /K a = 500 mrad by design; D3’s integral action converges too slowly within the 1.5 s contact window under its anti-windup limit (74.4 mrad). 
+
+No-Kalman MPC is stiffness-limited but already better than classical. With no disturbance state the QP is a predictive realization of an impedance with e∞ = τext /k e. At 100 Hz, 
+
+ke ≈ 18 halves D1’s error (83.3 mrad SS); at 500 Hz, ke ≈ 323 
+
+reaches 4.7 mrad SS—a 32 × improvement with no estimator. Beyond the weight ceiling the rate , not the weight, is the PREPRINT 6 
+
+> Fig. 1. Sinusoidal tracking under cyclic 1.5 Nm step contact torque: the classical baselines (D1–D3) versus the proposed 500 Hz Kalman MPC (D7). D7’s error (6.6 mrad peak, 0.1 mrad steady-state) is barely distinguishable from zero at this scale; the remaining MPC variants are omitted for readability and reported in Table III.
+
+lever. Two limits remain: a residual offset, and—at 100 Hz—a contact-onset peak (150.5 mrad) set by the 10 ms ZOH window that no weight choice removes (D6 peak: 6.4 mrad). 
+
+The Kalman estimator removes the offset; the rate gov-erns the transient. Adding the estimator drives SS error to 0.1 mrad at both rates (833 × at 100 Hz, 47 × at 500 Hz): once ˆd converges, the disturbance is pre-canceled through all N prediction steps. Convergence takes 5–10 QP periods, so at 100 Hz the onset peak still builds to D1 levels (D5: 150.6 mrad) while at 500 Hz it is contained (D7: 6.6 mrad, 23 × better than D1). The noise ratio Qproc ,d /R obs sets the convergence speed. D7 is best on all four metrics; the rate and estimator contributions are orthogonal (transient vs. steady state) and additive. For reference, the LEAP Hand’s compliant design ( Kp = 3 Nm/rad) would deflect 500 mrad under this load; D7 holds 0.1 mrad while enforcing the ISO/TS 15066 limit as a hard constraint. 
+
+C. Independent Verification of the Realized Stiffness 
+
+The 18 →323 Nm/rad stiffness increase from a 5 × rate change is the largest quantitative claim in the no-Kalman results, so it is verified by three independent routes that do not reuse the benchmark code path (script in the supple-mentary material). (1) Gain extraction: building H, Γ, ¯Q, Φ
+
+directly from (7), (11) and evaluating (13) gives ke = 18 .02 ,
+
+de = 0 .190 at 100 Hz and ke = 323 .1, de = 0 .823 at 500 Hz. 
+
+(2) Closed-loop poles: the eigenvalues of Ad + Bd[ke de] are 
+
+{0, −0.802 } at 100 Hz and {0, −0.292 } at 500 Hz—Schur-stable, real spectra, the shrinking dominant pole confirming the faster loop tolerates the larger gain. (3) Steady-state prediction: e∞ = τext /k e predicts 83.2 and 4.6 mrad; the  
+
+> Fig. 2. Precision reach-and-hold benchmark: the classical baselines (G1–G3) violate the 15 mrad advance criterion at every waypoint, while the proposed G7 passes all three with zero steady-state error. The remaining MPC variants are omitted for readability and reported in Table IV.
+
+closed-loop iteration reproduces these to three digits, and the full benchmark measures 83.3 (D4) and 4.7 mrad (D6)— agreement within 0.1 mrad. The mechanism is the sampled-data realization: with Qpos saturated, the admissible first-move gain is bounded by the ZOH interval on this low-inertia plant, and shrinking ∆tMPC relaxes the bound. The claim established is that for the chosen horizon, weights, and plant the realized stiffness increases with update rate; no universal monotonicity across tunings is claimed. VII. S IMULATION STUDY : P RECISION REACH -AND -H OLD 
+
+UNDER OBJECT CONTACT 
+
+A. Scenario 
+
+Three sequential waypoints are commanded (A: 0.5 rad / 1.5 Nm; B: 1.0 rad / 2.0 Nm, both opposing flexion; C: 1.4 rad / 1.0 Nm into the joint stop), the contact firing 0.5 s after waypoint arrival. The advance condition —the precision requirement for dexterous grasping—is that the finger remain within 15 mrad of the waypoint for 0.5 s after the contact window closes. 
+
+B. Results and Analysis 
+
+Table IV and Fig. 2 report the results. 
+
+100 Hz fails on transients, not steady state. G1’s SS errors (τext /K d: 150/200/100 mrad) violate the criterion outright. G4 halves them ( ke ≈ 18 ) yet is disqualified by a larger onset peak (295 vs. 200 mrad): over the 10 ms ZOH window the 2 Nm contact ( 2000 rad/s 2) builds ≈ d∆t2/2 = 100 mrad of error before the QP responds, and the ZOH-held damping cannot arrest the momentum without overshoot—no (Q, R )PREPRINT 7                                               
+
+> TABLE IV PRECISION REACH -AND -H OLD RESULTS (A DVANCE CRITERION :|e| ≤ 15 MRAD )Controller WP passed RMS approach (mrad) RMS contact (mrad) Peak defl. (mrad) SS @A/@B/@C (mrad) G1 — Stiff Impedance 0/3 0.3 154 200 150 / 200 / 100 G2 — Admittance 0/3 0.3 501 660 495 / 660 / 330 G3 — PI Impedance 0/3 45.7 118 171 87 / 101 / 80 G4 — MPC 100 Hz 0/3 3.2 89 295 83 / 111 / 56 G5 — MPC + Kalman 100 Hz 0/3 0.3 25 300 0 / 0 / 0 G6 — MPC 500 Hz 3/3 0.3 512 5 / 6 / 3
+> G7 — MPC + Kalman 500 Hz 3/3 0.3 0.5 12 0 / 0 / 0
+
+choice removes this; only the rate does. G5 reaches 0 mrad SS at every waypoint but fails on the release transient : at contact release ˆd still carries the previous load for 5–10 QP periods (50–100 ms at 100 Hz), overshooting to 300 mrad—a failure mode invisible in the cyclic averages of Section VI. G3 ad-ditionally shows 45.7 mrad approach error on the A →B ramp from integral wind-up accumulated at A—cross-contamination between contact events that the structured observer avoids. 
+
+500 Hz passes; the Kalman adds exactness. G6 keeps every deflection within the criterion (peak 12 mrad, SS 5/6/3 mrad) and passes 3/3 with no estimator; G7 converges within 2– 4 updates at onset and release, holding the same 12 mrad peak with exactly zero SS error. For this plant and tuning, the 500 Hz rate is therefore necessary and sufficient to bring every contact transient within the precision window—at 100 Hz both MPC variants fail, each on a different transient. VIII. 16-DOF E XTENSION : LEAP H AND MUJOCO
+
+SIMULATION 
+
+A. Setup and the Full-Hand Kalman 
+
+The single-finger controller extends to the 16-DOF LEAP Hand in MuJoCo [15] by running an independent per-joint scalar QP at 500 Hz, with per-joint Ieff and τmax from mass-matrix measurements (Table V), feedforward damping cancel-lation per (5), and gravity compensation from the generalized bias force. On the full hand the na¨ ıve per-joint Kalman fails on the thumb, for three separable reasons, each isolated and removed in turn: 
+
+(i) Inertia mismatch → gain scheduling. The thumb-axle inertia varies 26 × across the workspace; a fixed-Ieff Kalman reads the mismatch as a persistent disturbance and chases it. Because Ad never depends on Ieff , the inertia is gain-scheduled online from the mass-matrix diagonal, Ieff (θ) = Mjj (q),rebuilding only Bd, Γ, H −1 and the Kalman input blocks (Section IV-A). A scalar study sweeping the full 26 × range confirms: fixed-inertia RMS 1.2 mrad with 57 mrad/s jitter vs. gain-scheduled 0.4 mrad and 3 mrad/s—an ∼18 × reduction. 
+
+(ii) Off-diagonal coupling → block estimator. A per-joint (diagonal) estimator structurally cannot model the thumb’s off-diagonal mass coupling and chases the coupling torques: under a 2.5 N fingertip push at the power grasp, the per-joint Kalman reaches 2329 mrad thumb deviation (sometimes divergent) vs. 203 mrad with no Kalman; diagonal gain scheduling only partly helps (650 mrad). The fix is a coupled block estimator 
+
+on the 4 × 4 thumb mass block Mth (q): the residual is                                                                        
+
+> TABLE V PER -J OINT MPC P ARAMETERS (LEAP H AND )Joint type Ieff (kg ·m2)τmax (Nm) Rule Finger MCP 4.74 ×10 −40.50 Imin ×3000 rad/s 2, capped Finger ROT 5.46 ×10 −50.16 Imin ×3000 rad/s 2
+> Finger PIP 9.73 ×10 −50.29 Imin ×3000 rad/s 2
+> Finger DIP 1.47 ×10 −50.044 Iconst ×3000 rad/s 2
+> Thumb CMC 4.80 ×10 −40.048 Iavg ×100 rad/s (coupling) Thumb AXL 9.90 ×10 −60.030 Imin ×3000 rad/s 2; hard cap Thumb MCP 2.83 ×10 −40.028 Iavg ×100 rad/s (coupling) Thumb IPL 4.95 ×10 −50.005 Iconst ×100 rad/s
+
+the block double integrator ¨e = −M −1 
+
+> th
+
+(q)τmpc + d with a coupled ˆd ∈ R4. A 2-DOF study with strong coupling (c/ √m1m2 = 0 .61 ) isolates the mechanism: per-joint Kalman 
+
+worse than none (738 vs. 127 mrad RMS), block Kalman best (38 mrad). On the full hand the block estimator removes the instability: 236 mrad deviation, no divergence. 
+
+(iii) Self-contact → contact-aware integration. At curled grasp poses the thumb’s self-contact forces are not in Mth (q),so the integrating ˆd winds up against the unrejectable con-tact reaction. Contact-aware conditional integration suspends (leaks) the disturbance integration on joints registering a con-tact reaction and resumes the instant contact clears—the multi-DOF, contact-gated analogue of saturation anti-windup [27], [28]. With the gate, the thumb deviation falls to 133 mrad— 
+
+below the 203 mrad no-Kalman baseline—and the gate is inert when the thumb is contact-free. The progression 2329 → 650 → 236 → 133 mrad attributes the failure to inertia mismatch, coupling, and contact in turn, and reconciles the full hand with the unambiguously beneficial single-finger Kalman: a single finger has neither coupling nor self-contact. The full-hand results below use the conservative no-Kalman default; the block + contact-aware estimator is the validated upgrade. Remaining refinements (residual hold-jitter at contact, a contact-force-specific gate trigger) are noted in Section IX. The thumb τmax rules are deliberately tighter ( ×100 rad/s vs. ×3000 rad/s 2): aggressive CMC correction couples ∼3 Nm onto the thumb MCP through the off-diagonal mass matrix, and the tighter bound ( ∆v/ step ≤ 0.2 rad/s) prevents the resulting limit cycle. The thumb-axle cap τmax = Imin ×3000 = 0.030 Nm retains a 26 × safety margin across its inertia vari-ation pending the gain-scheduled estimate of Section VIII-A. PREPRINT 8                       
+
+> TABLE VI 16-DOF LEAP H AND RESULTS (P ER -J OINT , A CROSS FOUR GRASPS )Joint group Track RMSE (mrad) Settled offset (mrad) Hold std (mrad) Finger MCP ( ×3) 6–465 0–871 0–338 Finger ROT ( ×3) 0–13 0–29 0–11 Finger PIP ( ×3) 2–263 0–238 0–172 Finger DIP ( ×3) 0–133 0–341 0–88 Thumb CMC / MCP / IPL 9–164 4–209 0–142 Thumb AXL 12–79 1–80 0–72
+> Fig. 3. Power-grasp dashboard for the 16-DOF LEAP Hand: per-joint tracking, contact equilibria, and rejection of the 2.5 N fingertip disturbance during the hold phase.
+
+B. Results 
+
+Unlike the stiff single finger (Qpos = 10 8), the 16-DOF hand runs soft impedance (Qpos = 2 × 10 3) with the conservative torque bounds of Table V for compliant grasping; per-joint tracking is intentionally loose, and during grasps the fingers settle to contact equilibria —the commanded closed pose is partly unreachable through the grasped object, a physically correct offset rather than a tracking failure. Four grasps (Open/Close, Precision Pinch, Power, Hook) with cosine-interpolated trajectories are evaluated; Table VI spans them (low end: gentle motions; high end: heavy-contact Power/Hook). A 25 mm, 50 g sphere is held stably in all four configurations. The demonstrated multi-finger properties are stable grasp-ing and disturbance rejection: a 2.5 N downward force— a slipping-load surrogate—is applied during the Power and Hook hold phases, to the middle phalanges at Power (so as not to reseat the fingertip–thumb contact) and to the fingertips at Hook. The push deflects the hand by 205 / 506 mrad (16-joint deviation norm, Power/Hook) and partially reseats the grasp: the contacting joints settle to a shifted contact equilibrium rather than returning to the pre-push pose. Mea-sured against that post-release equilibrium, the transient decays below 15 mrad within 0.49 s (Power) and 0.71 s (Hook) (Fig. 3; quantitative thumb metrics in Section VIII-A). At the power-grasp pose the curled fingers contact the thumb; the resulting 
+
+∼3 Nm constraint torques are not in the per-joint model, so thumb joints settle 60–210 mrad from the geometric target at the contact equilibrium—physically correct—with bounded, non-divergent hold jitter that the contact-aware estimator of Section VIII-A suppresses. IX. C ONCLUSION 
+
+This paper developed the constant-Ad offset-free Impedance MPC architecture of [29] into an actuator-agnostic controller for dexterous fingers, with the hydraulic platform as the worked example: a two-parameter feedforward reduces any tendon transmission to the residual double integrator, platform limits enter the QP as soft-relaxed constraints, and the closed-loop guarantees transfer by preservation of the architectural as-sumptions (Section IV-E)—no new stability theory is claimed, and the compressibility regime where the inheritance would not apply is explicitly excluded. The benchmarks established that (1) the no-Kalman MPC realizes a rate-dependent first-move stiffness (18 Nm/rad at 100 Hz, 323 Nm/rad at 500 Hz for this tuning—independently verified) that already beats classical impedance; (2) the encoder-only Kalman estimator removes the residual offset (0.1 mrad SS, 183 × RMS improvement); and (3) for this plant and tuning, 500 Hz is necessary and sufficient to keep both contact-onset and release transients within the 15 mrad precision window—the release transient being a 100 Hz failure mode invisible in cyclic metrics. The 16-DOF LEAP Hand ex-tension showed the per-joint architecture scales without a full rigid-body model, and isolated the three reasons the per-joint Kalman fails on a coupled, contacting thumb, removing each (gain scheduling, block estimator, contact-aware integration) to land below the no-Kalman baseline. Future work: maturing the contact-aware thumb estimator (a contact-force-specific gate trigger and a contact-consistent block model to remove the residual hold jitter); experimental validation on a hydraulic finger rig, including the servo-valve and compressibility effects excluded here, with re-verification of the inherited guarantees for the augmented-pressure-state model that regime requires; and integration with a learned grasp policy for impedance selection across object categories. REFERENCES [1] H. E. Merritt, Hydraulic Control Systems . New York, NY: Wiley, 1967. [2] ISO/TS 15066:2016, Robots and Robotic Devices—Collaborative Robots . Geneva, Switzerland: International Organization for Standard-ization, 2016. [3] N. Hogan, “Impedance control: An approach to manipulation, Parts I– III,” ASME J. Dyn. Syst. Meas. Control , vol. 107, no. 1, pp. 1–24, Mar. 1985. [4] B. Siciliano and L. Villani, Robot Force Control . Norwell, MA: Kluwer Academic, 1999. [5] S. Haddadin, A. Albu-Sch¨ affer, and G. Hirzinger, “Requirements for safe robots: Measurements, analysis and new insights,” Int. J. Robot. Res. , vol. 28, no. 11–12, pp. 1507–1527, 2009. [6] J. B. Rawlings, D. Q. Mayne, and M. Diehl, Model Predictive Control: Theory, Computation, and Design , 2nd ed. Madison, WI: Nob Hill Publishing, 2017. [7] Y. Cao, Z. Cheng, and C. Li, “Passive model-predictive impedance control for safe physical human–robot interaction,” IEEE Trans. Cogn. Develop. Syst. , vol. 16, no. 1, pp. 185–196, Feb. 2024. [8] K. Haninger, M. Hegeler, and L. Peternel, “Model predictive impedance control with Gaussian processes for human and environment interaction,”  
+
+> Robot. Auton. Syst. , vol. 168, p. 104493, Oct. 2023. PREPRINT 9
+
+[9] X. Wu, H. Huang, S. Cen, and B. Zhao, “Ensuring safe physical HRI: Integrated MPC and ADRC for interaction control,” Actuators , vol. 14, no. 12, p. 608, 2025. [10] L. Roveda et al. , “Model-based reinforcement learning variable impedance control for human-robot collaboration,” J. Intell. Robot. Syst. ,vol. 100, no. 2, pp. 417–433, 2020. [11] K. Shaw, A. Agarwal, and D. Pathak, “LEAP Hand: Low-cost, efficient, and anthropomorphic hand for robot learning,” in Proc. Robot.: Sci. Syst. (RSS) , Daegu, Republic of Korea, Jul. 2023. [12] M. Andrychowicz et al. , “Learning dexterous in-hand manipulation,” 
+
+Int. J. Robot. Res. , vol. 39, no. 1, pp. 3–20, Jan. 2020. [13] B. Stellato, G. Banjac, P. Goulart, A. Bemporad, and S. Boyd, “OSQP: An operator splitting solver for quadratic programs,” Math. Program. Comput. , vol. 12, no. 4, pp. 637–672, 2020. [14] H. J. Ferreau, C. Kirches, A. Potschka, H. G. Bock, and M. Diehl, “qpOASES: A parametric active-set algorithm for quadratic program-ming,” Math. Program. Comput. , vol. 6, no. 4, pp. 327–363, 2014. [15] E. Todorov, T. Erez, and Y. Tassa, “MuJoCo: A physics engine for model-based control,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS) , Vilamoura-Algarve, Portugal, Oct. 2012, pp. 5026–5033. [16] A. De Luca, A. Albu-Sch¨ affer, S. Haddadin, and G. Hirzinger, “Collision detection and safe reaction with the DLR-III lightweight manipulator arm,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS) , Beijing, China, Oct. 2006, pp. 1623–1630. [17] M. Focchi, R. Featherstone, D. G. Caldwell, and C. Semini, “Torque-control based compliant actuation of a quadruped robot,” in Proc. 12th Int. Workshop Adv. Motion Control (AMC) , Sarajevo, Bosnia and Herzegovina, Mar. 2012, pp. 1–6. [18] L. Villani and J. De Schutter, “Force control,” in Springer Handbook of Robotics , B. Siciliano and O. Khatib, Eds. Berlin, Germany: Springer, 2016, ch. 7, pp. 195–220. [19] C. Ott, A. Albu-Sch¨ affer, A. Kugi, and G. Hirzinger, “On the passivity-based impedance control of flexible joint robots,” IEEE Trans. Robot. ,vol. 24, no. 2, pp. 416–429, Apr. 2008. [20] R. E. Kalman, “A new approach to linear filtering and prediction problems,” ASME J. Basic Eng. , vol. 82, no. 1, pp. 35–45, Mar. 1960. [21] G. Pannocchia and J. B. Rawlings, “Disturbance models for offset-free model-predictive control,” AIChE J. , vol. 49, no. 2, pp. 426–437, Feb. 2003. [22] S. C. Jacobsen, E. K. Iversen, D. F. Knutti, R. T. Johnson, and K. B. Biggers, “Design of the Utah/MIT dextrous hand,” in Proc. IEEE Int. Conf. Robot. Autom. (ICRA) , San Francisco, CA, Apr. 1986, pp. 1520– 1532. [23] P. C. Chou and B. Hannaford, “Measurement and modeling of McKibben pneumatic artificial muscles,” IEEE Trans. Robot. Autom. , vol. 12, no. 1, pp. 90–102, Feb. 1996. [24] I. Gaponov, D. Popov, and J. H. Ryu, “Twisted string actuation systems: A study of the mathematical model and a comparison of twisted strings,” 
+
+IEEE/ASME Trans. Mechatronics , vol. 19, no. 4, pp. 1331–1342, Aug. 2014. [25] G. A. Pratt and M. M. Williamson, “Series elastic actuators,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS) , Pittsburgh, PA, Aug. 1995, pp. 399–406. [26] Y.-Y. Cao and Z. Lin, “Min–max MPC algorithm for LPV systems subject to input saturation,” IEE Proc. Control Theory Appl. , vol. 152, no. 3, pp. 266–272, May 2005. [27] Y.-Y. Cao, Z. Lin, and D. G. Ward, “Anti-windup design of output track-ing systems subject to actuator saturation and constant disturbances,” 
+
+Automatica , vol. 40, no. 7, pp. 1221–1228, Jul. 2004. [28] Y.-Y. Cao, Z. Lin, and D. G. Ward, “An antiwindup approach to enlarging domain of attraction for linear systems subject to actuator saturation,” 
+
+IEEE Trans. Autom. Control , vol. 47, no. 1, pp. 140–145, Jan. 2002. [29] Y. Cao and J. Tang, “Impedance MPC for physical human–robot interaction: Predictive disturbance rejection with joint-limit safety,” arXiv:2606.08281, Jun. 2026.
