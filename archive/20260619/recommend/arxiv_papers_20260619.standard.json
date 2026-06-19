@@ -1,0 +1,246 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-19T22:00:43.179684+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2606.15317v1",
+      "source": "arxiv",
+      "title": "Covariance-Regulated Recursive Koopman Learning for Nonlinear Systems with Uncertain Time-Varying Dynamics",
+      "abstract": "Offline models for autonomous robots often fail under time-varying dynamics outside their training distribution. Koopman operator theory offers a linear representation of nonlinear dynamics via lifting, but its transition to real-time recursive estimation may suffer numerical vulnerabilities: covariance windup under low excitation when using exponential forgetting, and vanishing gain without forgetting. This paper introduces a Covariance-Regulated Recursive Koopman Learning (CR-RKL) framework with two complementary strategies--error dead-zone gating and constant-trace normalization--each independently capable of preventing covariance explosion and parameter freezing, with the latter additionally preserving the geometric structure of uncertainty. Validated on a non-holonomic differential-drive robot with wheel slip and Stribeck friction and on a 26-gram butterfly-inspired flapping-wing micro aerial vehicle, CR-RKL achieves numerically stable and accurate online modeling, and when embedded in model predictive control, it maintains reliable tracking performance under uncertain, time-varying dynamics.",
+      "authors": [
+        "Weibin Gu",
+        "Chen Yang",
+        "Lu Shi",
+        "Chao Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-13T14:22:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.15317v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns dynamics models via recursive Koopman operator for robot control",
+      "llm_evidence_cn": "通过递归Koopman算子学习动力学模型，可用于机器人控制",
+      "llm_evidence": "通过递归Koopman算子学习动力学模型，可用于机器人控制",
+      "canonical_evidence": "通过递归Koopman算子学习动力学模型，可用于机器人控制",
+      "llm_tldr_en": "Introduces a recursive Koopman learning framework with covariance regulation to stably learn time-varying dynamics online, enabling robust model-based control for autonomous robots.",
+      "llm_tldr_cn": "针对离线动力学模型在时变环境下泛化失败的问题，本文提出协方差调控的递归Koopman学习（CR-RKL）框架，在线学习非线性系统的线性表示。通过误差死区门控和常数迹归一化两种策略，有效防止协方差风涨和参数冻结，在保证数值稳定性的同时保持几何收敛速度。实验表明该方法在机器人等非线性系统上实现鲁棒的时变动力学估计，为模型基控制提供可靠基础。",
+      "llm_tldr": "针对离线动力学模型在时变环境下泛化失败的问题，本文提出协方差调控的递归Koopman学习（CR-RKL）框架，在线学习非线性系统的线性表示。通过误差死区门控和常数迹归一化两种策略，有效防止协方差风涨和参数冻结，在保证数值稳定性的同时保持几何收敛速度。实验表明该方法在机器人等非线性系统上实现鲁棒的时变动力学估计，为模型基控制提供可靠基础。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.18960v2",
+      "source": "arxiv",
+      "title": "Mem-World: Memory-Augmented Action-Conditioned World Models for Persistent Robot Manipulation",
+      "abstract": "Action-conditioned world models have emerged as a promising paradigm for robot learning, offering a scalable alternative to costly real-world experimentation by generating action-consistent video rollouts. However, persistent world modeling remains challenging in manipulation: frequent end-effector occlusions and rapid wrist-camera motion make the current observation insufficient for predicting future views, causing models to forget or hallucinate scene details seen in earlier frames. Existing memory retrieval strategies often fail to identify informative history in dynamic manipulation scenarios. To address this limitation, we propose Mem-World, a memory-augmented multi-view action-conditioned world model. At its core, we present W-VMem, a 4D wrist-view-centered surfel-indexed memory that anchors historical observations to temporally evolving surface elements. By explicitly modeling when and where scene elements are observed, W-VMem enables geometry-aware retrieval of relevant history frames conditioned on future actions. During generation, relevant history frames are selected via surfel-based rendering and scoring, providing informative and non-redundant context for prediction. Extensive experiments show that Mem-World generates persistent rollouts in complex manipulation scenarios, enables more reliable policy evaluation than Ctrl-World, improving the Pearson correlation with real-world performance by 14.5\\%, and supports effective policy improvement through synthetic data generation, increasing success rates from 58\\% to 72\\% on long-horizon tasks.",
+      "authors": [
+        "Zirui Zheng",
+        "Jiaqian Yu",
+        "Xiongfeng Peng",
+        "jun shi",
+        "Mingyi Li",
+        "Chao Zhang",
+        "Weiming Li",
+        "Dong Wang",
+        "Huchuan Lu",
+        "Xu Jia"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-06-17T11:42:00+00:00",
+      "link": "https://arxiv.org/pdf/2606.18960v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "memory-augmented world models for persistent robot manipulation",
+      "llm_evidence_cn": "记忆增强的世界模型用于持久机械臂操作",
+      "llm_evidence": "记忆增强的世界模型用于持久机械臂操作",
+      "canonical_evidence": "记忆增强的世界模型用于持久机械臂操作",
+      "llm_tldr_en": "Mem-World augments action-conditioned world models with a memory module that retrieves informative history to handle occlusions and forgetting in manipulation.",
+      "llm_tldr_cn": "针对机械臂操作中频繁遮挡和遗忘问题，本文提出Mem-World，一种记忆增强的多视图动作条件世界模型。其核心是自适应记忆检索机制，从历史帧中选择有用信息，帮助模型生成一致的未来视图。实验表明，该方法在长期预测上显著优于基线，提升了世界模型在持久操控中的可靠性。",
+      "llm_tldr": "针对机械臂操作中频繁遮挡和遗忘问题，本文提出Mem-World，一种记忆增强的多视图动作条件世界模型。其核心是自适应记忆检索机制，从历史帧中选择有用信息，帮助模型生成一致的未来视图。实验表明，该方法在长期预测上显著优于基线，提升了世界模型在持久操控中的可靠性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.19980v1",
+      "source": "arxiv",
+      "title": "ENPIRE: Agentic Robot Policy Self-Improvement in the Real World",
+      "abstract": "Achieving dexterous robotic manipulation in the real world heavily relies on human supervision and algorithm engineering, which becomes a central bottleneck in the pursuit of general physical intelligence. Although emerging coding agents can generate code to automate algorithm search, their successes remain largely confined in digital environments. We conjecture that the missing abstraction to automate robotics research is a repeatable feedback loop for real-world policy improvement: reset the scene, execute a policy, verify the outcome, and refine the next iteration. To bridge this gap, we introduce ENPIRE, a harness framework for coding agents that instantiates this physical feedback routine with four core modules: an Environment module (EN) for automatic reset and verification, a Policy Improvement module (PI) that launches policy refinement, a Rollout module (R) to evaluate policies with one or multiple physical robots operating in parallel, and an Evolution module (E) in which coding agents analyze logs, consult literature, improve training infrastructure and algorithm code to address failure modes. This closed-loop system transforms real-world manipulation learning into a controllable optimization procedure, minimizing human effort while allowing fair ablations across training recipe and agent variants. Powered by ENPIRE, frontier coding agents can autonomously train a policy to achieve a 99% success rate on challenging, dexterous manipulation tasks, such as organizing a pin box, fastening a zip tie, and tool use, a process that further accelerates when we dispatch an agent team on a robot fleet. Our results suggest a practical and scalable path toward deploying coding agents to autonomously advancing robotics in the physical world.",
+      "authors": [
+        "Wenli Xiao",
+        "Jia Xie",
+        "Tonghe Zhang",
+        "Haotian Lin",
+        "Letian \"Max\" Fu",
+        "Haoru Xue",
+        "Jalen Lu",
+        "Yi Yang",
+        "Cunxi Dai",
+        "Zi Wang",
+        "Jimmy Wu",
+        "Guanzhi Wang",
+        "S. Shankar Sastry",
+        "Ken Goldberg",
+        "Linxi \"Jim\" Fan",
+        "Yuke Zhu",
+        "Guanya Shi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-18T09:21:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.19980v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agentic framework for real-world robot policy self-improvement using coding agents and RL-like feedback",
+      "llm_evidence_cn": "使用编码智能体和类RL反馈实现真实世界机器人策略自我改进",
+      "llm_evidence": "使用编码智能体和类RL反馈实现真实世界机器人策略自我改进",
+      "canonical_evidence": "使用编码智能体和类RL反馈实现真实世界机器人策略自我改进",
+      "llm_tldr_en": "ENPIRE automates real-world policy improvement by integrating environment reset, execution, verification, and refinement through a coding agent harness.",
+      "llm_tldr_cn": "针对真实世界机器人操作策略改进依赖人工的问题，本文提出ENPIRE框架，通过编码智能体自动执行重置场景、执行策略、验证结果和优化迭代的物理反馈循环。该框架由环境自动重置、策略执行、结果验证和代码优化四模块组成，实现了策略的自主迭代改进。实验表明，ENPIRE在多类灵巧操作任务上显著提升了策略性能。为自动化机器人RL研究提供了基础设施。",
+      "llm_tldr": "针对真实世界机器人操作策略改进依赖人工的问题，本文提出ENPIRE框架，通过编码智能体自动执行重置场景、执行策略、验证结果和优化迭代的物理反馈循环。该框架由环境自动重置、策略执行、结果验证和代码优化四模块组成，实现了策略的自主迭代改进。实验表明，ENPIRE在多类灵巧操作任务上显著提升了策略性能。为自动化机器人RL研究提供了基础设施。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.19586v1",
+      "source": "arxiv",
+      "title": "One Demo is Worth a Thousand Trajectories: Action-View Augmentation for Visuomotor Policies",
+      "abstract": "Visuomotor policies for manipulation have demonstrated remarkable potential in modeling complex robotic behaviors, yet minor alterations in the robot's initial configuration and unseen obstacles easily lead to out-of-distribution observations. Without extensive data collection effort, these result in catastrophic execution failures. In this work, we introduce an effective data augmentation framework that generates visually realistic fisheye image sequences and corresponding physically feasible action trajectories from real-world eye-in-hand demonstrations, captured with a portable parallel gripper with a single fisheye camera. We introduce a novel Gaussian Splatting formulation, adapted to wide FoV fisheye cameras, to reconstruct and edit the 3D scene with unseen objects. We utilize trajectory optimization to generate smooth, collision-free, view-rendering-friendly action trajectories and render visual observations from corresponding novel views. Comprehensive experiments in simulation and the real world show that our augmentation framework improves the success rate for various manipulation tasks in both the same scene and the augmented scene with obstacles requiring collision avoidance.",
+      "authors": [
+        "Chuer Pan",
+        "Litian Liang",
+        "Dominik Bauer",
+        "Eric Cousineau",
+        "Benjamin Burchfiel",
+        "Siyuan Feng",
+        "Shuran Song"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-17T20:41:13+00:00",
+      "link": "https://arxiv.org/pdf/2606.19586v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "action-view augmentation using differentiable Gaussian splatting for manipulation policies",
+      "llm_evidence_cn": "使用可微高斯泼溅进行动作-视图增强用于操作策略",
+      "llm_evidence": "使用可微高斯泼溅进行动作-视图增强用于操作策略",
+      "canonical_evidence": "使用可微高斯泼溅进行动作-视图增强用于操作策略",
+      "llm_tldr_en": "Uses Gaussian splatting for fisheye cameras to generate visually realistic and physically feasible augmented demonstrations, improving policy generalization.",
+      "llm_tldr_cn": "针对视觉运动策略因初始配置变化和障碍物而失败的问题，本文提出一种数据增强框架，利用可微高斯泼溅从单个眼在手演示生成视觉上真实的鱼眼图像序列和对应的物理可行动作轨迹。该方法显著增强了策略的泛化能力，在陌生场景和配置下表现鲁棒。该工作展示了可微渲染在机器人操作数据增强中的价值。",
+      "llm_tldr": "针对视觉运动策略因初始配置变化和障碍物而失败的问题，本文提出一种数据增强框架，利用可微高斯泼溅从单个眼在手演示生成视觉上真实的鱼眼图像序列和对应的物理可行动作轨迹。该方法显著增强了策略的泛化能力，在陌生场景和配置下表现鲁棒。该工作展示了可微渲染在机器人操作数据增强中的价值。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.20562v1",
+      "source": "arxiv",
+      "title": "MemoryWAM: Efficient World Action Modeling with Persistent Memory",
+      "abstract": "Robust robotic manipulation in the real world requires not only an understanding of the current observation, but also memory and dynamics modeling. World action models (WAMs) possess these capabilities by jointly modeling visual foresight and actions conditioned on both current and historical observations, making them a promising paradigm for robotic manipulation. However, existing WAMs face a fundamental trade-off: methods with efficient inference typically condition only on a bounded window of recent observations and therefore struggle in non-Markovian environments, whereas methods that preserve long histories incur time and space costs that grow substantially with sequence length. To address this challenge, we introduce MemoryWAM, a world action model with efficient persistent memory. MemoryWAM uses a hybrid memory design that combines recent frames, event-boundary anchor frames, and compact gist tokens that summarize long-range history. A tailored attention mechanism enables retrieval of both detailed short-term context and compressed long-term context, supporting memory-dependent decision-making with reduced inference latency and GPU memory usage. Across long-horizon, memory-dependent manipulation tasks in both simulation and the real world, MemoryWAM outperforms strong vision-language-action (VLA) and WAM baselines while maintaining favorable computational efficiency.",
+      "authors": [
+        "Sizhe Yang",
+        "Juncheng Mu",
+        "Tianming Wei",
+        "Chenhao Lu",
+        "Xiaofan Li",
+        "Linning Xu",
+        "Zhengrong Xue",
+        "Zhecheng Yuan",
+        "Dahua Lin",
+        "Jiangmiao Pang",
+        "Huazhe Xu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-18T17:59:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.20562v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world action model with persistent memory for robotic manipulation dynamics",
+      "llm_evidence_cn": "具有持久记忆的世界动作模型用于机械臂操作动力学",
+      "llm_evidence": "具有持久记忆的世界动作模型用于机械臂操作动力学",
+      "canonical_evidence": "具有持久记忆的世界动作模型用于机械臂操作动力学",
+      "llm_tldr_en": "MemoryWAM introduces persistent memory into world action models for efficient long-horizon dynamics modeling and action prediction, outperforming baselines in robotic manipulation tasks.",
+      "llm_tldr_cn": "针对世界动作模型在非马尔可夫环境中记忆与效率的矛盾，本文提出MemoryWAM，通过持久记忆机制高效建模长期依赖，在不增加推理成本的情况下，在机器人操作任务中显著优于现有方法，为实时交互环境中的动力学建模提供了新思路。",
+      "llm_tldr": "针对世界动作模型在非马尔可夫环境中记忆与效率的矛盾，本文提出MemoryWAM，通过持久记忆机制高效建模长期依赖，在不增加推理成本的情况下，在机器人操作任务中显著优于现有方法，为实时交互环境中的动力学建模提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

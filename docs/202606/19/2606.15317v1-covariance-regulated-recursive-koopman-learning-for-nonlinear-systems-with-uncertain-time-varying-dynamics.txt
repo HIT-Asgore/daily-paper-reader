@@ -1,0 +1,461 @@
+Title: Covariance-Regulated Recursive Koopman Learning for Nonlinear Systems with Uncertain Time-Varying Dynamics
+
+URL Source: https://arxiv.org/pdf/2606.15317v1
+
+Published Time: Tue, 16 Jun 2026 00:50:57 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Covariance-Regulated Recursive Koopman Learning for Nonlinear Systems with Uncertain Time-Varying Dynamics 
+
+Weibin Gu 1,†, Chen Yang 1,2, Lu Shi 1, Chao Gao 1,3,†
+
+Abstract — Offline models for autonomous robots often fail under time-varying dynamics outside their training distribu-tion. Koopman operator theory offers a linear representation of nonlinear dynamics via lifting, but its transition to real-time recursive estimation may suffer numerical vulnerabil-ities: covariance windup under low excitation when using exponential forgetting, and vanishing gain without forgetting. This paper introduces a Covariance-Regulated Recursive Koop-man Learning (CR-RKL) framework with two complementary strategies—error dead-zone gating and constant-trace normal-ization—each independently capable of preventing covariance explosion and parameter freezing, with the latter additionally preserving the geometric structure of uncertainty. Validated on a non-holonomic differential-drive robot with wheel slip and Stribeck friction and on a 26-gram butterfly-inspired flapping-wing micro aerial vehicle, CR-RKL achieves numerically stable and accurate online modeling, and when embedded in model predictive control, it maintains reliable tracking performance under uncertain, time-varying dynamics. 
+
+I. I NTRODUCTION 
+
+Deploying high-performance autonomous robots in un-structured environments demands control-oriented models capable of accurately capturing underlying dynamics that are frequently poorly understood, highly time-varying, and corrupted by multi-source uncertainties. In these scenarios, offline models—whether derived from first-principles anal-ysis or batch-trained black-box architectures—often fail to generalize when the system operates outside the nominal training distribution. To ensure long-term autonomy within dynamic and unstructured environments, real-time model adaptation becomes indispensable and is particularly crucial for complex, underactuated, or highly non-stationary robotic systems, such as terrestrial vehicles subject to nonlinear tire-terrain interactions and bio-inspired Flapping-Wing Micro Aerial Vehicles (FWMAVs). Although existing online adap-tation schemes leveraging Deep Neural Networks (DNNs) (see, e.g., [1]) can mitigate model mismatch, they are typi-cally computationally heavy, sample-inefficient, and difficult to integrate with classical stability analysis, control synthesis, or real-time optimization frameworks. Consequently, learn-ing computationally tractable models of nonlinear dynamical systems with uncertain, time-varying behaviors remains a fundamental challenge in system identification and control. To bridge the gap between model expressivity and compu-tational tractability, Koopman operator theory has emerged 
+
+> 1Tsinghua University, PR China
+> 2China University of Petroleum-Beijing at Karamay, PR China
+> 3Xinchen Qihang Inc., PR China
+> †Corresponding authors This work was supported in part by the China Postdoctoral Science Foundation (Grant No. 2025M781650) and Xinchen Qihang Inc., PR China.
+
+as a mathematically rigorous paradigm [2]–[4]. By lifting nonlinear system states into a higher-dimensional space of scalar-valued observable functions, the underlying dynamics admit an approximately linear representation. In practical applications, finite-dimensional approximations of this lin-ear operator are constructed via data-driven identification methods such as Extended Dynamic Mode Decomposition (EDMD) [5] and Hankel Alternative View of Koopman (HAVOK) [6]. Constructing linear models in the lifted space allows advanced optimal control strategies such as Model Predictive Control (MPC) to be formulated as convex opti-mization problems that can be solved efficiently in real time. To maintain model accuracy during deployment, a num-ber of studies have explored online modifications to the Koopman identification pipeline. Early approaches relied on periodic batch retraining or iterative numerical optimization to update the operator matrices [7], which proved computa-tionally intensive and unsuited for high-rate control loops. To circumvent this bottleneck, fast online identification methods inspired by the Recursive Least Squares (RLS) algorithm have been proposed to update the Koopman operator matri-ces recursively at each sampling time using the Sherman-Morrison-Woodbury matrix inversion formula, hence only require the current snapshot, the prior estimate, and a stored covariance matrix [8]. Subsequent work has introduced sliding-window Koopman learning [8], recursive updates ex-ecuted without a forgetting factor [8]–[10], recursive variants incorporating exponential forgetting factors [8], [11], [12], and Kalman-filter-based recursive variant [13]. Some of these recursive formulations have been successfully validated on diverse robotic setups, including elastic cable suspension, Stewart platform, turtle robot, and off-road vehicle. Despite these advancements, transitioning Koopman op-erator identification from offline batch processing to real-time, online recursive estimation introduces severe numerical vulnerabilities that are frequently overlooked. Specifically, implementing RLS with an exponential forgetting factor introduces a susceptibility to covariance windup [14]. When the system executes a low-entropy trajectory or enters a steady-state regime lacking Persistent Excitation (PE), the exponential forgetting factor acts as an inflation multiplier on the regularized inverse information matrix, precipitat-ing exponential growth of the estimation error covariance (Fig. 1(a)). Crucially, this failure mode is intrinsically cou-pled to the structural properties of the Koopman dictio-nary. Poorly conditioned or over-parameterized observables introduce severe collinearity, leaving numerous directional manifolds completely unexcited even during dynamic ma-                       
+
+> arXiv:2606.15317v1 [cs.RO] 13 Jun 2026 Fig. 1. Illustration of covariance variations in RLS and the proposed CR-RKL framework. (a) Covariance ellipsoid variations over time under different failure modes and remedy strategies. Standard RLS with an exponential forgetting factor ( λ < 1) suffers from covariance windup due to insufficient excitation (left), while standard RLS without a forgetting factor ( λ= 1 ) experiences vanishing gain as the covariance matrix drops toward zero (middle). Introducing trace normalization on the covariance matrix ensures continuous adaptation without covariance blow-up (right).
+> (b) The proposed CR-RKL pipeline. At each new time step, the Koopman operator Ak+1 is updated in a recursive fashion using the prior operator
+> Akand the stored covariance matrix Pkfrom the previous step, alongside the newly observed snapshot pairs (xk+1 ,yk+1 ).Pk+1 is regulated via either error dead-zone gating or constant-time normalization strategy.
+
+neuvers. Conversely, while RLS without a forgetting factor prevents covariance explosion, it suffers from vanishing gain [15], where the adaptation gains monotonically vanish as covariance drops toward zero (Fig. 1(a)), rendering the model blind to subsequent non-stationary dynamics shifts. Current studies on recursive Koopman learning for robotics rarely address these stability-critical issues systematically, leaving potentially severe failure risks during deployment. A notable exception is found in [10], which establishes a formal convergence analysis of EDMD and RLS based on Markov chain. However, this theoretical analysis relies on the as-sumption of an ergodic Markov chain, which may be violated by complex, underactuated robotic systems operating under unconstrained state spaces or unbounded inputs. Moreover, practical regularized solutions to mitigate under-excitation within the recursive Koopman learning is not investigated. To address these coupled numerical vulnerabilities, this pa-per introduces a Covariance-Regulated Recursive Koopman Learning (CR-RKL) framework backed by a systematic sta-bility and conditioning analysis (Fig. 1(b)). Specifically, we formalize the failure modes that emerge when standard recur-sive adaptive laws interact with lifted observable spaces, and then present two simple yet effective covariance regulation strategies within the online identification pipeline, namely 
+
+error dead-zone gating and constant-trace normalization .The former strategy monitors the instantaneous prediction residuals within the lifted space and conditionally suspends covariance inflation when the innovation sequence drops below an error threshold, thereby suppressing numerical di-vergence during uninformative intervals. In contrast to exist-ing error-gating methods that completely skip the Koopman identification [11], [16], we demonstrate that isolating the covariance propagation while permitting parameter updates allows the identifier to function as a gradient descent operator with a stabilized, non-zero learning rate. Alternatively, the constant-trace normalization strategy structurally bounds the trace of the covariance matrix as an invariant scalar property (Fig. 1(a)). This structural constraint preserves the underlying geometric structure (directional variations in uncertainty) and enhances numerical conditioning without requiring case-by-case error threshold tuning as needed by error dead-zone gating. However, it is not a universal remedy as we empirically found it works robustly when paired with bounded lifting functions. The proposed CR-RKL framework is validated and compared against both offline batch baselines and unconstrained online recursive estimators across two different robotic platforms (Fig. 2): (i) a simulated non-holonomic Differential-Drive Robot (DDR) subject to wheel slip and Stribeck friction dynamics [17], [18], and (ii) a 26-gram butterfly-inspired FWMAV exhibiting highly non-linear aerodynamics [19]. We show consistent results that the CR-RKL framework achieves numerically stable and accurate online modeling, and when embedded in model predictive control, it maintains reliable tracking performance under uncertain, time-varying dynamics. The remainder of this paper is organized as follows. Section II establishes the lifted input-affine Koopman for-mulation, analyzes the mechanics of main failure modes, and presents two covariance-regulated strategies. Section III details the ground robot simulation and real-flight data col-lection. Section IV discusses online Koopman identification and MPC tracking results. Section V concludes this work. II. M ETHOD 
+
+We present the CR-RKL framework by first formulating recursive update laws for finite-dimensional Koopman opera-tors with arbitrary lifting dictionaries, then analyzes potential failure modes, and introduces two covariance regulation strategies to guarantee long-term numerical stability. 
+
+A. Generalized Recursive Koopman Learning 
+
+Consider a general discrete-time nonlinear robotic system 
+
+xk+1 = f (xk, uk), (1) with system state xk ∈ Rn and control input uk ∈ Rm.The Koopman operator K advances scalar observables ψ :
+
+Rn → R linearly by Kψ(xk) = ψ(f (xk, uk)) . To construct a computationally tractable model for control synthesis, we approximate K using a dictionary of N ≫ n observables 
+
+Ψ(x) ∈ RN with an input-affine linear model given as 
+
+Ψ(xk+1 ) ≈ AkΨ(xk) + Bkuk, (2) where Ak ∈ RN ×N and Bk ∈ RN ×m denote the state transition and control input matrices, which are time-varying and need to be estimated online. Now let the unknown linear operators be concatenated into a unified parameter matrix Θk = [Ak Bk] ∈
+
+RN ×(N +m), and define the augmented regressor vector as 
+
+ζk = [Ψ(xk)⊤, u⊤ 
+
+> k
+
+]⊤ ∈ RN +m. If the system is time-varying, historical snapshots are typically discounted in the cost function to prioritize recent data. Hence, the online parameter estimation objective can be framed as minimizing an exponentially weighted least-squares cost 
+
+min 
+
+> Θk
+> k
+
+X
+
+> i=1
+
+λk−i ∥Ψ(xi+1 ) − Θkζi∥22 , (3) where λ ∈ (0 , 1) denotes the exponential forgetting factor. Minimizing (3) recursively at each time step yields the generalized RLS estimator with covariance adaptation as 
+
+ϵk = Ψ(xk+1 ) − Θk−1ζk, (4a) 
+
+Kk = Pk−1ζk
+
+λ + ζ⊤ 
+
+> k
+
+Pk−1ζk
+
+, (4b) 
+
+Θk = Θk−1 + ϵkK⊤ 
+
+> k
+
+, (4c) 
+
+Pk = 1
+
+λ
+
+ Pk−1 − Kkζ⊤ 
+
+> k
+
+Pk−1
+
+ , (4d) where ϵk ∈ RN represents the a priori innovation sequence within the lifted observable space, Kk ∈ RN +m is the estimator gain vector, and Pk ∈ R(N +m)×(N +m) denotes the estimation error covariance matrix. The covariance matrix can be initialized using a pre-collected dataset 1 or as a sym-metric positive-definite matrix P0 = αI, where α ∈ R ≫ 0
+
+and I represents the identity matrix of appropriate dimension. By using the recursive updates in (4a)–(4d), online estimation eliminates the need to store historical snapshot data matrices, requiring only the real-time maintenance of Θk and Pk.
+
+B. Analysis of Algorithmic and Structural Failure Modes 
+
+Recursive system identification with high-dimensional Koopman operators introduces numerical instabilities absent in lower-dimensional adaptive control. These arise from a trade-off between information loss (exponential forgetting) and information gain (directional excitation), with severity governed by the geometry of the lifting dictionary Ψ(x). Ap-plying the Woodbury identity to the covariance update (4d) yields the propagation of the inverse covariance matrix. Unfolding this recurrence from k = 0 gives 
+
+P−1 
+
+> k
+
+= λP−1 
+
+> k−1
+
++ ζkζ⊤ 
+
+> k
+
+= λkP−10 +
+
+> k
+
+X
+
+> i=1
+
+λk−iζiζ⊤ 
+
+> i
+
+. (5) For a conventional recursive estimator without forgetting (λ = 1 ), (5) reduces to a monotonic sum. In this case, even when the robot enters a region with no excitation ( ζi = 0), 
+
+P−1 
+
+> k
+
+remains constant, which implies that the error covari-ance Pk is bounded from above and does not suffer from numerical windup. However, as informative measurements accumulate, P−1 
+
+> k
+
+grows monotonically, causing its inverse 
+
+Pk to tend asymptotically to zero ( lim k→∞ Pk = 0). This         
+
+> 1It shall contain at least nsnapshots to ensure the snapshot matrix has full rank nfor computing Θkand Pkvia, e.g., standard EDMD algorithm.
+
+leads to the well-known estimator “freezing” phenomenon, in which the adaptation gain vanishes ( Kk → 0). Consequently, the estimator becomes insensitive to time-varying dynamics. To maintain responsiveness in the presence of non-stationary dynamics, an exponential forgetting factor λ ∈ (0 , 1) shall be included. However, this choice makes the recursive algorithm structurally susceptible to severe numerical degradation. De-pending on the observable dictionary Ψ(x), this degradation manifests as one of two different failure modes. 
+
+1) Unbounded Lifting and Parameter Divergence: If the dictionary Ψ(x) includes unconstrained, globally supported functions such as multivariate polynomials to avoid local under-excitation, aggressive open-loop maneuvers or tran-sient disturbances may cause the physical state norm to grow significantly ( ∥xk∥2 → ∞ ). Because these functions scale globally, the high-dimensional regressor vector grows without bound ( ∥ζk∥2 → ∞ ). Minimizing the objective func-tion (3) under such large coordinate scaling could force the recursive regression to continuously and artificially rescale the parameter rows in Θk. This artifact of the optimiza-tion leads to unbounded growth of the Frobenius norms as lim ∥xk ∥2→∞ ∥Ak∥F = ∞, lim ∥xk ∥2→∞ ∥Bk∥F = ∞,potentially making the identified linear operators structurally unstable and unsuitable for downstream real-time MPC. 
+
+2) Exponential Covariance Windup: To ensure bounded-ness by construction, locally supported functions such as Gaussian Radial Basis Functions (RBFs) are often adopted in EDMD architectures so that Ψ(x) ∈ L∞. However, this choice triggers an even severe failure mode under conditions lacking PE. Consider a scenario where a robot enters a low-entropy operating regime (e.g., steady-state hovering, cruising between regimes, or following a trajectory confined to a low-dimensional subspace of RN +m). Since Koopman operators intentionally project low-dimensional states into a high-dimensional manifold ( N ≫ n), the lift-ing process inherently introduces strong collinearity among the observables, leaving many directional manifolds likely unexcited even during active trajectories. Moreover, if the state moves away from the centers ci of the active basis functions, the RBF evaluations tend to zero ( Ψ(xk) → 0), and the incoming outer product of the regressors collapses (ζiζ⊤ 
+
+> i
+
+→ 0). Under these under-excited conditions, the summation term in (5) no longer counteracts the exponential decay of the regularization history, so the information update reduces to P−1 
+
+> k
+
+= λkP−10 . Taking the limit k → ∞
+
+reveals unbounded growth of the error covariance matrix 
+
+lim k→∞ Pk = lim k→∞ λ−kP0 = ∞ · I. As ∥Pk∥F grows without bound, the estimator gain vector Kk becomes ex-cessively sensitive. This unbounded gain in turn amplifies small high-frequency sensor noise into large parameter fluc-tuations in Θk, thereby destabilizing the closed-loop tracking controller and causing system failure. 
+
+C. Robust Covariance-Regulated Modifications 
+
+We introduce two covariance regulation strategies into the recursive Koopman learning (Fig. 1(b)). 1) Error Dead-Zone Gating: The error dead-zone gating strategy couples the covariance update directly to the instan-taneous predictive ability of the lifted model (2). Let δ > 0
+
+be a positive scalar error threshold. We adopt the following conditional update law for the covariance matrix 
+
+Pk =
+
+( 1
+
+> λ
+
+ Pk−1 − Kkζ⊤ 
+
+> k
+
+Pk−1
+
+ , if ∥ϵk∥2 > δ 
+
+Pk−1, if ∥ϵk∥2 ≤ δ (6) When the norm of the lifted innovation sequence satisfies 
+
+∥ϵk∥2 ≤ δ, the identifier assumes that the current operator 
+
+Θk−1 has sufficient local predictive capability. Under this condition, the covariance update is suspended ( Pk = Pk−1), thereby avoiding the exponential inflation factor λ−1. This gating scheme differs from existing error-threshold methods that completely skip the entire Koopman identification [11], [16]. Skipping the full update may introduce structural discontinuities and parameter chatter near the dead-zone boundaries while also rejecting small but structurally infor-mative innovations that could track slowly drifting dynamics. In contrast, by freezing the covariance matrix Pk while continuing to update the parameter matrix (4c), the identifier operates as a gradient descent optimizer with a stable, non-zero learning rate determined by the historical uncertainty profile stored in Pk−1 during uninformative intervals. Hence, this configuration isolates high-frequency sensor noise while permitting continuous refinement of the operator estimates. 
+
+2) Constant-Trace Normalization: Whereas dead-zone gating is conditional, constant-trace normalization strategy imposes a structural invariance property to resolve the under-excitation problem. The trace of the error covari-ance matrix, which sums the parameter estimation variances across all lifted dimensions, is constrained to remain equal to a certain value (e.g., initial condition) as tr (Pk) ≡ tr (P0) = τ0, ∀k ≥ 0. (7) At each discrete time step, the estimator first computes an intermediate unconstrained covariance matrix Ptemp via (4d) and extracts its trace τk = tr (Ptemp ). The regulated covariance matrix is then obtained by 
+
+Pk = τ0
+
+τk
+
+Ptemp . (8) While constant-trace parameter adaptation has been ana-lyzed theoretically for conventional adaptive schemes to relax persistent excitation requirements (see, e.g., [15], [20], [21]), its application to high-dimensional, data-driven Koopman spaces has remained unexplored. In the context of finite-dimensional Koopman identification, this normalization ad-dresses both failure modes associated with the forgetting factor recursion: (i) For prevention of covariance windup, be-cause Pk ∈ R(N +m)×(N +m) is symmetric positive-definite, its maximum eigenvalue is strictly bounded above by its trace (λmax (Pk) ≤ || Pk|| F ≤ tr (Pk) = τ0). This structural bound limits the Frobenius norm, thereby keeping the adaptation gain Kk bounded even when the system departs from the support of active dictionary elements ( ζk → 0). (ii) For avoidance of estimator freezing, by scaling the covariance     
+
+> Fig. 2. Two case studies for evaluating CR-RKL. (a) A simulated DDR under Pacejka slip and Stribeck friction. (b) A butterfly-inspired FWMAV, exhibiting highly nonlinear aerodynamics.
+
+matrix at each step, the algorithm prevents the eigenvalues from uniformly tending to zero ( Pk → 0) during prolonged periods of high excitation, thus preserving the responsiveness to non-stationary regime shifts. Notably, the uniform scalar scaling (8) exactly preserves the geometric structure and directional uncertainty alignment of the covariance matrix. This is because the normalization operation acts as a homogeneous scalar multiplier γk =
+
+τ0/τ k, therefore it commutes with the spectral decomposition of the intermediate matrix as 
+
+Pk = γkPtemp = γk
+
+ VΛV ⊤ = V (γkΛ) V⊤,
+
+where V is the matrix of eigenvectors and Λ the diag-onal matrix of eigenvalues. Consequently, the orientation of the principal axes of the uncertainty ellipsoid remains unchanged, preserving the historical directional excitation profile while scaling the axis magnitudes to maintain the trace invariant. 
+
+Remark (Choice of Covariance Normalization) . Here, trace normalization is preferred over spectral or Frobenius norms for two reasons. First, it is computationally efficient, re-quiring only O(N ) diagonal additions, whereas spectral norm demands costly O(N 3) decompositions or iterative methods. Second, trace normalization scales all eigenvalues linearly, preserving the relative proportions of parameter uncertainties. In contrast, spectral and Frobenius norms dis-proportionately suppress small eigenvalues under asymmetric excitation, potentially causing artificial variance loss and directional forgetting. III. C ASE STUDIES 
+
+To evaluate the efficacy of the proposed CR-RKL frame-work, we consider two validation benchmarks: a medium-fidelity synthetic non-holonomic mobile robot subject to non-stationary, state-dependent vehicle-terrain interactions, and an experimental flight dataset collected from an untethered 26-gram butterfly-inspired FWMAV executing cross-regime maneuvers. Crucially, in both evaluations, all structural pa-rameter shifts, tractive losses, and transient fluid-structure aerodynamics remain completely unmodeled and hidden from the online estimation. A. Case Study I: Simulated Non-Holonomic Mobile Robot 
+
+The first validation platform focuses on a DDR operat-ing under non-stationary physical conditions where tractive degradation and state-dependent nonlinear disturbances cor-rupt the nominal kinematic assumptions (Fig. 2(a)). 
+
+1) Nominal Kinematics: The state vector of the vehicle relative to an inertial reference frame is defined as xk =[px,k , p y,k , θ k]⊤ ∈ R3, where px,k and py,k denote the planar Cartesian positions and θk denotes the heading orientation. Driven by a control input vector uk = [ vk, ω k]⊤ ∈ R2
+
+containing the nominal forward linear velocity and rotational yaw rate, respectively, the discrete-time nominal kinematics propagate at a loop interval of ∆t = 0 .05 s according to 
+
+px,k +1 = px,k + vk cos( θk)∆ t, (9a) 
+
+py,k +1 = py,k + vk sin( θk)∆ t, (9b) 
+
+θk+1 = θk + ωk∆t. (9c) To evaluate modeling over a long horizon, the robot is driven along a trajectory via periodic open-loop commands: vk =1.5 + 0 .3 sin(0 .1k) and ωk = 0 .6 cos(0 .08 k).
+
+2) Non-Stationary Disturbance and Tractive Slip Dynam-ics: To emulate challenging field deployment conditions, the physical plant simulation is augmented with a highly nonlinear, time-varying interaction model that represents wheel slip, lateral skidding, and velocity-dependent body drag: (i) Pacejka-based motion slip: Tractive velocity degra-dation is introduced by evaluating an instantaneous slip proxy 
+
+sk = 0 .18 |vkωk| through a localized Pacejka Magic Formula curve [17]. This yields a nonlinear motion attenuation factor 
+
+ℓk ∈ [0 , 1] that down-scales the effective forward speed 
+
+˜vk and yaw rate ˜ωk, while generating an orthogonal lateral skidding velocity component v⊥,k = sign( ωk)·0.45 vkℓk. (ii) Velocity-dependent Stribeck friction: The vehicle encounters non-conservative body-centric resistive forces modeled via an empirical Stribeck composition μ(vbody ,k ) along both the longitudinal and transverse axes. This friction introduces static, kinetic Coulomb, and viscous drag transitions that distort the linear mapping between inputs and states. (iii) Multi-phase scheduling: To assess the modeling and control performance of the identified operator under unmodeled physical variations, these hidden dynamics are modulated over a continuous timeline across five sequential phases: nominal kinematics, Pacejka wheel slip, Stribeck friction transitions, combined multi-source uncertainties, and a re-covery back to nominal kinematics. 
+
+B. Case Study II: Flapping-Wing Micro Aerial Vehicle 
+
+The second benchmark validates the proposed frame-work against unmodeled physical challenges by leveraging real-flight data collected from a 26-gram butterfly-inspired FWMAV operating in an untethered indoor setting. 
+
+1) System State Space and Control Input Configuration: 
+
+The onboard telemetry records a state vector at a sampling rate of 100 Hz, capturing attitude, angular rate, and linear ve-locity as xk = [ ϕk, θ k, ψ k, ˙ψk, p k, q k, r k, v x,k , v y,k , v z,k ]⊤ ∈
+
+R10 , where ϕk, θ k, ψ k denote the Euler angles, pk, q k, r k
+
+denote the body-fixed angular rates, and vx,k , v y,k , v z,k 
+
+denote the linear velocities. The control input uk =[upitch ,k , u yaw ,k ]⊤ ∈ R2 denotes the pitch and yaw angle off-set commands, which are mapped directly to low-frequency Pulse Width Modulation (PWM) signals that drive left and right wings independently [19]. 
+
+2) Cross-Regime Out-of-Domain Generalization: The ex-perimental dataset contains transient fluid-structure interac-tions not easily captured by first-principles models. To test online adaptation across distinct operating regimes, real-flight trajectories are split into climbing and turning maneu-vers. The Koopman operator is initialized offline using only the source regime (e.g., climbing) and then updated online during the target regime (e.g., turning). This cross-regime setup explicitly tests whether covariance-regulated updates can adapt to unseen, non-stationary aerodynamics without triggering covariance windup. IV. R ESULTS AND DISCUSSION 
+
+A. One-Step Learning Performance Comparison for DDR 
+
+We first evaluate single-step prediction performance on the DDR platform (Section III-A). Two classes of lifting dic-tionaries are compared. The polynomial dictionary (“Poly”) is defined as Ψpoly (x) = [px, p y , θ, p 2
+
+> x
+
+, p 2 
+
+> y
+
+, sin θ, cos θ]⊤,which provides global unbounded support. The Gaussian RBF dictionary (“RBF”) takes the form ΨRBF (x) =[px, p y , θ, ϕ 1(p), . . . , ϕ 16 (p), sin θ, cos θ, atan2 (sin θ, cos θ)] ⊤,where ϕi(p) = exp( −∥ p − ci∥22/2σ2) are localized kernels with grid centers ci ∈ R2. Nine methods are assessed, including an offline RBF baseline, vanilla online versions, and the proposed robust variants employing error dead-zone gating (“DZ”) and constant-trace normalization (“CT”). For the dead-zone strategy, we distinguish between covariance skipping (“CS”) and full Koopman update skipping (“KS”). Performance is quantified using the mean single-step prediction error ¯ex = 1
+
+> N
+
+PN −1 
+
+> k=0
+
+∥xk+1 − ˆxk+1 ∥2, together with the Frobenius norms of the covariance matrix and the Koopman transition matrix. The evaluation is conducted over a 250-second trajectory comprising N = 5000 time steps. Table I summarizes the comparison results. The vanilla online RBF method yields the largest error (Fig. 3(a)) due to regressor collapse. This triggers explosive growth of ∥Pk∥F and divergence of ∥Ak∥F (Fig. 3(b)), some-times causing Pk to lose positive-definiteness. Excluding this unstable case, all online methods outperform offline RBF by an order of magnitude, confirming that recursive updates capture time-varying dynamics that static batch models miss. For polynomial dictionaries, performance varies little across recursive variants (Table I). Unbounded polynomial features prevent structural sparsity, keeping dead-zone activa-tion below 3% for δ = 10 −2. The dead-zone rarely engages, so behavior mirrors the vanilla estimator. This highlights a limitation that effectiveness depends strongly on δ, and poor choice degenerates to baseline. For RBF dictionaries, DZ-CS achieves lower error and covariance growth than DZ-KS at 
+
+≈ 96% skipping rate ( δ = 10 −2). Unlike KS, which suspends the entire loop, CS freezes only the covariance matrix while continuing parameter updates via gradient descent, avoiding delayed adaptation upon exiting low-excitation regimes. Constant-trace normalization yields the most stable Frobe-nius norms across both dictionary classes (Fig. 3). Unlike dead-zone strategies, it requires no threshold tuning and preserves the covariance eigenspectrum. This ensures robust long-horizon convergence even without persistent excitation. 
+
+TABLE I LEARNING PERFORMANCE OF A DDR UNDER UNMODELED DYNAMICS 
+
+Method Mean Error ¯ex Final ∥P∥F Final ∥A∥F
+
+Offline RBF 1.3 × 10 −2 – 7.6 × 10 1
+
+Poly 2.0 × 10 −3 1.9 × 10 4 5.3 × 10 1
+
+Poly (DZ-CS) † 1.9 × 10 −3 1.9 × 10 4‡ 5.3 × 10 1
+
+Poly (DZ-KS) † 2.0 × 10 −3 1.9 × 10 4‡ 5.3 × 10 1
+
+Poly (CT) † 4.5 × 10 −3 9.0 × 10 2 6.4 × 10 2
+
+RBF 5.3 × 10 −1 2.5 × 10 46 2.0 × 10 5
+
+RBF (DZ-CS) 1.1 × 10 −3 3.5 × 10 3∗ 3.0 × 10 0
+
+RBF (DZ-KS) 4.6 × 10 −3 2.4 × 10 4∗ 3.0 × 10 0
+
+RBF (CT) 5.6 × 10 −3 6.6 × 10 2 3.0 × 10 0 
+
+> †
+
+DZ-CS: dead-zone with covariance skipping; DZ-KS: dead-zone with full Koopman skipping; CT: constant-trace normalization.  
+
+> ‡
+
+Covariance skip rate: 3.24% (DZ-CS) and 3.02% (DZ-KS)  
+
+> ∗
+
+Covariance skip rate: 97.74% (DZ-CS) and 95.8% (DZ-KS) 
+
+B. Cross-Regime Prediction for Real-Flight FWMAV 
+
+We next validate the cross-regime learning of the proposed online identification methods using experimental flight data collected from the butterfly-inspired FWMAV (Section III-B). Specifically, we frame the benchmark as an offline-to-online domain adaptation problem. An initial Koopman model is trained offline using data restricted to a specific source flight regime (e.g., pitch maneuvers) and subsequently evaluated in a single-step prediction setting across both in-domain and out-of-distribution target flight envelopes (e.g., yaw maneuvers). The quantitative results across four transfer directions are summarized in Table II. Under nominal in-domain conditions (pitch-to-pitch and yaw-to-yaw), the pre-trained offline RBF baseline achieves competitive prediction errors (Fig. 4 (a) and (b)). While vanilla recursive estimators (“Poly” and “RBF”) reduce or match these errors, they introduce certain degree of ill-conditioning, with covariance norms ∥P∥F growing to 10 4.The benefits of the proposed strategies become evident under cross-regime transfer (pitch-to-yaw and yaw-to-pitch). Under these conditions, the offline RBF operator degrades markedly due to unmodeled aerodynamic phenomena such as asymmetric wing wake and leading-edge vortex. The proposed covariance-regulated variants resolve this cross-domain mismatch while structurally bounding the estimator metrics. Dead-zone gating variants for both dictionaries halt covariance inflation, reducing ∥P∥F by over an order of mag-nitude relative to vanilla baselines. Consistent with the analy-sis in Section II-C, the covariance-skipping strategy (DZ-CS) consistently outperforms the full Koopman-skipping strategy (DZ-KS) across all transfer configurations, confirming that isolating parameter relaxation from covariance propagation yields more effective gradient-like refinement under inter-mittent excitation. Constant-trace normalization delivers the most balanced performance. Across all directions, it pre-serves the tracking accuracy of the vanilla baseline while enforcing a strict upper bound on the covariance matrix. 
+
+TABLE II LEARNING PERFORMANCE OF A FWMAV A CROSS FLIGHT REGIME                                                                                                                                                                                                                                                                                                                                                                      
+
+> Method Metric Transfer Direction
+> Pitch-to-Pitch Yaw-to-Yaw Pitch-to-Yaw Yaw-to-Pitch Offline RBF
+> ¯ex4.53 ×10 −15.95 ×10 −18.89 ×10 −18.62 ×10 −1
+> ∥A∥F1.59 ×10 31.06 ×10 31.59 ×10 31.06 ×10 3
+> ∥P∥F––––skip rate ––––Poly
+> ¯ex5.16 ×10 −16.09 ×10 −16.29 ×10 −15.52 ×10 −1
+> ∥A∥F9.65 ×10 27.75 ×10 29.36 ×10 27.42 ×10 2
+> ∥P∥F5.81 ×10 42.39 ×10 42.39 ×10 45.81 ×10 4
+> skip rate 0.00 0.00 0.00 0.00
+> Poly (DZ-CS)
+> ¯ex5.38 ×10 −16.27 ×10 −16.44 ×10 −15.91 ×10 −1
+> ∥A∥F9.68 ×10 27.98 ×10 29.52 ×10 27.79 ×10 2
+> ∥P∥F1.62 ×10 31.61 ×10 31.78 ×10 31.81 ×10 3
+> skip rate 0.73 0.66 0.64 0.71
+> Poly (DZ-KS)
+> ¯ex5.87 ×10 −16.60 ×10 −16.88 ×10 −16.21 ×10 −1
+> ∥A∥F9.68 ×10 27.97 ×10 29.52 ×10 27.79 ×10 2
+> ∥P∥F1.92 ×10 31.95 ×10 32.17 ×10 32.18 ×10 3
+> skip rate 0.70 0.62 0.59 0.67
+> Poly (CT)
+> ¯ex5.08 ×10 −16.20 ×10 −16.41 ×10 −15.59 ×10 −1
+> ∥A∥F9.68 ×10 27.96 ×10 29.50 ×10 27.79 ×10 2
+> ∥P∥F9.96 ×10 21.04 ×10 31.04 ×10 39.96 ×10 2
+> skip rate 0.00 0.00 0.00 0.00
+> RBF
+> ¯ex4.74 ×10 −15.65 ×10 −15.83 ×10 −15.08 ×10 −1
+> ∥A∥F1.60 ×10 31.05 ×10 31.58 ×10 31.07 ×10 3
+> ∥P∥F9.48 ×10 44.38 ×10 44.52 ×10 49.69 ×10 4
+> skip rate 0.00 0.00 0.00 0.00
+> RBF (DZ-CS)
+> ¯ex5.00 ×10 −15.74 ×10 −16.01 ×10 −15.30 ×10 −1
+> ∥A∥F1.59 ×10 31.05 ×10 31.58 ×10 31.05 ×10 3
+> ∥P∥F3.23 ×10 34.40 ×10 33.77 ×10 34.04 ×10 3
+> skip rate 0.71 0.57 0.61 0.67
+> RBF (DZ-KS)
+> ¯ex5.27 ×10 −16.03 ×10 −16.27 ×10 −15.65 ×10 −1
+> ∥A∥F1.58 ×10 31.05 ×10 31.58 ×10 31.05 ×10 3
+> ∥P∥F3.76 ×10 35.01 ×10 35.11 ×10 35.31 ×10 3
+> skip rate 0.67 0.54 0.54 0.61
+> RBF (CT)
+> ¯ex4.65 ×10 −15.76 ×10 −15.97 ×10 −15.05 ×10 −1
+> ∥A∥F1.58 ×10 31.05 ×10 31.58 ×10 31.05 ×10 3
+> ∥P∥F1.25 ×10 31.22 ×10 31.22 ×10 31.22 ×10 3
+> skip rate 0.00 0.00 0.00 0.00
+
+C. Koopman-MPC with Online Learning for DDR 
+
+Lastly, we evaluate closed-loop performance under non-stationary dynamics with the online Koopman models em-bedded in an MPC. The Koopman-MPC formulation uses a prediction and control horizon of Np = Nu = 50 steps (2.5 s). At each sampling instant, the following quadratic program is solved: 
+
+min 
+
+> u0,..., uNp −1
+> Np
+
+X
+
+> i=1
+
+∥ˆxk+i − xref 
+
+> k+i
+
+∥2 
+
+> Q
+
++
+
+> Np−1
+
+X
+
+> i=0
+
+∥uk+i∥2 
+
+> R
+
+(10a) s.t. z0 = Ψ(xk), (10b) 
+
+zi+1 = Akzi + Bkui, (10c) 
+
+ˆxk+i = Cz i, (10d) 
+
+umin ≤ uk+i ≤ umax , (10e) with Q = diag(20 , 20 , 3) , R = diag(0 .05 , 0.08) , and input bounds umin = [0 , −1.2] ⊤, umax = [3 .5, 1.2] ⊤ (linear Fig. 3. Online Koopman learning for a DDR under unmodeled dynamic transitions. (a) Open-loop one-step state prediction comparisons across five phases and nine methods (eight recursive, one offline). Vertical dashed lines and text annotations indicate the switching times between scheduled unknown dynamics regimes. (b) Covariance matrix evolution over time and identification stability. The leftmost column shows the initial covariance matrix P0;subsequent columns show temporal differences ∆Pk = Pk − Pk−50 . Pure gray heatmaps (especially for P0’s) indicate that large variations in covariance expand the colorbar scale, rendering small values invisible. The rightmost column shows the eigenvalue evolution of the identified state-transition matrix         
+
+> Akover time indicated by viridis colorbar. Eigenvalues with |λ(Ak)|>1.1(a numerically robust threshold above unity) indicate instability, and the cumulative count of such eigenvalues over time is reported in red at the top left corner. For each method, the heatmaps and eigenvalue plot in a single row are enclosed in a box using the same line style and color as the corresponding legend entry for different methods in comparison in (a).
+> Fig. 4. Online Koopman learning for a FWMAV. One-step attitude prediction comparison between nine methods (eight recursive, one offline) and experimental ground truth under same-regime conditions: (a) pitch-to-pitch and (b) yaw-to-yaw; and cross-regime conditions: (c) pitch-to-yaw and (d) yaw-to-pitch. RMSE values are reported for each attitude state variable.
+
+velocity in m/s, angular rate in rad/s). Only the first control input is applied, and the problem is re-solved at each step. Mean errors and control energies 1
+
+> N
+
+PN −1 
+
+> k=0
+
+∥uk∥22 (N is control steps) are reported in Table III. Closed-loop performance reveals a critical divergence be-tween dictionary types. For localized RBF dictionaries, all three covariance-regulated variants (DZ-CS, DZ-KS, CT) achieve successful tracking (Fig. 5(a)), outperforming the offline RBF baseline. In contrast, vanilla RBF collapses as before (Table I) due to covariance windup. A counter-intuitive failure occurs with polynomial dictionaries under constant-trace normalization, which exhibits severe tracking degradation. Diagnostic analysis indicates this is not due to numerical covariance divergence (Fig. 5(b)) but to a sign-inverted final learned input coupling matrix B having problematic entries ∂ ˙px 
+
+> ∂v
+
+= −0.0365 , ∂ ˙py 
+
+> ∂v
+
+= 0 .0296 , ∂ ˙θ∂ω =0.0477 . For a non-holonomic ground vehicle, ∂ ˙px/∂v must remain positive. As a result, this causes control energy to drop anomalously to 3.96 × 10 −1 and the lower velocity bound vmin = 0 remains active for 98 .15% of the rollout, resulting in the robot to halt while the reference continues moving. This failure stems from two coupling factors as partly mentioned in Section II-B. First, the polynomial dictionary uses globally supported elements ( p2
+
+> x
+
+, p 2 
+
+> y
+
+) that dominate the regression geometry over long trajectories. Sec-ond, constant-trace normalization bounds ∥Pk∥F but it allows biased parameter adaptation that corrupted the input-to-state map. In contrast, the localized RBF dictionary naturally bounds coordinate magnitudes, helping preserve a physically consistent input map ∂ ˙px 
+
+> ∂v
+
+= 0 .0167 , ∂ ˙py 
+
+> ∂v
+
+= 0 .0004 , ∂ ˙θ∂ω =0.0462 . Thus, while constant-trace normalization bounds the covariance spectrum, closed-loop performance remains contingent on lift conditioning and the physical consistency of the learned input operator. Localized RBF features benefit from covariance regulation because their bounded support prevents the input-direction corruption observed with un-Fig. 5. Control performance and covariance evolution for online Koop-man learning on the DDR. (a) Closed-loop tracking performance of the MPC with different learning configurations. (b) Evolution of the covariance matrix, reported with maximum eigenvalue λmax (P), minimum positive eigenvalue λ+min (P), and condition number κ(P) = λmax (P)/λ +min (P).
+
+bounded polynomial dictionaries. 
+
+TABLE III CONTROL PERFORMANCE WITH ONLINE LEARNING FOR A DDR 
+
+Method Mean Error Control Energy 
+
+Offline RBF 4.46 × 10 −2 3.53 × 10 0
+
+Poly 2.43 × 10 −1 4.05 × 10 0
+
+Poly (DZ-CS) 2.05 × 10 1 7.60 × 10 0
+
+Poly (DZ-KS) 3.54 × 10 −1 4.20 × 10 0
+
+Poly (CT) 7.04 × 10 1 3.96 × 10 −1
+
+RBF 7.28 × 10 1 1.63 × 10 0
+
+RBF (DZ-CS) 3.85 × 10 −2 3.57 × 10 0
+
+RBF (DZ-KS) 3.93 × 10 −2 3.55 × 10 0
+
+RBF (CT) 4.26 × 10 −2 3.54 × 10 0
+
+V. C ONCLUSION 
+
+This paper evaluated online recursive Koopman learning, revealing vulnerabilities to estimator freezing and covariance windup. Using ground vehicle and FWMAV, we showed that unconstrained recursive updates can improve adapta-tion under domain shifts but risk numerical failure. We introduced two regulating strategies, namely error dead-zone gating and constant-trace normalization. Dead-zone gating with covariance freezing relies on a preset error threshold to conditionally skip updates, yet it maintains learning ef-ficiency and outperforms variants that suspend the entire identification loop. Constant-trace normalization bounds the covariance norm without threshold tuning. However, it is not a universal remedy since unbounded lifting functions can lead to incorrect operator learning, making this strategy better suited to bounded lifting functions. Future work includes validating CR-RKL on more diverse robotic systems and incorporating directional forgetting into the framework. REFERENCES [1] A. Nagabandi, K. Konolige, S. Levine, and V. Kumar, “Deep dynamics models for learning dexterous manipulation,” in Conference on Robot Learning , pp. 1101–1112, PMLR, 2020. [2] B. O. Koopman, “Hamiltonian systems and transformation in Hilbert space,” Proceedings of the National Academy of Sciences , vol. 17, no. 5, pp. 315–318, 1931. [3] S. L. Brunton, M. Budiˇ si´ c, E. Kaiser, and J. N. Kutz, “Modern Koopman theory for dynamical systems,” SIAM Review , 2022. [4] L. Shi, M. Haseli, G. Mamakoukas, D. Bruder, I. Abraham, T. Mur-phey, J. Cort´ es, and K. Karydis, “Koopman operators in robot learn-ing,” IEEE Transactions on Robotics , 2026. [5] M. O. Williams, I. G. Kevrekidis, and C. W. Rowley, “A data– driven approximation of the Koopman operator: Extending dynamic mode decomposition,” Journal of Nonlinear Science , vol. 25, no. 6, pp. 1307–1346, 2015. [6] S. L. Brunton, B. W. Brunton, J. L. Proctor, E. Kaiser, and J. N. Kutz, “Chaos as an intermittently forced linear system,” Nature Communications , vol. 8, no. 1, p. 19, 2017. [7] I. Abraham and T. D. Murphey, “Active learning of dynamics for data-driven control using Koopman operators,” IEEE Transactions on Robotics , vol. 35, no. 5, pp. 1071–1083, 2019. [8] H. Zhang, C. W. Rowley, E. A. Deem, and L. N. Cattafesta, “Online dynamic mode decomposition for time-varying systems,” SIAM Jour-nal on Applied Dynamical Systems , vol. 18, no. 3, pp. 1586–1609, 2019. [9] J. Ng and H. H. Asada, “Model predictive control and transfer learning of hybrid systems using lifting linearization applied to cable suspension systems,” IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 682–689, 2021. [10] Z. Zhang, J. Avtges, and T. Murphey, “Sample-efficient online control policy learning with real-time recursive model updates,” in 9th Annual Conference on Robot Learning .[11] H. M. Calder´ on, E. Schulz, T. Oehlschl¨ agel, and H. Werner, “Koopman operator-based model predictive control with recursive online update,” in 2021 European Control Conference (ECC) , pp. 1543–1549, IEEE, 2021. [12] M. F. Ozkan, J. Chrstos, M. Canova, and S. Stockar, “Modeling driver behavior in speed advisory systems: Koopman-based approach with online update,” in 2025 American Control Conference (ACC) ,pp. 2980–2985, IEEE, 2025. [13] A. Liu, X. Zhang, F. Xiao, G. Cui, B. Mao, Y. Yang, and J. Qu, “Koopman-based online identification with Sim2Real transfer for hydrodynamic modeling of turtle inspired robot,” IEEE Robotics and Automation Letters , vol. 11, no. 6, pp. 6632–6639, 2026. [14] L. Cao and H. Schwartz, “A directional forgetting algorithm based on the decomposition of the information matrix,” Automatica , vol. 36, no. 11, pp. 1725–1731, 2000. [15] I. D. Landau, R. Lozano, M. M’Saad, and A. Karimi, Adaptive control: algorithms, analysis and applications . Springer Science & Business Media, 2011. [16] K. Loya and P. Tallapragada, “Koopman operator framework for modeling and control of off-road vehicle on deformable terrain,” arXiv preprint arXiv:2603.28965 , 2026. [17] H. Pacejka, Tyre and Vehicle Dynamics . Automotive engineering, Elsevier Science & Technology, 2006. [18] B. Armstrong-Helouvry, “Stick-slip arising from stribeck friction,” in Proceedings., IEEE International Conference on Robotics and Automation , pp. 1377–1382, IEEE, 1990. [19] W. Gu, C. Feng, L. Liu, C. Yang, X. Jiao, Y. Ding, X. Shi, C. Gao, A. Rizzo, and G. Zhou, “A 26-gram butterfly-inspired robot achieving autonomous tailless flight,” arXiv preprint arXiv:2602.06811 , 2026. [20] R. Lozano-Leal and G. Goodwin, “A globally convergent adaptive pole placement algorithm without a persistency of excitation requirement,” 
+
+IEEE Transactions on Automatic Control , vol. 30, no. 8, pp. 795–798, 1985. [21] T.-B. Airimitoaie, I. D. Landau, B. Vau, and G. Buche, “Accelerating recursive least squares adaptation/learning algorithms using a dynamic adaptation gain,” Automatica , vol. 177, p. 112297, 2025.
