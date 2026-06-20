@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-20T21:38:22.980135+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.19561v1",
+      "source": "arxiv",
+      "title": "pdSTL: Probabilistic Differentiable Signal Temporal Logic for Stochastic Systems",
+      "abstract": "Autonomous robots operating in uncertain environments must satisfy complex temporal and safety specifications despite stochastic dynamics and sensing noise. While Signal Temporal Logic (STL) offers robustness measures for gradient-based optimization, existing extensions either lack differentiability or ignore belief-space uncertainty. We introduce pdSTL (probabilistic differentiable Signal Temporal Logic), a framework that unifies probabilistic semantics with differentiable robustness over belief trajectories. pdSTL employs interval-valued probabilistic semantics to compute conservative satisfaction bounds, propagated compositionally through the STL syntax tree. We formulate the temporal robustness evaluation as a recurrent, LSTM-style unfolding of STL operators, enabling linear-time, differentiable monitoring suitable for end-to-end trajectory optimization. We validate pdSTL on simulated obstacle avoidance, lane-change maneuvers, and real-world Crazyflie quadcopter flight experiments under aerodynamic disturbances. Results demonstrate that pdSTL achieves efficient optimization with formal probabilistic guarantees, significantly outperforming deterministic differentiable STL in maintaining safety margins under real-world uncertainty.",
+      "authors": [
+        "Bennett Dogbey",
+        "Hemanth Manjunatha"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-17T20:01:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.19561v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable temporal logic for control",
+      "llm_evidence_cn": "可微分时序逻辑用于控制",
+      "llm_evidence": "可微分时序逻辑用于控制",
+      "canonical_evidence": "可微分时序逻辑用于控制",
+      "llm_tldr_en": "pdSTL introduces probabilistic differentiable Signal Temporal Logic, enabling gradient-based optimization under stochastic dynamics and belief uncertainty for autonomous systems.",
+      "llm_tldr_cn": "pdSTL针对随机系统中复杂时序约束的满足问题，提出了概率可微信号时序逻辑。该方法将概率语义与可微鲁棒性结合，通过区间值语义和LSTM风格展开实现端到端可微评估。实验表明其在机器人控制优化中有效，为可微控制提供了新的工具。",
+      "llm_tldr": "pdSTL针对随机系统中复杂时序约束的满足问题，提出了概率可微信号时序逻辑。该方法将概率语义与可微鲁棒性结合，通过区间值语义和LSTM风格展开实现端到端可微评估。实验表明其在机器人控制优化中有效，为可微控制提供了新的工具。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.19590v1",
+      "source": "arxiv",
+      "title": "Safe, Real-Time Active Model Discrimination and Fault Diagnosis for Nonlinear Systems via Differentiable Reachability",
+      "abstract": "We present a safe, real-time algorithm for active fault diagnosis and model discrimination for uncertain continuous-time nonlinear systems with process and measurement disturbances. Given a finite set of candidate models representing nominal and faulty modes, including actuator and sensor faults, we formulate an output-feedback, time-varying policy optimization problem that (i) robustly enforces state-input safety constraints over a finite horizon and (ii) drives the system to produce sampled measurements consistent with at most one model, enabling deterministic diagnosis. To solve this problem in real time, we develop a tractable approximation using interval over-approximations of reachable state and output sets, and encode diagnosability via a differentiable objective that penalizes overlap between the reachable output sets of possible models. The resulting optimization is solved efficiently online with gradient-based methods using JAX and differentiable reachability primitives. We evaluate our method on sensor and actuator fault diagnosis (up to 11 fault modes) in several high-dimensional nonlinear robotic systems, including a simulated quadrotor and fighter-jet model, a hardware differential-drive robot, and quadrupedal navigation. Across these case studies, our approach achieves reliable model discrimination in under 50 ms, outperforming baselines in discrimination success rate and speed while providing formal safety guarantees.",
+      "authors": [
+        "Xinpei Ni",
+        "Melkior Ornik",
+        "Glen Chou",
+        "Samuel Coogan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-17T20:46:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.19590v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable reachability for fault diagnosis in nonlinear systems, related to differentiable dynamics",
+      "llm_evidence_cn": "可微可达性用于非线性系统故障诊断，与可微动力学相关",
+      "llm_evidence": "可微可达性用于非线性系统故障诊断，与可微动力学相关",
+      "canonical_evidence": "可微可达性用于非线性系统故障诊断，与可微动力学相关",
+      "llm_tldr_en": "This paper uses differentiable reachability for safe, real-time active fault diagnosis in nonlinear systems, formulating an output-feedback policy optimization with safety constraints.",
+      "llm_tldr_cn": "该工作提出一种安全实时主动故障诊断算法，针对不确定连续时间非线性系统。利用可微可达性的区间过逼近，将输出反馈时变策略优化问题近似求解，鲁棒地强制执行状态输入安全约束，并驱动系统产生与单一模型一致的测量。该方法实现了确定性的故障诊断，为可微动力学在安全关键系统中的应用提供了新途径。",
+      "llm_tldr": "该工作提出一种安全实时主动故障诊断算法，针对不确定连续时间非线性系统。利用可微可达性的区间过逼近，将输出反馈时变策略优化问题近似求解，鲁棒地强制执行状态输入安全约束，并驱动系统产生与单一模型一致的测量。该方法实现了确定性的故障诊断，为可微动力学在安全关键系统中的应用提供了新途径。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

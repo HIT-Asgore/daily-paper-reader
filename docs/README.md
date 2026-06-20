@@ -6,35 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-19
-- 运行时间：2026-06-19 22:04:05 UTC
+- 最新运行日期：2026-06-20
+- 运行时间：2026-06-20 21:39:11 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
-- 速读区：3
+- 本次总论文数：2
+- 精读区：0
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读两篇高分论文，分别聚焦非线性系统的时变动力学建模与持久机器人操作的记忆增强世界模型。值得关注的突破：协方差调节递归库普曼学习可应对不确定时变系统，而Mem-World通过记忆机制提升操作持久性。后续可重点探索记忆增强与自改进方法在真实场景中的落地效果。
-- 详情：[/202606/19/README](/202606/19/README)
+1) 今日速读两篇论文，分别探讨随机系统的概率可微时序逻辑与非线性系统的可微可达性故障诊断。  
+2) 值得关注：将可微逻辑扩展到随机系统，以及利用可微可达性实现实时安全监测与故障诊断。  
+3) 建议先理解可微时序逻辑在不确定系统中的基础思路，再关注可微可达性在非线性控制中的应用潜力。
+- 详情：[/202606/20/README](/202606/20/README)
 
 ### 精读区论文标签
-1. [Covariance-Regulated Recursive Koopman Learning for Nonlinear Systems with Uncertain Time-Varying Dynamics](/202606/19/2606.15317v1-covariance-regulated-recursive-koopman-learning-for-nonlinear-systems-with-uncertain-time-varying-dynamics)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：通过递归Koopman算子学习动力学模型，可用于机器人控制
-2. [Mem-World: Memory-Augmented Action-Conditioned World Models for Persistent Robot Manipulation](/202606/19/2606.18960v2-mem-world-memory-augmented-action-conditioned-world-models-for-persistent-robot-manipulation)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：记忆增强的世界模型用于持久机械臂操作
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [ENPIRE: Agentic Robot Policy Self-Improvement in the Real World](/202606/19/2606.19980v1-enpire-agentic-robot-policy-self-improvement-in-the-real-world)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：使用编码智能体和类RL反馈实现真实世界机器人策略自我改进
-2. [MemoryWAM: Efficient World Action Modeling with Persistent Memory](/202606/19/2606.20562v1-memorywam-efficient-world-action-modeling-with-persistent-memory)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：具有持久记忆的世界动作模型用于机械臂操作动力学
-3. [One Demo is Worth a Thousand Trajectories: Action-View Augmentation for Visuomotor Policies](/202606/19/2606.19586v1-one-demo-is-worth-a-thousand-trajectories-action-view-augmentation-for-visuomotor-policies)  
+1. [pdSTL: Probabilistic Differentiable Signal Temporal Logic for Stochastic Systems](/202606/20/2606.19561v1-pdstl-probabilistic-differentiable-signal-temporal-logic-for-stochastic-systems)  
    标签：评分：6.0/10、query:diff-physics
-   evidence：使用可微高斯泼溅进行动作-视图增强用于操作策略
+   evidence：可微分时序逻辑用于控制
+2. [Safe, Real-Time Active Model Discrimination and Fault Diagnosis for Nonlinear Systems via Differentiable Reachability](/202606/20/2606.19590v1-safe-real-time-active-model-discrimination-and-fault-diagnosis-for-nonlinear-systems-via-differentiable-reachability)  
+   标签：评分：6.0/10、query:diff-physics
+   evidence：可微可达性用于非线性系统故障诊断，与可微动力学相关
 
 
 <div class="dpr-home-promo-card">
