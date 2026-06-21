@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-21",
+  "date": "2026-06-21",
+  "generated_at": "2026-06-21T20:54:46",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/21/2606.19194v1-invertible-neural-network-adapter-for-one-step-flow-matching-in-robot-manipulation",
+      "section": "quick",
+      "title_en": "Invertible Neural Network Adapter for One-Step Flow Matching in Robot Manipulation",
+      "authors": "Yu Zhang, Kangyi Ji, Yongxiang Zou, Rongtao Xu, Feng Zheng, Long Cheng",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19194v1",
+      "score": "6.0",
+      "evidence": "基于可逆神经网络与流匹配的机器人动作生成方法",
+      "tldr": "机器人操纵任务需要高效生成高维动作，现有迭代流匹配策略推理复杂。本文提出可逆神经网络适配器，基于流匹配构建可逆潜在空间，实现单步去噪生成精确动作。仿真和真实实验表明，推理延迟从110ms降至61ms，性能接近最优。该工作显著提升视觉-语言-动作模型推理效率，同时保持任务性能。",
+      "tags": "query:diff-physics",
+      "abstract_en": "This paper presents an invertible neural network adapter for general robotic manipulation, designed to generate precise high-dimensional actions conditioned on multimodal observations, including visual, linguistic, and proprioceptive inputs, through a one-step denoising process. Built upon a flow-matching formulation, the proposed adapter effectively constrains the action generation trajectory within an invertible latent space, thereby enabling efficient and high-quality dexterous action synthesis with only a single inference step. Compared with conventional iterative flow-matching policies, the proposed framework substantially reduces inference complexity while maintaining strong action prediction accuracy and stability. Extensive experiments are conducted across a diverse set of simulation benchmarks and real-world robotic platforms to evaluate the effectiveness of the proposed method. Across simulation benchmarks, the proposed adapter consistently demonstrates superior or near state-of-the-art performance on a wide range of manipulation tasks. Furthermore, real-world experiments reveal a significant improvement in inference efficiency for vision-language-action (VLA) models, reducing the average inference latency from 110 ms to 61 ms while maintaining strong task performance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

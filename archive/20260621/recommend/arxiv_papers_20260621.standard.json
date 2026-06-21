@@ -1,0 +1,58 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-21T20:54:06.588156+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 12,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.19194v1",
+      "source": "arxiv",
+      "title": "Invertible Neural Network Adapter for One-Step Flow Matching in Robot Manipulation",
+      "abstract": "This paper presents an invertible neural network adapter for general robotic manipulation, designed to generate precise high-dimensional actions conditioned on multimodal observations, including visual, linguistic, and proprioceptive inputs, through a one-step denoising process. Built upon a flow-matching formulation, the proposed adapter effectively constrains the action generation trajectory within an invertible latent space, thereby enabling efficient and high-quality dexterous action synthesis with only a single inference step. Compared with conventional iterative flow-matching policies, the proposed framework substantially reduces inference complexity while maintaining strong action prediction accuracy and stability. Extensive experiments are conducted across a diverse set of simulation benchmarks and real-world robotic platforms to evaluate the effectiveness of the proposed method. Across simulation benchmarks, the proposed adapter consistently demonstrates superior or near state-of-the-art performance on a wide range of manipulation tasks. Furthermore, real-world experiments reveal a significant improvement in inference efficiency for vision-language-action (VLA) models, reducing the average inference latency from 110 ms to 61 ms while maintaining strong task performance.",
+      "authors": [
+        "Yu Zhang",
+        "Kangyi Ji",
+        "Yongxiang Zou",
+        "Rongtao Xu",
+        "Feng Zheng",
+        "Long Cheng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-17T15:35:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.19194v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "invertible neural network adapter with flow matching for robot action generation",
+      "llm_evidence_cn": "基于可逆神经网络与流匹配的机器人动作生成方法",
+      "llm_evidence": "基于可逆神经网络与流匹配的机器人动作生成方法",
+      "canonical_evidence": "基于可逆神经网络与流匹配的机器人动作生成方法",
+      "llm_tldr_en": "An invertible neural network adapter using flow matching generates precise robot actions in one step, reducing inference complexity while maintaining accuracy.",
+      "llm_tldr_cn": "本文提出一种可逆神经网络适配器，基于流匹配公式在可逆潜空间中一步生成高精度机器人动作。相比传统迭代流匹配策略，该方法大幅降低推理复杂度，同时在视觉、语言等多模态输入下保持动作预测的准确性和稳定性。在多种机器人操作任务中，单步推理实现了与迭代方法相当的性能，为实时控制提供了高效可微的解决方案。",
+      "llm_tldr": "本文提出一种可逆神经网络适配器，基于流匹配公式在可逆潜空间中一步生成高精度机器人动作。相比传统迭代流匹配策略，该方法大幅降低推理复杂度，同时在视觉、语言等多模态输入下保持动作预测的准确性和稳定性。在多种机器人操作任务中，单步推理实现了与迭代方法相当的性能，为实时控制提供了高效可微的解决方案。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

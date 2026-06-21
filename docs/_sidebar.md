@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-06-21 <!--dpr-date:20260621-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/21/2606.19194v1-invertible-neural-network-adapter-for-one-step-flow-matching-in-robot-manipulation" data-sidebar-item="{&quot;title&quot;: &quot;Invertible Neural Network Adapter for One-Step Flow Matching in Robot Manipulation&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.19194v1-invertible-neural-network-adapter-for-one-step-flow-matching-in-robot-manipulation&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diff-physics&quot;}], &quot;evidence&quot;: &quot;基于可逆神经网络与流匹配的机器人动作生成方法&quot;}">Invertible Neural Network Adapter for One-Step Flow Matching in Robot Manipulation</a>
   * 2026-06-20 <!--dpr-date:20260620-->
     * 速读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202606/20/2606.19561v1-pdstl-probabilistic-differentiable-signal-temporal-logic-for-stochastic-systems" data-sidebar-item="{&quot;title&quot;: &quot;pdSTL: Probabilistic Differentiable Signal Temporal Logic for Stochastic Systems&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2606.19561v1-pdstl-probabilistic-differentiable-signal-temporal-logic-for-stochastic-systems&quot;, &quot;score&quot;: &quot;6.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;diff-physics&quot;}], &quot;evidence&quot;: &quot;可微分时序逻辑用于控制&quot;}">pdSTL: Probabilistic Differentiable Signal Temporal Logic for Stochastic Systems</a>
