@@ -6,39 +6,55 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-22
-- 运行时间：2026-06-22 22:46:11 UTC
+- 最新运行日期：2026-06-25
+- 运行时间：2026-06-25 22:21:26 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：0
-- 速读区：6
+- 本次总论文数：11
+- 精读区：4
+- 速读区：7
 
 ### 今日简报（AI）
-今日速读6篇论文，重点关注机器人基础模型与世界模型构建评估、以及非线性系统的安全实时故障诊断。推荐优先阅读《Qwen-RobotWorld Technical Report》和《SC3-Eval》，前者通过语言条件视频生成统一具身世界建模，后者提出自洽视频生成评估方法。对普通读者而言，可重点关注机器人视频生成技术如何提升仿真与现实的一致性，以及故障诊断算法在安全关键系统中的实时应用前景。
-- 详情：[/202606/22/README](/202606/22/README)
+1) 今日11篇论文聚焦可微仿真、连续控制策略梯度及机器人操作前沿，精读两篇高分工作（9.0/10）探索分析策略梯度与VLM辅助参数辨识。
+2) 最值得关注方向：基于可微仿真的高效策略梯度（如Backpropagating Through Simulation）与视觉大模型驱动的刚体参数辨识（RigPI）。
+3) 建议优先精读两篇高分论文，并速读自模仿学习与姿态规范化抓取，以把握仿真-现实桥接的最新工具链。
+- 详情：[/202606/25/README](/202606/25/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Backpropagating Through Simulation: Analytic Policy Gradients for Sample and Learning Efficient Differentiable Continuous Control](/202606/25/2606.21525v1-backpropagating-through-simulation-analytic-policy-gradients-for-sample-and-learning-efficient-differentiable-continuous-control)  
+   标签：评分：9.0/10、query:diff-physics
+   evidence：通过可微模拟计算分析策略梯度用于机器人控制
+2. [RigPI: Dynamic Parameter Identification of Rigid Body via VLM-Seeded Differentiable Simulation](/202606/25/2606.25212v1-rigpi-dynamic-parameter-identification-of-rigid-body-via-vlm-seeded-differentiable-simulation)  
+   标签：评分：9.0/10、query:diff-physics
+   evidence：使用可微仿真进行机器人操作中的参数识别
+3. [Inverting the Bellman Equation: From $Q$-Values to World Models](/202606/25/2606.21173v1-inverting-the-bellman-equation-from-q-values-to-world-models)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：从Q值提取世界模型以实现基于模型的强化学习
+4. [World Value Models for Robotic Manipulation](/202606/25/2606.24742v1-world-value-models-for-robotic-manipulation)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：学习世界模型用于操作中的价值估计
 
 ### 速读区论文标签
-1. [Qwen-RobotWorld Technical Report: Unifying Embodied World Modeling through Language-Conditioned Video Generation](/202606/22/2606.17030v1-qwen-robotworld-technical-report-unifying-embodied-world-modeling-through-language-conditioned-video-generation)  
+1. [Temporal Self-Imitation Learning](/202606/25/2606.19752v1-temporal-self-imitation-learning)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：语言条件视频世界模型，支持机械臂等具身智能的模型型规划与策略训练
-2. [SC3-Eval: Evaluating Robot Foundation Models via Self-Consistent Video Generation](/202606/22/2606.18610v1-sc3-eval-evaluating-robot-foundation-models-via-self-consistent-video-generation)  
+   evidence：强化学习用于机械臂操作任务
+2. [Pose-Agnostic Robotic Functional Grasping via Observation-Action Canonicalization](/202606/25/2606.21148v1-pose-agnostic-robotic-functional-grasping-via-observation-action-canonicalization)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：利用自一致视频生成评估机器人策略，涉及动力学模型学习，属于模型型强化学习方法
-3. [Safe, Real-Time Active Model Discrimination and Fault Diagnosis for Nonlinear Systems via Differentiable Reachability](/202606/22/2606.19590v1-safe-real-time-active-model-discrimination-and-fault-diagnosis-for-nonlinear-systems-via-differentiable-reachability)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：利用可微可达性实现非线性系统的安全故障诊断，属于可微控制方法
-4. [HOLO-MPPI: Multi-Scenario Motion Planning via Hierarchical Policy Optimization](/202606/22/2606.16480v1-holo-mppi-multi-scenario-motion-planning-via-hierarchical-policy-optimization)  
+   evidence：使用强化学习实现机器人功能性抓取
+3. [FlowDPG: Deterministic Policy Gradient on Flow Matching Policies for Real-World Manipulation](/202606/25/2606.22303v1-flowdpg-deterministic-policy-gradient-on-flow-matching-policies-for-real-world-manipulation)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：用于真实世界机器人操作的确定性策略梯度方法
+4. [Temporal Logic Guidance for Action-Only Diffusion Policies with World Models](/202606/25/2606.22729v1-temporal-logic-guidance-for-action-only-diffusion-policies-with-world-models)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：世界模型用于扩散策略的可微STL引导
+5. [HiL-ResRL: A Model-Agnostic Finetuning Adapter via Human-in-the-loop Residual Reinforcement Learning](/202606/25/2606.22860v1-hil-resrl-a-model-agnostic-finetuning-adapter-via-human-in-the-loop-residual-reinforcement-learning)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：使用残差强化学习微调视觉-语言-动作模型以进行机器人操作
+6. [LaST-HD: Learning Latent Physical Reasoning from Scalable Human Data for Robot Manipulation](/202606/25/2606.23685v1-last-hd-learning-latent-physical-reasoning-from-scalable-human-data-for-robot-manipulation)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：从人类演示学习动作条件的世界模型用于机器人操作
+7. [Robot Self-Improvement via Human-Video Dynamics Models](/202606/25/2606.21406v1-robot-self-improvement-via-human-video-dynamics-models)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：结合策略学习与随机最优控制的层次化运动规划框架，属于模型型方法用于机器人控制
-5. [Qwen-RobotWorld Technical Report: Unifying Embodied World Modeling through Language-Conditioned Video Generation](/202606/22/2606.17030v2-qwen-robotworld-technical-report-unifying-embodied-world-modeling-through-language-conditioned-video-generation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：语言条件视频世界模型作为机器人控制的动力学模型
-6. [Qwen-RobotWorld Technical Report: Unifying Embodied World Modeling through Language-Conditioned Video Generation](/202606/22/2606.17030v3-qwen-robotworld-technical-report-unifying-embodied-world-modeling-through-language-conditioned-video-generation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：语言条件视频世界模型，适用于包括操作在内的具身任务
+   evidence：从人类视频学习动力学模型用于机器人控制
 
 
 <div class="dpr-home-promo-card">
