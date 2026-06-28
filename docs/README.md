@@ -6,46 +6,49 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-27
-- 运行时间：2026-06-27 21:26:38 UTC
+- 最新运行日期：2026-06-28
+- 运行时间：2026-06-28 21:33:02 UTC
 - 运行状态：成功
-- 本次总论文数：8
-- 精读区：4
-- 速读区：4
+- 本次总论文数：9
+- 精读区：2
+- 速读区：7
 
 ### 今日简报（AI）
-今日8篇论文聚焦机器人操作与模型学习，精读两篇高分研究：Foresight故障检测与RigPI动力学参数辨识。
-最值得看的是Foresight（基于动作条件世界模型潜变量的长期操作故障检测）和RigPI（引入VLM和可微仿真的刚体动力学参数辨识），两者均获9.0高分。
-建议优先阅读精读论文，速读中多任务数据生成和上下文世界模型也值得快速浏览以拓展思路。
-- 详情：[/202606/27/README](/202606/27/README)
+今日9篇论文，聚焦操作任务中的强化学习奖励建模与微任务学习。  
+最值得看精读中的《RARM》与《RMTL》，分别用置信度门控进度奖励和VLM奖励攻克长时域操作难题。  
+普通读者可关注这两个方向如何提升机器人复杂任务表现，后续实践值得跟进。
+- 详情：[/202606/28/README](/202606/28/README)
 
 ### 精读区论文标签
-1. [Foresight: Failure Detection for Long-Horizon Robotic Manipulation with Action-Conditioned World Model Latents](/202606/27/2606.23085v1-foresight-failure-detection-for-long-horizon-robotic-manipulation-with-action-conditioned-world-model-latents)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：基于动作条件世界模型的机器人操作失败检测，与机械臂操作的模型强化学习方法相关
-2. [RigPI: Dynamic Parameter Identification of Rigid Body via VLM-Seeded Differentiable Simulation](/202606/27/2606.25212v2-rigpi-dynamic-parameter-identification-of-rigid-body-via-vlm-seeded-differentiable-simulation)  
-   标签：评分：9.0/10、query:diff-physics
-   evidence：基于视觉语言模型初始化的可微仿真进行刚体动态参数识别，用于机器人操作
-3. [MV-WAM: Manifold-Aware World Action Model with Value Augmentation](/202606/27/2606.21088v1-mv-wam-manifold-aware-world-action-model-with-value-augmentation)  
+1. [RARM: Confidence-Gated Progress Reward Modeling for RL in Manipulation](/202606/28/2606.22027v2-rarm-confidence-gated-progress-reward-modeling-for-rl-in-manipulation)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：学习动力学模型用于机器人控制
-4. [RARM: Confidence-Gated Progress Reward Modeling for RL in Manipulation](/202606/27/2606.22027v1-rarm-confidence-gated-progress-reward-modeling-for-rl-in-manipulation)  
+   evidence：提出用于机器人操作强化学习中的奖励模型
+2. [RMTL: Reinforced Micro-task Learning for Long-Horizon Manipulation with VLM Rewards](/202606/28/2606.26175v1-rmtl-reinforced-micro-task-learning-for-long-horizon-manipulation-with-vlm-rewards)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：机器人操作中强化学习的奖励建模
+   evidence：基于强化学习的机器人操作方法，使用VLM奖励
 
 ### 速读区论文标签
-1. [Scalable Multi-Task Data Generation via Reinforcement Learning for Language-Conditioned Bimanual Dexterous Manipulation](/202606/27/2606.22471v1-scalable-multi-task-data-generation-via-reinforcement-learning-for-language-conditioned-bimanual-dexterous-manipulation)  
+1. [SurGE: Surrogate Gradient-guided Evolution for Co-design of Legged Robots with Parallel Elasticity](/202606/28/2606.21866v1-surge-surrogate-gradient-guided-evolution-for-co-design-of-legged-robots-with-parallel-elasticity)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：通过可微管道计算替代梯度用于腿式机器人联合设计
+2. [AdaReP:Adaptive Re-Planning under Model Mismatch for Neural World-Model Predictive Control](/202606/28/2606.23079v1-adarepadaptive-re-planning-under-model-mismatch-for-neural-world-model-predictive-control)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：使用强化学习生成机器人操作策略的训练数据
-2. [In-Context World Modeling for Robotic Control](/202606/27/2606.26025v1-in-context-world-modeling-for-robotic-control)  
+   evidence：神经世界模型与模型预测控制结合；自适应重规划处理模型失配
+3. [dVLA-RL: Reinforcement Learning over Denoising Trajectories for Discrete Diffusion Vision-Language-Action Models](/202606/28/2606.23623v1-dvla-rl-reinforcement-learning-over-denoising-trajectories-for-discrete-diffusion-vision-language-action-models)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：通过上下文适应学习世界模型用于机器人控制
-3. [Continual Robot Policy Learning via Variational Neural Dynamics](/202606/27/2606.27353v1-continual-robot-policy-learning-via-variational-neural-dynamics)  
+   evidence：强化学习用于离散扩散视觉-语言-动作模型的机器人操作
+4. [In-Context World Modeling for Robotic Control](/202606/28/2606.26025v2-in-context-world-modeling-for-robotic-control)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：学习结合物理先验和神经残差的条件感知动力学模型
-4. [Wh0: Generative World Models as Scalable Sources of Egocentric Human Hand Manipulation Data](/202606/27/2606.22136v2-wh0-generative-world-models-as-scalable-sources-of-egocentric-human-hand-manipulation-data)  
+   evidence：将系统辨识视为上下文适应问题的世界模型学习框架
+5. [VibeAct: Vibration to Actions for Contact-Rich Reactive Robot Dexterity](/202606/28/2606.27344v1-vibeact-vibration-to-actions-for-contact-rich-reactive-robot-dexterity)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：基于强化学习的灵巧操作与振动触觉传感
+6. [Play2Perfect: What Matters in Dexterous Play Pretraining for Precise Assembly?](/202606/28/2606.26428v1-play2perfect-what-matters-in-dexterous-play-pretraining-for-precise-assembly)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：利用生成世界模型生成操作数据，与学习动力学模型相关
+   evidence：强化学习框架用于灵巧操作预训练
+7. [World Action Models Enable Continual Imitation Learning with Recurrent Generative Replays](/202606/28/2606.27374v1-world-action-models-enable-continual-imitation-learning-with-recurrent-generative-replays)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：学习世界模型用于动力学，可应用于机器人控制
 
 
 <div class="dpr-home-promo-card">

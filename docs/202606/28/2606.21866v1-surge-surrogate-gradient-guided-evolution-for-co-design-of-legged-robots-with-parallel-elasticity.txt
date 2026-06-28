@@ -1,0 +1,564 @@
+Title: SurGE: Surrogate Gradient-guided Evolution for Co-design of Legged Robots with Parallel Elasticity
+
+URL Source: https://arxiv.org/pdf/2606.21866v1
+
+Published Time: Tue, 23 Jun 2026 01:28:31 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# SurGE: Surrogate Gradient-guided Evolution for Co-design of Legged Robots with Parallel Elasticity 
+
+Yulun Zhuang 1, Yue Qin 1, Justin Lu 1, Zelin Shen 1, Yichen Wang 1, Sicheng He 2 and Yanran Ding 1,∗
+
+Abstract — Co-design of legged robots with elastic elements is challenging due to the non-differentiability of contact dynamics and mechanism engagement. This paper presents SurGE, a framework that computes surrogate gradients of the design objective through a differentiable pipeline consisting of akinodynamic single-rigid-body (Kino-SRB) model and a design-aware control policy, and injects them into CMA-ES via mean shift with cosine-annealed step decay. On a 4-DOF design space of a hopping robot with unidirectional parallel spring, SurGE achieves 6× lower cross-seed standard deviation and 
+
+18% tighter population concentration compared to vanilla CMA-ES, while matching or improving the best objective. Hardware experiments on a 2D design subspace show that, starting from a hand-tuned initial design, SurGE reduces the design objective by 37 .65% on hardware, with the improvement trend identified in simulation transferring consistently to the physical system. SurGE provides the potential to accelerate non-differentiable co-design problems in legged robots via surrogate model gradients. 
+
+I. I NTRODUCTION 
+
+Legged robots have increasing potential in field applica-tions such as planetary exploration and search-and-rescue scenarios. Actuator energy efficiency remains a primary bottleneck for those deployments where the battery capacity limits mission duration. Researchers have explored ways to improve actuation energy efficiency by incorporating elastic elements. Among these methods, the parallel elastic actuator (PEA), springs mounted in parallel with actuators, has been shown to reduce the energy cost of periodic locomotion by passively storing and releasing energy during the gait cycle [1]–[4]. Unidirectional parallel springs (UPS) is a special category of PEA where they provide torque assistance in one direction while remaining disengaged in the other [5], [6]. Compared with the bidirectional PEA, UPS can provide assistant torque for stance phases while allowing leg extension without resistance during swing phases. However, the energy benefit of a UPS is sensitive to its design, as well as how the control policy exploits the stored elastic energy. A poorly chosen spring design or control policy can negate the expected efficiency gain, making careful parameter selection essential. Sequential approaches, in which the spring is designed first and the controller tuned afterward, can lead to suboptimal solutions since the design parameters and the control policy are coupled in the evaluation of energy efficiency. 
+
+> 1
+
+Authors are with the Department of Robotics, University of Michigan, Ann Arbor, MI 48109, USA. 
+
+> 2
+
+Sicheng He is with the Department of Mechanical and Aerospace Engineering, University of Tennessee, Knoxville, TN 37996, USA. 
+
+> ∗
+
+This project was supported by the National Science Foundation under grant 2427036. Corresponding author email: yanrand@umich.edu Spring Torque (Nm)   
+
+> (b) (c)
+> Knee Pos. (rad)
+> -2 -1
+> 0
+> 2
+> 4
+> 8
+> 6
+> (a)
+
+Fig. 1. (a) Visualization of the population means over 20 optimization iterations of two example runs in the (ks, l 0) subspace. The objective landscape is shown in the background while the surrogate gradient vectors are overlaid for SurGE. The trajectories of CMA-ES (left) and SurGE (right) are shown in purple and orange, respectively. Design parameter values are shown in scaled units. SurGE shows a tighter population concentration while being robust to a flat basin and biased gradient minimum (circled in red). (b) Linkage schematic of the UPS on the MUPS v2 robot. The design space contains the spring stiffness ks, the spring engagement length l0, the length of rocker linkage lr , and the length of crank linkage lc. (c) The spring is modeled as a smoothed torque function w.r.t. knee joint positions. 
+
+This sensitivity motivates a concurrent optimization of hardware design and control policy, commonly named the co-design problem [7]–[11]. As the co-design problem jointly optimizes control signals and design parameters, it is often formulated as a bilevel optimization, where the outer loop searches over the design space for design parameters that minimize an objective, while the inner loop optimizes a controller for each candidate design. Computational efficiency in co-design has long been a central concern, particularly for complex dynamical systems and high-dimensional design spaces. Since the inner loop must be optimized to converge for each candidate design parameter, it needs to be re-solved efficiently at every itera-tion. One common strategy is to utilize open-loop trajectories generated by motion planners to accelerate the inner-loop optimization [7]. However, such approaches often sacrifice solution accuracy due to the lack of high-fidelity dynamics simulation. To retain the simulation fidelity, Bjelonic et al. [9] proposed a design-conditioned controller to approximate the solution of the inner optimization by training the mapping 
+
+> arXiv:2606.21866v1 [cs.RO] 20 Jun 2026
+
+from design parameters to the corresponding near-optimal control policy. This approach effectively performs amortized optimization [12], replacing the per-design inner optimiza-tion with a single model trained to predict its solution. This allows the outer design search to proceed with the policy held fixed rather than retraining a controller for each candidate design. Beyond the inner loop, another concern lies in the outer-loop objective, which is aggregated over an entire simulated trajectory. Such objectives are expensive to evaluate and often non-smooth due to ground contact and mechanism engagement, thereby limiting the overall computational efficiency in existing co-design frameworks. Zero-order methods such as covariance matrix adaptation evolution strategy (CMA-ES) [13] are often used for the outer-loop design search for legged robots [8], [9], [14], as they treat the objective as a black box and make no smoothness assumptions [15]. These methods provide reli-able solutions given a sufficient evaluation budget. However, two practical limitations persist. First, the sample complexity scales unfavorably with the design dimension, and each function evaluation requires a full simulation rollout, ren-dering the approach computationally prohibitive in high-dimensional design space. Second, because of its stochastic nature, the design returned by evolutionary search varies across random seeds, with different seeds often converging to different local optima [8]. While exploring multiple optima can be valuable, committing to a single hardware design requires reproducible outcomes, which in practice forces practitioners to run many seeds and reconcile among them. Gradient-based methods, such as gradient descent, could potentially accelerate convergence by leveraging the de-terministic gradient information. Nevertheless, computing accurate gradients of a legged locomotion task is non-trivial due to non-differentiable contact and mechanism engage-ment. Trajectory optimization approaches which leverage an analytical dynamics model can provide smooth gradients, but typically require fixing contact schedules and employing simplified models that may not reflect the true dynam-ics [10], [11], [14], [16]. Differentiable simulators [17]– [20] allow backpropagation through full-body dynamics, but require relaxed contact models to maintain differentiability, an approximation that can distort the ability of deploying a resulting controller onto a real robot [21]–[23]. Hybrid methods that combine zero-order and first-order methods have been proven to be useful. Even in the absence of accurate gradient information, surrogate gradients that are correlated with the true gradient can reduce variance and accelerate convergence. Maheswaranathan et al. [24] demonstrated that augmenting the CMA-ES sampling distri-bution with an imperfect surrogate gradient subspace speeds up convergence. Hansen [25] proposed injecting externally generated solutions into CMA-ES, with the strongest variant being a mean shift that moves the distribution mean toward a target solution, biasing the entire population while preserving the diversity for the adaptation mechanism. Meanwhile, recent work on learning legged robot control policies via model-based reinforcement learning (RL) [23] proposes a method to compute the surrogate gradient for legged robot dynamics, enabling faster training convergence of deployable locomotion control policies. Motivated by these advances, combining surrogate gradients for legged robot dynamics with zero-order optimization methods in a hybrid framework presents a promising direction to improve the computational efficiency and scalability of legged robot co-design. This paper presents SurGE (Surrogate Gradient-guided Evolution), a hybrid framework for the legged robot co-design problem that integrates the surrogate gradient with CMA-ES to achieve faster convergence and reduced variance during optimization. To address the non-differentiability of legged robot dynamics, a differentiable surrogate dynamics model is introduced to estimate the gradient information along the dynamics rollout, which aids CMA-EA in mean value shifting. The SurGE framework is evaluated on a planar hopping robot, Monoped with Unidirectional Parallel Spring v2 (MUPS v2), demonstrating improved performance in both numerical simulations and hardware experiments. The main contributions of this work are:  
+
+> •
+
+A co-design framework that enhances evolutionary strategy with surrogate gradient to accelerate design optimization for legged robots.  
+
+> •
+
+Comprehensive benchmarks showing SurGE achieves lower cross-seed standard deviation, tighter population concentration, and faster convergence.  
+
+> •
+
+Hardware deployment on the MUPS v2 robot, confirm-ing that SurGE refines a hand-tuned initial design and reduces the objective by 37 .65% on hardware. II. P ROBLEM STATEMENT 
+
+The co-design problem can be described as a standard Optimal Control Problem (OCP) where the decision variables include states, control inputs, and design parameters. The discretized formulation for the co-design problem is: 
+
+min  
+
+> x,u,d
+
+lN (xN , d) +  
+
+> N−1
+
+X
+
+> k=0
+
+lk(xk, uk, d) (1) s.t. xk+1 = f (xk, uk, d) (2) 
+
+h(xk, uk, d) ≤ 0 (3) 
+
+g(x0, xN , d) ≤ 0, (4) where xk ∈ Rn and uk ∈ Rm(k = 1 , . . . , N ), represent the state and control vectors, respectively; d ∈ Rnd denotes the design variables; lk represents the stage cost function; lN
+
+denotes the terminal cost function; f : Rn × Rm × Rnd →
+
+Rn represents the dynamics of the system; h and g are the path constraints and boundary constraints, respectively; and 
+
+n, m, N and nd represent the state, control, time, and design variables’ dimensions, respectively. To solve this OCP, a bilevel optimization strategy is commonly adopted. The outer level optimizes the design parameters with a fixed control policy, while the inner level optimizes the control policy for a given design. These two subproblems are solved alternately until convergence. However, solving the inner problem to convergence for every Design-Aware 
+
+Control Policy 
+
+Differentiable Surrogate 
+
+Dynamics Model 
+
+Non-Differentiable 
+
+High Fedility  Simulator 
+
+> Differentiable Forward Rollout
+> Surrogate
+> Gradients
+> Evaluated
+> Objectives
+
+Shift Distribution Mean 
+
+Sample Candidates 
+
+Update Distribution 
+
+> Design
+> Candidates
+> Aligened
+> States
+> Gradient Guided ES
+
+Gradient 
+
+Path Fig. 2. Overview of the SurGE framework. The surrogate gradient is computed through a differentiable pipeline consisting of a design-aware control policy (Sec. III-A) and a kinodynamic single-rigid-body (Kino-SRB) model (Sec. III-B), and injected into CMA-ES via mean shift with cosine-annealed step decay (Sec. III-D). The true design objective is evaluated on a non-differentiable simulator, which also provides state alignment (Sec. III-C) for the surrogate gradient computation. 
+
+candidate design parameter d is computationally expensive. To address this challenge, a design-aware optimal controller is introduced to approximate the solution of the inner opti-mization by taking the design parameters as input and maps them to the corresponding control policy [9], [26]. Assuming that this design-aware policy, denoted by π∗ :
+
+Rn × Rnd → Rm, which is a mapping from the current state and design variables to the control vector, achieves near-optimal performance across the whole design space D, the original co-design problem can be reformulated as a single-stage optimization problem, which is more tractable. Within the formulation, the decision variables dimension will reduce to nd as the control signal uk could be deter-mined given the system state xk and design parameters d. As in prior co-design formulations [27], an additional constraint representing the design-aware control policy is embedded into the OCP, i.e. uk = π∗ xk, d.Given this design-aware policy, the system becomes a closed-loop system where the dynamics could be simplified as a transition function that only depends on the last state and design parameter: 
+
+xk+1 = f  xk, π∗(xk, d), d := f ′(xk, d), (5) where the f ′ : Rn × Rnd → Rn denotes this closed-loop system dynamics. The cost function lk(xk, uk, d) could also be simplified as l′
+
+> k
+
+(xk, d) in a similar manner. Within the formulation, the total cost L could be expressed as: 
+
+L =
+
+> N
+
+X
+
+> k=0
+
+l′
+
+> k
+
+(xk, d). (6) According to the gradient analysis for iterated dynamical systems in [22], the gradient of total cost with respect to the design parameters ∂L 
+
+> ∂d
+
+∈ Rnd is obtained by applying the chain rule through time: 
+
+∂L
+
+∂d =
+
+> N
+
+X
+
+> k=0
+
+ ∂l ′
+
+> k
+
+∂d +
+
+> k
+
+X
+
+> i=1
+
+∂l ′
+
+> k
+
+∂xk
+
+
+
+> k
+
+Y
+
+> j=i
+
+∂xj
+
+∂xj−1
+
+ ∂xi
+
+∂d
+
+ , (7) where: 
+
+∂xj
+
+∂xj−1
+
+= ∂f ′
+
+∂x (xj−1,d)
+
+= ( ∂f
+
+∂x + ∂f
+
+∂u
+
+∂π∗
+
+∂x )
+
+> (xj−1,d)
+
+(8) 
+
+∂xi
+
+∂d = ∂f ′
+
+∂d (xi−1,d)
+
+= ( ∂f
+
+∂d + ∂f
+
+∂u
+
+∂π∗
+
+∂d ) (xi−1,d)
+
+. (9) Here, ∂f ′ 
+
+> ∂x
+
+∈ Rn×n represents the closed-loop dynamics Jacobian while the ∂f 
+
+> ∂x
+
+∈ Rn×n denotes the open-loop dynamics Jacobian, both with respect to the previous state.  
+
+> ∂f
+> ∂u
+
+∈ Rn×m denotes the open-loop dynamics Jacobian with respect to the control vector while ∂π∗ 
+
+> ∂x
+
+∈ Rm×n represents the Jacobian of the control policy with respect to the current state. The Jacobian with respect to the design parameters d
+
+follows a similar definition. To compute the gradient above, the dynamics f , the design-aware control policy π∗, and cost function lk need to be differentiable with respect to the system state x, the control input u, and the design parameters 
+
+d. Under this regularity condition, first-order optimization methods leveraging gradient information can be employed, leading to faster convergence and improved reproducibility. III. S UR GE C O-DESIGN FOR LEGGED ROBOTS 
+
+This section presents SurGE, a differentiable co-design framework (Fig. 2) that leverages a differentiable surrogate dynamics model to obtain the gradient information despite the discontinuities of legged robots’ dynamics. Combined with a differentiable design-aware control policy, we derive a surrogate gradient of the design objective with respect to the design parameters, which is incorporated into the CMA-ES method to achieve fast and robust convergence. The development of the control policy, the derivation of the surrogate gradient, and the evolutionary search algorithm are detailed in the following subsections. 
+
+A. Design-Aware Control Policy 
+
+A differentiable co-design framework requires the design-aware control policy to be differentiable with respect to the system state and design parameters according to the gradient equations in Eq.(8) and (9). Here, we use an RL policy as the controller since the neural networks are inherently differentiable. To enable the policy to be design-aware, the normalized design parameters are encoded as privileged information [28] via a multi-layer perceptron (MLP) and concatenated with the observation to form the policy in-put. A teacher-student architecture with regularized online adaptation (ROA) [29] is adopted for sim-to-real transfer. The architecture of the policy is shown in Fig. 3. Then, the policy is pretrained with Proximal Policy Optimization (PPO) [30] across uniformly sampled designs per episode, encouraging generalization over the whole design space D. By generalizing across D, this single policy aims to approximate the per-design optimal controller π∗ across the design space, amortizing the inner loop and reducing the need for per-design retraining during the outer search [9]. Privileged   
+
+> Encoder
+> Control
+> Policy
+> Privileged
+> Information
+> Design Parameters Latent
+> Embedding
+> Supervise
+> Adaptation
+> Encoder
+> Proprioceptive
+> Observation
+> Policy
+> Gradient
+> Deployment
+> Training
+> Fig. 3. The design-aware control policy architecture. The design parameters are informed via a privileged encoder for training and design optimization, while the adaptation encoder is used for deployment. All neural networks are trained simultaneously thanks to ROA.
+
+B. Surrogate Gradient 
+
+Legged robot are subject to nonlinear hybrid dynamics, which is difficult to differentiate to obtain the gradient. Nev-ertheless, the gradient of a surrogate model that captures the dominant dynamical effect of the robot still provides useful information while preserving differentiability. For example, the Single Rigid Body (SRB) model is often employed as the surrogate dynamics model for quadrupedal robots [31]. Song et al. [23] demonstrated that an effective surrogate model assists gradient-based optimization. Notably, the surrogate model state s is often either a subset or a function of the full state x. In the case where s ⊂ x, the surrogate model ensures that only s is propagated through the differentiable dynamics for the gradient computation. The remaining states x\s are computed via the non-differentiable simulator and treated as constants with respect to d. Since the surrogate model only captures the dominant dynamics, its gradient is a biased approximation of the true gradient. Nevertheless, CMA-ES is robust to biased gradients, as the unbiased objective is evaluated by the non-differentiable simulator, which grounds the evolutionary process. 
+
+C. State Alignment 
+
+Due to the simplification of the surrogate model, its dynamics integration result can diverge from the true robot dynamics over long horizons, causing inaccurate design objectives and gradient estimates. Inspired by [23], the differentiable state xdiff is realigned at every time step with the state xnd produced by a higher-fidelity non-differentiable simulator. During the forward pass, the surrogate state s is extracted from xnd so that each one-step prediction starts from a realistic state. During the backward pass, the gradient is propagated through each one-step prediction. This limits gradient accumulation to single-step horizons, preventing drift from model mismatch while still providing informative directional signals. 
+
+D. Gradient-Guided Evolutionary Search 
+
+CMA-ES maintains a multivariate normal distribution 
+
+N (mg , σ 2 
+
+> g
+
+Cg ) over the design space, where mg is the mean, 
+
+σg the step size, and Cg the covariance matrix at generation 
+
+g. At each generation, λ candidate solutions are sampled from this distribution, evaluated on the true objective L,and the distribution parameters are updated based on ranked fitness values. To incorporate the surrogate gradient ∇dL computed by the differentiable pipeline (Sec. III-B), injection via mean shift [25] is applied: the CMA-ES mean is shifted in the negative gradient direction before sampling. The shift is preconditioned by the current covariance matrix and scaled to match the expected Mahalanobis step length of a regular CMA-ES sample: 
+
+∆mg = − σg
+
+√nCg ∇dL∥C 12 
+
+> g
+
+∇dL∥ 
+
+, (10) where the preconditioned direction Cg ∇dL acts as a natural gradient step that accounts for the local geometry of the search distribution, while the √n factor normalizes the Mahalanobis norm to the expected length χn of an n-dimensional standard normal vector. Since the surrogate gradient is an approximation of the true gradient, it may accumulate bias and interfere with the CMA-ES adaptation mechanism. To mitigate this effect, we use a cosine-annealed injection rate that scales the mean shift 
+
+ηg = η0
+
+> 2
+
+ 1 + cos( πg/G ), (11) where η0 is the initial gradient step size and G is the total number of generations. This schedule emphasizes gradient guidance in early generations, when the surrogate provides the most benefit by steering the search toward promising regions, and gradually switches control to the CMA-ES adap-tation as the distribution contracts around a local optimum. The importance of this decay is validated experimentally in Sec. V-C. The SurGE co-design framework is shown in Algorithm 1. At each generation, the surrogate gradient is computed at the current CMA-ES mean and used to shift the mean. The λ
+
+candidates are then sampled from the shifted distribution, evaluated in the non-differentiable simulator, and CMA-ES is updated with the fitness values. IV. S UR GE C O-DESIGN FOR MUPS The MUPS v2, shown in Fig. 4, is a planar monoped hopping robot with a hip and a knee motor and a free-rotating torso constrained to the sagittal plane by a gantry. Its UPS mechanism allows continuous adjustment of all four design parameters (Table I), enabling hardware validation of the optimized designs. 
+
+A. UPS Design 
+
+The UPS on MUPS v2 consists of a linear compression spring connected to the knee joint through a parallel linkage mechanism, as shown in Fig. 1 (b). A typical torque-angle curve is shown in Fig. 1 (c), whose shape is determined by Algorithm 1 Surrogate Gradient Guided Co-design 
+
+Input: Initial design d0, design iterations G, population size 
+
+λ, pretrained policy π(·, d)
+
+Output: Optimized design d∗ 
+
+> 1:
+
+Initialize CMA-ES with m0 ← d0 
+
+> 2:
+
+d∗ ← d0, L∗ ← ∞  
+
+> 3:
+
+for g = 0 to G − 1 do  
+
+> 4:
+
+∇dL ← COMPUTE GRADIENT (mg , π ) ▷ Sec. III-B  
+
+> 5:
+
+mg ← mg + ηg ∆mg ▷ Eq. (10)  
+
+> 6:
+
+{d1, . . . , dλ} ← CMA-ES.sample (mg ) 
+
+> 7:
+
+Lp ← EVALUATE (dp, π ) for p = 1 , . . . , λ ▷ Eq. (6)  
+
+> 8:
+
+mg+1 ← CMA-ES.update ({dp, Lp}λp=1 ) 
+
+> 9:
+
+p⋆ ← argmin p Lp 
+
+> 10:
+
+if Lp⋆ < L∗ then  
+
+> 11:
+
+L∗ ← L p⋆ , d∗ ← dp⋆ 
+
+> 12:
+
+end if  
+
+> 13:
+
+end for  
+
+> 14:
+
+return d∗ 
+
+> Fig. 4. The Monoped with Unidirectional Parallel Spring v2 (MUPS v2) is a customized hopping robot used for validating the SurGE framework.
+
+four design parameters, namely the spring stiffness ks, the spring engagement length l0, the rocker length lr , and the crank link, which is the offset of the rocker attachment point on the shin from the knee joint lc. The engagement point is smoothed via a softplus function. These parameters fully characterize the engagement threshold, peak torque, and torque curve shape of the UPS, while the remaining mechanical dimensions are fixed by the existing hardware. All four parameters are continuous and bounded within the ranges listed in Table I, which are determined by the physical constraints of the robot.                       
+
+> TABLE I DESIGN PARAMETERS OF MUPS V2 R OBOT
+> Parameter Symbol Range Unit Spring Stiffness ks[1000 ,8000] N/m Spring Engagement Length l0[0 .1,0.17] mRocker Length lr[0 .08 ,0.14] mCrank Length lc[0 .02 ,0.04] m
+
+B. Design Objective 
+
+The design objective is formulated to capture both task performance and energy efficiency. Specifically, we evaluate the accumulated tracking error and heat dissipation over a finite trajectory. The robot is commanded to hop at a fixed apex height while tracking a fixed target speed on flat ground. The per-step cost l consists of a heating energy term and a tracking penalty: 
+
+lk = Pheat ,k ∆t + β∥xdes  
+
+> k
+
+− xk∥2, (12) where Pheat = ∥τm∥2R/K 2 
+
+> t
+
+is the power dissipated by Joule heating; τm ∈ R2 is the motor torque; R and Kt are the motor resistance and torque constant; and β weights the tracking term. The desired state xdes  
+
+> k
+
+specifies the target base height and forward velocity, which are held constant across time steps. The total objective L(d) = PNk=1 lk is accumulated over N simulation steps. 
+
+C. Kinodynamic SRB with Smoothed Spring Function 
+
+Under our scenario, a kinodynamic single-rigid-body (Kino-SRB) model [32] is adopted as our differentiable surrogate. The Kino-SRB captures the essential centroidal dynamics of MUPS v2 and incorporates the UPS torque as a smooth function of the design parameters, providing a compact differentiable path from d to L. The SRB state 
+
+x = [ pc, θ, ˙pc, ˙θ]⊤ evolves as 
+
+˙x =
+
+
+
+˙pc
+
+˙θ
+
+f /m + g
+
+(r ∧ f )/I 
+
+ , (13) where pc ∈ R2 and θ ∈ R are the center of mass (CoM) position and body pitch; f ∈ R2 is the ground reaction force (GRF) at the foot; m is the total mass; g is the gravity vector; 
+
+r = pf − pc is the CoM-to-foot vector; and I is the body moment of inertia. A proportional–derivative (PD) controller is used to convert desired joint positions from policy output to motor torques. Under a massless-leg assumption, the joint torque combines motor and spring contributions and maps to the GRF through the leg Jacobian: 
+
+τ = τm + τs(q, d) = −B · J⊤f , (14) where τm ∈ R2 is the motor torque; τs is the spring torque modeled as a differentiable function of joint positions q ∈ R2
+
+and design parameters d; B ∈ R2×5 is the actuated-joint selection matrix; and J ∈ R2×5 is the leg Jacobian. V. E XPERIMENT RESULTS 
+
+A. Computation Setup 
+
+The design-aware control policy is pretrained in Isaac-Gym [33] with GPU-accelerated parallel rollouts. The policy is trained to hop on flat ground at fixed target speed and height, matching the conditions used for design evaluation. The same simulator serves as the non-differentiable evaluator during the co-design optimization, computing the true design objective L for each candidate. The hyperparameters used for training are shown in Tab. III and reward terms are shown in Tab. IV, where c is the contact indicator. SurGE is compared against three baselines: (1) surrogate gradient descent (GD), which directly minimizes the surro-gate objective via Adam; (2) vanilla CMA-ES; and (3) SurGE without cosine decay (SurGE w/o decay), which applies a constant injection step η0. Each stochastic method is run for 5 random seeds, while GD is deterministic. The optimization hyperparameters are listed in Table II. Performance is mea-sured by three metrics: the best-so-far objective (BSF), which tracks the minimum objective function value discovered over optimization iterations, the design objective gap ¯L − L ∗
+
+between the population mean and best at the final generation, and the per-iteration wall-clock time.                                        
+
+> TABLE II OPTIMIZATION HYPERPARAMETER
+> Hyperparameter Symbol Value Tracking weight β5Design iterations G50 Control steps N100 Population size λ16 Initial search step σ00.2 Initial gradient step η00.1 TABLE III RL T RAINING HYPERPARAMETER
+> Hyperparameter Value
+> Network architecture
+> Actor MLP hidden dimensions [128 ,64 ,32]
+> Critic MLP hidden dimensions [128 ,64 ,32]
+> Encoder MLP hidden dimensions [64 ,20]
+> Latent embedding dimensions 10
+> Activation function ELU
+> PPO
+> Learning rate 2×10 −4
+> Discount factor 0.99
+> GAE discount factor 0.95
+> Desired KL-divergence 0.01
+> Clip range 0.2
+> Entropy coefficient 0.01
+> Value function loss coefficient 1.0
+> Steps per environment 24
+> Number of environments 4096
+> Number of epochs per update 5
+
+B. Surrogate Gradient Validation 
+
+To validate the quality of the surrogate gradient before using it in SurGE, we visualize the gradient field over the design objective landscape. Fig. 1 shows a 2D slice through the (ks, l 0) subspace, with the remaining parameters fixed at the center of their ranges. The contour surface is obtained by evaluating the non-differentiable simulator on a 32 × 32 grid, while the arrows are the surrogate gradients computed via the differentiable Kino-SRB pipeline (Sec. III-B). Despite the model mismatch between the SRB surrogate and the full-body simulator, the surrogate gradients point predominantly downhill toward the low-objective region. This result confirms that the surrogate pipeline provides a useful and directional prior.                                                    
+
+> TABLE IV RL R EWARD TERMS SUMMARY
+> Reward Term Definition Weight
+> Tracking reward
+> Base height exp( −∥ perr
+> z∥/0.25 2)2.0
+> Base orientation exp( −∥ θerr ∥/0.25 2)1.0
+> Base linear velocity exp( −∥ verr ∥/0.25 2)1.0
+> Base angular velocity exp( −∥ ωerr ∥/0.25 2)0.5
+> Regularization penalty
+> Action smoothness −∥ uk−uk−1∥20.1
+> Torque smoothness −∥ τm,k −τm,k −1∥21×10 −7
+> Joint torque −∥ τm∥25×10 −3
+> Joint acceleration −∥ ¨q∥25×10 −5
+> Joint position −∥ q−qdefault ∥20.02
+> Undesired contacts −1{f>0.1}10
+> Jumping upward [vz]2+1{pz<pdes
+> z}0.1
+> Phase contact
+> (
+> +1 ,c=cdes
+> −1,c̸=cdes 1.0
+
+C. SurGE Design Optimization 
+
+The SurGE framework is first applied on a simple 2D design space ( ks, l0) with the remaining parameters fixed. Fig. 1 overlays the trajectories of SurGE and CMA-ES on the true objective landscape. The CMA-ES trajectory follows a zigzag path with frequent directional changes, reflecting its stochastic nature, whereas the SurGE trajectory is steered toward the low-objective region from the first few generations, converging with fewer wasted evaluations. Table V summarizes the full 4D optimization results. SurGE achieves a mean BSF objective of 26 .90 , compara-ble to vanilla CMA-ES while reducing cross-seed standard deviation by 6×. The BSF curves in Fig. 5 show that SurGE attains lower objective values in earlier generations, indicating that the surrogate gradient accelerates convergence throughout the search. The design objective gap ¯L − L ∗
+
+also drops from 65 .9 (CMA-ES) to 53 .9 (SurGE), an 18% 
+
+reduction, indicating that the gradient-informed mean shift concentrates the population around higher-performing de-signs. In terms of computation, SurGE adds one surrogate-gradient rollout and backpropagation per generation. This increases the per-iteration time from 0.58 s for CMA-ES to 1.27 s for SurGE (Table V), while the full optimization still completes in about one minute. This roughly 2× per-iteration overhead is a favorable trade-off for the improved convergence and reproducibility that SurGE provides.                               
+
+> TABLE V DESIGN OPTIMIZATION RESULTS IN 4D D ESIGN SPACE (5 SEEDS )Method BSF ↓¯L − L ∗↓Time / Iter. [s] ↓
+> GD 27 .08 —1.27
+> CMA-ES 26 .95 ±0.06 65 .90.58
+> SurGE w/o decay 26 .93 ±0.03 66 .51.27
+> SurGE (ours) 26 .90 ±0.01 53 .91.27
+
+Ablation studies were conducted to isolate the contribution of cosine decay and evolution strategy, with results included in Table V. Removing cosine decay (SurGE w/o decay) degrades BSF and increases cross-seed standard deviation 0 10 20 30 40  
+
+> Generation
+> 27.0
+> 27.5
+> 28.0
+> 28.5
+> Best-So-Far Objective  CMA-ES
+> SurGE Fig. 5. Comparison of BSF objective across generations. The shaded area represents the standard deviation across 5 random seeds.
+
+by 3×, while the population fitness gap rises from 53 .9 to 
+
+66 .5. This confirms that annealing the injection step size is critical: without decay, the persistent gradient bias interferes with the CMA-ES adaptation in later generations. Surrogate GD, which follows the surrogate gradient exclusively via Adam, yields the worst objective ( 27 .08 ) and converges to a qualitatively different local minimum, demonstrating that population-based exploration is essential for navigating the non-convex design landscape. As shown in Fig. 6, the improved reproducibility is most pronounced on the spring-length parameters where the guid-ance signal of surrogate gradient is strongest. The cross-seed standard deviation of l0 and lr drops by 2.3× compared to CMA-ES, indicating that SurGE steers the search toward a consistent basin, reducing sensitivity to random initialization. 1.0      
+
+> 1.5
+> 2.0
+> ks
+> CMA-ES
+> SurGE
+> 0.8
+> 1.0
+> 1.2
+> l0
+> 020 40
+> Generation
+> 1.0
+> 1.2
+> 1.4
+> lr
+> 020 40
+> Generation
+> 1.0
+> 1.5
+> 2.0
+> lc
+> Fig. 6. Design parameter trajectories across generations. The shaded area represents the standard deviation across 5 random seeds. Values are shown in scaled units.
+
+D. Hardware Experiments 
+
+Hardware experiments were conducted on the MUPS-v2 robot hardware to validate the optimization results. Specifically, 3 designs along the SurGE optimization path were selected, including the hand-tuned initial design, an intermediate design (gen 5), and the final optimized design. For each configuration, the spring parameters are physically adjusted on the robot as shown in Fig. 7 and the controller is deployed to hop at the same target speed used in simulation.      
+
+> Fig. 7. MUPS v2 hopper assemblies for the 3 designs of UPS tested for the hardware experiments. ksis spring stiffness and l0is spring rest length.
+
+The trained policy is deployed on a workstation with a 13th Gen Intel Core i7-13700 CPU, which sends torque commands to the robot via LCM at 50 Hz. On board, a Raspberry Pi relays commands to the motors, reads motor encoders and an IMU, and runs a Kalman filter at 1 kHz to estimate the robot state.                         
+
+> TABLE VI 3-P OINT SWEEP HARDWARE VALIDATION
+> Gen. ks[N/m] l0[m] ¯Lsim ¯Lhw
+> g= 1 8000 0.100 38 .42 44 .68
+> g= 5 7180 0.130 28 .04 28 .79
+> g= 20 5570 0.135 27 .64 27 .86
+
+Table VI reports the design objectives evaluated in both simulation and on hardware for three design points sam-pled from the 2D optimization trajectory in Fig. 1. The hardware objective decreases monotonically along the trajec-tory, matching the trend in simulation, confirming that the optimization direction identified by SurGE transfers to the physical system. Overall, starting from the hand-tuned initial design, SurGE reduces the hardware objective by 37 .65% ,while achieving a 28 .06% reduction in simulation. The hand-tuned design serves only as an initialization that SurGE refines. The larger hardware improvement is attributable to the elevated sim-to-real gap at the initial design point. VI. C ONCLUSIONS 
+
+This work presents SurGE, a surrogate gradient-guided evolution co-design framework for legged robots with par-allel elasticity. Optimization is performed on a custom monoped hopping robot named MUPS-v2. Our key contri-bution is the proposition of using the surrogate gradients through a differentiable pipeline, which consists of a kino-dynamic SRB model and a design-aware control policy, to shift the CMA-ES mean towards minima. To mitigate the surrogate bias, a cosine decay gradually cedes control to the CMA-ES adaptation as the optimization converges. Com-pared to vanilla CMA-ES, SurGE matches the best objective and achieves 6× lower cross-seed standard deviation and 
+
+18% tighter population concentration in a 4D design space. Hardware validation on the MUPS v2 robot demonstrates that the optimized design transfers to the physical system, with a monotonic improvement in design objective along the optimization path. Two limitations motivate future work. First, the surrogate gradient is biased by the model mismatch, and incorporating full-body dynamics with saltation matrices [34] to differ-entiate through contact transitions could improve gradient fidelity. Second, the control policy is pretrained and fixed during optimization, but refining the policy online is possible via model-based RL, which could directly leverage the surrogate gradient signal and further improve design quality. REFERENCES [1] Y. Yesilevskiy, W. Xi, and C. D. Remy, “A comparison of series and parallel elasticity in a monoped hopper,” in 2015 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2015, pp. 1036–1041. [2] G. A. Folkertsma, S. Kim, and S. Stramigioli, “Parallel stiffness in a bounding quadruped with flexible spine,” in 2012 IEEE/RSJ International Conference on Intelligent Robots and Systems . IEEE, 2012, pp. 2210–2215. [3] S. Liu, J. Ding, C. Lu, Z. Wang, B. Su, and Z. Guo, “A novel optimization design of dual-slide parallel elastic actuator for legged robots,” IEEE/ASME Transactions on Mechatronics , vol. 29, no. 4, pp. 2886–2894, 2024. [4] E. Tanfener, O. K. Karag¨ oz, S. S. Candan, A. E. Turgut, Y. Yazıcıoglu, M. M. Ankaralı, and U. Saranlı, “Design and verification of a parallel elastic robotic leg,” Bioinspiration & Biomimetics , vol. 19, no. 2, p. 026014, 2024. [5] X. Liu, A. Rossi, and I. Poulakakis, “SPEAR: a monopedal robot with switchable parallel elastic actuation,” in 2015 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2015, pp. 5142–5147. [6] A. Badri-Spr¨ owitz, A. Aghamaleki Sarvestani, M. Sitti, and M. A. Daley, “Birdbot achieves energy-efficient gait with minimal control using avian-inspired leg clutching,” Science Robotics , vol. 7, no. 64, p. eabg4055, 2022. [7] T. Dinev, C. Mastalli, V. Ivan, S. Tonneau, and S. Vijayakumar, “A versatile co-design approach for dynamic legged robots,” in 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2022, pp. 10 343–10 349. [8] ´A. Belmonte-Baeza, J. Lee, G. Valsecchi, and M. Hutter, “Meta reinforcement learning for optimal design of legged robots,” IEEE Robotics and Automation Letters , vol. 7, no. 4, pp. 12 134–12 141, 2022. [9] F. Bjelonic, J. Lee, P. Arm, D. Sako, D. Tateo, J. Peters, and M. Hutter, “Learning-based design and control for quadrupedal robots with parallel-elastic actuators,” IEEE Robotics and Automation Letters ,vol. 8, no. 3, pp. 1611–1618, 2023. [10] G. Bravo-Palacios, H. Li, and P. M. Wensing, “Engineering compliance in legged robots via robust co-design,” IEEE/ASME Transactions on Mechatronics , 2024. [11] G. Fadini, T. Flayols, A. Del Prete, N. Mansard, and P. Sou` eres, “Computational design of energy-efficient legged robots: Optimizing for size and actuators,” in 2021 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2021, pp. 9898–9904. [12] B. Amos, “Tutorial on amortized optimization,” Foundations and Trends in Machine Learning , vol. 16, no. 5, pp. 592–732, 2023. [13] N. Hansen, “The CMA evolution strategy: a comparing review,” 
+
+Towards a new evolutionary computation: Advances in the estimation of distribution algorithms , pp. 75–102, 2006. [14] M. Chadwick, H. Kolvenbach, F. Dubois, H. F. Lau, and M. Hutter, “Vitruvio: An open-source leg design optimization toolbox for walking robots,” IEEE Robotics and Automation Letters , vol. 5, no. 4, pp. 6318–6325, 2020. [15] A. Jordana, J. Zhang, J. Amigo, and L. Righetti, “An introduction to zero-order optimization techniques for robotics,” arXiv preprint arXiv:2506.22087 , 2025. [16] S. He, S. Kaneko, M. Howell, N. Li, and J. R. Martins, “Efficient adjoint-based design optimization with optimal control,” arXiv preprint arXiv:2602.15242 , 2026. [17] C. D. Freeman, E. Frey, A. Raichuk, S. Girgin, I. Mordatch, and O. Bachem, “Brax - a differentiable physics engine for large scale rigid body simulation,” in Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 1) , 2021. [18] Y.-L. Qiao, J. Liang, V. Koltun, and M. C. Lin, “Efficient differentiable simulation of articulated bodies,” in International Conference on Machine Learning . PMLR, 2021, pp. 8661–8671. [19] J. Xu, M. Macklin, V. Makoviychuk, Y. Narang, A. Garg, F. Ramos, and W. Matusik, “Accelerated policy learning with parallel differen-tiable simulation,” in International Conference on Learning Represen-tations , 2022. [20] C. Schwarke, V. Klemm, J. Bagajo, J. P. Sleiman, I. Georgiev, J. T. Torres, and M. Hutter, “Learning deployable locomotion control via differentiable simulation,” in 9th Annual Conference on Robot Learning , 2025. [21] H. J. Suh, M. Simchowitz, K. Zhang, and R. Tedrake, “Do dif-ferentiable simulators give better policy gradients?” in International Conference on Machine Learning . PMLR, 2022, pp. 20 668–20 696. [22] L. Metz, C. D. Freeman, S. S. Schoenholz, and T. Kachman, “Gradi-ents are not all you need,” arXiv preprint arXiv:2111.05803 , 2021. [23] Y. Song, S. Kim, and D. Scaramuzza, “Learning quadruped locomotion using differentiable simulation,” in 8th Annual Conference on Robot Learning , 2024. [24] N. Maheswaranathan, L. Metz, G. Tucker, D. Choi, and J. Sohl-Dickstein, “Guided evolutionary strategies: Augmenting random search with surrogate gradients,” in International Conference on Machine Learning . PMLR, 2019, pp. 4264–4273. [25] N. Hansen, “Injecting external solutions into CMA-ES,” INRIA, Research Report RR-7748, Oct. 2011. [26] G. Fadini and S. Coros, “Making use of design-aware policy optimiza-tion in legged-robotics co-design,” in Proceedings of the Morphology-Aware Policy and Design Learning (MAPoDeL) Workshop at CoRL ,2024. [27] G. Bravo-Palacios, G. Grandesso, A. D. Prete, and P. M. Wensing, “Robust co-design: Coupling morphology and feedback design through stochastic programming,” Journal of Dynamic Systems, Measurement, and Control , vol. 144, no. 2, p. 021007, 2022. [28] J. Lee, J. Hwangbo, L. Wellhausen, V. Koltun, and M. Hutter, “Learning quadrupedal locomotion over challenging terrain,” Science robotics , vol. 5, no. 47, p. eabc5986, 2020. [29] Z. Fu, X. Cheng, and D. Pathak, “Deep whole-body control: learning a unified policy for manipulation and locomotion,” in Conference on Robot Learning . PMLR, 2023, pp. 138–149. [30] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Proximal policy optimization algorithms,” arXiv preprint arXiv:1707.06347 , 2017. [31] Y. Ding, A. Pandala, and H.-W. Park, “Real-time model predictive control for versatile dynamic motions in quadrupedal robots,” in 2019 International Conference on Robotics and Automation (ICRA) . IEEE, 2019, pp. 8484–8490. [32] Y. Zhuang, Y. Wang, and Y. Ding, “Kinodynamic model predictive control for energy efficient locomotion of legged robots with parallel elasticity,” in 2025 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2025, pp. 12 365–12 371. [33] V. Makoviychuk, L. Wawrzyniak, Y. Guo, M. Lu, K. Storey, M. Mack-lin, D. Hoeller, N. Rudin, A. Allshire, A. Handa, and G. State, “Isaac Gym: High performance GPU based physics simulation for robot learning,” in Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 2) , 2021. [34] N. J. Kong, J. J. Payne, J. Zhu, and A. M. Johnson, “Saltation matrices: The essential tool for linearizing hybrid dynamical systems,” 
+
+Proceedings of the IEEE , vol. 112, no. 6, pp. 585–608, 2024.

@@ -1,0 +1,411 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-28T21:26:52.462737+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 7,
+    "quick_skim_target": 12,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2606.22027v2",
+      "source": "arxiv",
+      "title": "RARM: Confidence-Gated Progress Reward Modeling for RL in Manipulation",
+      "abstract": "Reinforcement learning for robot manipulation is often bottlenecked by reward design, especially in long-horizon tasks: sparse success rewards provide weak supervision, while hand-crafted dense rewards are tedious to design and generalize poorly across tasks. Progress-based reward models offer a promising alternative by estimating how far an observation has advanced toward task completion, but existing approaches often require task-specific demonstrations or progress labels, and can assign high rewards to visually plausible but physically incorrect states. We introduce the Reference-Anchored Reward Model (RARM), a lightweight visual comparator that converts a single successful demonstration into a dense, progress-aware reward. RARM is trained once on general-purpose videos with a contrastive temporal objective, requiring no robot-specific data, task-specific reward labels, or per-task reward engineering. At deployment, RARM matches rollout clips to reference clips and rewards only confident forward progress, suppressing uncertain matches that may otherwise produce false-positive rewards. Across 9 simulated manipulation tasks from LIBERO and MetaWorld and 4 real-world tasks, RARM achieves the best overall success rates in subsequent RL training, with particularly large gains on long-horizon tasks such as cloth folding, where unreliable progress estimates are especially harmful.",
+      "authors": [
+        "Pengzhi Yang",
+        "Xinyu Wang",
+        "Pengyu Jing",
+        "Kehan Wen",
+        "Yiduo Qu",
+        "Zhenhao Huang",
+        "Minghao Fu",
+        "Xin Liu",
+        "Yaheng Shen",
+        "Fan Shi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-20T13:03:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.22027v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes reward model for reinforcement learning in robot manipulation",
+      "llm_evidence_cn": "提出用于机器人操作强化学习中的奖励模型",
+      "llm_evidence": "提出用于机器人操作强化学习中的奖励模型",
+      "canonical_evidence": "提出用于机器人操作强化学习中的奖励模型",
+      "llm_tldr_en": "Introduces RARM, a lightweight reward model that converts single demo into dense progress-aware rewards, improving RL sample efficiency for robotic manipulation.",
+      "llm_tldr_cn": "强化学习中的奖励设计是机器人操作的关键瓶颈。本文提出参考锚定奖励模型（RARM），仅需一次成功示范即可生成稠密的进度感知奖励。该模型在通用数据集上一次性训练后可直接用于新任务，无需任务特定演示或进度标签，显著提升了长时操作任务的强化学习效率与鲁棒性。",
+      "llm_tldr": "强化学习中的奖励设计是机器人操作的关键瓶颈。本文提出参考锚定奖励模型（RARM），仅需一次成功示范即可生成稠密的进度感知奖励。该模型在通用数据集上一次性训练后可直接用于新任务，无需任务特定演示或进度标签，显著提升了长时操作任务的强化学习效率与鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.26175v1",
+      "source": "arxiv",
+      "title": "RMTL: Reinforced Micro-task Learning for Long-Horizon Manipulation with VLM Rewards",
+      "abstract": "Reinforcement learning (RL) for robotic manipulation often requires manually designing a dense reward function, which is difficult to tune and often fragile, or learning a reward from human demonstrations or preferences, which can be expensive. A recent line of work uses pretrained vision-language models (VLMs) as zero-shot reward models, replacing these costs with a single text prompt. However, we argue that a single global prompt is too coarse for long-horizon manipulation tasks with randomized initial conditions. The single-prompt VLM reward is near-flat for much of the trajectory, making early progress hard for the agent to detect. We propose Reinforced Micro-Task Learning (RMTL), an approach that decomposes a manipulation task into a small set of language-described micro-tasks and trains the agent to switch between them. At each step, the agent receives a multi-view VLM reward computed using the prompt of the currently active micro-task and averaged across multiple camera views to reduce the effect of view-specific occlusions. A reverse curriculum gradually exposes the agent to harder initial conditions, while a PPO worker is first trained with a fixed distance-based rule that selects the active micro-task. We then replace this rule with a learned hierarchical manager, turning rule-based phase selection into a fully learned hierarchical policy. We instantiate RMTL on the Fetch manipulation environment using three short stage-specific prompts and without additional prompt tuning. Experiments show that RMTL provides more informative reward signals than single-prompt VLM rewards, enabling faster learning. These results suggest that decomposing VLM rewards into micro-task-specific language prompts can substantially improve the scalability of language-guided reinforcement learning for robotic manipulation.",
+      "authors": [
+        "Anıl Can Ateş",
+        "Orhan Kahraman",
+        "Cihan Topal"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-24T10:32:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.26175v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reinforcement learning for robotic manipulation with VLM rewards",
+      "llm_evidence_cn": "基于强化学习的机器人操作方法，使用VLM奖励",
+      "llm_evidence": "基于强化学习的机器人操作方法，使用VLM奖励",
+      "canonical_evidence": "基于强化学习的机器人操作方法，使用VLM奖励",
+      "llm_tldr_en": "RMTL decomposes long-horizon manipulation tasks into micro-tasks and uses VLM rewards to guide RL, addressing reward sparsity.",
+      "llm_tldr_cn": "针对长时域操作任务中奖励稀疏的问题，提出强化微任务学习方法，将任务分解为微任务并用视觉语言模型奖励进行强化学习，显著提高了长时域操作任务的学习效率和性能。",
+      "llm_tldr": "针对长时域操作任务中奖励稀疏的问题，提出强化微任务学习方法，将任务分解为微任务并用视觉语言模型奖励进行强化学习，显著提高了长时域操作任务的学习效率和性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.21866v1",
+      "source": "arxiv",
+      "title": "SurGE: Surrogate Gradient-guided Evolution for Co-design of Legged Robots with Parallel Elasticity",
+      "abstract": "Co-design of legged robots with elastic elements is challenging due to the non-differentiability of contact dynamics and mechanism engagement. This paper presents SurGE, a framework that computes surrogate gradients of the design objective through a differentiable pipeline consisting of a kinodynamic single-rigid-body (Kino-SRB) model and a design-aware control policy, and injects them into CMA-ES via mean shift with cosine-annealed step decay. On a 4-DOF design space of a hopping robot with unidirectional parallel spring, SurGE achieves 6 times lower cross-seed standard deviation and 18% tighter population concentration compared to vanilla CMA-ES, while matching or improving the best objective. Hardware experiments on a 2D design subspace show that, starting from a hand-tuned initial design, SurGE reduces the design objective by 37.65% on hardware, with the improvement trend identified in simulation transferring consistently to the physical system. SurGE provides the potential to accelerate non-differentiable co-design problems in legged robots via surrogate model gradients.",
+      "authors": [
+        "Yulun Zhuang",
+        "Yue Qin",
+        "Justin Lu",
+        "Zelin Shen",
+        "Yichen Wang",
+        "Sicheng He",
+        "Yanran Ding"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-20T04:09:24+00:00",
+      "link": "https://arxiv.org/pdf/2606.21866v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "surrogate gradients through differentiable pipeline for legged robot co-design",
+      "llm_evidence_cn": "通过可微管道计算替代梯度用于腿式机器人联合设计",
+      "llm_evidence": "通过可微管道计算替代梯度用于腿式机器人联合设计",
+      "canonical_evidence": "通过可微管道计算替代梯度用于腿式机器人联合设计",
+      "llm_tldr_en": "SurGE computes surrogate gradients via a differentiable kinodynamic model and injects them into CMA-ES, achieving lower variance and tighter population in legged robot co-design with parallel elasticity.",
+      "llm_tldr_cn": "针对腿式机器人弹性元件的联合设计问题，由于接触动力学的不可微性，提出了SurGE框架，通过一个包含运动学单刚体模型和设计感知控制策略的可微管道计算替代梯度，并将其注入CMA-ES。实验结果显示，与标准CMA-ES相比，该方法将跨种子标准差降低了6倍，种群集中度提高了18%，并且在硬件实验中也取得了成功。",
+      "llm_tldr": "针对腿式机器人弹性元件的联合设计问题，由于接触动力学的不可微性，提出了SurGE框架，通过一个包含运动学单刚体模型和设计感知控制策略的可微管道计算替代梯度，并将其注入CMA-ES。实验结果显示，与标准CMA-ES相比，该方法将跨种子标准差降低了6倍，种群集中度提高了18%，并且在硬件实验中也取得了成功。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26428v1",
+      "source": "arxiv",
+      "title": "Play2Perfect: What Matters in Dexterous Play Pretraining for Precise Assembly?",
+      "abstract": "Multi-fingered robots promise the speed and dexterity of human hands, yet challenging problems such as precise assembly have remained out of reach. These tasks are contact-rich, making data collection for imitation learning difficult, and sparse-reward, making direct exploration with reinforcement learning (RL) intractable. Consequently, prior work has made progress by structuring the problem with specialized grippers, tool attachments, and environment fixtures. In this work, we argue that before a robot can perfect precise assembly, it must first learn to play. We further ask the question: what factors in the process of learning to play matter for precise assembly? We propose Play2Perfect, an RL framework for task-agnostic pretraining through play on diverse objects and goals, which is then perfected on precise assembly. The goal of play is to acquire reusable manipulation priors, such as grasping, in-hand reorientation and pose reaching. Finetuning then adapts this general prior to assembly, focusing exploration on the final contact-rich, high-precision interactions needed for success. We systematically study key design choices in play pretraining, including object diversity, training objective, trajectory diversity, and goal precision. We show that our prior is 33x more sample-efficient than RL training from scratch, even when provided with dense, multi-stage rewards. We demonstrate zero-shot sim-to-real transfer, achieving 60% success on tight insertions with only 0.5 mm contact clearance, and over 50% success on long-horizon multi-part assembly and screwing.",
+      "authors": [
+        "Tyler Ga Wei Lum",
+        "Kushal Kedia",
+        "C. Karen Liu",
+        "Jeannette Bohg"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-24T22:39:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.26428v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning framework for dexterous manipulation pretraining",
+      "llm_evidence_cn": "强化学习框架用于灵巧操作预训练",
+      "llm_evidence": "强化学习框架用于灵巧操作预训练",
+      "canonical_evidence": "强化学习框架用于灵巧操作预训练",
+      "llm_tldr_en": "Proposes Play2Perfect, an RL-based task-agnostic pretraining framework for multi-fingered robots, enabling efficient transfer to precise assembly tasks by learning diverse play behaviors.",
+      "llm_tldr_cn": "针对多指灵巧手精准装配任务因接触密集和奖励稀疏导致强化学习困难的问题，提出Play2Perfect框架，通过任务无关的预训练阶段让机器人先学会玩耍，从而获得鲁棒的运动基元。实验证明预训练策略显著提升后续装配任务的学习效率和成功率，揭示了预训练数据多样性和奖励设计的关键因素。",
+      "llm_tldr": "针对多指灵巧手精准装配任务因接触密集和奖励稀疏导致强化学习困难的问题，提出Play2Perfect框架，通过任务无关的预训练阶段让机器人先学会玩耍，从而获得鲁棒的运动基元。实验证明预训练策略显著提升后续装配任务的学习效率和成功率，揭示了预训练数据多样性和奖励设计的关键因素。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.23079v1",
+      "source": "arxiv",
+      "title": "AdaReP:Adaptive Re-Planning under Model Mismatch for Neural World-Model Predictive Control",
+      "abstract": "Neural world models coupled with model predictive control (MPC) replan at every environment step to bound accumulated prediction error, but this incurs substantial computational overhead. Reusing a cached plan reduces this overhead, yet its effectiveness depends on how prediction mismatch propagates through the local dynamics. We analyze this trade-off with a perturbation-based dynamic-regret framework and show that stale-plan penalties scale with the reuse tolerance, the accumulated mismatch since the last replanning step, and the local dynamics sensitivity. Based on this structure, we propose AdaReP, a training-free wrapper that adapts the replanning tolerance online using the current deviation from the cached rollout and a local sensitivity estimate, without modifying the learned world model or planner. Across image-space planning, latent-space control, and real-world robotic manipulation, AdaReP substantially reduces planner-side computation while maintaining comparable task performance, including over 80% fewer queries on a 50-trial physical robot study.",
+      "authors": [
+        "Yutian Cheng",
+        "Xiaojian Ma",
+        "Xianhao Wang",
+        "Min Yang",
+        "Rongpeng Su",
+        "Hangxin Liu",
+        "Xi Chen",
+        "Shuai Li",
+        "Qing Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-22T09:27:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.23079v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "neural world model for predictive control; adaptive replanning under model mismatch",
+      "llm_evidence_cn": "神经世界模型与模型预测控制结合；自适应重规划处理模型失配",
+      "llm_evidence": "神经世界模型与模型预测控制结合；自适应重规划处理模型失配",
+      "canonical_evidence": "神经世界模型与模型预测控制结合；自适应重规划处理模型失配",
+      "llm_tldr_en": "Proposes AdaReP, a training-free wrapper that adaptively adjusts replanning tolerance in neural world-model predictive control, reducing computation while maintaining performance under model mismatch.",
+      "llm_tldr_cn": "针对神经世界模型与MPC结合时频繁重规划导致计算开销大的问题，提出AdaReP方法，通过在线调整重规划容差，在保持控制性能的同时显著降低计算量。实验表明该方法在多种模型失配场景下均可自适应平衡效率与鲁棒性，为机器人控制中的模型基方法提供了实用优化策略。",
+      "llm_tldr": "针对神经世界模型与MPC结合时频繁重规划导致计算开销大的问题，提出AdaReP方法，通过在线调整重规划容差，在保持控制性能的同时显著降低计算量。实验表明该方法在多种模型失配场景下均可自适应平衡效率与鲁棒性，为机器人控制中的模型基方法提供了实用优化策略。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.27374v1",
+      "source": "arxiv",
+      "title": "World Action Models Enable Continual Imitation Learning with Recurrent Generative Replays",
+      "abstract": "Going beyond predicting robot actions, World Action Models (WAMs) can also generate future visual observations. We build on this generative capability to propose Recurrent Generative Replay (REGEN), a continual imitation learning framework that synthesizes pseudo-replay trajectories, enabling a robot policy to rehearse previously learned tasks without storing their original human demonstrations. During continual adaptation, REGEN recursively queries the WAM to synthesize pseudo-replay trajectories conditioned only on prior task instructions and current-task observations. Experiments in both simulation and real-world manipulation settings show that REGEN reduces catastrophic forgetting by up to $50\\%$ relative to sequential fine-tuning, while approaching the performance of privileged experience replay methods that require access to real replay data. Finally, we analyze the factors limiting generated replay, identifying long-horizon visual degradation and action-observation inconsistency as the primary bottlenecks. Our results establish WAMs as a promising foundation for continual robot learning without stored demonstrations.",
+      "authors": [
+        "Manish Kumar Govind",
+        "Dominick Reilly",
+        "Smit Patel",
+        "Hieu Le",
+        "Srijan Das"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-06-25T17:59:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.27374v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learning world models for dynamics, applicable to robot control",
+      "llm_evidence_cn": "学习世界模型用于动力学，可应用于机器人控制",
+      "llm_evidence": "学习世界模型用于动力学，可应用于机器人控制",
+      "canonical_evidence": "学习世界模型用于动力学，可应用于机器人控制",
+      "llm_tldr_en": "Proposes World Action Models (WAMs) that predict future observations, enabling continual imitation learning without storing old data.",
+      "llm_tldr_cn": "为了在持续学习中避免灾难性遗忘，提出世界行动模型（WAM），该模型不仅预测动作还能生成未来视觉观察。基于此构建循环生成重放框架，在不需要原始演示的情况下合成伪重放轨迹，使机器人策略能够复习之前学过的任务。在模拟和真实操作实验中，该方法将灾难性遗忘降低了50%。",
+      "llm_tldr": "为了在持续学习中避免灾难性遗忘，提出世界行动模型（WAM），该模型不仅预测动作还能生成未来视觉观察。基于此构建循环生成重放框架，在不需要原始演示的情况下合成伪重放轨迹，使机器人策略能够复习之前学过的任务。在模拟和真实操作实验中，该方法将灾难性遗忘降低了50%。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.23623v1",
+      "source": "arxiv",
+      "title": "dVLA-RL: Reinforcement Learning over Denoising Trajectories for Discrete Diffusion Vision-Language-Action Models",
+      "abstract": "Vision-Language-Action (VLA) models have established a powerful paradigm for generalist robotic manipulation by grounding control into the semantic reasoning of VLMs. Prevailing architectures typically model actions continuously via diffusion or flow processes, or discretely through either autoregressive generation or parallel decoding. Recently, Discrete Diffusion VLAs (dVLAs) have emerged as a distinct alternative, unifying vision, language, and action into a single discrete token space via masked generative modeling. While combining iterative refinement with unified representations, its training has thus far been restricted to Supervised Fine-Tuning (SFT), leaving the potential of Reinforcement Learning (RL) for further policy refinement largely unexplored. A fundamental challenge in RL for dVLAs is that the marginal probability of the final action generated by dVLAs remains intractable. To solve this problem, we propose \\textbf{dVLA-RL}, shifting the learning objective from the marginal action probability to the joint probability of the sampled generation path. Specifically, by modeling the denoising process as a Markov Decision Process (MDP), we mathematically formulate this path probability as a product of step-wise transitions. This trajectory-level objective provides a unified formulation that natively accommodates variable denoising steps. Leveraging this intrinsic fexibility, we introduce a unified step scheduling approach for complex multi-task learning, tailoring denoising steps to specific task complexities to maximize both success rates and computational effciency. Extensive evaluations demonstrate that our approach achieves a success rate of \\textbf{99.7\\%} on LIBERO. Furthermore, it establishes strong VLA-based results on RoboTwin 2.0 by delivering a \\textbf{30.6\\%} improvement over the SFT baseline, remaining competitive with strong World-Action Model baselines.",
+      "authors": [
+        "Yuhao Wu",
+        "Yitian Liu",
+        "Weijie Shen",
+        "Mishuo Han",
+        "Wenjie Xu",
+        "Haotian Liang",
+        "Zhongshan Liu",
+        "Yinan Mao",
+        "Lei Xu",
+        "Xinping Guan",
+        "Ru Ying",
+        "Ran Zheng",
+        "Wei Sui",
+        "Xiaokang Yang",
+        "Wenbo Ding",
+        "Yao Mu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-22T17:19:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.23623v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Reinforcement learning for discrete diffusion Vision-Language-Action models in robotic manipulation",
+      "llm_evidence_cn": "强化学习用于离散扩散视觉-语言-动作模型的机器人操作",
+      "llm_evidence": "强化学习用于离散扩散视觉-语言-动作模型的机器人操作",
+      "canonical_evidence": "强化学习用于离散扩散视觉-语言-动作模型的机器人操作",
+      "llm_tldr_en": "Introduces dVLA-RL, applying reinforcement learning to discrete diffusion Vision-Language-Action models for robotic manipulation, achieving improved performance over supervised fine-tuning by leveraging iterative denoising trajectories.",
+      "llm_tldr_cn": "该论文针对离散扩散VLA模型训练仅限于监督微调的问题，提出了dVLA-RL方法，将强化学习应用于去噪轨迹上的策略优化，通过利用迭代精化过程，在多个机器人操作基准上超越了纯监督方法，展现了RL在统一视觉-语言-动作空间中提升泛化能力的潜力。",
+      "llm_tldr": "该论文针对离散扩散VLA模型训练仅限于监督微调的问题，提出了dVLA-RL方法，将强化学习应用于去噪轨迹上的策略优化，通过利用迭代精化过程，在多个机器人操作基准上超越了纯监督方法，展现了RL在统一视觉-语言-动作空间中提升泛化能力的潜力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26025v2",
+      "source": "arxiv",
+      "title": "In-Context World Modeling for Robotic Control",
+      "abstract": "Modern Vision-Language-Action (VLA) models often fail to generalize to novel setups, such as altered camera viewpoints or robot morphologies, because they are typically conditioned only on current observations and language instructions. By ignoring the underlying system configuration as a variable, these models implicitly assume a fixed execution context encountered during training, necessitating data-intensive fine-tuning for any new environment. In this work, we introduce In-Context World Modeling (ICWM), a framework that treats system identification as an in-context adaptation problem. ICWM enables robot policies to autonomously infer essential system variables from a short history of self-generated, task-agnostic interactions. Unlike traditional In-Context Learning that uses demonstrations to specify what task to perform, ICWM leverages the context window to understand how the system operates. By processing these interactions before task execution, the model implicitly captures the world dynamics of the current system, enabling adaptation to novel configurations without parameter updates. Extensive experiments in simulation and on real-world robot platforms demonstrate that ICWM significantly outperforms standard VLA baselines on novel camera viewpoints.",
+      "authors": [
+        "Siyin Wang",
+        "Junhao Shi",
+        "Senyu Fei",
+        "Zhaoyang Fu",
+        "Li Ji",
+        "Jingjing Gong",
+        "Xipeng Qiu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-06-24T16:53:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.26025v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "in-context world modeling for robotic control treating system identification as adaptation",
+      "llm_evidence_cn": "将系统辨识视为上下文适应问题的世界模型学习框架",
+      "llm_evidence": "将系统辨识视为上下文适应问题的世界模型学习框架",
+      "canonical_evidence": "将系统辨识视为上下文适应问题的世界模型学习框架",
+      "llm_tldr_en": "ICWM enables robot policies to autonomously infer system variables from short interaction history, treating system identification as in-context adaptation without data-intensive fine-tuning.",
+      "llm_tldr_cn": "针对视觉-语言-动作模型在新环境下泛化能力差的问题，提出上下文世界建模（ICWM）框架，将系统辨识视为上下文适应问题。机器人策略能够从短期的任务无关交互历史中自主推断系统变量，无需数据密集型微调，从而提升对新视角和形态的泛化能力。",
+      "llm_tldr": "针对视觉-语言-动作模型在新环境下泛化能力差的问题，提出上下文世界建模（ICWM）框架，将系统辨识视为上下文适应问题。机器人策略能够从短期的任务无关交互历史中自主推断系统变量，无需数据密集型微调，从而提升对新视角和形态的泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.27344v1",
+      "source": "arxiv",
+      "title": "VibeAct: Vibration to Actions for Contact-Rich Reactive Robot Dexterity",
+      "abstract": "Dexterous manipulation depends on contact events that are fast, local, and often visually occluded. Piezoelectric microphones offer a compact and high-bandwidth way to sense these interactions, but the resulting vibro-acoustic signals are difficult to simulate faithfully enough for end-to-end sim-to-real policy learning on dexterous robot hands. We propose VibeAct, a framework that bridges real vibrotactile sensing and simulation-based reinforcement learning through a shared physical representation of contact and slip. In the real world, we embed piezoelectric microphones into a dexterous robot hand and collect vibro-acoustic data through teleoperation, then replay the recordings in a calibrated digital clone to automatically label per-finger contact and slip. A tactile estimator learns to predict contact and slip from real microphone waveforms, while manipulation policies are trained in simulation on the same representation computed directly from simulated contacts. This decoupling lets policies exploit rapid tactile feedback without simulating raw audio. Across five contact-rich tasks spanning regrasping, in-hand reorientation, and insertion, VibeAct consistently outperforms a proprioception-and-point-cloud baseline in simulation, with the largest gains on tasks requiring sustained reactive control, where the continuous slip-magnitude channel proves the most informative observation. The learned policies transfer to a physical dexterous hand-arm platform, improving success rates on deployed tasks. Project videos and additional details are at https://vibeact.github.io/.",
+      "authors": [
+        "Yuemin Mao",
+        "Uksang Yoo",
+        "Jean Oh",
+        "Jonathan Francis",
+        "Jeffrey Ichnowski"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-25T17:50:07+00:00",
+      "link": "https://arxiv.org/pdf/2606.27344v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL-based dexterous manipulation with vibrotactile sensing",
+      "llm_evidence_cn": "基于强化学习的灵巧操作与振动触觉传感",
+      "llm_evidence": "基于强化学习的灵巧操作与振动触觉传感",
+      "canonical_evidence": "基于强化学习的灵巧操作与振动触觉传感",
+      "llm_tldr_en": "VibeAct uses vibrotactile signals in RL to learn dexterous manipulation policies, bridging sim-to-real with shared contact representation.",
+      "llm_tldr_cn": "该文提出VibeAct框架，利用压电麦克风采集现实振动信号，在仿真中通过共享的接触与滑移表示自动标注，从而将真实触觉信息融入强化学习策略训练，实现灵巧手操作任务的有效迁移。实验表明该方法在接触丰富的任务中性能显著优于仅视觉策略。",
+      "llm_tldr": "该文提出VibeAct框架，利用压电麦克风采集现实振动信号，在仿真中通过共享的接触与滑移表示自动标注，从而将真实触觉信息融入强化学习策略训练，实现灵巧手操作任务的有效迁移。实验表明该方法在接触丰富的任务中性能显著优于仅视觉策略。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
