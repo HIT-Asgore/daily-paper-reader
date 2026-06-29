@@ -1,0 +1,222 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-29T21:54:10.244782+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 1,
+    "deep_cap": 7,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.27895v1",
+      "source": "arxiv",
+      "title": "Mosaic: A Benchmark Suite for Differentiable Physics Solvers",
+      "abstract": "Differentiable partial differential equation (PDE) solvers underpin solver-in-the-loop ML training, gradient-based optimal control, and inverse problems, yet the practical cost of obtaining correct, usable gradients from a given solver on a given problem is largely undocumented. Integration effort, computational cost, gradient accuracy, and numerical conditioning vary widely across solvers and are discoverable only by trial and error. We introduce Mosaic, an extensible benchmarking framework for differentiable PDE solvers that standardizes access to solver gradients. Each solver is packaged as a containerized component (Tesseract) exposing a uniform gradient API regardless of language or automatic differentiation (AD) strategy, enabling researchers to evaluate, compare, and build on non-trivial physical solvers. Our evaluation of 14 solvers across fluid dynamics, structural mechanics, and heat transfer demonstrates that the benchmark surfaces practically relevant differences: order-of-magnitude variation in computational cost and Jacobian conditioning, alongside structural incompatibilities that eliminate solvers from realistic tasks entirely. Despite this variation, all solvers that produce gradients converge to similar optima, indicating that the practical barriers are memory limits, numerical stability, and setup compatibility rather than gradient accuracy alone. Mosaic is open-source and available at https://github.com/pasteurlabs/mosaic.",
+      "authors": [
+        "Andrin Rehmann",
+        "Heiko Zimmermann",
+        "Dion Häfner"
+      ],
+      "primary_category": "physics.comp-ph",
+      "categories": [
+        "physics.comp-ph",
+        "cs.LG"
+      ],
+      "published": "2026-06-26T09:38:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.27895v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for differentiable physics solvers enabling gradient-based control and inverse problems",
+      "llm_evidence_cn": "可微物理求解器的基准测试，支持基于梯度的控制和逆问题",
+      "llm_evidence": "可微物理求解器的基准测试，支持基于梯度的控制和逆问题",
+      "canonical_evidence": "可微物理求解器的基准测试，支持基于梯度的控制和逆问题",
+      "llm_tldr_en": "Presents Mosaic, a benchmark for differentiable PDE solvers that standardizes gradient access, enabling evaluation for solver-in-the-loop ML, optimal control, and inverse problems.",
+      "llm_tldr_cn": "可微物理求解器在机器学习和控制中至关重要，但缺乏统一的评估标准。本文提出Mosaic，一个可扩展的可微PDE求解器基准测试框架，将每个求解器封装为容器化组件并暴露统一梯度API。通过标准化梯度接口，Mosaic允许研究者评估数值精度、计算成本和集成难度，从而为不同任务选择最合适的可微求解器。该工作填补了可微物理工具评估的空白，直接支持可微物理在机器人操作等领域的应用。",
+      "llm_tldr": "可微物理求解器在机器学习和控制中至关重要，但缺乏统一的评估标准。本文提出Mosaic，一个可扩展的可微PDE求解器基准测试框架，将每个求解器封装为容器化组件并暴露统一梯度API。通过标准化梯度接口，Mosaic允许研究者评估数值精度、计算成本和集成难度，从而为不同任务选择最合适的可微求解器。该工作填补了可微物理工具评估的空白，直接支持可微物理在机器人操作等领域的应用。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.28196v1",
+      "source": "arxiv",
+      "title": "Learning Stable In-Grasp Manipulation in a Non-Dropping Action Space",
+      "abstract": "Traditionally, dexterous manipulation controllers are designed using analytic models constrained by strong assumptions about the hand and the objects being manipulated. Reinforcement learning (RL) has become another common approach in which skills are explored openly in an end-to-end manner but is inefficient because of unnoticeable instability and conflicts in learning objectives. This paper attempts to efficiently explore stable and accurate manipulation skills by decomposing dexterous skills into multiple simpler/analyzable components. Each skill component is subsequently learned with constraints and guidance from classical physics and control theory. Our work shows that for stable grasp, in-grasp reposition/reorientation with different objects, sensor/motor noise, latency, and frictional conditions, skill learning becomes efficient and stable with prior knowledge from theory.",
+      "authors": [
+        "Ha Thang Long Doan",
+        "Hikaru Arita",
+        "Kazuto Nakashima",
+        "Kenji Tahara"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-26T15:43:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.28196v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for dexterous manipulation with physics constraints",
+      "llm_evidence_cn": "带物理约束的灵巧操作强化学习",
+      "llm_evidence": "带物理约束的灵巧操作强化学习",
+      "canonical_evidence": "带物理约束的灵巧操作强化学习",
+      "llm_tldr_en": "Proposes decomposing dexterous manipulation skills into components learned with RL guided by classical physics and control theory, achieving stable in-grasp reorientation.",
+      "llm_tldr_cn": "针对灵巧操作中强化学习探索低效的问题，提出将技能分解为多个可分析组件，并利用经典物理和控制理论加以约束和指导。通过非掉落动作空间和组件化学习，方法在稳定抓取和重定向任务上取得了高成功率和操作精度。该工作展示了将物理先验融入RL能有效提升学习效率和稳定性。",
+      "llm_tldr": "针对灵巧操作中强化学习探索低效的问题，提出将技能分解为多个可分析组件，并利用经典物理和控制理论加以约束和指导。通过非掉落动作空间和组件化学习，方法在稳定抓取和重定向任务上取得了高成功率和操作精度。该工作展示了将物理先验融入RL能有效提升学习效率和稳定性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.22397v1",
+      "source": "arxiv",
+      "title": "Do Rigid-Body Simulators Dream of Soft Robots? Learning Contact-Rich Manipulation for Tendon-Driven Continuum Robots",
+      "abstract": "Learning contact-rich, whole-body manipulation for soft continuum robots is held back by the lack of simulation infrastructure that has accelerated rigid-robot manipulation. Existing soft robot simulators are physically grounded but lack the contact handling, actuation support, or learning integration needed for contact-rich manipulation; rigid-body approximations offer these capabilities but sacrifice physical grounding. We bridge this gap for tendon-driven continuum robots (TDCRs) by deriving a continuum-mechanics-informed discretization that places the soft robot natively inside MuJoCo, unifying tendon forces, body contact, and dynamics in a single physics pipeline. We validate the simulator against a Cosserat rod reference (static and dynamic) and real TDCR hardware. We then train state-based imitation learning policies via teleoperation in simulation and deploy them zero-shot to a physical 3-segment TDCR on a 7-DoF Franka arm across two contact-rich manipulation tasks. To our knowledge, this is the first demonstration of sim-to-real transfer for contact-rich manipulation with continuum robots.",
+      "authors": [
+        "Chengnan Shentu",
+        "Nicholas Baldassini",
+        "Tongjia Zheng",
+        "Priyanka Rao",
+        "Jessica Burgner-Kahrs"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-21T09:02:53+00:00",
+      "link": "https://arxiv.org/pdf/2606.22397v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "simulation for contact-rich manipulation of soft robots using MuJoCo",
+      "llm_evidence_cn": "使用MuJoCo对软体机器人进行接触丰富操作的仿真",
+      "llm_evidence": "使用MuJoCo对软体机器人进行接触丰富操作的仿真",
+      "canonical_evidence": "使用MuJoCo对软体机器人进行接触丰富操作的仿真",
+      "llm_tldr_en": "Bridges soft robot simulation with rigid-body simulator MuJoCo via continuum-mechanics discretization, enabling contact-rich manipulation learning for tendon-driven continuum robots.",
+      "llm_tldr_cn": "软体机器人操作学习因缺乏合适的仿真基础设施而受限。本文通过连续介质力学离散化，将肌腱驱动连续体机器人原生嵌入刚体仿真器MuJoCo，统一了肌腱力、接触和动力学。与真实机器人对比验证了仿真精度，并展示了在该仿真中学习接触丰富操作策略的可行性。该工作为软体机器人操作学习提供了高效的仿真工具。",
+      "llm_tldr": "软体机器人操作学习因缺乏合适的仿真基础设施而受限。本文通过连续介质力学离散化，将肌腱驱动连续体机器人原生嵌入刚体仿真器MuJoCo，统一了肌腱力、接触和动力学。与真实机器人对比验证了仿真精度，并展示了在该仿真中学习接触丰富操作策略的可行性。该工作为软体机器人操作学习提供了高效的仿真工具。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.26048v1",
+      "source": "arxiv",
+      "title": "Deep Reinforcement Learning-Enhanced Event-Triggered Data-Driven Predictive Control for a 3D Cable-Driven Soft Robotic Arm",
+      "abstract": "Soft robots are challenging to control due to their nonlinear and time-varying dynamics. Data-enabled predictive control (DeePC) offers a model-free alternative by directly leveraging measured input-output trajectories to construct a predictive controller. However, its receding-horizon formulation requires solving a constrained optimization problem at every sampling instant, which can be computationally demanding for real-time deployment on resource-limited robotic platforms.To address this limitation, we propose an adaptive reinforcement-learning-based event-triggered DeePC (RL-ET-DeePC) framework for soft robotic control. A model-free RL policy is trained to determine when to invoke the DeePC optimizer based on the current system state representation, thereby reducing unnecessary optimization calls while preserving closed-loop performance.Simulation results show that RL-ET-DeePC reduces optimization frequency by up to 66% compared to periodic DeePC, while maintaining comparable tracking accuracy. Hardware experiments on a three-dimensional cable-driven soft robotic arm demonstrate zero-shot transfer, achieving a 34% reduction in optimization frequency with tracking accuracy comparable to periodic DeePC and more consistent performance than a static threshold-based event-triggered baseline.",
+      "authors": [
+        "Cheng Ouyang",
+        "Moeen Ul Islam",
+        "Kaixiang Zhang",
+        "Zhaojian Li",
+        "Xiaobo Tan",
+        "Dong Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-24T17:26:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.26048v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "deep reinforcement learning for soft robotic arm control",
+      "llm_evidence_cn": "深度强化学习用于软体机械臂控制",
+      "llm_evidence": "深度强化学习用于软体机械臂控制",
+      "canonical_evidence": "深度强化学习用于软体机械臂控制",
+      "llm_tldr_en": "Proposes RL-enhanced event-triggered data-driven predictive control for a 3D cable-driven soft robotic arm, improving computational efficiency.",
+      "llm_tldr_cn": "软体机器人因非线性和时变动力学难以控制。本文提出一种自适应强化学习事件触发数据驱动预测控制框架（RL-ET-DeePC），训练无模型RL策略决定何时调用优化，在保证控制性能的同时降低计算负担，适用于资源受限平台。实验验证了方法的有效性。",
+      "llm_tldr": "软体机器人因非线性和时变动力学难以控制。本文提出一种自适应强化学习事件触发数据驱动预测控制框架（RL-ET-DeePC），训练无模型RL策略决定何时调用优化，在保证控制性能的同时降低计算负担，适用于资源受限平台。实验验证了方法的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.26048v2",
+      "source": "arxiv",
+      "title": "Deep Reinforcement Learning-Enhanced Event-Triggered Data-Driven Predictive Control for a 3D Cable-Driven Soft Robotic Arm",
+      "abstract": "Soft robots are challenging to control due to their nonlinear and time-varying dynamics. Data-enabled predictive control (DeePC) offers a model-free alternative by directly leveraging measured input-output trajectories to construct a predictive controller. However, its receding-horizon formulation requires solving a constrained optimization problem at every sampling instant, which can be computationally demanding for real-time deployment on resource-limited robotic platforms. To address this limitation, we propose an adaptive reinforcement-learning-based event-triggered DeePC (RL-ET-DeePC) framework for soft robotic control. A model-free RL policy is trained to determine when to invoke the DeePC optimizer based on the current system state representation, thereby reducing unnecessary optimization calls while preserving closed-loop performance. Simulation results show that RL-ET-DeePC reduces optimization frequency by up to 66% compared to periodic DeePC, while maintaining comparable tracking accuracy. Hardware experiments on a three-dimensional cable-driven soft robotic arm demonstrate zero-shot transfer, achieving a 34% reduction in optimization frequency with tracking accuracy comparable to periodic DeePC and more consistent performance than a static threshold-based event-triggered baseline.",
+      "authors": [
+        "Cheng Ouyang",
+        "Moeen Ul Islam",
+        "Kaixiang Zhang",
+        "Zhaojian Li",
+        "Xiaobo Tan",
+        "Dong Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-06-24T17:26:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.26048v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning for soft robotic arm control",
+      "llm_evidence_cn": "用于软体机器人臂控制的强化学习",
+      "llm_evidence": "用于软体机器人臂控制的强化学习",
+      "canonical_evidence": "用于软体机器人臂控制的强化学习",
+      "llm_tldr_en": "Proposes RL-enhanced event-triggered data-driven predictive control for 3D cable-driven soft robotic arms, reducing computational cost by learning when to invoke optimization.",
+      "llm_tldr_cn": "该论文针对软体机器人控制中数据驱动预测控制（DeePC）计算负担重的问题，提出基于强化学习的事件触发机制。它训练一个无模型RL策略来决定何时调用DeePC优化，在保证控制性能的同时显著降低计算开销，适用于资源受限平台。",
+      "llm_tldr": "该论文针对软体机器人控制中数据驱动预测控制（DeePC）计算负担重的问题，提出基于强化学习的事件触发机制。它训练一个无模型RL策略来决定何时调用DeePC优化，在保证控制性能的同时显著降低计算开销，适用于资源受限平台。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
