@@ -6,35 +6,41 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-29
-- 运行时间：2026-06-29 21:57:23 UTC
+- 最新运行日期：2026-07-01
+- 运行时间：2026-07-01 21:02:32 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：1
-- 速读区：4
+- 本次总论文数：7
+- 精读区：5
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读可微物理模拟器基准测试Mosaic，速读涵盖稳定抓取、软体机器人接触操作及深度学习控制。最值得关注方向：可微物理模拟评估框架，以及避免掉落的抓取动作空间设计。建议优先阅读Mosaic基准测试了解现有可微求解器性能，再结合软体机器人控制工作探索实际应用。
-- 详情：[/202606/29/README](/202606/29/README)
+今天推荐7篇论文，精读5篇，速读2篇，重点聚焦可微物理求解器基准与抓取操作。最值得关注的是《Mosaic: A Benchmark Suite for Differentiable Physics Solvers》和《Grasp-Oriented Non-Prehensile Manipulation via Learning a Graspability Field》，均获9.0高分。建议深入阅读这两篇精读论文，它们为机器人操作与物理仿真提供了新工具。
+- 详情：[/202607/01/README](/202607/01/README)
 
 ### 精读区论文标签
-1. [Mosaic: A Benchmark Suite for Differentiable Physics Solvers](/202606/29/2606.27895v1-mosaic-a-benchmark-suite-for-differentiable-physics-solvers)  
+1. [Mosaic: A Benchmark Suite for Differentiable Physics Solvers](/202607/01/2606.27895v1-mosaic-a-benchmark-suite-for-differentiable-physics-solvers)  
    标签：评分：9.0/10、query:diff-physics
-   evidence：可微物理求解器的基准测试，支持基于梯度的控制和逆问题
+   evidence：为可微物理求解器提供基准测试套件，支持基于梯度的优化
+2. [Grasp-Oriented Non-Prehensile Manipulation via Learning a Graspability Field](/202607/01/2606.30474v1-grasp-oriented-non-prehensile-manipulation-via-learning-a-graspability-field)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：使用强化学习进行机器人操作
+3. [Stage-Transition Dense Reward Modeling for Reinforcement Learning](/202607/01/2606.31377v1-stage-transition-dense-reward-modeling-for-reinforcement-learning)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：基于专家视频的密集奖励强化学习用于机械臂操作任务
+4. [Z-1: Efficient Reinforcement Learning for Vision-Language-Action Models](/202607/01/2606.31846v1-z-1-efficient-reinforcement-learning-for-vision-language-action-models)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：提出对VLA模型进行RL后训练用于机器人操作任务
+5. [DVG-WM: Disentangled Video Generation Enables Efficient Embodied World Model for Robotic Manipulation](/202607/01/2606.32028v1-dvg-wm-disentangled-video-generation-enables-efficient-embodied-world-model-for-robotic-manipulation)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：提出解耦世界模型，分离动力学学习和视觉合成，用于机器人操作，实现高效基于模型的规划
 
 ### 速读区论文标签
-1. [Learning Stable In-Grasp Manipulation in a Non-Dropping Action Space](/202606/29/2606.28196v1-learning-stable-in-grasp-manipulation-in-a-non-dropping-action-space)  
+1. [Grounding Generative Policies in Physics: Optimization-Guided Diffusion for Robot Control](/202607/01/2606.24208v1-grounding-generative-policies-in-physics-optimization-guided-diffusion-for-robot-control)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：物理约束优化引导的扩散策略用于机器人控制
+2. [Learning Transferable Dynamics Priors from Action to World Modeling](/202607/01/2606.29501v1-learning-transferable-dynamics-priors-from-action-to-world-modeling)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：带物理约束的灵巧操作强化学习
-2. [Do Rigid-Body Simulators Dream of Soft Robots? Learning Contact-Rich Manipulation for Tendon-Driven Continuum Robots](/202606/29/2606.22397v1-do-rigid-body-simulators-dream-of-soft-robots-learning-contact-rich-manipulation-for-tendon-driven-continuum-robots)  
-   标签：评分：6.0/10、query:diff-physics
-   evidence：使用MuJoCo对软体机器人进行接触丰富操作的仿真
-3. [Deep Reinforcement Learning-Enhanced Event-Triggered Data-Driven Predictive Control for a 3D Cable-Driven Soft Robotic Arm](/202606/29/2606.26048v1-deep-reinforcement-learning-enhanced-event-triggered-data-driven-predictive-control-for-a-3d-cable-driven-soft-robotic-arm)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：深度强化学习用于软体机械臂控制
-4. [Deep Reinforcement Learning-Enhanced Event-Triggered Data-Driven Predictive Control for a 3D Cable-Driven Soft Robotic Arm](/202606/29/2606.26048v2-deep-reinforcement-learning-enhanced-event-triggered-data-driven-predictive-control-for-a-3d-cable-driven-soft-robotic-arm)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：用于软体机器人臂控制的强化学习
+   evidence：学习可迁移动力学先验用于机器人操作，与学习控制动力学模型相关
 
 
 <div class="dpr-home-promo-card">

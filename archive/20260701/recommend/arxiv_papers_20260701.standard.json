@@ -1,0 +1,303 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-01T20:58:00.154982+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 5,
+    "deep_cap": 7,
+    "deep_selected": 5,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.27895v1",
+      "source": "arxiv",
+      "title": "Mosaic: A Benchmark Suite for Differentiable Physics Solvers",
+      "abstract": "Differentiable partial differential equation (PDE) solvers underpin solver-in-the-loop ML training, gradient-based optimal control, and inverse problems, yet the practical cost of obtaining correct, usable gradients from a given solver on a given problem is largely undocumented. Integration effort, computational cost, gradient accuracy, and numerical conditioning vary widely across solvers and are discoverable only by trial and error. We introduce Mosaic, an extensible benchmarking framework for differentiable PDE solvers that standardizes access to solver gradients. Each solver is packaged as a containerized component (Tesseract) exposing a uniform gradient API regardless of language or automatic differentiation (AD) strategy, enabling researchers to evaluate, compare, and build on non-trivial physical solvers. Our evaluation of 14 solvers across fluid dynamics, structural mechanics, and heat transfer demonstrates that the benchmark surfaces practically relevant differences: order-of-magnitude variation in computational cost and Jacobian conditioning, alongside structural incompatibilities that eliminate solvers from realistic tasks entirely. Despite this variation, all solvers that produce gradients converge to similar optima, indicating that the practical barriers are memory limits, numerical stability, and setup compatibility rather than gradient accuracy alone. Mosaic is open-source and available at https://github.com/pasteurlabs/mosaic.",
+      "authors": [
+        "Andrin Rehmann",
+        "Heiko Zimmermann",
+        "Dion Häfner"
+      ],
+      "primary_category": "physics.comp-ph",
+      "categories": [
+        "physics.comp-ph",
+        "cs.LG"
+      ],
+      "published": "2026-06-26T09:38:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.27895v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark suite for differentiable physics solvers enabling gradient-based optimization",
+      "llm_evidence_cn": "为可微物理求解器提供基准测试套件，支持基于梯度的优化",
+      "llm_evidence": "为可微物理求解器提供基准测试套件，支持基于梯度的优化",
+      "canonical_evidence": "为可微物理求解器提供基准测试套件，支持基于梯度的优化",
+      "llm_tldr_en": "Introduces Mosaic, an extensible benchmarking framework for differentiable PDE solvers that standardizes gradient access via containerized components, facilitating fair comparison and evaluation of gradient quality and computational cost.",
+      "llm_tldr_cn": "可微偏微分方程求解器是求解器内循环学习、梯度最优控制和反问题的基础，但不同求解器的梯度可用性、计算代价和数值条件差异很大且难以事先评估。本文提出Mosaic，一个可扩展的可微PDE求解器基准测试框架：每个求解器打包为容器化组件（Tesseract），通过统一梯度API暴露梯度，无论其语言或自动微分策略如何。该框架能使研究人员系统评估求解器在给定问题上的梯度正确性、计算效率和数值稳定性，为标准化的可微物理求解器比较提供了有力工具，对机器人操作中的可微物理建模有重要支撑价值。",
+      "llm_tldr": "可微偏微分方程求解器是求解器内循环学习、梯度最优控制和反问题的基础，但不同求解器的梯度可用性、计算代价和数值条件差异很大且难以事先评估。本文提出Mosaic，一个可扩展的可微PDE求解器基准测试框架：每个求解器打包为容器化组件（Tesseract），通过统一梯度API暴露梯度，无论其语言或自动微分策略如何。该框架能使研究人员系统评估求解器在给定问题上的梯度正确性、计算效率和数值稳定性，为标准化的可微物理求解器比较提供了有力工具，对机器人操作中的可微物理建模有重要支撑价值。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic manipulation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.30474v1",
+      "source": "arxiv",
+      "title": "Grasp-Oriented Non-Prehensile Manipulation via Learning a Graspability Field",
+      "abstract": "Non-prehensile manipulation is often used as a preparatory step for robotic grasping, yet existing approaches typically require a predefined target object pose. In practice, however, objects admit multiple graspable configurations and the desired pose is not known in advance. We reformulate non-prehensile manipulation for grasping as optimizing an object centric graspability objective rather than reaching a specific pose. We construct a graspable set from synthesized grasps and define a graspability field that measures how suitable an object configuration is for successful grasp execution. The scalar measure provides a dense learning signal for reinforcement learning and determines when to terminate manipulation. This yields a closed-loop manipulation-to-grasp pipeline driven by a single policy. Experiments in simulation and on a real robot show that the policy reliably reconfigures objects into graspable states and transitions to grasping without external planners or manually specified stopping conditions. The predicted graspability distance correlates with real world grasp success, which indicates that the learned representation captures grasp feasibility of object configurations.",
+      "authors": [
+        "Licheng Zhong",
+        "Gim Hee Lee"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-29T15:33:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.30474v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses reinforcement learning for manipulation tasks",
+      "llm_evidence_cn": "使用强化学习进行机器人操作",
+      "llm_evidence": "使用强化学习进行机器人操作",
+      "canonical_evidence": "使用强化学习进行机器人操作",
+      "llm_tldr_en": "Proposes a graspability field learned via RL to guide non-prehensile manipulation for grasping, enabling closed-loop termination when graspable.",
+      "llm_tldr_cn": "该论文针对非抓取操作中需要预定义目标位姿的问题，提出学习一个抓取能力场，该场衡量物体位姿对成功抓取的适合度，并通过强化学习提供密集训练信号。方法无需预先指定目标位姿，而是优化抓取性目标。实验表明该方法能有效引导操作直至可抓取状态，提高了抓取成功率。",
+      "llm_tldr": "该论文针对非抓取操作中需要预定义目标位姿的问题，提出学习一个抓取能力场，该场衡量物体位姿对成功抓取的适合度，并通过强化学习提供密集训练信号。方法无需预先指定目标位姿，而是优化抓取性目标。实验表明该方法能有效引导操作直至可抓取状态，提高了抓取成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.31377v1",
+      "source": "arxiv",
+      "title": "Stage-Transition Dense Reward Modeling for Reinforcement Learning",
+      "abstract": "Reinforcement learning for long-horizon robotic manipulation is often limited by sparse and delayed rewards, while manually designing dense shaping signals is costly and brittle to changes in environments and object configurations. This work proposes Stage-Transition Dense Reward (STDR), a visual reward-learning framework that converts unstructured expert videos into logically grounded dense rewards for training RL agents from scratch. STDR leverages semantic understanding to infer a task's stage structure from demonstrations, and delivers two complementary learning signals during online training: (i) stage-transition feedback that provides goal-directed reward, and (ii) within-stage progress feedback that supplies fine-grained guidance toward completing each stage. Furthermore, an out-of-distribution (OOD) detection mechanism and a grasping regulation module are integrated to enhance robustness and prevent reward hacking. Experiments on 14 manipulation tasks across MetaWorld, ManiSkill, and Franka Kitchen show that STDR consistently improves sample efficiency and success rates over multiple baselines, and matches or surpasses handcrafted dense rewards on several challenging tasks. Real-robot evaluations further indicate that STDR assigns stable, progress-aligned rewards on successful executions while producing appropriately low rewards for failures, suggesting robustness to visual noise and better-calibrated reward assignment across settings.",
+      "authors": [
+        "Yang Yang",
+        "Bingjie Chen",
+        "Zihan Wang",
+        "Yizhe Li",
+        "Guoping Pan",
+        "Yi Cheng",
+        "Houde Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-30T09:07:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.31377v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reinforcement learning for robot arm manipulation tasks with dense reward from expert videos",
+      "llm_evidence_cn": "基于专家视频的密集奖励强化学习用于机械臂操作任务",
+      "llm_evidence": "基于专家视频的密集奖励强化学习用于机械臂操作任务",
+      "canonical_evidence": "基于专家视频的密集奖励强化学习用于机械臂操作任务",
+      "llm_tldr_en": "STDR learns dense rewards from expert videos for training RL agents from scratch on long-horizon manipulation tasks.",
+      "llm_tldr_cn": "长时域机器人操作的强化学习受限于稀疏延迟奖励，手工设计密集奖励脆弱且成本高。本文提出阶段过渡密集奖励(STDR)，从非结构化专家视频中学习逻辑驱动的密集奖励。STDR利用语义理解推断任务阶段结构，提供阶段过渡和阶段内进展两种信号。在多种操作任务上，STDR训练的RL策略从零开始显著优于稀疏奖励基线。",
+      "llm_tldr": "长时域机器人操作的强化学习受限于稀疏延迟奖励，手工设计密集奖励脆弱且成本高。本文提出阶段过渡密集奖励(STDR)，从非结构化专家视频中学习逻辑驱动的密集奖励。STDR利用语义理解推断任务阶段结构，提供阶段过渡和阶段内进展两种信号。在多种操作任务上，STDR训练的RL策略从零开始显著优于稀疏奖励基线。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.31846v1",
+      "source": "arxiv",
+      "title": "Z-1: Efficient Reinforcement Learning for Vision-Language-Action Models",
+      "abstract": "Vision-Language-Action (VLA) models offer a promising framework for robotic manipulation by connecting language instructions, visual observations, and continuous control. However, most existing policies remain limited by behavior cloning or supervised fine-tuning (SFT) from fixed demonstrations, which provides limited opportunity to improve from the policy's own failures. In this paper, we present Z-1, a reinforcement learning (RL) post-training framework for flow-based VLA models. Built on top of $π_{0.5}$, Z-1 uses only publicly released RoboCasa demonstrations for SFT and then applies a task-wise Group Relative Policy Optimization (GRPO) strategy across $24$ standard RoboCasa tasks. To improve the efficiency and stability of online optimization, Z-1 combines shared-prefix rollout construction, tree-structured trajectory branching, completion-aware reward calibration, and selective joint training of VLM and Action Expert. Across all $24$ RoboCasa tasks, Z-1 achieves an average success rate of $80.6\\%$, improving over its SFT initialization by $13.2\\%$ points and outperforms the published sota models. These results show that systematic GRPO post-training can substantially improve flow-based VLA policies without additional private demonstrations.",
+      "authors": [
+        "Lang Cao",
+        "Renhong Chen",
+        "Luyi Li",
+        "Peng Wang",
+        "Mofan Peng",
+        "Yitong Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-06-30T15:46:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.31846v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes RL post-training for VLA models on robotic manipulation tasks",
+      "llm_evidence_cn": "提出对VLA模型进行RL后训练用于机器人操作任务",
+      "llm_evidence": "提出对VLA模型进行RL后训练用于机器人操作任务",
+      "canonical_evidence": "提出对VLA模型进行RL后训练用于机器人操作任务",
+      "llm_tldr_en": "Introduces Z-1, a reinforcement learning framework that post-trains flow-based VLA policies using GRPO on 24 RoboCasa tasks, improving task success through online RL despite only SFT from demonstrations.",
+      "llm_tldr_cn": "现有VLA模型多采用行为克隆或监督微调，无法从自身失败中改进。Z-1提出一种强化学习后训练框架，在π0.5基础上，利用公开的RoboCasa演示进行SFT后，采用任务级GRPO策略对24个标准任务进行在线优化。实验表明该方法显著提升了任务成功率，证明了RL在VLA策略后训练中的有效性，为机器人操作提供了高效的学习范式。",
+      "llm_tldr": "现有VLA模型多采用行为克隆或监督微调，无法从自身失败中改进。Z-1提出一种强化学习后训练框架，在π0.5基础上，利用公开的RoboCasa演示进行SFT后，采用任务级GRPO策略对24个标准任务进行在线优化。实验表明该方法显著提升了任务成功率，证明了RL在VLA策略后训练中的有效性，为机器人操作提供了高效的学习范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.32028v1",
+      "source": "arxiv",
+      "title": "DVG-WM: Disentangled Video Generation Enables Efficient Embodied World Model for Robotic Manipulation",
+      "abstract": "Video-based embodied world models provide an appealing substrate for robotic manipulation by predicting future states, yet current approaches remain limited by a fundamental entanglement: accurately modeling dynamics typically requires low-level temporal reasoning, while producing high-resolution frames demands expansive visual synthesis according to high-level semantics. This entanglement results in slow inference speed for iterative planning or too coarse predictions to retain contact-rich details. To solve this dilemma, we present Disentangled Video Generation World Model (DVG-WM), an efficient framework that explicitly decomposes world modeling into dynamics learning and visual synthesis. Conditioned on an initial observation and a language instruction, our model first generates a plausible sequence of intermediate visual states to preview the physical interaction and refines them to obtain high-fidelity videos. Furthermore, an efficient cascading mechanism is proposed, where DVG-WM uses flow matching to directly map the dynamics to video latents, and introduces a latent degradation mechanism to regenerate contact-rich details. Experiments on LIBERO and real-world platforms demonstrate improved video quality with up to 3.97 times acceleration, validating that disentangled video generation can be an efficient embodied world model for robotic manipulation.",
+      "authors": [
+        "Ziyu Shan",
+        "Zhenyu Wu",
+        "Xiaofeng Wang",
+        "Zheng Zhu",
+        "Ziwei Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-30T17:54:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.32028v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes a disentangled world model for robotic manipulation that separates dynamics learning and visual synthesis, enabling efficient model-based planning",
+      "llm_evidence_cn": "提出解耦世界模型，分离动力学学习和视觉合成，用于机器人操作，实现高效基于模型的规划",
+      "llm_evidence": "提出解耦世界模型，分离动力学学习和视觉合成，用于机器人操作，实现高效基于模型的规划",
+      "canonical_evidence": "提出解耦世界模型，分离动力学学习和视觉合成，用于机器人操作，实现高效基于模型的规划",
+      "llm_tldr_en": "DVG-WM decomposes world modeling into dynamics learning and visual synthesis, achieving efficient and detailed predictions for model-based robot manipulation.",
+      "llm_tldr_cn": "该论文提出解耦视频生成世界模型（DVG-WM），将世界模型显式分解为动力学学习（低层时序推理）和视觉合成（高层语义生成）。通过条件化初始观察，该框架能够高效生成高质量的预测帧，同时保留接触丰富的细节，克服了现有方法速度慢或预测粗糙的问题。在机器人操作任务中，DVG-WM支持更快更准确的基于模型的规划，提升了任务成功率。",
+      "llm_tldr": "该论文提出解耦视频生成世界模型（DVG-WM），将世界模型显式分解为动力学学习（低层时序推理）和视觉合成（高层语义生成）。通过条件化初始观察，该框架能够高效生成高质量的预测帧，同时保留接触丰富的细节，克服了现有方法速度慢或预测粗糙的问题。在机器人操作任务中，DVG-WM支持更快更准确的基于模型的规划，提升了任务成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.24208v1",
+      "source": "arxiv",
+      "title": "Grounding Generative Policies in Physics: Optimization-Guided Diffusion for Robot Control",
+      "abstract": "Diffusion models sample effectively from high-dimensional, multimodal distributions, but their outputs may violate deployment constraints. For task-space robot policies, generated grasps, waypoints, or trajectories can be distributionally valid yet infeasible, violating reachability, collision-avoidance, or closed-loop executability requirements. This embodiment gap limits zero-shot deployment across robots, even when the task-space behavior itself is transferable.   We propose an inference-time optimization framework that couples the behavior generation to physical feasibility by formulating diffusion guidance as a constrained optimization problem. Our key insight is to replace the sampling perturbation in the backward process with an optimized correction, allowing hard constraints or soft penalties to be imposed during sampling without the need to retrain the diffusion model, while keeping samples close to the learned prior.   We evaluate the method on dexterous grasp synthesis with reachability and collision-avoidance constraints, and dynamic manipulation with controller-level trackability constraints. Across settings and robot embodiments, optimization-guided denoising matches the feasibility of projection- and gradient-guidance baselines while better preserving grasp quality, and improving controller-level executability and task success, with task success improving by up to 20pp. on dexterous grasping and 23pp. on visuomotor manipulation over the best baseline.",
+      "authors": [
+        "Sabrina Bodmer",
+        "René Zurbrügg",
+        "Tifanny Portela",
+        "Hao Ma",
+        "Alexandre Didier",
+        "Marco Hutter",
+        "Colin Jones",
+        "Melanie Zeilinger"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-23T06:49:30+00:00",
+      "link": "https://arxiv.org/pdf/2606.24208v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "physics-constrained optimization for robot control diffusion policies",
+      "llm_evidence_cn": "物理约束优化引导的扩散策略用于机器人控制",
+      "llm_evidence": "物理约束优化引导的扩散策略用于机器人控制",
+      "canonical_evidence": "物理约束优化引导的扩散策略用于机器人控制",
+      "llm_tldr_en": "Grounding Generative Policies in Physics: Optimization-Guided Diffusion for Robot Control ensures physical feasibility of generated trajectories by embedding constraint optimization into the diffusion process.",
+      "llm_tldr_cn": "扩散模型生成的机器人轨迹可能违反物理约束。本文提出推理时优化框架，将扩散引导转化为约束优化问题，确保生成动作满足可达性、碰撞避免等物理约束。该方法适用于机械臂操作中的抓取和轨迹生成，提升了零样本部署能力。",
+      "llm_tldr": "扩散模型生成的机器人轨迹可能违反物理约束。本文提出推理时优化框架，将扩散引导转化为约束优化问题，确保生成动作满足可达性、碰撞避免等物理约束。该方法适用于机械臂操作中的抓取和轨迹生成，提升了零样本部署能力。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.29501v1",
+      "source": "arxiv",
+      "title": "Learning Transferable Dynamics Priors from Action to World Modeling",
+      "abstract": "We study action-conditioned world modeling as a scalable way to learn transferable dynamics priors for robot learning. By pretraining a model to predict how actions drive visual scene evolution, the resulting world model captures reusable interaction dynamics beyond appearance-level video generation. Concretely, we pretrain a multi-view interactive base diffusion world model, A2World, on large-scale robot manipulation data with real action annotations. We validate the learned dynamics priors from two complementary perspectives. First, we adapt A2World into a task- or scene-specialized real-world simulator, A2World-sim, whose long-horizon rollouts support simulator-based policy evaluation and scalable what-if analysis by replacing real-robot rollouts with world model rollouts. Second, starting from the same pretrained weights, we adapt A2World into a video-action joint prediction model, A2World-policy, that predicts actions under visual and instruction conditioning. Experiments across simulation benchmarks and real-robot settings demonstrate that action-conditioned world model pretraining yields transferable dynamics priors that benefit both simulator-centric and policy-centric robot learning.",
+      "authors": [
+        "Ze Huang",
+        "Jiahui Zhang",
+        "Hairuo Liu",
+        "Chenxi Zhang",
+        "Ran Cheng",
+        "Li Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-28T17:01:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.29501v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learns transferable dynamics priors via world modeling for robot manipulation, relevant to learning dynamics models for control",
+      "llm_evidence_cn": "学习可迁移动力学先验用于机器人操作，与学习控制动力学模型相关",
+      "llm_evidence": "学习可迁移动力学先验用于机器人操作，与学习控制动力学模型相关",
+      "canonical_evidence": "学习可迁移动力学先验用于机器人操作，与学习控制动力学模型相关",
+      "llm_tldr_en": "Pretrains A2World diffusion world model on large-scale robot data to capture reusable interaction dynamics; adapted to simulator for policy evaluation.",
+      "llm_tldr_cn": "该论文通过预训练一个多视角交互基础扩散世界模型A2World，从大规模机器人操作数据中学习可迁移的动力学先验。模型能够预测动作如何驱动视觉场景演变，捕获可复用的交互动力学。作者将其适应为任务或场景专用的真实世界模拟器A2World-sim，支持长程rollout的策略评估和假设分析，替代真实机器人实验。",
+      "llm_tldr": "该论文通过预训练一个多视角交互基础扩散世界模型A2World，从大规模机器人操作数据中学习可迁移的动力学先验。模型能够预测动作如何驱动视觉场景演变，捕获可复用的交互动力学。作者将其适应为任务或场景专用的真实世界模拟器A2World-sim，支持长程rollout的策略评估和假设分析，替代真实机器人实验。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
