@@ -1,0 +1,489 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-03T21:48:26.738282+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 4,
+    "deep_cap": 7,
+    "deep_selected": 4,
+    "quick_candidates": 7,
+    "quick_skim_target": 12,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02431v1",
+      "source": "arxiv",
+      "title": "WorldSample: Closed-loop Real-robot RL with World Modelling",
+      "abstract": "Reinforcement learning (RL) can overcome the demonstration-coverage limitation of imitation learning (IL) by allowing robots to improve through trial-and-error interaction beyond the states observed in demonstrations. However, deploying RL on real robots remains constrained by high interaction costs, since each physical rollout is costly and reflects only one realized action-outcome path. To address this challenge, we propose WorldSample, a physically grounded data augmentation framework for real-robot RL that closes a real-synthetic loop between physical rollouts, world-model generation, and policy improvement. Grounded on real rollouts, WorldSample generates high-fidelity synthetic transitions through a post-trained world model, which greatly lowers the visual hallucination. Specifically, rather than simply using these transitions as real-world experience, WorldSample introduces Policy-Paced Learning (PPL) to regulate the training process through sample selection and scheduling, balancing useful augmentation against value overestimation and mitigating the hallucination-induced noise. Experiments on robot manipulation tasks involving contact-rich and precise tasks show that WorldSample improves policy success rate by 28% while reducing training steps by 59% compared with baselines. Furthermore, WorldSample improves world model visual fidelity by 19.4dB in PSNR and 0.47 in SSIM over demonstration-only post-training, validating the effectiveness of the real-synthetic loop for both policy and world model performance.",
+      "authors": [
+        "Yuquan Xue",
+        "Le Xu",
+        "Zeyi Liu",
+        "Zhenyu Wu",
+        "Zhengyi Gu",
+        "Xinyang Song",
+        "Bofang Jia",
+        "Ziwei Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-02T17:00:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.02431v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "real-robot RL with world model for sample efficiency",
+      "llm_evidence_cn": "基于世界模型的实际机器人强化学习，提升样本效率",
+      "llm_evidence": "基于世界模型的实际机器人强化学习，提升样本效率",
+      "canonical_evidence": "基于世界模型的实际机器人强化学习，提升样本效率",
+      "llm_tldr_en": "WorldSample uses a post-trained world model to generate synthetic transitions, enabling sample-efficient real-robot RL for manipulation.",
+      "llm_tldr_cn": "针对实际机器人强化学习中交互成本高的问题，提出WorldSample框架，通过后训练的世界模型生成高保真合成转移数据，形成物理滚动与合成数据之间的闭环。该方法在多种机器人操作任务上显著降低真实交互需求，同时保持策略性能。为模型基强化学习在机器人操作中的应用提供了高效范式。",
+      "llm_tldr": "针对实际机器人强化学习中交互成本高的问题，提出WorldSample框架，通过后训练的世界模型生成高保真合成转移数据，形成物理滚动与合成数据之间的闭环。该方法在多种机器人操作任务上显著降低真实交互需求，同时保持策略性能。为模型基强化学习在机器人操作中的应用提供了高效范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.00215v1",
+      "source": "arxiv",
+      "title": "ELMP: Efficient Learning for Motion Planning via Analytical Policy Gradients",
+      "abstract": "Neural Motion Planners (NMPs) enable fast reactive motion generation, but adapting them to new environments typically requires recollecting large expert datasets, which is computationally prohibitive. We propose ELMP, a framework for data-efficient adaptation via self-supervised fine-tuning. Rather than generating additional expert trajectories with expensive global planners, ELMP directly optimizes the policy through a differentiable kinematic layer using dense collision, target-reaching, and smoothness objectives. This replaces expert data generation with rapid problem sampling, reducing per-sample adaptation cost by roughly two orders of magnitude. To further support robust generalization across changing kinematic chains, we introduce a mechanism to explicitly encode tool geometry via point clouds. Benchmarked against classical and neural baselines, ELMP achieves an 84.8% average success rate with orders-of-magnitude lower cold-start latency than classical methods. In unseen environments, self-supervised fine-tuning improves success rate from 57.3% (zero-shot) to 89.8%, removing the data collection bottleneck. Our approach maintains millisecond-level inference latency and is validated on a physical Franka Emika Panda robot.",
+      "authors": [
+        "Yixiao Li",
+        "Tifanny Portela",
+        "Jordis Herrmann",
+        "René Zurbrügg",
+        "Marco Hutter"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-30T21:47:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.00215v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable kinematic layer enables analytical policy gradients for motion planning",
+      "llm_evidence_cn": "可微运动学层提供解析策略梯度用于运动规划",
+      "llm_evidence": "可微运动学层提供解析策略梯度用于运动规划",
+      "canonical_evidence": "可微运动学层提供解析策略梯度用于运动规划",
+      "llm_tldr_en": "ELMP uses a differentiable kinematic layer to fine-tune neural motion planners with self-supervised analytical gradients, reducing adaptation cost by orders of magnitude.",
+      "llm_tldr_cn": "神经运动规划器在新环境中适应需要大量专家数据。ELMP通过引入可微运动学层，设计碰撞、目标到达和平滑性目标函数，直接利用解析梯度自监督微调策略，无需额外专家数据。该方法将适应样本成本降低约两个数量级，并支持不同运动学链的泛化，展示了可微动力学在机器人运动规划中的实用价值。",
+      "llm_tldr": "神经运动规划器在新环境中适应需要大量专家数据。ELMP通过引入可微运动学层，设计碰撞、目标到达和平滑性目标函数，直接利用解析梯度自监督微调策略，无需额外专家数据。该方法将适应样本成本降低约两个数量级，并支持不同运动学链的泛化，展示了可微动力学在机器人运动规划中的实用价值。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable dynamics for robot arms",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.31101v1",
+      "source": "arxiv",
+      "title": "Efficient Sim-to-Real Transfer of World-Action Models from Synthetic Priors",
+      "abstract": "Bridging the sim-to-real gap is a core challenge in deploying learned manipulation policies. Sim-to-real learning is attractive because it can replace expensive real robot demonstrations with scalable synthetic data, yet world-action models have not previously been shown to transfer from simulation to real robotic manipulation. We study whether a world-action model can be trained from synthetic priors and deployed zero-shot in the real world. To this end, we build upon Cosmos Policy, a video diffusion model adapted for visuomotor control. We construct simulation environments with extensive domain randomization and generate demonstrations using the AnyTask motion planning pipeline. We evaluate our approach across object lifting, drawer opening, and pick-and-place tasks using ${\\sim}800$ synthetic demonstrations per task and no real demonstrations. When deployed zero-shot on a Franka Robot, our policy attains a 35\\% average success rate. To our knowledge, this represents the first successful sim-to-real transfer of a world-action model for robotic manipulation.",
+      "authors": [
+        "Zixing Wang",
+        "Kausik Sivakumar",
+        "Jinghuan Shang",
+        "Yafei Hu",
+        "Zhaoming Xie",
+        "Ran Gong",
+        "Xiaohan Zhang",
+        "Karl Schmeckpeper"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-30T03:49:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.31101v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "transfers world-action models from simulation to real via synthetic priors",
+      "llm_evidence_cn": "通过合成先验将世界-动作模型从仿真迁移到真实",
+      "llm_evidence": "通过合成先验将世界-动作模型从仿真迁移到真实",
+      "canonical_evidence": "通过合成先验将世界-动作模型从仿真迁移到真实",
+      "llm_tldr_en": "This paper demonstrates zero-shot sim-to-real transfer of a video diffusion world-action model trained on synthetic data with domain randomization, enabling policy deployment without real demonstrations.",
+      "llm_tldr_cn": "该工作针对仿真到真实世界模型迁移的难题，基于Cosmos Policy视频扩散模型，在高度随机化的仿真环境中生成演示数据，训练世界-动作模型，并在真实机器人上零样本部署。在物体抓取、抽屉打开等任务上验证了迁移效果，为减少真实数据依赖提供了新思路。",
+      "llm_tldr": "该工作针对仿真到真实世界模型迁移的难题，基于Cosmos Policy视频扩散模型，在高度随机化的仿真环境中生成演示数据，训练世界-动作模型，并在真实机器人上零样本部署。在物体抓取、抽屉打开等任务上验证了迁移效果，为减少真实数据依赖提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.00836v1",
+      "source": "arxiv",
+      "title": "From World Models to World Action Models: A Concise Tutorial for Robotics",
+      "abstract": "World models are increasingly used in embodied intelligence and generative simulation, yet their scope remains ambiguous across communities. This tutorial presents a design-space view of world models as action-conditioned predictive models that estimate the future evolution of task-relevant observations or states. We categorize existing methods into observation-space and state-space world models, comparing their trade-offs in visual fidelity, spatial structure, physical interpretability, and control usability. We further introduce world action models, which connect predicted futures with executable robot actions, and summarize four representative paradigms: imagine-then-execute, video-feature-conditioned action prediction, joint video-action modeling, and auxiliary video prediction for policy learning. The goal of this tutorial is to clarify the conceptual scope of world (action) models and provide a structured taxonomy for embodied prediction and control.",
+      "authors": [
+        "Xiaoxiong Zhang",
+        "Xiong Zeng",
+        "Wei Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-07-01T11:56:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.00836v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "provides structured overview of world models and model-based control for robotics",
+      "llm_evidence_cn": "提供世界模型和基于模型控制的结构化综述",
+      "llm_evidence": "提供世界模型和基于模型控制的结构化综述",
+      "canonical_evidence": "提供世界模型和基于模型控制的结构化综述",
+      "llm_tldr_en": "A concise tutorial categorizing world models for robotics, introducing world action models and four paradigms, useful for MBRL methods design.",
+      "llm_tldr_cn": "该教程梳理了机器人学中世界模型的设计空间，将其分为观测空间和状态空间两类，并提出了世界动作模型的概念，总结了想象-执行、视频特征条件等四种范式。为基于模型的机器人控制方法提供了系统性指导，有助于机械臂操作领域中MBRL方法的设计与选择。",
+      "llm_tldr": "该教程梳理了机器人学中世界模型的设计空间，将其分为观测空间和状态空间两类，并提出了世界动作模型的概念，总结了想象-执行、视频特征条件等四种范式。为基于模型的机器人控制方法提供了系统性指导，有助于机械臂操作领域中MBRL方法的设计与选择。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.28128v1",
+      "source": "arxiv",
+      "title": "PhysisForcing: Physics Reinforced World Simulator for Robotic Manipulation",
+      "abstract": "Video generation models have emerged as a promising paradigm for embodied world simulation. However, both general-domain video generators and robot-specific data fine-tuned models can still produce physically implausible manipulations, including discontinuous motion trajectories and inconsistent robot-object interactions, which limits their reliability as world simulators. Through extensive experiments, we find that such physical instability mainly arises from two factors: deformation of moving objects and implausible spatio-temporal correlations among interacting entities, particularly during contact. Building on this observation, we propose PhysisForcing, a scalable training framework that strengthens physical consistency by focusing supervision on physics-informative regions through joint optimization of pixel-level and semantic-level features. The framework consists of a pixel-level trajectory alignment loss, which supervises DiT features using reference point trajectories, and a semantic-level relational alignment loss, which aligns DiT features with inter-region relations extracted from a frozen video understanding encoder. Extensive experiments on R-Bench, PAI-Bench, and EZS-Bench show that PhysisForcing consistently improves embodied video generation over strong baselines, improving the Wan2.2-I2V-A14B and Cosmos3-Nano base models on R-Bench by 22.3\\% and 9.2\\% (7.1\\% and 3.7\\% over vanilla finetuning), with the Cosmos3-Nano variant attaining the best overall score. Beyond generation, as a world model under the WorldArena action-planner protocol it raises the closed-loop success rate from 16.0\\% to 24.0\\% and further improves downstream policy success, indicating that physically aligned video models yield stronger representations for robotic manipulation.",
+      "authors": [
+        "Peiwen Zhang",
+        "Yufan Deng",
+        "Shangkun Sun",
+        "Juncheng Ma",
+        "Duomin Wang",
+        "Jonas Du",
+        "Zilin Pan",
+        "Ye Huang",
+        "Hao Liang",
+        "Songyan Huang",
+        "Ruihua Zhang",
+        "Enze Xie",
+        "Ming-Yu Liu",
+        "Daquan Zhou"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-06-26T14:30:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.28128v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "physics-reinforced world simulator for dynamics learning in manipulation",
+      "llm_evidence_cn": "物理强化的世界模拟器用于操作动力学学习",
+      "llm_evidence": "物理强化的世界模拟器用于操作动力学学习",
+      "canonical_evidence": "物理强化的世界模拟器用于操作动力学学习",
+      "llm_tldr_en": "PhysisForcing strengthens physical consistency in video world models by supervising contact regions, improving reliability as dynamics models for robot manipulation.",
+      "llm_tldr_cn": "视频生成世界模型常产生物理上不真实的操作，如运动不连续或物体交互异常。PhysisForcing通过识别运动物体变形和时空关联异常，在训练中重点强化接触区域的物理一致性，使模型更可靠。实验表明该方法显著提升物理真实性，可作为学习动力学模型的有效工具，为基于模型的机器人控制提供更好的模拟环境。",
+      "llm_tldr": "视频生成世界模型常产生物理上不真实的操作，如运动不连续或物体交互异常。PhysisForcing通过识别运动物体变形和时空关联异常，在训练中重点强化接触区域的物理一致性，使模型更可靠。实验表明该方法显著提升物理真实性，可作为学习动力学模型的有效工具，为基于模型的机器人控制提供更好的模拟环境。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.00424v1",
+      "source": "arxiv",
+      "title": "Robust Operational Space Control with Conformal Disturbance Bounds for Safe Redundant Manipulation",
+      "abstract": "Redundant robotic manipulators operating in constrained and human-interactive environments require accurate task-space tracking together with rigorous safety guarantees under dynamic uncertainties. Classical operational space computed torque controller (OSCTC) relies on accurate dynamic models and degrades in the presence of disturbances. In contrast, the data-driven paradigm of residual learning approximates disturbances as functions learned from full-state measurements, which are often noisy in practice, lack rigorous theoretical guarantees, and introduce additional design complexity. This paper proposes a robust OSCTC framework that integrates an extended state observer (ESO) with conformal prediction to combine model-based robustness and data-driven adaptability. The ESO estimates lumped disturbances directly in operational space without requiring full-state measurements as in residual learning, and a robust control barrier function (CBF) is constructed to enforce safety under uncertainty. However, robust CBFs require a known disturbance-variation bound to guarantee absolute safety, which often leads to conservatism in practice. To address this limitation, we further employ a sliding-window conformal prediction mechanism to estimate the bound online in a distribution-free manner, thereby achieving practical probabilistic safety guarantees. Experiments on a 7-DoF Franka Research 3 manipulator demonstrate millimeter-level tracking accuracy and real-time safe control at 1~kHz under various disturbances.",
+      "authors": [
+        "Wenhua Liu",
+        "Fan Zhang",
+        "Qin Lin"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-07-01T04:33:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.00424v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "robust control for redundant manipulators, model-based approach",
+      "llm_evidence_cn": "冗余机械臂鲁棒控制，基于模型的方法",
+      "llm_evidence": "冗余机械臂鲁棒控制，基于模型的方法",
+      "canonical_evidence": "冗余机械臂鲁棒控制，基于模型的方法",
+      "llm_tldr_en": "Proposes robust OSCTC framework with ESO and conformal prediction for safe redundant manipulation, improving tracking under disturbances.",
+      "llm_tldr_cn": "针对冗余机械臂在不确定环境下的操作安全问题，提出一种结合扩展状态观测器和共形预测的鲁棒操作空间控制框架。该方法无需完整动力学模型即可提供安全边界，实验表明在存在扰动时仍能保持精确跟踪并满足安全约束。该工作为模型基机械臂控制提供了实用工具。",
+      "llm_tldr": "针对冗余机械臂在不确定环境下的操作安全问题，提出一种结合扩展状态观测器和共形预测的鲁棒操作空间控制框架。该方法无需完整动力学模型即可提供安全边界，实验表明在存在扰动时仍能保持精确跟踪并满足安全约束。该工作为模型基机械臂控制提供了实用工具。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.32028v2",
+      "source": "arxiv",
+      "title": "DVG-WM: Disentangled Video Generation Enables Efficient Embodied World Model for Robotic Manipulation",
+      "abstract": "Video-based embodied world models provide an appealing substrate for robotic manipulation by predicting future states, yet current approaches remain limited by a fundamental entanglement: accurately modeling dynamics typically requires low-level temporal reasoning, while producing high-resolution frames demands expansive visual synthesis according to high-level semantics. This entanglement results in slow inference speed for iterative planning or too coarse predictions to retain contact-rich details. To solve this dilemma, we present Disentangled Video Generation World Model (DVG-WM), an efficient framework that explicitly decomposes world modeling into dynamics learning and visual synthesis. Conditioned on an initial observation and a language instruction, our model first generates a plausible sequence of intermediate visual states to preview the physical interaction and refines them to obtain high-fidelity videos. Furthermore, an efficient cascading mechanism is proposed, where DVG-WM uses flow matching to directly map the dynamics to video latents, and introduces a latent degradation mechanism to regenerate contact-rich details. Experiments on LIBERO and real-world platforms demonstrate improved video quality with up to 3.97 times acceleration, validating that disentangled video generation can be an efficient embodied world model for robotic manipulation.",
+      "authors": [
+        "Ziyu Shan",
+        "Zhenyu Wu",
+        "Xiaofeng Wang",
+        "Zheng Zhu",
+        "Ziwei Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-30T17:54:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.32028v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "disentangled world model for robotic manipulation learning dynamics",
+      "llm_evidence_cn": "解耦世界模型学习动力学用于机器人操作",
+      "llm_evidence": "解耦世界模型学习动力学用于机器人操作",
+      "canonical_evidence": "解耦世界模型学习动力学用于机器人操作",
+      "llm_tldr_en": "Proposes DVG-WM, a disentangled video generation world model that separates dynamics learning from visual synthesis for efficient robotic manipulation planning.",
+      "llm_tldr_cn": "针对视频世界模型中动力学与视觉纠缠导致推理慢或预测粗糙的问题，提出解耦视频生成世界模型DVG-WM，将世界模型明确分解为动力学学习和视觉合成两部分，在机器人操作任务上实现高效规划并保留接触细节。",
+      "llm_tldr": "针对视频世界模型中动力学与视觉纠缠导致推理慢或预测粗糙的问题，提出解耦视频生成世界模型DVG-WM，将世界模型明确分解为动力学学习和视觉合成两部分，在机器人操作任务上实现高效规划并保留接触细节。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.00836v2",
+      "source": "arxiv",
+      "title": "From World Models to World Action Models: A Concise Tutorial for Robotics",
+      "abstract": "World models are increasingly used in embodied intelligence and generative simulation, yet their scope remains ambiguous across communities. This tutorial presents a design-space view of world models as action-conditioned predictive models that estimate the future evolution of task-relevant observations or states. We categorize existing methods into observation-space and state-space world models, comparing their trade-offs in visual fidelity, spatial structure, physical interpretability, and control usability. We further introduce world action models, which connect predicted futures with executable robot actions, and summarize four representative paradigms: imagine-then-execute, video-feature-conditioned action prediction, joint video-action modeling, and auxiliary video prediction for policy learning. The goal of this tutorial is to clarify the conceptual scope of world (action) models and provide a structured taxonomy for embodied prediction and control.",
+      "authors": [
+        "Xiaoxiong Zhang",
+        "Xiong Zeng",
+        "Wei Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-07-01T11:56:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.00836v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "tutorial on world models for robotics, covering dynamics learning and control",
+      "llm_evidence_cn": "机器人世界模型教程，涵盖动力学学习与控制",
+      "llm_evidence": "机器人世界模型教程，涵盖动力学学习与控制",
+      "canonical_evidence": "机器人世界模型教程，涵盖动力学学习与控制",
+      "llm_tldr_en": "A tutorial categorizing world models and introducing world action models for connecting prediction to robot actions.",
+      "llm_tldr_cn": "针对世界模型在机器人中应用范围模糊的问题，本教程提供了设计空间视角，将世界模型分类为观测空间和状态空间模型，并引入世界动作模型的概念。综述了四种代表性范式，为研究人员应用模型基方法提供了结构化指导。",
+      "llm_tldr": "针对世界模型在机器人中应用范围模糊的问题，本教程提供了设计空间视角，将世界模型分类为观测空间和状态空间模型，并引入世界动作模型的概念。综述了四种代表性范式，为研究人员应用模型基方法提供了结构化指导。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.01060v1",
+      "source": "arxiv",
+      "title": "RoboWorld: Fast and Reliable Neural Simulators for Generalist Robot Policy Evaluation",
+      "abstract": "Video world models are emerging as a scalable alternative for evaluating generalist robot policies, bypassing the physical constraints and engineering burdens of real-world deployment. However, evaluating policies with video world models remains challenging, as world-model errors can make generated rollouts unreliable and slow inference limits large-scale throughput. We introduce RoboWorld, an automated evaluation pipeline that pairs a fast autoregressive video world model with a task-progress-aware vision-language model scoring. To enable reliable long-horizon autoregressive world-model rollouts, we propose Step Forcing, which combines anchored and one-step self-forwarded contexts to reduce train--test mismatch while preserving action--observation dynamics. Together, these components enable RoboWorld to align strongly with real-world robot evaluation across tasks and environments, achieving Pearson's r = 0.989 and Spearman's \\r{ho} = 0.970.",
+      "authors": [
+        "Byeongguk Jeon",
+        "Seonghyeon Ye",
+        "JaeHyeok Doo",
+        "Sungdong Kim",
+        "Minjoon Seo",
+        "Hyungmok Son",
+        "Kimin Lee"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-01T15:22:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.01060v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "neural simulator for robot policy evaluation via world model",
+      "llm_evidence_cn": "通过世界模型进行机器人策略评估的神经模拟器",
+      "llm_evidence": "通过世界模型进行机器人策略评估的神经模拟器",
+      "canonical_evidence": "通过世界模型进行机器人策略评估的神经模拟器",
+      "llm_tldr_en": "RoboWorld introduces a fast autoregressive video world model with step-forcing and VLM scoring for reliable large-scale evaluation of generalist robot policies without real-world deployment.",
+      "llm_tldr_cn": "该工作针对视频世界模型策略评估中不可靠和推理慢的问题，提出RoboWorld管道，结合快速自回归视频世界模型与任务进度感知的视觉语言模型打分。通过提出Step Forcing策略减少训练测试不匹配，实现了大规模、高可靠性的长程策略评估。",
+      "llm_tldr": "该工作针对视频世界模型策略评估中不可靠和推理慢的问题，提出RoboWorld管道，结合快速自回归视频世界模型与任务进度感知的视觉语言模型打分。通过提出Step Forcing策略减少训练测试不匹配，实现了大规模、高可靠性的长程策略评估。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.01938v1",
+      "source": "arxiv",
+      "title": "PhysMani: Physics-principled 3D World Model for Dynamic Object Manipulation",
+      "abstract": "Manipulating fast and dynamically moving targets in unstructured 3D environments remains challenging for embodied AI. Existing visual-language-action models and world models struggle with accurate 3D geometry and physically meaningful forecasting. We propose PhysMani, a framework that couples a physics-principled 3D Gaussian world model with a future-aware action policy model. The world model learns a divergence-free Gaussian velocity field via online optimization for fast and physically grounded future dynamics prediction. The policy model integrates the predicted 3D scene future dynamics through a learnable token based cross-attention module. We introduce PhysMani-Bench, a dynamic manipulation benchmark with 16 tasks, and demonstrate a superior success rate over strong baselines in both simulation and real-world robot experiments.",
+      "authors": [
+        "Peng Yun",
+        "Shouwang Huang",
+        "Hao Li",
+        "Jinxi Li",
+        "Jianan Wang",
+        "Bo Yang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CL",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-02T09:32:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.01938v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "physics-principled world model for dynamic manipulation",
+      "llm_evidence_cn": "物理原理世界模型用于动态物体操作",
+      "llm_evidence": "物理原理世界模型用于动态物体操作",
+      "canonical_evidence": "物理原理世界模型用于动态物体操作",
+      "llm_tldr_en": "Proposes PhysMani, a physics-principled 3D Gaussian world model with future-aware policy for dynamic object manipulation, achieving superior performance on a new benchmark.",
+      "llm_tldr_cn": "针对动态物体操作中现有模型缺乏准确3D几何和物理预测的问题，提出PhysMani框架，包含物理原理的3D高斯世界模型（学习无散速度场）和未来感知策略，在16个任务的动态操作基准上取得优异效果，展示了物理知识在模型-based操作中的价值。",
+      "llm_tldr": "针对动态物体操作中现有模型缺乏准确3D几何和物理预测的问题，提出PhysMani框架，包含物理原理的3D高斯世界模型（学习无散速度场）和未来感知策略，在16个任务的动态操作基准上取得优异效果，展示了物理知识在模型-based操作中的价值。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.02092v1",
+      "source": "arxiv",
+      "title": "Guided Action Flow: Q-Guided Inference for Flow-Matching Vision-Language-Action Policies",
+      "abstract": "Flow-matching vision-language-action policies generate robot action chunks through an iterative transport process, creating an opportunity for test-time guidance without retraining the base policy. We study this opportunity in Guided Action Flow, an inference-time framework that keeps a pretrained SmolVLA policy frozen and uses a learned action-chunk critic to guide its reverse-time flow sampler. The critic is trained from real success and failure rollouts, can condition on task-description features from the frozen SmolVLA language pathway, and is used only through action gradients during sampling. We evaluate the approach on LIBERO manipulation tasks. A single-task critic improves success from 68.0% to 82.0% on one seed window and from 82.0% to 86.0% on another. A multi-family task-description critic improves validation success from 46.0% to 56.0%, while the locked held-out test gain is positive but modest, from 65.0% to 67.5%. These results support the feasibility of Q-guided inference for frozen flow-matching VLA policies, while showing that critic generalization and uncertainty-aware guidance remain the central bottlenecks.",
+      "authors": [
+        "Liuhaichen Yang",
+        "Zhuang Jiang",
+        "Chenchao Sheng",
+        "Zezhi Tang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-02T12:30:50+00:00",
+      "link": "https://arxiv.org/pdf/2607.02092v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "flow-matching policy with Q-guided inference uses action gradients for test-time control",
+      "llm_evidence_cn": "流匹配策略结合Q值引导推理，使用动作梯度进行测试时控制",
+      "llm_evidence": "流匹配策略结合Q值引导推理，使用动作梯度进行测试时控制",
+      "canonical_evidence": "流匹配策略结合Q值引导推理，使用动作梯度进行测试时控制",
+      "llm_tldr_en": "Guided Action Flow uses a learned critic to guide flow-matching VLA policy inference via action gradients, improving success rate on manipulation tasks without retraining.",
+      "llm_tldr_cn": "流匹配VLA策略生成动作块的过程是可微的。本文提出在推理时使用训练好的动作块批评器，通过动作梯度引导逆向流采样器，以提升策略性能。在LIBERO操作任务上，单任务批评器将成功率从68%提升至82%，且不重新训练基座策略。该方法展示了可微流模型在推理时优化控制的潜力，与可微控制主题相关。",
+      "llm_tldr": "流匹配VLA策略生成动作块的过程是可微的。本文提出在推理时使用训练好的动作块批评器，通过动作梯度引导逆向流采样器，以提升策略性能。在LIBERO操作任务上，单任务批评器将成功率从68%提升至82%，且不重新训练基座策略。该方法展示了可微流模型在推理时优化控制的潜力，与可微控制主题相关。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
