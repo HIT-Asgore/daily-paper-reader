@@ -1,0 +1,191 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-04T21:26:05.376540+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.31958v1",
+      "source": "arxiv",
+      "title": "Adapting Generalist Robot Policies with Semantic Reinforcement Learning",
+      "abstract": "Generalist robot policies learn a diverse repertoire of behaviors from large-scale pretraining. In principle, this makes them excellent priors for downstream adaptation via reinforcement learning (RL). In practice, however, standard RL methods leveraging this prior optimize directly over robot actions, requiring the base policy's action distribution to be close to that of a performant policy from the start. This assumption breaks down for complex or long-horizon tasks that fall outside the pretraining distribution. Our key insight is that, for sufficiently expressive generalist policies, language prompts are an effective alternative space for learning to solve such tasks: modulating language inputs elicits skills already within the policy's repertoire, which can be composed to solve tasks beyond its zero-shot capabilities. We propose Semantic Action Reinforcement Learning (SARL), which learns to optimize this prompt space through online interaction, treating the generalist policy as a controllable skill prior. Importantly, leveraging pretrained skills rather than learning new ones from scratch yields structured, semantically meaningful exploration and highly efficient online improvement, and learning to modulate prompts through experience grounds them in induced real-world behaviors for robust task-solving. Across real-world settings and simulated benchmarks, we show SARL unlocks fundamentally new capabilities -- adapting VLA behavior to solve complex, long-horizon tasks -- and significantly outperforms existing approaches for improving robot behavior in deployment.",
+      "authors": [
+        "Jagdeep Singh Bhatia",
+        "Andrew Wagenmaker",
+        "William Chen",
+        "Sergey Levine"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-30T17:00:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.31958v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "semantic RL adapts generalist policies for robotic manipulation",
+      "llm_evidence_cn": "语义强化学习适应通用机器人操纵策略",
+      "llm_evidence": "语义强化学习适应通用机器人操纵策略",
+      "canonical_evidence": "语义强化学习适应通用机器人操纵策略",
+      "llm_tldr_en": "Proposes semantic reinforcement learning that modulates language prompts to adapt generalist robot policies to complex manipulation tasks outside pretraining distribution.",
+      "llm_tldr_cn": "该论文指出通用机器人策略在预训练分布外的复杂长程任务中表现不佳，标准RL优化动作空间难以收敛。提出语义强化学习方法，将语言提示作为可学习的替代空间，通过调整语言输入触发策略库中的技能。实验表明该方法能有效适应复杂操纵任务，提高策略的泛化能力。",
+      "llm_tldr": "该论文指出通用机器人策略在预训练分布外的复杂长程任务中表现不佳，标准RL优化动作空间难以收敛。提出语义强化学习方法，将语言提示作为可学习的替代空间，通过调整语言输入触发策略库中的技能。实验表明该方法能有效适应复杂操纵任务，提高策略的泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.30318v1",
+      "source": "arxiv",
+      "title": "Chronos: A Physics-Informed Full-History Framework for Non-Markovian Long-Horizon Manipulation",
+      "abstract": "General-purpose robot policies should be modeled as dynamical systems, yet many VLA and generative imitation policies still rely on present observations or short windows. This Markovian shortcut fails in memory-dependent manipulation: identical observations can demand different actions after different histories. We present Chronos, a physics-informed full-history framework for non-Markovian long-horizon manipulation. The key idea is to elevate observation history from auxiliary context to the latent state of the policy dynamics. At each physical control step, Chronos forms one state-representative token by fusing observation and proprioception, so the token sequence is aligned one-to-one with physical time. A selective state space model propagates this causal historical state, which conditions a multimodal coarse action prior through implicit maximum likelihood estimation (IMLE). This prior is then refined by a second-order Schrodinger-inspired bridge that predicts acceleration fields, yielding smoother and more physically grounded robot motion. Across 16 simulated tasks and 4 real-world experiments, Chronos is evaluated on precision insertion, general manipulation, and memory-dependent long-horizon control. On RMBench, where success requires remembering task phase, Chronos achieves 73.6% average success, outperforming Markovian VLA baseline pi0.5 by +62.4 percentage points, a 6.6x relative gain, while using 10x fewer parameters. It also surpasses the memory VLA Mem-0 by 22.8 points while using over 30x fewer parameters. In real-world dual-arm experiments using a single RGB camera, Chronos achieves 78% average success over four tasks, including 72% on the three memory-dependent tasks, whereas pi0.5 achieves 7% overall and 0% on the memory-dependent subset. These results suggest that history should not be treated as auxiliary context, but as the latent state of the manipulation policy.",
+      "authors": [
+        "Yulin Zhou",
+        "Yimeng Wang",
+        "Nengyu Wang",
+        "Shaojia Xing",
+        "Shiyun Tu",
+        "Xiang Li",
+        "Jingkai Zhang",
+        "Ningbo Jiang",
+        "Yuankai Lin",
+        "Hua Yang",
+        "Xiangrui Zeng",
+        "Zhouping Yin"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-06-29T14:00:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.30318v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns dynamics model for robot control with physics-informed full-history",
+      "llm_evidence_cn": "学习物理信息全历史动力学模型用于机器人控制",
+      "llm_evidence": "学习物理信息全历史动力学模型用于机器人控制",
+      "canonical_evidence": "学习物理信息全历史动力学模型用于机器人控制",
+      "llm_tldr_en": "Proposes Chronos, a physics-informed framework using selective state space models to encode full observation history for non-Markovian long-horizon manipulation, outperforming window-based policies.",
+      "llm_tldr_cn": "针对现有策略因马尔可夫假设无法处理长程操作中历史依赖的问题，该论文提出Chronos框架，将观测历史提升为策略的潜在状态，利用选择性状态空间模型进行物理信息融合，在非马尔可夫长期操作任务中表现优于基于窗口的方法。",
+      "llm_tldr": "针对现有策略因马尔可夫假设无法处理长程操作中历史依赖的问题，该论文提出Chronos框架，将观测历史提升为策略的潜在状态，利用选择性状态空间模型进行物理信息融合，在非马尔可夫长期操作任务中表现优于基于窗口的方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.00148v1",
+      "source": "arxiv",
+      "title": "3D Point World Models: Point Completion Enables More Accurate Dynamics Learning",
+      "abstract": "Learning predictive models of the world enables robotic control through planning, potentially allowing robots to improvise solutions on new tasks. However, large video-based dynamics models lack explicit 3D spatial structure and suffer from geometrically inconsistent long-term rollouts with compounding errors. Emerging 3D dynamics models based on partial point clouds improve geometric consistency but remain sensitive to occlusions and accumulated prediction drift. To address these challenges, we present 3D Point World Models (3DPWM) - a task-agnostic world model that operates entirely in 3D space by first completing partial point clouds and then learning action-conditioned dynamics in this completed 3D scene. By operating on completed geometry, 3DPWM enables reliable long-horizon rollouts and more accurate cost evaluation for model-based planning while supporting adaptation to new tasks. Experiments across different robotic embodiments and tabletop manipulation benchmarks demonstrate that 3DPWM achieves significantly more reliable long-horizon rollouts (100-300+ steps), supports both open-loop and closed-loop planning, and enables successful sim-to-real transfer.",
+      "authors": [
+        "Skand Peri",
+        "Hung Nguyen",
+        "Chanho Kim",
+        "Li Fuxin",
+        "Stefan Lee"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-06-30T20:27:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.00148v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learning 3D dynamics model from point clouds for robot control planning",
+      "llm_evidence_cn": "从点云学习3D动力学模型用于机器人控制规划",
+      "llm_evidence": "从点云学习3D动力学模型用于机器人控制规划",
+      "canonical_evidence": "从点云学习3D动力学模型用于机器人控制规划",
+      "llm_tldr_en": "Presents 3D Point World Models, which complete partial point clouds and learn action-conditioned 3D dynamics for task-agnostic planning.",
+      "llm_tldr_cn": "本文针对视频动力学模型缺乏3D空间结构导致几何不一致的问题，提出3D点世界模型（3DPWM），首先补全部分点云，然后在完整3D场景中学习动作条件动力学，通过规划实现机器人控制，有效处理遮挡和累积预测漂移。",
+      "llm_tldr": "本文针对视频动力学模型缺乏3D空间结构导致几何不一致的问题，提出3D点世界模型（3DPWM），首先补全部分点云，然后在完整3D场景中学习动作条件动力学，通过规划实现机器人控制，有效处理遮挡和累积预测漂移。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.01651v1",
+      "source": "arxiv",
+      "title": "One Demonstration Is Enough for Real-World Robotic Reinforcement Learning",
+      "abstract": "Learning effective robot control policies on physical hardware is challenging due to costly data collection and the difficulty of reward specification. Prior work has incorporated demonstrations into reinforcement learning (RL), yet existing approaches either require large numbers of demonstrations or depend on continuous human intervention during training. To address these limitations, we present AutoSERL, a framework that leverages a single demonstration to fully automate the intervention process in real-world robot RL. The framework includes three complementary mechanisms to accomplish certain tasks: a sliding window intervention mechanism that continuously guides exploration to prevent local optima and unsafe deviations, a safety recovery mechanism that detects and corrects failure states via predefined trajectory recovery points, and an intervention termination criterion that automatically disables guidance once the policy can independently complete the task, preserving its exploration advantage. We evaluate AutoSERL on six contact-intensive manipulation tasks across two robot platforms, spanning insertion, hanging, and hinge-based tasks. AutoSERL consistently outperforms SERL initialized with 20 demonstrations, behavior cloning, and MILES -- a dedicated one-shot imitation learning baseline -- across all tasks while matching HIL-SERL, achieves 100% success rate on insertion tasks, and demonstrates improved robustness to positional variations, all from a single demonstration. Code and videos are available on our project website: https://autoserl.github.io/.",
+      "authors": [
+        "Yuwan Liu",
+        "Hongze Yu",
+        "Song Liu",
+        "Yuhan Wang",
+        "Junge Zhang",
+        "Yaodong Yang",
+        "Yuanpei Chen",
+        "Ceyao Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-02T03:23:40+00:00",
+      "link": "https://arxiv.org/pdf/2607.01651v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "single-demonstration robot RL for manipulation tasks",
+      "llm_evidence_cn": "利用单个演示的真实世界机器人强化学习框架",
+      "llm_evidence": "利用单个演示的真实世界机器人强化学习框架",
+      "canonical_evidence": "利用单个演示的真实世界机器人强化学习框架",
+      "llm_tldr_en": "AutoSERL enables real-world robot RL with just one demonstration by automating intervention, achieving sample-efficient manipulation learning.",
+      "llm_tldr_cn": "针对真实机器人强化学习中数据收集昂贵和奖励难以设计的问题，提出AutoSERL框架，仅需单个演示即可自动化干预过程。通过滑动窗口干预机制、安全恢复机制等引导探索，避免局部最优和不安全行为。在多种机器人操作任务上展示了高效的学习效果，大幅减少了对人工干预的依赖，提升了样本效率。",
+      "llm_tldr": "针对真实机器人强化学习中数据收集昂贵和奖励难以设计的问题，提出AutoSERL框架，仅需单个演示即可自动化干预过程。通过滑动窗口干预机制、安全恢复机制等引导探索，避免局部最优和不安全行为。在多种机器人操作任务上展示了高效的学习效果，大幅减少了对人工干预的依赖，提升了样本效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
