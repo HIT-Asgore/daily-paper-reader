@@ -6,33 +6,27 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-04
-- 运行时间：2026-07-04 21:28:59 UTC
+- 最新运行日期：2026-07-05
+- 运行时间：2026-07-05 21:27:27 UTC
 - 运行状态：成功
-- 本次总论文数：4
+- 本次总论文数：2
 - 精读区：0
-- 速读区：4
+- 速读区：2
 
 ### 今日简报（AI）
-今日速读3篇机器人强化学习论文，聚焦通用策略适应与微调。最值得关注的是语义强化学习和点云世界模型，分别提升策略迁移和动力学学习精度。建议优先关注“单演示”强化学习方法，可大幅降低真人示教成本。
-- 详情：[/202607/04/README](/202607/04/README)
+今天速读两篇7分论文，涉及非线性控制系统与移动操作统一模型。值得关注半自主神经常微分方程在控制逼近与能控性方面的进展，以及ABot-M0.5的移动与操作融合动作模型。建议深入阅读这两篇论文，并结合实际机器人或控制场景验证其方法。
+- 详情：[/202607/05/README](/202607/05/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Adapting Generalist Robot Policies with Semantic Reinforcement Learning](/202607/04/2606.31958v1-adapting-generalist-robot-policies-with-semantic-reinforcement-learning)  
+1. [Approximation and Controllability of Nonlinear Control-Affine Systems via Semiautonomous Neural Ordinary Differential Equations](/202607/05/2606.29338v1-approximation-and-controllability-of-nonlinear-control-affine-systems-via-semiautonomous-neural-ordinary-differential-equations)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：神经ODE用于可微动力学近似和可控性，可应用于机械臂
+2. [ABot-M0.5: Unified Mobility-and-Manipulation World Action Model](/202607/05/2607.00678v1-abot-m05-unified-mobility-and-manipulation-world-action-model)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：语义强化学习适应通用机器人操纵策略
-2. [3D Point World Models: Point Completion Enables More Accurate Dynamics Learning](/202607/04/2607.00148v1-3d-point-world-models-point-completion-enables-more-accurate-dynamics-learning)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：从点云学习3D动力学模型用于机器人控制规划
-3. [One Demonstration Is Enough for Real-World Robotic Reinforcement Learning](/202607/04/2607.01651v1-one-demonstration-is-enough-for-real-world-robotic-reinforcement-learning)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：利用单个演示的真实世界机器人强化学习框架
-4. [Chronos: A Physics-Informed Full-History Framework for Non-Markovian Long-Horizon Manipulation](/202607/04/2606.30318v1-chronos-a-physics-informed-full-history-framework-for-non-markovian-long-horizon-manipulation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习物理信息全历史动力学模型用于机器人控制
+   evidence：学习移动操作的世界动作模型
 
 
 <div class="dpr-home-promo-card">

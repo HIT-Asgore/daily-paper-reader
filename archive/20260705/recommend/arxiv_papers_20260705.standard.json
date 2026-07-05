@@ -1,0 +1,113 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-05T21:24:53.312866+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.29338v1",
+      "source": "arxiv",
+      "title": "Approximation and Controllability of Nonlinear Control-Affine Systems via Semiautonomous Neural Ordinary Differential Equations",
+      "abstract": "In this paper, we introduce controlled semiautonomous neural ordinary differential equations (controlled SA-NODEs) for the approximation and learning of nonlinear controlled dynamical systems. The proposed framework extends semiautonomous neural ODEs to control-affine systems while preserving reduced parameter complexity through time-independent trainable coefficients. We establish a universal approximation theorem showing that controlled SA-NODEs approximate trajectories of nonlinear controlled systems uniformly on compact sets of initial conditions and admissible controls. Under additional Sobolev and Barron regularity assumptions, we derive quantitative approximation estimates of order $\\mathcal{O}(P^{-1/2}+Q^{-1/2})$. We further prove that approximate controllability properties of the original nonlinear system are preserved under the controlled SA-NODE approximation. Numerical experiments on controlled pendulum and Duffing oscillator systems demonstrate that the proposed framework achieves accurate trajectory reconstruction and controllability performance with significantly fewer trainable parameters than classical neural ODE architectures.",
+      "authors": [
+        "Dev Prakash Jha",
+        "Raju K. George"
+      ],
+      "primary_category": "math.OC",
+      "categories": [
+        "math.OC"
+      ],
+      "published": "2026-06-28T11:13:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.29338v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "neural ODEs for differentiable dynamics approximation and controllability of nonlinear systems applicable to robot arms",
+      "llm_evidence_cn": "神经ODE用于可微动力学近似和可控性，可应用于机械臂",
+      "llm_evidence": "神经ODE用于可微动力学近似和可控性，可应用于机械臂",
+      "canonical_evidence": "神经ODE用于可微动力学近似和可控性，可应用于机械臂",
+      "llm_tldr_en": "Introduces controlled semiautonomous neural ODEs for approximating nonlinear control-affine systems with provable guarantees, enabling differentiable dynamics modeling for robotics.",
+      "llm_tldr_cn": "本文针对非线性控制仿射系统，提出受控半自主神经常微分方程（SA-NODE）框架，通过时间无关的可训练系数保持参数效率，并证明了其对非线性系统轨迹的一致逼近定理及定量估计。该方法为可微动力学建模提供了理论坚实基础，可直接用于机器人臂等控制系统的可微模拟与优化，推动可微物理在操作任务中的应用。",
+      "llm_tldr": "本文针对非线性控制仿射系统，提出受控半自主神经常微分方程（SA-NODE）框架，通过时间无关的可训练系数保持参数效率，并证明了其对非线性系统轨迹的一致逼近定理及定量估计。该方法为可微动力学建模提供了理论坚实基础，可直接用于机器人臂等控制系统的可微模拟与优化，推动可微物理在操作任务中的应用。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable dynamics for robot arms",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.00678v1",
+      "source": "arxiv",
+      "title": "ABot-M0.5: Unified Mobility-and-Manipulation World Action Model",
+      "abstract": "Mobile manipulation is a key capability for general-purpose robots, yet remains challenging for current embodied learning methods. VLA policies are typically reactive and lack explicit world modeling, while existing World Action Models (WAMs) are still poorly aligned with the structure of mobile manipulation: they operate on coarse video chunks, model entangled navigation-manipulation actions, and train inverse dynamics under supervision that does not match autoregressive inference. As a result, they often miss fine-grained contact dynamics, suffer from action-distribution conflicts, and accumulate errors over long-horizon rollouts. We propose ABot-M0.5, a new WAM built on the insight that mobile manipulation requires alignment at three levels: temporal granularity, action space, and train-test consistency. To align temporal granularity, we introduce intermediate latent actions that capture local visual state transitions and serve as an bridging action space between video latents and embodiment-specific controls. To align action space, we design a dual-level Mixture-of-Transformers architecture that disentangles both modality representations and heterogeneous action subspaces such as base movement and arm manipulation. To align inference conditions, we propose the dream-forcing training strategy that progressively trains inverse dynamics on model-predicted videos, improving train-test alignment and robustness during autoregressive prediction. Experiments on challenging mobile and fine-grained manipulation benchmarks demonstrate that ABot-M0.5 achieves state-of-the-art performance in both long-horizon task success and finegrained control accuracy. These results highlight the critical importance of granularity-aligned, action-disentangled, and inference-consistent world-action modeling.",
+      "authors": [
+        "Ronghan Chen",
+        "Yandan Yang",
+        "Zuojin Tang",
+        "Dongjie Huo",
+        "Tong Lin",
+        "Haoning Wu",
+        "Haoyun Liu",
+        "Yuzhi Chen",
+        "Lulu Zheng",
+        "Botai Yuan",
+        "Tianlun Li",
+        "Mingxin Wang",
+        "Dekang Qi",
+        "Bin Hu",
+        "Wei Mei",
+        "Yuze Xuan",
+        "Haolong Yang",
+        "Yanqing Zhu",
+        "Mu Xu",
+        "Zhiheng Ma",
+        "Xinyuan Chang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-07-01T09:21:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.00678v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learning world action models for mobile manipulation",
+      "llm_evidence_cn": "学习移动操作的世界动作模型",
+      "llm_evidence": "学习移动操作的世界动作模型",
+      "canonical_evidence": "学习移动操作的世界动作模型",
+      "llm_tldr_en": "ABot-M0.5 proposes a world action model aligned at temporal, action, and state levels for mobile manipulation.",
+      "llm_tldr_cn": "该论文指出现有世界动作模型在移动操作中存在时间粒度粗、动作耦合、逆动力学训练与推理不匹配等问题。提出ABot-M0.5，通过三级对齐（时间粒度、动作解耦、逆动力学一致）构建统一的世界动作模型，在真实移动操作任务中显著提升了长程动作预测和操作成功率。",
+      "llm_tldr": "该论文指出现有世界动作模型在移动操作中存在时间粒度粗、动作耦合、逆动力学训练与推理不匹配等问题。提出ABot-M0.5，通过三级对齐（时间粒度、动作解耦、逆动力学一致）构建统一的世界动作模型，在真实移动操作任务中显著提升了长程动作预测和操作成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
