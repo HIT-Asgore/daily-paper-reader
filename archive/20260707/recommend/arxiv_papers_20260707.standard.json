@@ -1,0 +1,497 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-07T21:36:53.354000+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 7,
+    "deep_cap": 7,
+    "deep_selected": 7,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02840v1",
+      "source": "arxiv",
+      "title": "TACO: TActile World Model as a Self-COrrector forScalable VLA Post-Training",
+      "abstract": "Vision-Language-Action (VLA) models have shown promising generalization in robotic manipulation, but they still struggle with contact-rich tasks, where minor contact perturbations can cause unrecoverable failures that are hard to detect from vision alone. Since these failures are localized rather than task-level semantic errors, tactile-aware corrective post-training offers an efficient way to improve recovery. However, scaling such supervision through human intervention is costly. Recent works have explored world models to synthesize imagined rollouts for policy improvement, but vision-only world models may produce visually plausible yet contact-inconsistent trajectories. We therefore introduce TACO, a tactile-aware world-model-driven framework for scalable VLA post-training in contact-rich manipulation. Given real robot rollouts, TACO follows a Recognize-Imagine-Label loop with a tactile-aware world model: a unified progress-action model recognizes failure-adjacent states using progress estimates, a visuo-tactile generation model imagines local correction segments, and the progress-action model labels them with executable corrective actions. To incorporate tactile corrective supervision into VLA post-training, TACO combines knowledge-insulated tactile adaptation with advantage-conditioned training, enabling the policy to learn from imagined corrections without degrading pretrained visual-language priors. These components enable TACO to convert real-world failures into imagined visuo-tactile corrections for iterative VLA post-training. Experiments on real-world contact-rich manipulation tasks show that TACO achieves 44% absolute success rate improvement over the base policy and 32% over the policy without knowledge-insulated tactile adaptation.",
+      "authors": [
+        "Shengbang Liu",
+        "Yueru Jia",
+        "Yuyang Yan",
+        "Jiaming Liu",
+        "Xinran Zhang",
+        "Qiuxuan Feng",
+        "Yandong Guo",
+        "Shiji Zhou",
+        "Boxin Shi",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-03T00:23:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.02840v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "world model for contact-rich manipulation with tactile self-correction",
+      "llm_evidence_cn": "用于接触丰富操作的触觉世界模型自校正",
+      "llm_evidence": "用于接触丰富操作的触觉世界模型自校正",
+      "canonical_evidence": "用于接触丰富操作的触觉世界模型自校正",
+      "llm_tldr_en": "TACO introduces a tactile-aware world model that generates imagined rollouts to correct VLA policy failures in contact-rich manipulation, improving recovery without human supervision.",
+      "llm_tldr_cn": "TACO提出一个触觉感知的世界模型，为接触丰富的操作任务生成想象轨迹来校正VLA策略的失败。它解决视觉世界模型可能产生接触不一致轨迹的问题。该工作直接关联基于模型的控制（世界模型用于策略改进），并聚焦于机械臂接触操作，符合复合需求18中基于模型的方法在机械臂操作中的应用主题。",
+      "llm_tldr": "TACO提出一个触觉感知的世界模型，为接触丰富的操作任务生成想象轨迹来校正VLA策略的失败。它解决视觉世界模型可能产生接触不一致轨迹的问题。该工作直接关联基于模型的控制（世界模型用于策略改进），并聚焦于机械臂接触操作，符合复合需求18中基于模型的方法在机械臂操作中的应用主题。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.04265v1",
+      "source": "arxiv",
+      "title": "HALO-WA: Hybrid-Attention Latent-Guided Online Reinforcement Learning for World-Action Models",
+      "abstract": "World-action (WA) models can generate long-horizon action chunks for general-purpose robotic manipulation, but they remain vulnerable to calibration, perception, and contact-dynamics errors in real-world precision tasks, often failing in the final few millimeters of alignment or insertion. We propose HALO-WA, a hybrid-attention latent-guided online reinforcement learning (RL) framework for WA models, which leverages latent features and action priors from the WA generation process through a lightweight actor-critic adapter to enable fast online adaptation to real deployment errors. HALO-WA introduces a hybrid-attention structure that preserves the temporal consistency of action chunks while reading task-relevant information from WA latents conditioned on visual context and end-stage correction requirements, thereby producing refined action chunks. We validate HALO-WA on four real-world precision manipulation tasks, where it improves the average success rate from 26.4\\% for WA-base to 87.1\\%, outperforming the strongest baseline by 19.2 percentage points while requiring only 45--75 minutes of online training per task. To facilitate reproducibility, we further conduct supplementary simulation experiments in RoboTwin and release the code at https://github.com/YeanRoot/HALO-WA.",
+      "authors": [
+        "Angen Ye",
+        "Weijie Ke",
+        "Xiaofeng Wang",
+        "Xinze Chen",
+        "Chaojun Ni",
+        "Guosheng Zhao",
+        "Boyuan Wang",
+        "Zheng Zhu",
+        "Junjie Xie",
+        "Dapeng Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-05T12:24:14+00:00",
+      "link": "https://arxiv.org/pdf/2607.04265v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "online RL for world-action models for manipulation",
+      "llm_evidence_cn": "面向操作的世界-动作模型的在线强化学习",
+      "llm_evidence": "面向操作的世界-动作模型的在线强化学习",
+      "canonical_evidence": "面向操作的世界-动作模型的在线强化学习",
+      "llm_tldr_en": "HALO-WA proposes a hybrid-attention latent-guided online RL framework for world-action models, enabling fast adaptation to real-world deployment errors in precision manipulation tasks through a lightweight actor-critic adapter.",
+      "llm_tldr_cn": "HALO-WA针对世界-动作模型在精密操作中因校准、感知和接触动力学误差而失败的问题，提出了一种混合注意力潜在引导的在线强化学习框架。该方法通过轻量级演员-评论家适配器利用世界模型生成的潜在特征和动作先验，实现快速在线适应真实部署误差。实验表明，该方法能有效纠正最后几毫米的对准或插入错误，显著提升了世界模型在真实世界精密任务中的鲁棒性。",
+      "llm_tldr": "HALO-WA针对世界-动作模型在精密操作中因校准、感知和接触动力学误差而失败的问题，提出了一种混合注意力潜在引导的在线强化学习框架。该方法通过轻量级演员-评论家适配器利用世界模型生成的潜在特征和动作先验，实现快速在线适应真实部署误差。实验表明，该方法能有效纠正最后几毫米的对准或插入错误，显著提升了世界模型在真实世界精密任务中的鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.03125v1",
+      "source": "arxiv",
+      "title": "Integrating Physics-Informed Neural Networks for Safe Reinforcement Learning in a 1-DoF Helicopter System",
+      "abstract": "Deep reinforcement learning (DRL) offers powerful control for industrial cyber-physical systems (ICPSs), but its \"black-box\" exploration risks violating strict hardware safety limits. Typically, these constraints are managed through complex reward shaping. In this work-in-progress paper, we embed a differentiable physics model directly into the proximal policy optimization (PPO) actor loss function. By simulating short-horizon future trajectories during training, the policy is penalized for anticipated safety violations independent of the task-reward signal. Evaluated on a simulated 1-degree-of-freedom helicopter testbed with strict pitch constraints, our physics-informed soft regularizations substantially reduce constraint violations while maintaining reliable target tracking.",
+      "authors": [
+        "Georg Schäfer",
+        "Jakob Rehrl",
+        "Stefan Huber"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-07-03T09:14:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.03125v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable physics model embedded in PPO for safe control",
+      "llm_evidence_cn": "将可微物理模型嵌入PPO以保障控制安全",
+      "llm_evidence": "将可微物理模型嵌入PPO以保障控制安全",
+      "canonical_evidence": "将可微物理模型嵌入PPO以保障控制安全",
+      "llm_tldr_en": "This work embeds a differentiable physics model directly into the PPO actor loss to penalize anticipated safety violations, reducing constraint violations on a 1-DoF helicopter system without complex reward shaping.",
+      "llm_tldr_cn": "该工作将可微物理模型直接嵌入PPO演员损失函数，通过模拟短时未来轨迹惩罚预测的安全违规，在1自由度直升机测试台上显著降低了约束违反次数。该方法无需复杂的奖励塑造即可实现安全强化学习，展示了可微物理在安全关键控制中的潜力。",
+      "llm_tldr": "该工作将可微物理模型直接嵌入PPO演员损失函数，通过模拟短时未来轨迹惩罚预测的安全违规，在1自由度直升机测试台上显著降低了约束违反次数。该方法无需复杂的奖励塑造即可实现安全强化学习，展示了可微物理在安全关键控制中的潜力。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.00678v2",
+      "source": "arxiv",
+      "title": "ABot-M0.5: Unified Mobility-and-Manipulation World Action Model",
+      "abstract": "Mobile manipulation is a key capability for general-purpose robots, yet remains challenging for current embodied learning methods. VLA policies are typically reactive and lack explicit world modeling, while existing World Action Models (WAMs) are still poorly aligned with the structure of mobile manipulation: they operate on coarse video chunks, model entangled navigation-manipulation actions, and train inverse dynamics under supervision that does not match autoregressive inference. As a result, they often miss fine-grained contact dynamics, suffer from action-distribution conflicts, and accumulate errors over long-horizon rollouts. We propose ABot-M0.5, a new WAM built on the insight that mobile manipulation requires alignment at three levels: temporal granularity, action space, and train-test consistency. To align temporal granularity, we introduce intermediate latent actions that capture local visual state transitions and serve as an bridging action space between video latents and embodiment-specific controls. To align action space, we design a dual-level Mixture-of-Transformers architecture that disentangles both modality representations and heterogeneous action subspaces such as base movement and arm manipulation. To align inference conditions, we propose the dream-forcing training strategy that progressively trains inverse dynamics on model-predicted videos, improving train-test alignment and robustness during autoregressive prediction. Experiments on challenging mobile and fine-grained manipulation benchmarks demonstrate that ABot-M0.5 achieves state-of-the-art performance in both long-horizon task success and finegrained control accuracy. These results highlight the critical importance of granularity-aligned, action-disentangled, and inference-consistent world-action modeling.",
+      "authors": [
+        "Ronghan Chen",
+        "Yandan Yang",
+        "Zuojin Tang",
+        "Dongjie Huo",
+        "Tong Lin",
+        "Haoning Wu",
+        "Haoyun Liu",
+        "Yuzhi Chen",
+        "Lulu Zheng",
+        "Botai Yuan",
+        "Tianlun Li",
+        "Mingxin Wang",
+        "Dekang Qi",
+        "Bin Hu",
+        "Wei Mei",
+        "Yuze Xuan",
+        "Haolong Yang",
+        "Yanqing Zhu",
+        "Mu Xu",
+        "Zhiheng Ma",
+        "Xinyuan Chang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-07-01T09:21:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.00678v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "unified world action model for mobile manipulation, addressing world modeling and inverse dynamics",
+      "llm_evidence_cn": "统一的移动操作世界行动模型，解决了世界建模和逆动力学问题",
+      "llm_evidence": "统一的移动操作世界行动模型，解决了世界建模和逆动力学问题",
+      "canonical_evidence": "统一的移动操作世界行动模型，解决了世界建模和逆动力学问题",
+      "llm_tldr_en": "ABot-M0.5 proposes a unified World Action Model for mobile manipulation that aligns temporal granularity, decouples navigation-manipulation, and matches inverse dynamics training to autoregressive inference.",
+      "llm_tldr_cn": "针对移动操作中世界行动模型的时间粒度粗、导航操作耦合及训练推理不一致问题，ABot-M0.5提出了一种三层次对齐的统一世界行动模型。该模型通过细粒度时间建模、解耦导航与操作动作以及匹配训练与推断分布，提升了长期 rollout 的稳定性和接触动力学捕捉能力，为模型基的机器人操作提供了有效框架。",
+      "llm_tldr": "针对移动操作中世界行动模型的时间粒度粗、导航操作耦合及训练推理不一致问题，ABot-M0.5提出了一种三层次对齐的统一世界行动模型。该模型通过细粒度时间建模、解耦导航与操作动作以及匹配训练与推断分布，提升了长期 rollout 的稳定性和接触动力学捕捉能力，为模型基的机器人操作提供了有效框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model based reinforcement learning methods for robotic arm manipulation tasks",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.00836v3",
+      "source": "arxiv",
+      "title": "From World Models to World Action Models: A Concise Tutorial for Robotics",
+      "abstract": "World models are increasingly used in embodied intelligence and generative simulation, yet their scope remains ambiguous across communities. This tutorial presents a design-space view of world models as action-conditioned predictive models that estimate the future evolution of task-relevant observations or states. We categorize existing methods into observation-space and state-space world models, comparing their trade-offs in visual fidelity, spatial structure, physical interpretability, and control usability. We further introduce world action models, which connect predicted futures with executable robot actions, and summarize four representative paradigms: imagine-then-execute, video-feature-conditioned action prediction, joint video-action modeling, and auxiliary video prediction for policy learning. The goal of this tutorial is to clarify the conceptual scope of world (action) models and provide a structured taxonomy for embodied prediction and control.",
+      "authors": [
+        "Xiaoxiong Zhang",
+        "Xiong Zeng",
+        "Wei Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "eess.SY"
+      ],
+      "published": "2026-07-01T11:56:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.00836v3",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "tutorial on world models as action-conditioned predictive models for robotics",
+      "llm_evidence_cn": "关于世界模型作为行动条件预测模型的机器人学教程",
+      "llm_evidence": "关于世界模型作为行动条件预测模型的机器人学教程",
+      "canonical_evidence": "关于世界模型作为行动条件预测模型的机器人学教程",
+      "llm_tldr_en": "This tutorial provides a design-space view of world models for robotics, categorizing them and introducing world action models for robot control.",
+      "llm_tldr_cn": "该教程系统梳理了机器人学中世界模型的设计空间，将世界模型归类为观测空间和状态空间两种类型，并引入世界行动模型概念，连接预测的未来与可执行动作。总结了四种代表性范式，为模型基机器人控制提供了明确框架。",
+      "llm_tldr": "该教程系统梳理了机器人学中世界模型的设计空间，将世界模型归类为观测空间和状态空间两种类型，并引入世界行动模型概念，连接预测的未来与可执行动作。总结了四种代表性范式，为模型基机器人控制提供了明确框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.03570v1",
+      "source": "arxiv",
+      "title": "Cross-Embodiment Robot Manipulation via a Unified Hand Action Space",
+      "abstract": "Robot manipulation policies are typically tied to specific robotic hand embodiments, limiting the transfer of learned behaviors across platforms with different kinematic structures. In this work, we propose the Unified Hand Action Space (UHAS), a sphere-based unified action representation for cross-embodiment dexterous manipulation. UHAS represents robotic hand actions as geometric deformations of a canonical sphere and uses a Cascade Inverse Kinematics (CIK) algorithm to map the shared representation to embodiment-specific joint configurations. Using reinforcement learning, we train dexterous manipulation policies directly in the proposed action space for in-hand cube reorientation tasks. We evaluate our method in both simulation and real-world experiments across multiple robotic hands, including the Allegro Hand, LEAP Hand, Shadow Hand, and MANO Human Hand. Experimental results demonstrate effective dexterous manipulation, zero-shot transfer to unseen hands, rapid finetuning across embodiments, and successful real-world deployment. Our experiments show that the proposed UHAS representation enables stable dexterous control and cross-embodiment policy transfer across robotic hands.",
+      "authors": [
+        "Luis Felipe Casas",
+        "Robert Teal",
+        "Keval Shah",
+        "Abhijit Tadepalli",
+        "Wanxin Jin",
+        "Yu Xiang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-03T19:19:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.03570v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL training of dexterous manipulation policies in a unified action space",
+      "llm_evidence_cn": "在统一动作空间中用强化学习训练灵巧操作策略",
+      "llm_evidence": "在统一动作空间中用强化学习训练灵巧操作策略",
+      "canonical_evidence": "在统一动作空间中用强化学习训练灵巧操作策略",
+      "llm_tldr_en": "Proposes a sphere-based unified action representation for cross-embodiment dexterous manipulation and uses RL to train policies for in-hand cube reorientation, demonstrating transfer across hands.",
+      "llm_tldr_cn": "本文针对不同机器人手部本体的操作策略迁移问题，提出统一手部动作空间（UHAS），将手部动作表示为球面几何变形，并通过级联逆运动学映射到具体关节配置。使用强化学习在模拟和真实环境中训练灵巧操作策略，成功实现跨本体的任务迁移。该方法为多平台操作策略的通用学习提供了新思路。",
+      "llm_tldr": "本文针对不同机器人手部本体的操作策略迁移问题，提出统一手部动作空间（UHAS），将手部动作表示为球面几何变形，并通过级联逆运动学映射到具体关节配置。使用强化学习在模拟和真实环境中训练灵巧操作策略，成功实现跨本体的任务迁移。该方法为多平台操作策略的通用学习提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.04940v1",
+      "source": "arxiv",
+      "title": "Closing the Reality Gap: Zero-Shot Sim-to-Real Deployment for Dexterous Force-Based Grasping and Manipulation",
+      "abstract": "Human-like dexterous hands with multiple fingers offer human-level manipulation capabilities but remain difficult to train the control policies that can deploy on real hardware due to contact-rich physics and imperfect actuation. We present a sim-to-real reinforcement learning method that leverages dense tactile feedback combined with joint torque sensing to explicitly regulate physical interactions. To enable effective sim-to-real transfer, we introduce (i) a computationally fast tactile simulation that computes distances between dense virtual tactile units and the object via parallel forward kinematics, providing high-rate, high-resolution touch signals needed by RL; (ii) a current-to-torque calibration that eliminates the need for torque sensors on dexterous hands by mapping motor current to joint torque; and (iii) actuator dynamics modeling with randomization to account for non-ideal torque-speed effects and bridge the actuation gaps. Using an asymmetric actor-critic PPO pipeline, we train policies entirely in simulation and deploy them directly to a five-finger hand. The resulting policies demonstrate two essential human-hand skills: (1) command-based controllable grasp force tracking and (2) reorientation of objects in the hand, both of which are robustly executed without fine-tuning on the robot. By combining tactile and torque in the observation space with scalable sensing and actuation modeling, our system provides a practical solution to achieve reliable dexterous manipulation. To our knowledge, this is the first demonstration of controllable grasping on a multi-finger dexterous hand trained entirely in simulation and transferred zero-shot on real hardware.",
+      "authors": [
+        "Zhe Zhao",
+        "Zhibin Li",
+        "Yilin Ou",
+        "Mengshi Qi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-06T11:15:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.04940v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Reinforcement learning with tactile feedback for dexterous manipulation",
+      "llm_evidence_cn": "结合触觉反馈的强化学习用于灵巧操作",
+      "llm_evidence": "结合触觉反馈的强化学习用于灵巧操作",
+      "canonical_evidence": "结合触觉反馈的强化学习用于灵巧操作",
+      "llm_tldr_en": "Presents a sim-to-real RL method with fast tactile simulation and torque calibration for zero-shot deployment of dexterous grasping and manipulation policies.",
+      "llm_tldr_cn": "本文针对灵巧手在真实环境中的控制策略难以训练的问题，提出一种结合密集触觉反馈与关节力矩传感的仿真到真实强化学习方法。通过快速触觉模拟和电流-力矩校准，实现零样本跨域部署。实验证明该方法能有效学习接触丰富的操作技能，并成功迁移到真实机器人上。",
+      "llm_tldr": "本文针对灵巧手在真实环境中的控制策略难以训练的问题，提出一种结合密集触觉反馈与关节力矩传感的仿真到真实强化学习方法。通过快速触觉模拟和电流-力矩校准，实现零样本跨域部署。实验证明该方法能有效学习接触丰富的操作技能，并成功迁移到真实机器人上。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.03964v1",
+      "source": "arxiv",
+      "title": "Worldscape-MoE: A Unified Mixture-of-Experts World Model for Scalable Heterogeneous Action Control",
+      "abstract": "World models are rapidly becoming a core infrastructure for embodied intelligence and interactive agents: they provide controllable simulators in which agents can perceive, act, forecast, and acquire scalable experience. Yet current video generation world models are still organized around isolated control interfaces, such as camera trajectories, robot actions, or hand-joint signals. This fragmentation is increasingly a scaling bottleneck. The central challenge is not the absence of controllable generators, but the lack of a unified and extensible learning framework that can absorb heterogeneous action supervision while preserving a shared model of world dynamics. In this work, we introduce Worldscape-MoE, a Mixture-of-Experts world model built on Diffusion Transformers for scalable heterogeneous action control. Our key observation is that different controls specify different interfaces to the same underlying world: although their representations differ, they constrain shared physical regularities, scene dynamics, and interaction semantics. Worldscape-MoE operationalizes this observation through modality-aware control injection, shared and control-specific experts, and a progressive MoE tuning strategy that supports continual extension to new action modalities. Experiments across locomotion, robotic manipulation, and egocentric hand control show that heterogeneous supervision improves rather than interferes with individual control capabilities. Worldscape-MoE achieves strong results on WorldArena, improves locomotion and hand-control metrics, exhibits robust out-of-distribution generalization, and demonstrates scaling behavior as additional control data and experts are integrated.",
+      "authors": [
+        "Jianjie Fang",
+        "Yongyan Xu",
+        "Ziyou Wang",
+        "Chen Gao",
+        "Yuchao Huang",
+        "Zhaolu Wang",
+        "Rongze Tang",
+        "Mingyuan Jia",
+        "Baining Zhao",
+        "Weichen Zhang",
+        "Xin Zhang",
+        "Haisheng Su",
+        "Yu Shang",
+        "Wei Wu",
+        "Xinlei Chen",
+        "Yong Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-04T17:45:38+00:00",
+      "link": "https://arxiv.org/pdf/2607.03964v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world model for heterogeneous action control and scalable learning",
+      "llm_evidence_cn": "用于异构动作控制的可扩展世界模型",
+      "llm_evidence": "用于异构动作控制的可扩展世界模型",
+      "canonical_evidence": "用于异构动作控制的可扩展世界模型",
+      "llm_tldr_en": "Worldscape-MoE introduces a unified Mixture-of-Experts world model that absorbs heterogeneous action supervision while preserving shared dynamics, enabling scalable simulators for embodied agents.",
+      "llm_tldr_cn": "现有视频生成世界模型通常针对单一控制接口，限制了可扩展性。本文提出Worldscape-MoE，一种混合专家世界模型，统一处理多种动作类型（相机轨迹、机器人动作、手部关节信号），同时保持共享世界动力学。该方法为机器人强化学习提供了可扩展的仿真环境，适合模型基控制任务。",
+      "llm_tldr": "现有视频生成世界模型通常针对单一控制接口，限制了可扩展性。本文提出Worldscape-MoE，一种混合专家世界模型，统一处理多种动作类型（相机轨迹、机器人动作、手部关节信号），同时保持共享世界动力学。该方法为机器人强化学习提供了可扩展的仿真环境，适合模型基控制任务。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.31043v2",
+      "source": "arxiv",
+      "title": "Warp RL: Reshaping Base Policy Distributions for Dynamics Adaptation",
+      "abstract": "Residual reinforcement learning adapts a pretrained robot policy by learning an additive correction to its actions. While effective when adaptation amounts to shifting the base policy's action distribution, additive corrections cannot change the distribution's shape, scale, or state-dependent geometry -- limitations we formalize as wrong variance, miscalibrated confidence, and non-uniform correction. We show that these matter under dynamics shift: when the base distribution is geometrically mismatched to the shifted system, residual correction can underperform even the unadapted policy. We propose Warp RL, a policy adaptation method that replaces additive residuals with an invertible, state-conditioned transformation of the base policy's action distribution. Instantiated with monotonic rational-quadratic spline flows (arXiv:1906.04032), Warp RL preserves identity initialization, strictly generalizes additive residual correction, and exposes a structured adaptation space suitable for both policy-gradient and gradient-free optimization. Across a variety of ManiSkill3 manipulation tasks with controlled dynamics shifts, Warp RL matches residual correction when translation is sufficient and substantially outperforms it when adaptation requires distributional reshaping. We further demonstrate that warping can replace additive correction in an off-policy sim-to-real pipeline, achieving comparable success rate with 30% faster task completion on a real-robot peg-insertion task.",
+      "authors": [
+        "Ethan Hirschowitz",
+        "Fabio Ramos"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-06-30T02:25:51+00:00",
+      "link": "https://arxiv.org/pdf/2606.31043v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning policy adaptation for dynamics shift",
+      "llm_evidence_cn": "强化学习策略适应动力学变化",
+      "llm_evidence": "强化学习策略适应动力学变化",
+      "canonical_evidence": "强化学习策略适应动力学变化",
+      "llm_tldr_en": "Warp RL replaces additive residual corrections with an invertible state-conditioned transformation of the base policy distribution, enabling better adaptation to dynamics shifts in robot control.",
+      "llm_tldr_cn": "现有残差强化学习方法在动力学变化环境下调整策略时存在局限性，无法改变策略分布的形状或尺度。本文提出Warp RL，通过可逆的状态条件变换重塑基础策略分布，而非简单添加残差，有效解决了动力学偏移下的策略适应问题。实验表明该方法在机器人控制任务中优于传统残差方法，为模型基强化学习提供了新的适应机制。",
+      "llm_tldr": "现有残差强化学习方法在动力学变化环境下调整策略时存在局限性，无法改变策略分布的形状或尺度。本文提出Warp RL，通过可逆的状态条件变换重塑基础策略分布，而非简单添加残差，有效解决了动力学偏移下的策略适应问题。实验表明该方法在机器人控制任务中优于传统残差方法，为模型基强化学习提供了新的适应机制。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.04367v1",
+      "source": "arxiv",
+      "title": "A Perception-Manipulation Robotics System for Food Cutting",
+      "abstract": "In the development of cooking robots, mastering the task of cutting is crucial. A significant challenge lies in the diverse properties of food, which necessitate distinct cutting policies and even different knives for optimal processing. This paper presents a perception-manipulation framework for food-cutting tasks. Our system features a knife selection module that utilizes force data from a preliminary fixed trial cut to select the appropriate knife for the given food. This is followed by an adaptive cutting phase using reinforcement learning (RL) to balance cutting speed and energy efficiency. In our experiments, the knife selection module achieved 100% successful rate on unseen food, and we compared the performances of fixed policy, RL policy, with human operators. Our method not only achieves high performance but also demonstrates comparable results to those of human participants.",
+      "authors": [
+        "Xinyuan Luo",
+        "Wenzhen Yuan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-05T15:51:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.04367v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses reinforcement learning for robot arm cutting task",
+      "llm_evidence_cn": "使用强化学习进行机械臂切割任务",
+      "llm_evidence": "使用强化学习进行机械臂切割任务",
+      "canonical_evidence": "使用强化学习进行机械臂切割任务",
+      "llm_tldr_en": "A perception-manipulation system for food cutting that selects the appropriate knife using force data and adapts cutting via reinforcement learning, balancing speed and energy efficiency.",
+      "llm_tldr_cn": "本文提出一个食物切割的感知-操作系统，首先通过试切力数据选择合适刀具，然后使用强化学习（RL）自适应调整切割策略以平衡速度和能耗。实验表明刀具选择模块在未知食物上达100%成功率，RL策略优于固定策略。该工作直接体现了强化学习在机械臂操作任务中的应用。",
+      "llm_tldr": "本文提出一个食物切割的感知-操作系统，首先通过试切力数据选择合适刀具，然后使用强化学习（RL）自适应调整切割策略以平衡速度和能耗。实验表明刀具选择模块在未知食物上达100%成功率，RL策略优于固定策略。该工作直接体现了强化学习在机械臂操作任务中的应用。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.04652v1",
+      "source": "arxiv",
+      "title": "KAM-WM: Kinematic Affordance Maps from Latent World Models for Robot Manipulation",
+      "abstract": "Learning manipulation from few demonstrations requires visual priors that capture not only where to interact, but also how the interaction should begin; static priors such as segmentation masks encode only the former. We present KAM-WM, a framework that extracts a coarse directional interaction cue from a frozen latent video world model without rollout or world-model fine-tuning. KAM-WM queries a Flow Matching image-to-video backbone once and interprets its single-step latent velocity as a Kinematic Affordance Map (KAM), which provides task-conditioned interaction regions and coarse motion structure. A lightweight Perceiver compresses KAM into tokens that condition a diffusion policy together with RGB observations and proprioception. Across LIBERO and RoboTwin2.0, KAM-WM reaches 90.6% average success on LIBERO and achieves 65.7% and 22.4% success rates in the Easy and Hard settings on RoboTwin2.0, respectively. Controlled comparisons against a zero-order mask prior suggest that part of the gains comes from directional information beyond spatial localization alone. These results indicate that, in the evaluated settings, a frozen video model can provide a useful first-order visual prior for control without the test-time cost of future rollout.",
+      "authors": [
+        "Xinyu Shao",
+        "Keru Zhou",
+        "Guowei Huang",
+        "Yajun Gao",
+        "Tongtong Cao",
+        "Xiu Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-06T04:17:15+00:00",
+      "link": "https://arxiv.org/pdf/2607.04652v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "extracts kinematic affordance maps from latent world models for robot manipulation",
+      "llm_evidence_cn": "从潜世界模型提取运动学可操作性图用于机器人操作",
+      "llm_evidence": "从潜世界模型提取运动学可操作性图用于机器人操作",
+      "canonical_evidence": "从潜世界模型提取运动学可操作性图用于机器人操作",
+      "llm_tldr_en": "KAM-WM extracts coarse motion cues from a frozen latent video world model to condition a diffusion policy for few-shot manipulation.",
+      "llm_tldr_cn": "针对少数演示学习操作需要捕获交互位置和运动方向的问题，KAM-WM提出从冻结的潜空间视频世界模型中提取运动学可操作性图（KAM），提供任务条件化的交互区域和粗略运动结构。通过轻量级Perceiver将KAM压缩为条件，与RGB观测和本体感知共同驱动扩散策略。实验表明，该方法在多种操作任务上显著提升了少样本学习效果。",
+      "llm_tldr": "针对少数演示学习操作需要捕获交互位置和运动方向的问题，KAM-WM提出从冻结的潜空间视频世界模型中提取运动学可操作性图（KAM），提供任务条件化的交互区域和粗略运动结构。通过轻量级Perceiver将KAM压缩为条件，与RGB观测和本体感知共同驱动扩散策略。实验表明，该方法在多种操作任务上显著提升了少样本学习效果。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
