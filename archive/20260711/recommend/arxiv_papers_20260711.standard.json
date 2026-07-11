@@ -1,0 +1,452 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-11T21:21:14.208398+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 4,
+    "deep_cap": 7,
+    "deep_selected": 4,
+    "quick_candidates": 6,
+    "quick_skim_target": 12,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2607.02840v1",
+      "source": "arxiv",
+      "title": "TACO: TActile World Model as a Self-COrrector forScalable VLA Post-Training",
+      "abstract": "Vision-Language-Action (VLA) models have shown promising generalization in robotic manipulation, but they still struggle with contact-rich tasks, where minor contact perturbations can cause unrecoverable failures that are hard to detect from vision alone. Since these failures are localized rather than task-level semantic errors, tactile-aware corrective post-training offers an efficient way to improve recovery. However, scaling such supervision through human intervention is costly. Recent works have explored world models to synthesize imagined rollouts for policy improvement, but vision-only world models may produce visually plausible yet contact-inconsistent trajectories. We therefore introduce TACO, a tactile-aware world-model-driven framework for scalable VLA post-training in contact-rich manipulation. Given real robot rollouts, TACO follows a Recognize-Imagine-Label loop with a tactile-aware world model: a unified progress-action model recognizes failure-adjacent states using progress estimates, a visuo-tactile generation model imagines local correction segments, and the progress-action model labels them with executable corrective actions. To incorporate tactile corrective supervision into VLA post-training, TACO combines knowledge-insulated tactile adaptation with advantage-conditioned training, enabling the policy to learn from imagined corrections without degrading pretrained visual-language priors. These components enable TACO to convert real-world failures into imagined visuo-tactile corrections for iterative VLA post-training. Experiments on real-world contact-rich manipulation tasks show that TACO achieves 44% absolute success rate improvement over the base policy and 32% over the policy without knowledge-insulated tactile adaptation.",
+      "authors": [
+        "Shengbang Liu",
+        "Yueru Jia",
+        "Yuyang Yan",
+        "Jiaming Liu",
+        "Xinran Zhang",
+        "Qiuxuan Feng",
+        "Yandong Guo",
+        "Shiji Zhou",
+        "Boxin Shi",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-03T00:23:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.02840v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "tactile-aware world model for policy improvement in contact-rich manipulation",
+      "llm_evidence_cn": "用于接触丰富操作任务的触觉感知世界模型",
+      "llm_evidence": "用于接触丰富操作任务的触觉感知世界模型",
+      "canonical_evidence": "用于接触丰富操作任务的触觉感知世界模型",
+      "llm_tldr_en": "TACO introduces a tactile-aware world model that corrects contact-inconsistent trajectories for improved VLA policies in contact-rich manipulation.",
+      "llm_tldr_cn": "视觉-语言-动作模型在接触丰富任务中容易因微小扰动导致失败，而纯视觉世界模型可能产生接触不一致的轨迹。本文提出TACO，一个触觉感知的世界模型，利用触觉反馈合成一致性的 rollout，用于策略后训练校正。实验表明该方法显著提升了接触任务的鲁棒性。这项工作展示了将触觉模态融入世界模型对于精细化操作的重要性。",
+      "llm_tldr": "视觉-语言-动作模型在接触丰富任务中容易因微小扰动导致失败，而纯视觉世界模型可能产生接触不一致的轨迹。本文提出TACO，一个触觉感知的世界模型，利用触觉反馈合成一致性的 rollout，用于策略后训练校正。实验表明该方法显著提升了接触任务的鲁棒性。这项工作展示了将触觉模态融入世界模型对于精细化操作的重要性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.04464v1",
+      "source": "arxiv",
+      "title": "Operator-on-F complements value-equivalence: a planning-time diagnostic for latent world models",
+      "abstract": "World-model evaluation for model-based reinforcement learning typically asks whether the learned model predicts reward and value well, which can leave planning-relevant errors in the model's latent rollouts unmeasured. We introduce a complementary diagnostic, operator-on-F, that compares a model's k-step latent pushforward to the environment's on an observable subset F, using the model's own predictor. On a TD-MPC2 size sweep over cheetah-run, reward-prediction error stays within [0.028, 0.091] for every model size - only about 3x variation - so an unnormalized reward-fit check has narrow resolution to distinguish them; the (unnormalized) Bellman residual and reward error themselves have weak relationships with return (Spearman -0.10 and -0.30). Operator error spans 0.28 to 2.62 over the same sizes. At 317M the operator error is 2.62 - an order of magnitude above the 0.28-0.36 cluster - and the planning return collapses to 0.9, while reward-prediction error (0.091) is the highest of the five but stays within the same small [0.028, 0.091] range as the rest of the sweep. The rank correlation between operator error and return loss is -0.90 (anchor-bootstrap 95% CI [-0.90, -0.70] at n=5 sizes; leave-one-out removal of any single size leaves it at -0.80 or stronger). The operator also returns informative, architecture-discriminating estimates in a cross-architecture comparison between TD-MPC2 and a pure-SSL latent world model. The operator diagnostic complements value-equivalence rather than replacing it.",
+      "authors": [
+        "Donna Vakalis"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-05T19:09:07+00:00",
+      "link": "https://arxiv.org/pdf/2607.04464v1",
+      "tags": [
+        "keyword:mbrl-manip",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diagnostic for latent world models in model-based RL, directly relevant to sample efficiency",
+      "llm_evidence_cn": "模型基强化学习中潜在世界模型的诊断方法，直接相关于样本效率",
+      "llm_evidence": "模型基强化学习中潜在世界模型的诊断方法，直接相关于样本效率",
+      "canonical_evidence": "模型基强化学习中潜在世界模型的诊断方法，直接相关于样本效率",
+      "llm_tldr_en": "Introduces operator-on-F, a diagnostic that compares latent pushforward to environment, revealing planning-relevant errors in world models for model-based RL, applied to TD-MPC2.",
+      "llm_tldr_cn": "该论文提出了一种名为operator-on-F的诊断方法，用于模型基强化学习中潜在世界模型的评估。它通过比较模型对可观察子集的k步潜在推进行为与环境真实动态，揭示规划相关的误差。在TD-MPC2模型规模扫掠实验中，该方法有效区分了不同规模模型的表现，而传统奖励预测误差无法提供足够分辨率。该工具可提升模型基RL的样本效率和规划可靠性，适用于连续控制任务（如机器人操作）。",
+      "llm_tldr": "该论文提出了一种名为operator-on-F的诊断方法，用于模型基强化学习中潜在世界模型的评估。它通过比较模型对可观察子集的k步潜在推进行为与环境真实动态，揭示规划相关的误差。在TD-MPC2模型规模扫掠实验中，该方法有效区分了不同规模模型的表现，而传统奖励预测误差无法提供足够分辨率。该工具可提升模型基RL的样本效率和规划可靠性，适用于连续控制任务（如机器人操作）。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.04927v1",
+      "source": "arxiv",
+      "title": "DSWAM: A Dual-System World Action Foundation Model for Fine-Grained Robot Manipulation",
+      "abstract": "World Action Models (WAMs) provide a promising alternative to Vision-Language-Action (VLA) policies by using video-based world modeling as dense supervision for robot action learning. Existing WAMs excel at physically grounded execution, but typically lack the explicit language-level planning interface in VLM-based VLAs for decomposing coarse instructions. Such decomposition becomes important when household tasks involve complex multi-step goals, where coarse user commands need to be converted into sequences of fine-grained executable subtasks. Meanwhile, the field still lacks a fair real-robot comparison between VLA and WAM execution capabilities, since existing systems often differ in data, robot embodiments, and task protocols. To address both the decomposition gap and the need for a controlled WAM-VLA comparison, we introduce DSWAM, a Dual-System World Action Foundation Model for fine-grained robot manipulation. DSWAM keeps a System 1 WAM executor as the default control path and optionally activates a System 2 vision-language subtask planner only when task decomposition is useful. The planner predicts executable subtasks from short-term visual history and a global task prompt, while the WAM executor performs world-aware action generation for each instruction or subtask. The executor is trained with action prediction and video co-training, but inference directly predicts action chunks without explicit future video generation. To make this execution path practical on real robots, we further integrate TensorRT acceleration, asynchronous execution, and real-time chunking (RTC) so that policy queries do not block robot control. To provide a fair real-robot comparison with VLA policies, we build and evaluate DSWAM under the DeMaVLA real-world deformable manipulation setting with matched robot platform, pretraining data, post-training data, and evaluation criteria.",
+      "authors": [
+        "Jian Zhu",
+        "Jianjun Zhang",
+        "Taiyi Su",
+        "Tianbin Liu",
+        "Zhangyuan Wang",
+        "Kai Xie",
+        "Zitai Huang",
+        "Chong Ma",
+        "Youzhang He",
+        "Tianjian Wang",
+        "Hanyang Wang",
+        "Weihao Ding",
+        "Yi Xu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-06T10:57:01+00:00",
+      "link": "https://arxiv.org/pdf/2607.04927v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world action model for robot manipulation using video-based world modeling",
+      "llm_evidence_cn": "基于视频世界建模的机器人操作世界动作模型",
+      "llm_evidence": "基于视频世界建模的机器人操作世界动作模型",
+      "canonical_evidence": "基于视频世界建模的机器人操作世界动作模型",
+      "llm_tldr_en": "DSWAM proposes a dual-system world action model that combines video-based world modeling with language-level planning for fine-grained robot manipulation.",
+      "llm_tldr_cn": "现有世界动作模型缺乏语言级规划能力，难以处理复杂多步任务。本文提出DSWAM，一个双系统世界动作基础模型，通过视频世界模型提供密集监督，并引入语言级规划接口以分解指令。在真实机器人上进行了VLA与WAM的公平对比，展示了精细化操作的优越性能。该方法为机器人操作中的模型基学习提供了新范式。",
+      "llm_tldr": "现有世界动作模型缺乏语言级规划能力，难以处理复杂多步任务。本文提出DSWAM，一个双系统世界动作基础模型，通过视频世界模型提供密集监督，并引入语言级规划接口以分解指令。在真实机器人上进行了VLA与WAM的公平对比，展示了精细化操作的优越性能。该方法为机器人操作中的模型基学习提供了新范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model based reinforcement learning methods for robotic arm manipulation tasks",
+      "matched_requirement_id": "req-15",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.07252v1",
+      "source": "arxiv",
+      "title": "Safe Reinforcement Learning using Ideas from Model Predictive Control",
+      "abstract": "Reinforcement learning (RL) enables the synthesis of control policies directly from data, making it highly appealing for complex cyber-physical systems (CPSs) and robotics. A persistent challenge, however, is ensuring strict, hard safety constraints during the active learning phase. In real-world physical systems, violating mechanical limits can cause irreversible damage, necessitating that exploration remains strictly within safe operational regions. We propose a generalized framework that combines the adaptive, high-performance nature of deep reinforcement learning (DRL) with the formal safety guarantees of model predictive control (MPC). Using a mathematical model of the system dynamics, offline MPC computations define a feasible state-action space, representing all safe combinations of system states and control inputs that guarantee constraint satisfaction. During training and deployment, the RL agent's instantaneous actions are projected onto this globally verified feasible set via a safety filter. We systematically evaluate our generalized approach on a non-linear 1-DoF laboratory testbed, demonstrating successful exploration and stable policy convergence on physical hardware.",
+      "authors": [
+        "Georg Schäfer",
+        "Jakob Rehrl",
+        "Stefan Huber",
+        "Simon Hirlaender"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.RO"
+      ],
+      "published": "2026-07-08T10:35:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.07252v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "combines deep RL with MPC for safe control, a model-based approach",
+      "llm_evidence_cn": "结合深度强化学习和模型预测控制实现安全控制，属于基于模型的方法",
+      "llm_evidence": "结合深度强化学习和模型预测控制实现安全控制，属于基于模型的方法",
+      "canonical_evidence": "结合深度强化学习和模型预测控制实现安全控制，属于基于模型的方法",
+      "llm_tldr_en": "Proposes a framework that integrates deep RL with MPC to enforce hard safety constraints using a dynamics model, enabling safe exploration in robotics.",
+      "llm_tldr_cn": "强化学习在实际机器人应用中面临严格安全约束的挑战。本文提出一个通用框架，将深度强化学习的适应性同模型预测控制的形式化安全保证结合。通过离线MPC基于系统动力学模型定义可行状态-动作空间，确保在线探索始终在安全区域内。实验证明该方法在保持高性能的同时满足安全约束。",
+      "llm_tldr": "强化学习在实际机器人应用中面临严格安全约束的挑战。本文提出一个通用框架，将深度强化学习的适应性同模型预测控制的形式化安全保证结合。通过离线MPC基于系统动力学模型定义可行状态-动作空间，确保在线探索始终在安全区域内。实验证明该方法在保持高性能的同时满足安全约束。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.04546v1",
+      "source": "arxiv",
+      "title": "Mask2Real-WM: Segmentation Masks as a Sim-to-Real Bridge for Controllable Dexterous World Models",
+      "abstract": "Action-conditioned world models allow robots to predict the future consequences of candidate actions without additional physical interaction, supporting policy evaluation, planning, and data augmentation. We present Mask2Real-WM, a two-stage action-conditioned world model for dexterous manipulation that decouples pixel prediction into a dynamics model and a rendering model. The dynamics model predicts future segmentation masks from past masks and 23-DoF action sequences. The rendering model maps the predicted masks to photorealistic RGB using a ControlNet-augmented Stable Video Diffusion backbone. The smaller sim-to-real gap in segmentation space enables the dynamics model to benefit from large-scale pretraining on over 50 h of synthetic simulation data, followed by fine-tuning on fewer than 2.5 h of real demonstrations. Experiments on a dexterous pick-and-place benchmark show that mask conditioning and simulation pretraining are both required for per-DoF action controllability across all 23 degrees of freedom. In contrast, monolithic baselines capture broad hand and end-effector trajectories but do not reliably reflect fine-grained, per-joint action effects.",
+      "authors": [
+        "Riccardo O. Feingold",
+        "Davide Liconti",
+        "Chenyu Yang",
+        "Robert K. Katzschmann"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-05T23:29:23+00:00",
+      "link": "https://arxiv.org/pdf/2607.04546v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "action-conditioned world model for dexterous manipulation, learns dynamics in segmentation space",
+      "llm_evidence_cn": "使用分割掩码作为中间表示学习灵巧操作的动力学模型",
+      "llm_evidence": "使用分割掩码作为中间表示学习灵巧操作的动力学模型",
+      "canonical_evidence": "使用分割掩码作为中间表示学习灵巧操作的动力学模型",
+      "llm_tldr_en": "Mask2Real-WM decouples world modeling into segmentation dynamics and RGB rendering, enabling scalable pretraining on large segmentation data for dexterous manipulation.",
+      "llm_tldr_cn": "动作条件世界模型在灵巧操作中面临模拟到现实的差距。Mask2Real-WM将像素预测分解为动力学模型（预测未来分割掩码）和渲染模型（生成逼真RGB）。分割空间较小的模拟-真实差距允许在50小时以上分割数据上大规模预训练动力学模型，提升了世界模型的泛化能力。",
+      "llm_tldr": "动作条件世界模型在灵巧操作中面临模拟到现实的差距。Mask2Real-WM将像素预测分解为动力学模型（预测未来分割掩码）和渲染模型（生成逼真RGB）。分割空间较小的模拟-真实差距允许在50小时以上分割数据上大规模预训练动力学模型，提升了世界模型的泛化能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.06262v1",
+      "source": "arxiv",
+      "title": "Optimal Transport Q-Learning for Flow Policy Steering and Acceleration",
+      "abstract": "Diffusion and flow policies have recently demonstrated remarkable performance in robotic applications by accurately capturing multimodal robot trajectory distributions, especially in the context of vision language action (VLA) models. However, high quality policy performance also requires fast inference and high quality demonstrations, which are often hard to get. Lack of these leads to suboptimal policy behaviors and failure under distribution shifts. In this work we address the problem of fine-tuning and accelerating suboptimal flow-based policies using the robot's experience through RL post-training. We introduce Optimal Transport Q-Learning (OTQL), a new method for finetuning flow policies using advantage weighted conditional optimal transport flow matching. OTQL can finetune and accelerate flows with an interaction budget of 50-60 episodes while avoiding computationally expensive distillation in simulation and real-world robot tasks. Our results show that OTQL post-trains flow policies using the robot's own experience, increasing average success percentage of single-task policies from 36% to 86% and of a pre-trained VLA from 38% to 76% while reducing the number of inference steps per action generation by 70%.",
+      "authors": [
+        "Andreas Sochopoulos",
+        "Esmeralda S. Whitammer",
+        "Nikolaos Tsagkas",
+        "João Moura",
+        "Michael Gienger",
+        "Sethu Vijayakumar"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-07T13:29:35+00:00",
+      "link": "https://arxiv.org/pdf/2607.06262v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL post-training for flow policies in VLA models",
+      "llm_evidence_cn": "使用强化学习后训练优化流策略，应用于机械臂操作",
+      "llm_evidence": "使用强化学习后训练优化流策略，应用于机械臂操作",
+      "canonical_evidence": "使用强化学习后训练优化流策略，应用于机械臂操作",
+      "llm_tldr_en": "Proposes Optimal Transport Q-Learning to fine-tune suboptimal flow policies using robot experience via RL post-training, improving performance and robustness under distribution shifts for robotic manipulation.",
+      "llm_tldr_cn": "针对流策略在机器人操作中因缺乏高质量演示和推理速度慢而性能不佳的问题，提出最优传输Q学习（OTQL）方法，通过强化学习后训练，利用机器人自身经验对预训练的流策略进行微调和加速，实验表明该方法能有效提升策略性能和应对分布偏移的能力。",
+      "llm_tldr": "针对流策略在机器人操作中因缺乏高质量演示和推理速度慢而性能不佳的问题，提出最优传输Q学习（OTQL）方法，通过强化学习后训练，利用机器人自身经验对预训练的流策略进行微调和加速，实验表明该方法能有效提升策略性能和应对分布偏移的能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.05468v1",
+      "source": "arxiv",
+      "title": "Learning 4D Geometric Priors for Inference-Efficient World Action Models",
+      "abstract": "World Action Models (WAMs) have shown strong potential for robotic manipulation by jointly modeling visual future dynamics and executable action sequences. However, existing video-action co-training methods primarily optimize appearance-oriented video latents, which may insufficiently capture the temporally evolving geometry required for precise manipulation. We propose MECo-WAM, a Multi-Expert Co-Training World Action Model that injects action-relevant 4D geometric priors into video-action representations while preserving the original lightweight inference graph. During training, MECo-WAM combines video and action experts with a lightweight 4D expert supervised by relational targets from a frozen VGGT encoder. Asymmetric expert visibility prevents non-causal shortcuts from auxiliary geometry to action generation. To transfer geometric knowledge into the deployed video-action pathway, we introduce decayed 4D read-mask attention, which provides restricted current-frame geometric guidance early in training and progressively removes this dependency. We further propose action-aware temporal geometric distillation, which aligns within-frame geometric relations and their temporal evolution while emphasizing visual regions most relevant to robot actions. At deployment, all auxiliary 4D components are removed. Experiments on LIBERO (98.2%), RoboTwin 2.0 (92.6%), and challenging real-world manipulation tasks show that MECo-WAM improves manipulation performance without increasing inference cost.",
+      "authors": [
+        "Jianjun Zhang",
+        "Jian Zhu",
+        "Taiyi Su",
+        "Chong Ma",
+        "Zitai Huang",
+        "Yi Xu",
+        "Hanli Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-06T07:10:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.05468v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learns dynamics model via 4D geometric priors for manipulation",
+      "llm_evidence_cn": "通过学习4D几何先验来构建动力学模型用于操作",
+      "llm_evidence": "通过学习4D几何先验来构建动力学模型用于操作",
+      "canonical_evidence": "通过学习4D几何先验来构建动力学模型用于操作",
+      "llm_tldr_en": "MECo-WAM injects 4D geometric priors into world action models to capture temporally evolving geometry, improving inference efficiency for robotic manipulation.",
+      "llm_tldr_cn": "现有世界动作模型主要优化外观导向的视频潜在表示，难以捕获操作所需的时间演化几何信息。为此提出MECo-WAM，通过多专家协同训练向视频动作表示注入动作相关的4D几何先验，同时保持轻量推理图。实验表明该方法在多项操作任务上提升了预测精度和效率，为世界动作模型部署提供了有效方案。",
+      "llm_tldr": "现有世界动作模型主要优化外观导向的视频潜在表示，难以捕获操作所需的时间演化几何信息。为此提出MECo-WAM，通过多专家协同训练向视频动作表示注入动作相关的4D几何先验，同时保持轻量推理图。实验表明该方法在多项操作任务上提升了预测精度和效率，为世界动作模型部署提供了有效方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.06388v1",
+      "source": "arxiv",
+      "title": "Learning to Throw Objects Safely in Multi-Obstacle Environments",
+      "abstract": "Robotic throwing enables fast and efficient object placement beyond the robot's immediate workspace, but reliable throwing in cluttered environments remains underexplored. Existing approaches, such as TossingBot, learn throwing strategies from visual input but assume obstacle-free settings. In this paper, we address the problem of throwing objects into a target basket while avoiding obstacles placed randomly in the scene. We introduce a potential field state representation that compactly encodes both basket attraction and obstacle repulsion on a fixed-size grid, enabling reinforcement learning (RL) policies to generalize across arbitrary numbers and configurations of obstacles. The policy is initialized from kinesthetic demonstrations and optimized in simulation using three state-of-the-art RL algorithms (SAC, DDPG, TD3). Among these, SAC achieves the most consistent performance across scenarios. We compare the potential field representation against explicit state encodings and demonstrate that it achieves higher success rates and better scalability to unseen obstacle configurations. Real-robot experiments with unseen throwable objects confirm robust sim-to-real transfer, achieving up to $90\\%$ success in cluttered scenes. These results demonstrate that PFR provides a practical and robust representation for safe and efficient robotic throwing in unstructured environments. A video showcasing our experiments is available at: https://youtu.be/ZZnJf8ua2dE",
+      "authors": [
+        "Mohammadreza Kasaei",
+        "Klemen Voncina",
+        "Hamidreza Kasaei"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-07T15:24:12+00:00",
+      "link": "https://arxiv.org/pdf/2607.06388v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL for robotic throwing with obstacle avoidance",
+      "llm_evidence_cn": "强化学习用于带避障的机器人投掷",
+      "llm_evidence": "强化学习用于带避障的机器人投掷",
+      "canonical_evidence": "强化学习用于带避障的机器人投掷",
+      "llm_tldr_en": "Uses potential field representation with RL to learn safe throwing in cluttered environments, generalizing to arbitrary obstacle configurations.",
+      "llm_tldr_cn": "该文针对机器人投掷在杂乱环境中避障的挑战，提出一种势场状态表示，将篮筐吸引与障碍物排斥编码为固定大小网格，结合强化学习训练策略。策略从示教初始化并在仿真中优化，能够泛化至任意数量和配置的障碍物。实验验证了该方法在安全投掷任务中的有效性。",
+      "llm_tldr": "该文针对机器人投掷在杂乱环境中避障的挑战，提出一种势场状态表示，将篮筐吸引与障碍物排斥编码为固定大小网格，结合强化学习训练策略。策略从示教初始化并在仿真中优化，能够泛化至任意数量和配置的障碍物。实验验证了该方法在安全投掷任务中的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.06559v1",
+      "source": "arxiv",
+      "title": "RynnWorld-4D: 4D Embodied World Models for Robotic Manipulation",
+      "abstract": "Robotic manipulation in the open world requires not only recognizing what a scene looks like, but also anticipating how its 3D structure moves under interaction. We argue that synchronized RGB, depth, and optical flow, namely RGB-DF, provide a physically grounded representation that captures the underlying 4D dynamics of a scene. Compared to 2D pixel videos, this multi-modal synergy aligns visual appearance with geometric structure and temporal motion, creating a representation space significantly closer to the low-level end-effector actions demanded by robotic systems, thereby narrowing the gap between world prediction and policy learning. Building on this insight, we introduce RynnWorld-4D, a generative model that co-produces future RGB frames, depth maps, and optical flow from a single RGB-D image and a language instruction within one unified diffusion process. This 4D world model features a tri-branch architecture that integrates cross-modal attention with frame-wise 3D RoPE, ensuring that appearance, geometry, and motion evolve consistently. To supply training data at scale, we curate Rynn4DDataset 1.0, a massive dataset of over 254.4 million frames across egocentric human and robotic manipulation videos with high-quality pseudo-labels for depth and optical flow. We further propose RynnWorld-4D-Policy, an inverse dynamics head that consumes the internal 4D representations of RynnWorld-4D in a single forward pass, bypassing expensive multi-step denoising, to output robot actions in a closed-loop manner. Experiments show that RynnWorld-4D produces temporally and spatially coherent 4D predictions, and that RynnWorld-4D-Policy achieves state-of-the-art performance on real-world dexterous bimanual manipulation tasks, particularly excelling in tasks demanding spatial precision and temporal coordination.",
+      "authors": [
+        "Haoyu Zhao",
+        "Xingyue Zhao",
+        "Siteng Huang",
+        "Xin Li",
+        "Deli Zhao",
+        "Zhongyu Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-07T17:58:15+00:00",
+      "link": "https://arxiv.org/pdf/2607.06559v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "proposes 4D world model predicting future RGB, depth, and optical flow for manipulation",
+      "llm_evidence_cn": "提出4D世界模型预测未来RGB、深度和光流用于操作",
+      "llm_evidence": "提出4D世界模型预测未来RGB、深度和光流用于操作",
+      "canonical_evidence": "提出4D世界模型预测未来RGB、深度和光流用于操作",
+      "llm_tldr_en": "RynnWorld-4D is a generative model that co-produces future RGB frames, depth maps, and optical flow from current observations, learning a physically grounded 4D dynamics representation for robotic manipulation.",
+      "llm_tldr_cn": "针对开放世界机器人操作需要预测场景在交互下的4D动态，提出RynnWorld-4D生成模型，同步预测未来RGB、深度和光流，利用多模态协同缩小世界预测与策略学习之间的差距。实验表明该4D表示能有效支撑下游操作策略。",
+      "llm_tldr": "针对开放世界机器人操作需要预测场景在交互下的4D动态，提出RynnWorld-4D生成模型，同步预测未来RGB、深度和光流，利用多模态协同缩小世界预测与策略学习之间的差距。实验表明该4D表示能有效支撑下游操作策略。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.06988v1",
+      "source": "arxiv",
+      "title": "WAM-TTT: Steering World-Action Models by Watching Human Play at Test Time",
+      "abstract": "Steering robot foundation models (RFMs) toward new task variants or user-preferred behaviors remains challenging, often requiring additional robot demonstrations, task-specific fine-tuning, or long-context conditioning. We present WAM-TTT, a test-time training framework for steering world action models from raw human videos. Rather than treating human videos as trajectories to imitate, WAM-TTT absorbs them into a lightweight adaptive memory inside a frozen WAM through self-supervised video prediction. To make this memory useful for control, we introduce a meta-training stage that aligns human demonstrations with robot behaviors using paired human-robot data and a key--value memory reconstruction objective. At test time, only unlabeled human videos are required to adapt the memory, while the pretrained WAM remains frozen. This enables efficient and reusable steering without robot actions, human-side annotations, or task-specific fine-tuning, while preserving the generalization ability of the foundation model. Extensive experiments show that WAM-TTT consistently outperforms in-context human-video conditioning baselines across diverse manipulation tasks and generalization settings.",
+      "authors": [
+        "Yusen Feng",
+        "Bingchen Han",
+        "Jiangran Lyu",
+        "Kai Liu",
+        "Yixin Zheng",
+        "Yuxuan Wan",
+        "Weiheng Liu",
+        "Sun Han",
+        "Ruiqin Li",
+        "Yulong Zhang",
+        "Fangfu Liu",
+        "Xuesong Shi",
+        "Libin Liu",
+        "Yizhou Wang",
+        "Zhizheng Zhang",
+        "He Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-08T04:23:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.06988v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uses world-action model with test-time training from human videos for robot control",
+      "llm_evidence_cn": "使用世界动作模型，通过人类视频测试时训练实现机器人控制",
+      "llm_evidence": "使用世界动作模型，通过人类视频测试时训练实现机器人控制",
+      "canonical_evidence": "使用世界动作模型，通过人类视频测试时训练实现机器人控制",
+      "llm_tldr_en": "WAM-TTT steers world-action models at test time by absorbing raw human videos into a lightweight adaptive memory via self-supervised video prediction and meta-training alignment.",
+      "llm_tldr_cn": "针对机器人基础模型难以泛化到新任务变体的问题，提出WAM-TTT框架，通过测试时训练从人类视频中吸收信息，将人类演示存储到冻结世界动作模型的轻量自适应记忆中，并通过元训练对齐人与机器人行为。实验表明该方法无需额外机器人数据即可调节模型行为。",
+      "llm_tldr": "针对机器人基础模型难以泛化到新任务变体的问题，提出WAM-TTT框架，通过测试时训练从人类视频中吸收信息，将人类演示存储到冻结世界动作模型的轻量自适应记忆中，并通过元训练对齐人与机器人行为。实验表明该方法无需额外机器人数据即可调节模型行为。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

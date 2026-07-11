@@ -6,53 +6,50 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-07
-- 运行时间：2026-07-07 21:43:45 UTC
+- 最新运行日期：2026-07-11
+- 运行时间：2026-07-11 21:26:23 UTC
 - 运行状态：成功
-- 本次总论文数：11
-- 精读区：7
-- 速读区：4
+- 本次总论文数：10
+- 精读区：4
+- 速读区：6
 
 ### 今日简报（AI）
-今日聚焦触觉世界模型与混合注意力强化学习，共阅读11篇机器人方向论文，其中2篇精读获得9分高分。最值得关注的是《TACO》提出用触觉世界模型作为自校正器提升VLA后训练，以及《HALO-WA》的混合注意力潜在引导在线强化学习框架。建议重点精读这两篇高分论文，了解世界模型在机器人操作和动作控制中的前沿应用。
-- 详情：[/202607/07/README](/202607/07/README)
+今日精读4篇/速读6篇，聚焦世界模型与VLA自校正及规划诊断新方法。最值得关注的是触觉世界模型作为VLA后训练自校正器（TACO，8.0分）和规划阶段诊断潜在世界模型的价值等价互补方法（Operator-on-F，8.0分）。建议优先精读这两篇8分论文，掌握世界模型在机器人策略纠偏与规划可信性的前沿思路。
+- 详情：[/202607/11/README](/202607/11/README)
 
 ### 精读区论文标签
-1. [TACO: TActile World Model as a Self-COrrector forScalable VLA Post-Training](/202607/07/2607.02840v1-taco-tactile-world-model-as-a-self-corrector-forscalable-vla-post-training)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：用于接触丰富操作的触觉世界模型自校正
-2. [HALO-WA: Hybrid-Attention Latent-Guided Online Reinforcement Learning for World-Action Models](/202607/07/2607.04265v1-halo-wa-hybrid-attention-latent-guided-online-reinforcement-learning-for-world-action-models)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：面向操作的世界-动作模型的在线强化学习
-3. [ABot-M0.5: Unified Mobility-and-Manipulation World Action Model](/202607/07/2607.00678v2-abot-m05-unified-mobility-and-manipulation-world-action-model)  
+1. [TACO: TActile World Model as a Self-COrrector forScalable VLA Post-Training](/202607/11/2607.02840v1-taco-tactile-world-model-as-a-self-corrector-forscalable-vla-post-training)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：统一的移动操作世界行动模型，解决了世界建模和逆动力学问题
-4. [From World Models to World Action Models: A Concise Tutorial for Robotics](/202607/07/2607.00836v3-from-world-models-to-world-action-models-a-concise-tutorial-for-robotics)  
+   evidence：用于接触丰富操作任务的触觉感知世界模型
+2. [Operator-on-F complements value-equivalence: a planning-time diagnostic for latent world models](/202607/11/2607.04464v1-operator-on-f-complements-value-equivalence-a-planning-time-diagnostic-for-latent-world-models)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：关于世界模型作为行动条件预测模型的机器人学教程
-5. [Integrating Physics-Informed Neural Networks for Safe Reinforcement Learning in a 1-DoF Helicopter System](/202607/07/2607.03125v1-integrating-physics-informed-neural-networks-for-safe-reinforcement-learning-in-a-1-dof-helicopter-system)  
-   标签：评分：8.0/10、query:diff-physics
-   evidence：将可微物理模型嵌入PPO以保障控制安全
-6. [Cross-Embodiment Robot Manipulation via a Unified Hand Action Space](/202607/07/2607.03570v1-cross-embodiment-robot-manipulation-via-a-unified-hand-action-space)  
+   evidence：模型基强化学习中潜在世界模型的诊断方法，直接相关于样本效率
+3. [DSWAM: A Dual-System World Action Foundation Model for Fine-Grained Robot Manipulation](/202607/11/2607.04927v1-dswam-a-dual-system-world-action-foundation-model-for-fine-grained-robot-manipulation)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：在统一动作空间中用强化学习训练灵巧操作策略
-7. [Closing the Reality Gap: Zero-Shot Sim-to-Real Deployment for Dexterous Force-Based Grasping and Manipulation](/202607/07/2607.04940v1-closing-the-reality-gap-zero-shot-sim-to-real-deployment-for-dexterous-force-based-grasping-and-manipulation)  
+   evidence：基于视频世界建模的机器人操作世界动作模型
+4. [Safe Reinforcement Learning using Ideas from Model Predictive Control](/202607/11/2607.07252v1-safe-reinforcement-learning-using-ideas-from-model-predictive-control)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：结合触觉反馈的强化学习用于灵巧操作
+   evidence：结合深度强化学习和模型预测控制实现安全控制，属于基于模型的方法
 
 ### 速读区论文标签
-1. [Worldscape-MoE: A Unified Mixture-of-Experts World Model for Scalable Heterogeneous Action Control](/202607/07/2607.03964v1-worldscape-moe-a-unified-mixture-of-experts-world-model-for-scalable-heterogeneous-action-control)  
+1. [Mask2Real-WM: Segmentation Masks as a Sim-to-Real Bridge for Controllable Dexterous World Models](/202607/11/2607.04546v1-mask2real-wm-segmentation-masks-as-a-sim-to-real-bridge-for-controllable-dexterous-world-models)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：用于异构动作控制的可扩展世界模型
-2. [A Perception-Manipulation Robotics System for Food Cutting](/202607/07/2607.04367v1-a-perception-manipulation-robotics-system-for-food-cutting)  
+   evidence：使用分割掩码作为中间表示学习灵巧操作的动力学模型
+2. [Learning 4D Geometric Priors for Inference-Efficient World Action Models](/202607/11/2607.05468v1-learning-4d-geometric-priors-for-inference-efficient-world-action-models)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：使用强化学习进行机械臂切割任务
-3. [KAM-WM: Kinematic Affordance Maps from Latent World Models for Robot Manipulation](/202607/07/2607.04652v1-kam-wm-kinematic-affordance-maps-from-latent-world-models-for-robot-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：从潜世界模型提取运动学可操作性图用于机器人操作
-4. [Warp RL: Reshaping Base Policy Distributions for Dynamics Adaptation](/202607/07/2606.31043v2-warp-rl-reshaping-base-policy-distributions-for-dynamics-adaptation)  
+   evidence：通过学习4D几何先验来构建动力学模型用于操作
+3. [Optimal Transport Q-Learning for Flow Policy Steering and Acceleration](/202607/11/2607.06262v1-optimal-transport-q-learning-for-flow-policy-steering-and-acceleration)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：强化学习策略适应动力学变化
+   evidence：使用强化学习后训练优化流策略，应用于机械臂操作
+4. [Learning to Throw Objects Safely in Multi-Obstacle Environments](/202607/11/2607.06388v1-learning-to-throw-objects-safely-in-multi-obstacle-environments)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：强化学习用于带避障的机器人投掷
+5. [RynnWorld-4D: 4D Embodied World Models for Robotic Manipulation](/202607/11/2607.06559v1-rynnworld-4d-4d-embodied-world-models-for-robotic-manipulation)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：提出4D世界模型预测未来RGB、深度和光流用于操作
+6. [WAM-TTT: Steering World-Action Models by Watching Human Play at Test Time](/202607/11/2607.06988v1-wam-ttt-steering-world-action-models-by-watching-human-play-at-test-time)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：使用世界动作模型，通过人类视频测试时训练实现机器人控制
 
 
 <div class="dpr-home-promo-card">
