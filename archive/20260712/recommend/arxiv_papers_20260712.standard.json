@@ -1,0 +1,155 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-12T20:25:47.325604+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.03723v1",
+      "source": "arxiv",
+      "title": "OmniTacTune: Policy-Agnostic Real-World RL for Tactile Residual Adaptation of Visual Policies",
+      "abstract": "Visual policies learned from human videos, teleoperation, and robot demonstrations offer scalable motion priors, but often fail in contact-rich manipulation, where success significantly depends on local force and contact geometry. Tactile sensing provides these complementary signals, yet tactile data remain costly to collect and hard to generalize across sensors, robots, and tasks. We introduce OmniTacTune, a policy-agnostic real-world RL pipeline that adapts tactile feedback to pretrained visual policies through residual correction. OmniTacTune uses a two-stage design: it first bootstraps tactile-aware learning from autonomous base-policy rollouts, then learns a lightweight tactile residual policy through online interaction. Extensive experiments show that OmniTacTune generalizes across diverse contact-rich tasks, visual base policies, and tactile representations. Across four real-world contact-rich tasks, it improves visual base policies from 5-40% success to 85-100% within 40-80 minutes, demonstrating an efficient path for adapting tactile feedback to scalable visual robot policies. Project page: https://colinyu1.github.io/omnitactune-site/",
+      "authors": [
+        "Kelin Yu",
+        "Haode Zhang",
+        "Harish Ravichandar",
+        "Yunhai Han",
+        "Ruohan Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-04T06:11:03+00:00",
+      "link": "https://arxiv.org/pdf/2607.03723v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "real-world RL for robot arm manipulation tasks",
+      "llm_evidence_cn": "用于机械臂操作任务的真实世界强化学习",
+      "llm_evidence": "用于机械臂操作任务的真实世界强化学习",
+      "canonical_evidence": "用于机械臂操作任务的真实世界强化学习",
+      "llm_tldr_en": "OmniTacTune introduces a policy-agnostic real-world RL pipeline that adapts tactile feedback to pretrained visual policies via residual correction, improving contact-rich manipulation.",
+      "llm_tldr_cn": "OmniTacTune针对接触丰富操作中视觉策略的不足，提出了一种策略无关的真实世界强化学习流水线。该方法通过残差校正将触觉反馈适应到预训练视觉策略，分为两阶段：先从基础策略中启动触觉学习，再通过在线交互学习轻量级触觉残差策略。在多个操作任务中，OmniTacTune显著提升了成功率，展示了RL在机器人操作中的有效性。",
+      "llm_tldr": "OmniTacTune针对接触丰富操作中视觉策略的不足，提出了一种策略无关的真实世界强化学习流水线。该方法通过残差校正将触觉反馈适应到预训练视觉策略，分为两阶段：先从基础策略中启动触觉学习，再通过在线交互学习轻量级触觉残差策略。在多个操作任务中，OmniTacTune显著提升了成功率，展示了RL在机器人操作中的有效性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.05390v1",
+      "source": "arxiv",
+      "title": "Deform360: A Massive Multi-view Visuotactile Dataset for Deformable World Models",
+      "abstract": "Predicting object dynamics (i.e., world modeling) is a fundamental challenge for robotic manipulation, and modeling deformable objects presents a particularly difficult case due to their high-dimensional state spaces and complex material properties. While current world models approach this through two distinct paradigms: learning the dynamics over the 2D pixel space or more explicit 3D geometric space. A systematic understanding of their relative strengths and limitations remains elusive due to the lack of diverse, large-scale real-world data. To address this, we present Deform360, a large-scale visuotactile dataset featuring 198 daily-life objects, 1,980 interaction sequences, and over 215 hours of observations from 41 surround-view cameras and bimanual tactile grippers to capture both global motion and contact-induced local deformations. Leveraging a novel markerless visuotactile 3D tracking pipeline to extract dense geometry and motion, we systematically evaluate current state-of-the-art world models, comparing 2D video models against 3D particle models. Finally, we provide a preliminary demonstration indicating the real-world applicability of our dataset by performing robot planning tasks on deformable objects. Our analysis reveals key insights into the trade-offs between structural priors and scalability, providing a solid benchmark for future research in generalizable deformable object-centric world modeling. Project website: https://deform360.lhy.xyz",
+      "authors": [
+        "Hongyu Li",
+        "Wanjia Fu",
+        "Xiaoyan Cong",
+        "Zekun Li",
+        "Binghao Huang",
+        "Hanxiao Jiang",
+        "Xintong He",
+        "Yiqing Liang",
+        "Rao Fu",
+        "Tao Lu",
+        "Srinath Sridhar",
+        "Kevin A. Smith",
+        "George Konidaris",
+        "Yunzhu Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-07-06T17:59:18+00:00",
+      "link": "https://arxiv.org/pdf/2607.05390v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "large-scale visuotactile dataset for deformable world models, supporting dynamics learning for manipulation",
+      "llm_evidence_cn": "大规模多视角触觉数据集，用于变形物体世界模型学习，支持操作任务中的动力学建模",
+      "llm_evidence": "大规模多视角触觉数据集，用于变形物体世界模型学习，支持操作任务中的动力学建模",
+      "canonical_evidence": "大规模多视角触觉数据集，用于变形物体世界模型学习，支持操作任务中的动力学建模",
+      "llm_tldr_en": "Deform360 provides a massive multi-view visuotactile dataset of deformable objects, enabling better learning of dynamics models for robotic manipulation.",
+      "llm_tldr_cn": "该论文针对变形物体动力学建模数据稀缺的问题，构建了Deform360数据集，包含198个日常物体、1980次交互序列和215小时多视角视觉触觉观测。该数据集支持世界模型学习，有助于提升机器人对变形物体的操作能力。为基于模型的机器人控制提供了关键数据资源。",
+      "llm_tldr": "该论文针对变形物体动力学建模数据稀缺的问题，构建了Deform360数据集，包含198个日常物体、1980次交互序列和215小时多视角视觉触觉观测。该数据集支持世界模型学习，有助于提升机器人对变形物体的操作能力。为基于模型的机器人控制提供了关键数据资源。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.06558v1",
+      "source": "arxiv",
+      "title": "RynnWorld-Teleop: An Action-Conditioned World Model for Digital Teleoperation",
+      "abstract": "Scaling robot learning requires massive, diverse trajectory data, yet collection is currently bottlenecked by physical teleoperation, where every demonstration binds operator time to specific hardware and workspaces. We introduce digital teleoperation, a paradigm that decouples data collection from physical constraints by replacing the real robot with a generative world model. In this framework, an operator's hand-pose stream drives a robot-centric generative world model to synthesize high-fidelity egocentric videos from a single reference image. The recorded pose stream serves as an embodiment-agnostic action label transferable to any target robot via standard retargeting, yielding complete state-action trajectories for imitation learning independent of physical hardware. We instantiate this paradigm in RynnWorld-Teleop, a system that integrates depth-aware skeletal conditioning, progressive human-to-robot training on a video Diffusion Transformer, and streaming autoregressive distillation. This pipeline compresses the generative process into a single-pass inference, enabling 40+ FPS, real-time interactive generation on a single H100 GPU. Policies trained exclusively on RynnWorld-Teleop-generated data achieve effective zero-shot Sim2Real transfer across dexterous and diverse bimanual tasks. Moreover, augmenting real-world datasets with our digitally teleoperated data consistently improves success rates, demonstrating that RynnWorld-Teleop serves as a high-fidelity, scalable data engine for the next generation of robotic agents.",
+      "authors": [
+        "Haoyu Zhao",
+        "Xingyue Zhao",
+        "Hangyu Li",
+        "Biao Gong",
+        "Kehan Li",
+        "Siteng Huang",
+        "Xin Li",
+        "Deli Zhao",
+        "Zhongyu Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-07T17:58:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.06558v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "action-conditioned world model for digital teleoperation",
+      "llm_evidence_cn": "用于数字遥操作的动作条件世界模型",
+      "llm_evidence": "用于数字遥操作的动作条件世界模型",
+      "canonical_evidence": "用于数字遥操作的动作条件世界模型",
+      "llm_tldr_en": "Introduces digital teleoperation paradigm using a generative world model to synthesize trajectories from a single reference image, decoupling data collection from physical hardware.",
+      "llm_tldr_cn": "本文针对物理遥操作瓶颈，提出数字遥操作范式；用生成式世界模型替代真实机器人，从单张参考图像合成高保真第一视角视频，手部姿态流作为动作标签可迁移至任意机器人；该方法实现了无需物理硬件的演示数据收集，为模仿学习提供丰富的状态-动作轨迹。",
+      "llm_tldr": "本文针对物理遥操作瓶颈，提出数字遥操作范式；用生成式世界模型替代真实机器人，从单张参考图像合成高保真第一视角视频，手部姿态流作为动作标签可迁移至任意机器人；该方法实现了无需物理硬件的演示数据收集，为模仿学习提供丰富的状态-动作轨迹。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

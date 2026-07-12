@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-12",
+  "date": "2026-07-12",
+  "generated_at": "2026-07-12T20:28:59",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/12/2607.03723v1-omnitactune-policy-agnostic-real-world-rl-for-tactile-residual-adaptation-of-visual-policies",
+      "section": "quick",
+      "title_en": "OmniTacTune: Policy-Agnostic Real-World RL for Tactile Residual Adaptation of Visual Policies",
+      "authors": "Kelin Yu, Haode Zhang, Harish Ravichandar, Yunhai Han, Ruohan Gao",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.03723v1",
+      "score": "6.0",
+      "evidence": "用于机械臂操作任务的真实世界强化学习",
+      "tldr": "视觉策略因缺乏局部力和接触几何信息，在接触丰富任务中常失败。OmniTacTune提出策略无关的真实世界强化学习框架，通过残差校正将触觉反馈适配到预训练视觉策略。该方法采用两阶段设计：先从基础策略自主滚动中引导触觉感知，再在线学习轻量级残差策略。在四类真实任务中，它在40-80分钟内将成功率从5-40%提升至85-100%，并高效泛化至不同视觉策略和触觉表示。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Visual policies learned from human videos, teleoperation, and robot demonstrations offer scalable motion priors, but often fail in contact-rich manipulation, where success significantly depends on local force and contact geometry. Tactile sensing provides these complementary signals, yet tactile data remain costly to collect and hard to generalize across sensors, robots, and tasks. We introduce OmniTacTune, a policy-agnostic real-world RL pipeline that adapts tactile feedback to pretrained visual policies through residual correction. OmniTacTune uses a two-stage design: it first bootstraps tactile-aware learning from autonomous base-policy rollouts, then learns a lightweight tactile residual policy through online interaction. Extensive experiments show that OmniTacTune generalizes across diverse contact-rich tasks, visual base policies, and tactile representations. Across four real-world contact-rich tasks, it improves visual base policies from 5-40% success to 85-100% within 40-80 minutes, demonstrating an efficient path for adapting tactile feedback to scalable visual robot policies. Project page: https://colinyu1.github.io/omnitactune-site/",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/12/2607.05390v1-deform360-a-massive-multi-view-visuotactile-dataset-for-deformable-world-models",
+      "section": "quick",
+      "title_en": "Deform360: A Massive Multi-view Visuotactile Dataset for Deformable World Models",
+      "authors": "Hongyu Li, Wanjia Fu, Xiaoyan Cong, Zekun Li, Binghao Huang, Hanxiao Jiang, Xintong He, Yiqing Liang, Rao Fu, Tao Lu, Srinath Sridhar, Kevin A. Smith, George Konidaris, Yunzhu Li",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.05390v1",
+      "score": "6.0",
+      "evidence": "大规模多视角触觉数据集，用于变形物体世界模型学习，支持操作任务中的动力学建模",
+      "tldr": "可变形物体动力学建模是机器人操作的核心难题。现有2D像素空间与3D几何空间的世界模型缺乏系统对比。本文构建Deform360大规模多视角触觉数据集，包含198种日常物体、1980个交互序列及215小时观察。通过无标记触觉3D跟踪提取密集几何与运动，评估了2D视频模型与3D粒子模型的性能，揭示了结构先验与可扩展性之间的权衡，为可泛化物体为中心的世界建模提供了基准。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Predicting object dynamics (i.e., world modeling) is a fundamental challenge for robotic manipulation, and modeling deformable objects presents a particularly difficult case due to their high-dimensional state spaces and complex material properties. While current world models approach this through two distinct paradigms: learning the dynamics over the 2D pixel space or more explicit 3D geometric space. A systematic understanding of their relative strengths and limitations remains elusive due to the lack of diverse, large-scale real-world data. To address this, we present Deform360, a large-scale visuotactile dataset featuring 198 daily-life objects, 1,980 interaction sequences, and over 215 hours of observations from 41 surround-view cameras and bimanual tactile grippers to capture both global motion and contact-induced local deformations. Leveraging a novel markerless visuotactile 3D tracking pipeline to extract dense geometry and motion, we systematically evaluate current state-of-the-art world models, comparing 2D video models against 3D particle models. Finally, we provide a preliminary demonstration indicating the real-world applicability of our dataset by performing robot planning tasks on deformable objects. Our analysis reveals key insights into the trade-offs between structural priors and scalability, providing a solid benchmark for future research in generalizable deformable object-centric world modeling. Project website: https://deform360.lhy.xyz",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/12/2607.06558v1-rynnworld-teleop-an-action-conditioned-world-model-for-digital-teleoperation",
+      "section": "quick",
+      "title_en": "RynnWorld-Teleop: An Action-Conditioned World Model for Digital Teleoperation",
+      "authors": "Haoyu Zhao, Xingyue Zhao, Hangyu Li, Biao Gong, Kehan Li, Siteng Huang, Xin Li, Deli Zhao, Zhongyu Li",
+      "date": "2026-07-07",
+      "pdf": "https://arxiv.org/pdf/2607.06558v1",
+      "score": "6.0",
+      "evidence": "用于数字遥操作的动作条件世界模型",
+      "tldr": "机器人数据采集依赖物理遥操作，效率受限。本文引入数字遥操作，用生成式世界模型替代真实机器人，从单参考图像合成第一人称视频，手势流作为无硬件动作标签。系统RynnWorld-Teleop通过深度感知条件与流式蒸馏实现40+FPS实时生成。生成数据训练的策略在灵巧双手任务上零样本Sim2Real迁移，且增强真实数据集提高成功率。该工作为机器人提供高保真可扩展数据引擎。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Scaling robot learning requires massive, diverse trajectory data, yet collection is currently bottlenecked by physical teleoperation, where every demonstration binds operator time to specific hardware and workspaces. We introduce digital teleoperation, a paradigm that decouples data collection from physical constraints by replacing the real robot with a generative world model. In this framework, an operator's hand-pose stream drives a robot-centric generative world model to synthesize high-fidelity egocentric videos from a single reference image. The recorded pose stream serves as an embodiment-agnostic action label transferable to any target robot via standard retargeting, yielding complete state-action trajectories for imitation learning independent of physical hardware. We instantiate this paradigm in RynnWorld-Teleop, a system that integrates depth-aware skeletal conditioning, progressive human-to-robot training on a video Diffusion Transformer, and streaming autoregressive distillation. This pipeline compresses the generative process into a single-pass inference, enabling 40+ FPS, real-time interactive generation on a single H100 GPU. Policies trained exclusively on RynnWorld-Teleop-generated data achieve effective zero-shot Sim2Real transfer across dexterous and diverse bimanual tasks. Moreover, augmenting real-world datasets with our digitally teleoperated data consistently improves success rates, demonstrating that RynnWorld-Teleop serves as a high-fidelity, scalable data engine for the next generation of robotic agents.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
