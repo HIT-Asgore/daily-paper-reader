@@ -6,32 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-12
-- 运行时间：2026-07-12 20:28:53 UTC
+- 最新运行日期：2026-07-13
+- 运行时间：2026-07-13 21:39:47 UTC
 - 运行状态：成功
 - 本次总论文数：3
-- 精读区：0
-- 速读区：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日速读三篇触觉-视觉融合研究，均获6分，探索机器人感知新方向。  
-重点推荐《OmniTacTune》的触觉残差适配策略与《Deform360》的可变形物体多视图数据集，两者为操作任务中的触觉增强提供实用思路。  
-若想低成本提升视觉策略的鲁棒性，可首先尝试触觉残差适配方法，实现跨策略泛化。
-- 详情：[/202607/12/README](/202607/12/README)
+今日精读1篇高分离线强化学习轨迹规划论文，速读2篇关于机器人动作分块与推理引导策略的研究。最值得关注的是《Shortcut Trajectory Planning》中的高效规划方法，以及《PAC-ACT》对动作分块变换器的后训练优化。建议优先精读高分论文，理解离线RL中轨迹捷径的核心思路。
+- 详情：[/202607/13/README](/202607/13/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Shortcut Trajectory Planning for Efficient Offline Reinforcement Learning](/202607/13/2607.09336v1-shortcut-trajectory-planning-for-efficient-offline-reinforcement-learning)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：离线基于模型的强化学习，使用捷径轨迹规划实现高效且可调的推理
 
 ### 速读区论文标签
-1. [OmniTacTune: Policy-Agnostic Real-World RL for Tactile Residual Adaptation of Visual Policies](/202607/12/2607.03723v1-omnitactune-policy-agnostic-real-world-rl-for-tactile-residual-adaptation-of-visual-policies)  
+1. [PAC-ACT: Post-training Actor-Critic for Action Chunking Transformers](/202607/13/2607.09590v1-pac-act-post-training-actor-critic-for-action-chunking-transformers)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：基于强化学习的动作分块Transformer后训练用于操作任务
+2. [RoboTALES: Learning Reasoning-Guided Robot Policies via Task-Aligned Simulated Futures](/202607/13/2607.06018v1-robotales-learning-reasoning-guided-robot-policies-via-task-aligned-simulated-futures)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：用于机械臂操作任务的真实世界强化学习
-2. [Deform360: A Massive Multi-view Visuotactile Dataset for Deformable World Models](/202607/12/2607.05390v1-deform360-a-massive-multi-view-visuotactile-dataset-for-deformable-world-models)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：大规模多视角触觉数据集，用于变形物体世界模型学习，支持操作任务中的动力学建模
-3. [RynnWorld-Teleop: An Action-Conditioned World Model for Digital Teleoperation](/202607/12/2607.06558v1-rynnworld-teleop-an-action-conditioned-world-model-for-digital-teleoperation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：用于数字遥操作的动作条件世界模型
+   evidence：使用模拟未来和奖励反馈进行策略学习，类似基于模型的强化学习
 
 
 <div class="dpr-home-promo-card">

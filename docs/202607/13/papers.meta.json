@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-13",
+  "date": "2026-07-13",
+  "generated_at": "2026-07-13T21:39:54",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/13/2607.09336v1-shortcut-trajectory-planning-for-efficient-offline-reinforcement-learning",
+      "section": "deep",
+      "title_en": "Shortcut Trajectory Planning for Efficient Offline Reinforcement Learning",
+      "authors": "Guanquan Wang, Yoshimasa Tsuruoka",
+      "date": "2026-07-10",
+      "pdf": "https://arxiv.org/pdf/2607.09336v1",
+      "score": "9.0",
+      "evidence": "离线基于模型的强化学习，使用捷径轨迹规划实现高效且可调的推理",
+      "tldr": "基于扩散的轨迹规划器推理成本高，一致性规划器依赖两阶段蒸馏训练成本高且不稳定。提出Shortcut Trajectory Planning (STP)，单阶段训练条件捷径轨迹模型，通过步长条件支持一步到多步推理，评论家结合可行性校正选择计划。在D4RL的 locomotion、navigation等任务上取得强性能。简化训练流程，实现高效生成规划。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Diffusion-based trajectory planners have shown strong performance in offline reinforcement learning, but their iterative denoising process often incurs high inference cost. Consistency-based planners reduce the number of sampling steps, yet they typically rely on a two-stage teacher--student distillation pipeline that increases training cost and may introduce instability. We propose Shortcut Trajectory Planning (STP), an offline model-based reinforcement learning framework that incorporates shortcut models as efficient trajectory generators. STP trains a conditional shortcut trajectory model in a single stage, supports adjustable one-step and few-step inference through step-size conditioning, and selects candidate plans using a critic augmented with feasibility-aware correction. Across standard D4RL benchmarks, including locomotion, navigation, manipulation, and dexterous control tasks, STP achieves strong performance while simplifying the training pipeline for fast generative planning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/13/2607.09590v1-pac-act-post-training-actor-critic-for-action-chunking-transformers",
+      "section": "quick",
+      "title_en": "PAC-ACT: Post-training Actor-Critic for Action Chunking Transformers",
+      "authors": "Yujie Pang, Zudong Li",
+      "date": "2026-07-10",
+      "pdf": "https://arxiv.org/pdf/2607.09590v1",
+      "score": "7.0",
+      "evidence": "基于强化学习的动作分块Transformer后训练用于操作任务",
+      "tldr": "精密工业接触操作面临姿态扰动与接触力约束，现有视觉-语言-动作模型延迟高，动作分块策略经行为克隆训练易产生分布偏移。为此提出PAC-ACT后训练框架，在chunk级别优化策略，构建ACT迁移的actor-critic架构，并引入混合行为先验约束以保留预训练分布。在工业精度接触基准上，PAC-ACT提升任务成功率、接触稳定性与力安全性，峰值接触力显著降低，大于60N力读数比例减少46倍。该方法保持低延迟和低GPU内存，稀疏奖励下行为先验约束有效促进探索，适用于实时工业控制。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Precision industrial contact manipulation requires reliable robot policies under pose perturbations and contact-force constraints. Vision-language-action models offer broad generalization but often introduce high inference latency and GPU-memory cost, while vision-action chunking policies are more suitable for real-time industrial control. However, these policies are usually trained by behavior cloning and suffer from distribution shift in contact-rich tasks. This paper proposes PAC-ACT, a reinforcement-learning post-training framework for pretrained Action Chunking Transformer policies. PAC-ACT reformulates policy optimization at the chunk level, constructs an ACT-transferred actor-critic architecture, and introduces a hybrid behavior-prior constraint to preserve the pretrained action distribution during online fine-tuning. Experiments on industrial precision-contact benchmarks show that PAC-ACT improves task success, contact stability, and force safety while retaining low latency and low GPU-memory usage. On the Contour task, PAC-ACT significantly reduces peak contact force and decreases the proportion of force readings above 60 N by 46 times. Sparse-reward ablations further show that the proposed behavior-prior constraint enables effective exploration under randomized initial poses.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/13/2607.06018v1-robotales-learning-reasoning-guided-robot-policies-via-task-aligned-simulated-futures",
+      "section": "quick",
+      "title_en": "RoboTALES: Learning Reasoning-Guided Robot Policies via Task-Aligned Simulated Futures",
+      "authors": "Hanan Gani, Tejal Kulkarni, Madhoolika Chodavarapu, Nicklas Hansen, Manmohan Chandraker",
+      "date": "2026-07-07",
+      "pdf": "https://arxiv.org/pdf/2607.06018v1",
+      "score": "6.0",
+      "evidence": "使用模拟未来和奖励反馈进行策略学习，类似基于模型的强化学习",
+      "tldr": "预训练视频生成模型想象未来时易偏离任务意图且难以条件化动作。本文提出RoboTALES，利用分层LLM规划器将任务分解为子目标引导视频生成，同时引入VLM批评者评估想象未来并给予奖励反馈，使模型聚焦目标。在RoboCasa和LIBERO10任务上，该方法优于现有方法，尤其在长时域任务中显著提升。代码已开源。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Pretrained video generative models are promising backbones for visuomotor control, but their imagined futures often drift from task intent and are not reliably action-conditional. As a result, these models can be difficult to use for planning or policy extraction. To address these limitations, we propose RoboTALES, a single-stage framework that learns task-aligned simulated futures and uses them to train robot policies. Our approach introduces two key innovations: (1) a hierarchical LLM-based planner that breaks complex tasks into a sequence of subgoals to guide the model's imagination; and (2) a VLM-based critic that evaluates these ``imagined'' futures and uses reward-based feedback to keep the model's internal representations focused on the goal. By anchoring the video generator in abstract reasoning, we produce temporally consistent rollouts and more coherent actions. We evaluate RoboTALES on diverse manipulation tasks from RoboCasa and LIBERO10, and show that our method consistently outperforms existing methods, especially in long-horizon tasks. Our code and models are publicly available at https://github.com/hananshafi/RoboTALES.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
