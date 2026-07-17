@@ -1,0 +1,277 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-17T21:20:47.036071+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.10369v1",
+      "source": "arxiv",
+      "title": "VINE: Taming Generative Control Policies for Reinforcement Learning",
+      "abstract": "Flow-matching policies have emerged as an effective policy parameterization for robot learning. They iteratively generate actions from noise, enabling highly expressive modeling of complex and multimodal action distributions. However, prior works observed that scaling these policies with value-gradient reinforcement learning (RL) often leads to training instability. Existing methods attribute this instability to iterative generation and therefore avoid end-to-end value-gradient optimization by sacrificing iterative generation, high expressiveness, or value-gradient optimization. Contrary to prior belief, we show the instability does not stem from iterative generation itself, but from the vanilla sampling strategy originally designed for behavior cloning, which becomes brittle under value-gradient RL. Motivated by this insight, we propose VINE, an RL-oriented sampling method that enables stable end-to-end value-gradient optimization for flow-matching policies. Instead of following a single flow trajectory, VINE reconstructs a new interpolation state at every denoising step, creating a stable differentiable path for value-gradient propagation while remaining compatible with the original flow-matching denoising process. As a result, VINE preserves the expressiveness and iterative generation of flow-matching without sacrificing end-to-end value-gradient optimization. Despite performing end-to-end backpropagation through all ten denoising steps, VINE achieves stable policy improvement and consistently outperforms state-of-the-art RL methods on the OGBench offline RL benchmark and real-world robotic manipulation task. Videos are available on our website: https://agibottech.github.io/vine.",
+      "authors": [
+        "Rushuai Yang",
+        "Zhuo Han",
+        "Houlin Li",
+        "Hecheng Wang",
+        "Zhichao Wu",
+        "Rui Zhang",
+        "Zhaowei Zhang",
+        "Zihong Chen",
+        "Xiaohan Yan",
+        "Chiming Liu",
+        "Yi Chen",
+        "Wei Shan",
+        "Maoqing Yao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-11T15:45:12+00:00",
+      "link": "https://arxiv.org/pdf/2607.10369v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Stabilizing value-gradient RL for flow-matching policies in robot learning",
+      "llm_evidence_cn": "稳定机器人学习中流匹配策略的价值梯度强化学习",
+      "llm_evidence": "稳定机器人学习中流匹配策略的价值梯度强化学习",
+      "canonical_evidence": "稳定机器人学习中流匹配策略的价值梯度强化学习",
+      "llm_tldr_en": "Identifies that training instability in flow-matching policies with RL comes from sampling strategy, not iterative generation, and proposes a method to stabilize training.",
+      "llm_tldr_cn": "流匹配策略因其对复杂动作分布的建模能力而被用于机器人学习，但与价值梯度强化学习结合时存在训练不稳定性。本文发现不稳定性源于行为克隆中的采样策略，而非迭代生成本身。据此提出改进的采样方法，在不牺牲表达能力的前提下实现稳定训练。实验证明该方法在多种任务上优于现有方案，为生成式策略的强化学习训练提供了新视角。",
+      "llm_tldr": "流匹配策略因其对复杂动作分布的建模能力而被用于机器人学习，但与价值梯度强化学习结合时存在训练不稳定性。本文发现不稳定性源于行为克隆中的采样策略，而非迭代生成本身。据此提出改进的采样方法，在不牺牲表达能力的前提下实现稳定训练。实验证明该方法在多种任务上优于现有方案，为生成式策略的强化学习训练提供了新视角。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.12931v1",
+      "source": "arxiv",
+      "title": "ExToken: Structured Exploration for Efficient Vision-Language-Action Reinforcement Fine-tuning",
+      "abstract": "Reinforcement Learning (RL) has demonstrated significant potential for improving Vision-Language-Action (VLA) models on complex manipulation tasks. However, its practical scalability remains severely limited by the substantial cost of environmental interactions. In this work, we first investigate the exploration stagnation bottleneck in current VLA-RL frameworks and reveal that trajectory diversity is fundamentally more important to sample efficiency than the sheer quantity of collected rollouts. Motivated by these insights, we introduce RL Exploration Token (ExToken), a simple yet general framework that condition VLA policies on discrete behavioral priors derived from offline demonstrations for structured exploration. By conditioning the policy on different tokens during rollout collection, ExToken encourages the agent to explore diverse behavioral modes, substantially improving state-action coverage and exploration efficiency. To bridge exploration during training with deterministic inference at deployment, ExToken further incorporates a state-conditioned token selector that adaptively predicts effective behavioral modes for unseen scenarios. Extensive experiments across simulated and real-world robotic manipulation tasks demonstrate that ExToken consistently accelerates convergence, improves task performance, and exhibits strong robustness under highly constrained interaction budgets.",
+      "authors": [
+        "Yilun Kong",
+        "Yunpeng Qing",
+        "Guozheng Ma",
+        "Haoyu Wang",
+        "Li Shen",
+        "Zhi Hou",
+        "Dacheng Tao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-14T16:04:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.12931v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL fine-tuning for complex manipulation tasks",
+      "llm_evidence_cn": "强化学习微调复杂操作任务",
+      "llm_evidence": "强化学习微调复杂操作任务",
+      "canonical_evidence": "强化学习微调复杂操作任务",
+      "llm_tldr_en": "ExToken introduces a structured exploration framework that conditions VLA policies on discrete behavioral priors to improve sample efficiency in RL fine-tuning for manipulation tasks.",
+      "llm_tldr_cn": "ExToken针对当前视觉-语言-动作模型强化学习微调中探索停滞瓶颈，提出基于离线演示离散行为先验的条件化策略框架，通过结构化探索显著提升样本效率，在复杂操作任务中验证了轨迹多样性比收集数量更重要。",
+      "llm_tldr": "ExToken针对当前视觉-语言-动作模型强化学习微调中探索停滞瓶颈，提出基于离线演示离散行为先验的条件化策略框架，通过结构化探索显著提升样本效率，在复杂操作任务中验证了轨迹多样性比收集数量更重要。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.15065v1",
+      "source": "arxiv",
+      "title": "DriftWorld: Fast World Modeling through Drifting",
+      "abstract": "Predictive world models enable robots to plan by imagining the outcomes of their actions, but their value for control hinges on generating many rollouts quickly. This creates a bottleneck for diffusion-based world models: multistep sampling makes each rollout expensive, limiting large-scale action search at inference time. We introduce DriftWorld, an action-conditioned world model based on drifting generative models. Rather than denoising iteratively at inference, DriftWorld learns an action-conditioned drift during training, allowing it to generate future frames from the current observation and a candidate action sequence in a single forward pass at 30+ fps, which is 17x faster on average than diffusion based baselines. We evaluate DriftWorld on standard vision-based robotic manipulation benchmarks, including Bridge-V2, RT-1, Language Table, Push-T, and Robomimic. By producing rollouts that are both accurate and fast, DriftWorld achieves state-of-the-art decision-making performance with far less inference time than diffusion-based world model baselines. Beyond online control, DriftWorld can also serve as an offline simulator for ranking real-world robot policies, with rollout-based scores correlating with ground truth at up to 0.99. These results show that drifting models are a strong fit for robot world modeling, where fast, high-quality imagination directly supports planning and policy evaluation.",
+      "authors": [
+        "Susie Lu",
+        "Haonan Chen",
+        "Weirui Ye",
+        "Yilun Du"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-07-16T14:37:43+00:00",
+      "link": "https://arxiv.org/pdf/2607.15065v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "fast world model for robot manipulation planning",
+      "llm_evidence_cn": "快速世界模型用于机器人操作规划",
+      "llm_evidence": "快速世界模型用于机器人操作规划",
+      "canonical_evidence": "快速世界模型用于机器人操作规划",
+      "llm_tldr_en": "DriftWorld introduces an action-conditioned world model based on drifting generative models, capable of generating future frames in a single forward pass at 30+ fps, enabling efficient planning in robot manipulation tasks.",
+      "llm_tldr_cn": "该工作提出DriftWorld，一种基于漂移生成模型的动作条件世界模型，用于机器人操作规划。它通过在训练时学习动作条件漂移，使得在推理时只需单次前向传播即可生成未来帧，相比扩散模型的多步采样快17倍。在标准视觉机器人操作任务上，DriftWorld能以30+fps的帧率进行想象滚动，显著提升规划效率。该方法为快速模型预测控制在机器人操作中的应用提供了实用高效的方案。",
+      "llm_tldr": "该工作提出DriftWorld，一种基于漂移生成模型的动作条件世界模型，用于机器人操作规划。它通过在训练时学习动作条件漂移，使得在推理时只需单次前向传播即可生成未来帧，相比扩散模型的多步采样快17倍。在标准视觉机器人操作任务上，DriftWorld能以30+fps的帧率进行想象滚动，显著提升规划效率。该方法为快速模型预测控制在机器人操作中的应用提供了实用高效的方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.14424v1",
+      "source": "arxiv",
+      "title": "ConFlow: Constraints-Guided Learning with Flow Matching for Motion Generation",
+      "abstract": "In recent years Flow Matching has become a prominent method for generative modeling robot motion generation. In its generic form Flow Matching is an ODE-based neural sampler that is trained by regressing empirical flow fields associated with motion samples as data. However, in robot motion generation we often have additional constraints that might not be present in the collected data. The majority of current approaches train the flow on the available data and use inference-time guidance to enforce task-specific constraints. To address this mismatch, we propose \\textbf{ConFlow}, a constraint-guided flow matching framework that incorporates constraint information directly into the training objective via differentiable barrier or cost functions. To address design specifications such as smoothness and boundary conditions, we propose replacing the standard Gaussian source distribution used in flow matching training with a conditional Gaussian Process. Our approach also uses infeasible demonstrations as negative supervision, improving constraint satisfaction without requiring additional expert data. Experiments on a two-robot navigation task demonstrate that ConFlow achieves lower collision rates and higher trajectory quality than standard flow matching baselines, with or without inference-time guidance. These results validate training-time constraint integration as an effective approach to closing the training--inference gap in generative motion models.",
+      "authors": [
+        "Nutan Chen",
+        "Jianxiang Feng",
+        "Marvin Alles",
+        "Botond Cseke"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T23:27:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.14424v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Incorporates differentiable barrier/cost functions into flow matching training for constraint-aware motion generation.",
+      "llm_evidence_cn": "将可微障碍/代价函数融入流匹配训练，实现约束感知运动生成。",
+      "llm_evidence": "将可微障碍/代价函数融入流匹配训练，实现约束感知运动生成。",
+      "canonical_evidence": "将可微障碍/代价函数融入流匹配训练，实现约束感知运动生成。",
+      "llm_tldr_en": "Proposes ConFlow, a constraint-guided flow matching framework that integrates differentiable barrier/cost functions into training for robot motion generation, improving constraint satisfaction without inference-time guidance.",
+      "llm_tldr_cn": "针对机器人运动生成中训练与推理约束不匹配的问题，提出ConFlow框架，将可微障碍或代价函数直接融入流匹配训练目标。该框架在多个运动生成任务上提升了约束满足率，同时保持生成质量，为可微控制提供新思路。",
+      "llm_tldr": "针对机器人运动生成中训练与推理约束不匹配的问题，提出ConFlow框架，将可微障碍或代价函数直接融入流匹配训练目标。该框架在多个运动生成任务上提升了约束满足率，同时保持生成质量，为可微控制提供新思路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.10132v1",
+      "source": "arxiv",
+      "title": "TAC-LOCO: Unified Whole-Body Control for Quadrupedal TACtile-Informed LOCO-Manipulation",
+      "abstract": "Dynamic loco-manipulation requires legged robots to coordinate whole-body motion while maintaining stable physical interaction with grasped objects under uncertain external forces. While tactile sensing has been widely studied for robotic manipulation, its role in dynamic whole-body control remains largely unexplored. Existing works without tactile feedback commonly grasp firmly rather than regulate the grasp according to the interaction. We propose TAC-LOCO, a tactile-augmented unified reinforcement learning framework that encodes tactile array observations from compliant grippers into a compact latent representation and joins it with proprioception for unified control of the legs, arm, and gripper. With effective grasp stability reward design, the policy learns to simultaneously track body velocity and end-effector trajectories, moderate grasp force, and prevent object slip under both gradual load changes and sudden release events. We deploy the policy zero-shot on a Unitree Go2 with an Interbotix WidowX 250 arm and tactile gripper, demonstrating dynamic tactile-informed loco-manipulation under varying external interactions, achieving a 47% reduction in grasping force and an object drop rate of less than 1%.",
+      "authors": [
+        "Muqun Hu",
+        "Yuhao Zhou",
+        "Kabir Ray Malik",
+        "Chi Lin",
+        "Won Suk Lee",
+        "Yu She",
+        "Yan Gu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-11T05:45:24+00:00",
+      "link": "https://arxiv.org/pdf/2607.10132v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Reinforcement learning for manipulator control with tactile feedback",
+      "llm_evidence_cn": "使用强化学习控制机械手，整合触觉反馈",
+      "llm_evidence": "使用强化学习控制机械手，整合触觉反馈",
+      "canonical_evidence": "使用强化学习控制机械手，整合触觉反馈",
+      "llm_tldr_en": "Proposes TAC-LOCO, a tactile-augmented RL framework for unified whole-body control of quadrupedal loco-manipulation, using latent tactile representations for grasp stability.",
+      "llm_tldr_cn": "针对动态操作中触觉反馈未被充分利用的问题，提出TAC-LOCO统一强化学习框架，将弹性夹爪触觉阵列编码为紧凑隐表征，与本体感受联合控制腿、臂和夹爪。实验表明，该方法有效提升了抓取稳定性与动态协调能力，为四足机器人操作提供可扩展方案。",
+      "llm_tldr": "针对动态操作中触觉反馈未被充分利用的问题，提出TAC-LOCO统一强化学习框架，将弹性夹爪触觉阵列编码为紧凑隐表征，与本体感受联合控制腿、臂和夹爪。实验表明，该方法有效提升了抓取稳定性与动态协调能力，为四足机器人操作提供可扩展方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.12784v1",
+      "source": "arxiv",
+      "title": "Directional Constraints for Efficient Exploration in Safe Reinforcement Learning",
+      "abstract": "Reinforcement Learning has revolutionized the landscape of robotic research, allowing robust learning of complex robotic skills in simulation. However, real-world deployment in open-ended environments requires strong safety guarantees to prevent dangerous or harmful behaviors. Safe Reinforcement Learning methods address this requirement by enforcing safety constraints. Nevertheless, learning under constraints often reduces learning speed and could lead to suboptimal task performance, as the agent must solve a more complex constrained optimization problem compared to unconstrained settings. To tackle this issue, in this work, we propose an extension of the ATACOM framework, a state-of-the-art reliable safety layer that can be integrated with existing Reinforcement Learning algorithms to enforce constraints derived from prior knowledge of the system or learned directly from data. Our proposed method, named ATACOM Directional Constraints (ATACOM-DC), significantly improves the safety-performance trade-off by introducing directional constraints that distinguish between actions approaching and moving away from constraint boundaries, activating constraint enforcement only when necessary. We evaluate our method across a range of challenging robotic control tasks in simulation, analyzing both constraint-violation costs and achieved task performance. Code and additional material at https://atacom-dc.robot-learning.net.",
+      "authors": [
+        "Paolo Magliano",
+        "Puze Liu",
+        "Jan Peters",
+        "Davide Tateo",
+        "Raffaello Camoriano"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-07-14T13:59:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.12784v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Safe RL with directional constraints for efficient exploration in robotic tasks",
+      "llm_evidence_cn": "安全强化学习中的方向性约束用于机器人任务高效探索",
+      "llm_evidence": "安全强化学习中的方向性约束用于机器人任务高效探索",
+      "canonical_evidence": "安全强化学习中的方向性约束用于机器人任务高效探索",
+      "llm_tldr_en": "Extends ATACOM framework with directional constraints to improve exploration efficiency under safety requirements, enabling faster learning for robotic skills.",
+      "llm_tldr_cn": "本文针对安全强化学习下学习速度慢的问题，提出了ATACOM框架的扩展，引入方向性约束以在保证安全的同时提高探索效率，实验显示在机器人仿真任务中学习速度提升且安全性保持。",
+      "llm_tldr": "本文针对安全强化学习下学习速度慢的问题，提出了ATACOM框架的扩展，引入方向性约束以在保证安全的同时提高探索效率，实验显示在机器人仿真任务中学习速度提升且安全性保持。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
