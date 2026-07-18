@@ -6,38 +6,42 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-17
-- 运行时间：2026-07-17 21:23:58 UTC
+- 最新运行日期：2026-07-18
+- 运行时间：2026-07-18 20:54:05 UTC
 - 运行状态：成功
 - 本次总论文数：6
-- 精读区：3
-- 速读区：3
+- 精读区：1
+- 速读区：5
 
 ### 今日简报（AI）
-今日精读2篇均获8分，聚焦生成控制策略与视觉-语言-行动强化微调的结构化探索。最值得关注的是《VINE》驯服生成控制策略、《ExToken》高效视觉-语言-行动强化微调。建议深入研究这两个方向以提升强化学习中的生成与探索效率。
-- 详情：[/202607/17/README](/202607/17/README)
+今日共阅读6篇强化学习论文，精读1篇、速读5篇，重点聚焦样本效率提升与应用扩展。
+
+精读推荐《Learning More from Less》提出从事后视角强化学习以提升数据利用率，速读中《Robo-ValueRL》和《GigaWorld-Policy-0.5》分别探索离线转在线强化学习与更快策略生成。
+
+后续可优先关注事后经验回放结合在线微调的方法，同时验证其在机器人操作（如草莓采摘）中的实际效果。
+- 详情：[/202607/18/README](/202607/18/README)
 
 ### 精读区论文标签
-1. [VINE: Taming Generative Control Policies for Reinforcement Learning](/202607/17/2607.10369v1-vine-taming-generative-control-policies-for-reinforcement-learning)  
+1. [Learning More from Less: Reinforcement Learning from Hindsight](/202607/18/2607.09042v1-learning-more-from-less-reinforcement-learning-from-hindsight)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：稳定机器人学习中流匹配策略的价值梯度强化学习
-2. [ExToken: Structured Exploration for Efficient Vision-Language-Action Reinforcement Fine-tuning](/202607/17/2607.12931v1-extoken-structured-exploration-for-efficient-vision-language-action-reinforcement-fine-tuning)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：强化学习微调复杂操作任务
-3. [DriftWorld: Fast World Modeling through Drifting](/202607/17/2607.15065v1-driftworld-fast-world-modeling-through-drifting)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：快速世界模型用于机器人操作规划
+   evidence：用于操作任务的强化学习后训练
 
 ### 速读区论文标签
-1. [ConFlow: Constraints-Guided Learning with Flow Matching for Motion Generation](/202607/17/2607.14424v1-conflow-constraints-guided-learning-with-flow-matching-for-motion-generation)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：将可微障碍/代价函数融入流匹配训练，实现约束感知运动生成。
-2. [TAC-LOCO: Unified Whole-Body Control for Quadrupedal TACtile-Informed LOCO-Manipulation](/202607/17/2607.10132v1-tac-loco-unified-whole-body-control-for-quadrupedal-tactile-informed-loco-manipulation)  
+1. [Robo-ValueRL: Reliable Value Estimation for Offline-to-Online Reinforcement Learning](/202607/18/2607.09866v1-robo-valuerl-reliable-value-estimation-for-offline-to-online-reinforcement-learning)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：用于机器人操作的强化学习的价值估计
+2. [GigaWorld-Policy-0.5: A Faster and Stronger WAM Empowered by AutoResearch](/202607/18/2607.13960v2-gigaworld-policy-05-a-faster-and-stronger-wam-empowered-by-autoresearch)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：世界动作模型联合建模动作和未来观察，用于机器人控制。
+3. [Reinforcement Learning for the Full Strawberry Harvesting Process: Obstacle Separation, Detachment, and Placement](/202607/18/2607.14708v1-reinforcement-learning-for-the-full-strawberry-harvesting-process-obstacle-separation-detachment-and-placement)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：强化学习框架用于草莓采摘包括障碍分离、摘取和放置
+4. [Exploratory, Communicative, and Deployable: Vision-Driven Embodied Agents for Open-World Mobile Manipulation](/202607/18/2607.13653v1-exploratory-communicative-and-deployable-vision-driven-embodied-agents-for-open-world-mobile-manipulation)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：使用强化学习控制机械手，整合触觉反馈
-3. [Directional Constraints for Efficient Exploration in Safe Reinforcement Learning](/202607/17/2607.12784v1-directional-constraints-for-efficient-exploration-in-safe-reinforcement-learning)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：安全强化学习中的方向性约束用于机器人任务高效探索
+   evidence：使用强化学习进行包含机械臂的开放世界移动操作
+5. [RTS Smoother-Guided Learning of Physics-Based Neural Differential Models](/202607/18/2607.15180v1-rts-smoother-guided-learning-of-physics-based-neural-differential-models)  
+   标签：评分：6.0/10、query:diff-physics
+   evidence：混合神经-物理ODE框架
 
 
 <div class="dpr-home-promo-card">

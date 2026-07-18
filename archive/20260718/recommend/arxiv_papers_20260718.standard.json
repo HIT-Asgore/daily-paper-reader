@@ -1,0 +1,309 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-18T20:49:59.812673+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 1,
+    "deep_cap": 7,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 12,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2607.09042v1",
+      "source": "arxiv",
+      "title": "Learning More from Less: Reinforcement Learning from Hindsight",
+      "abstract": "Reinforcement learning (RL) is increasingly used to post-train vision-language-action (VLA) models, but every update consumes robot rollouts that are slow and costly to collect, making sample efficiency a central concern. Manipulation tasks typically provide only sparse rewards, so a weak policy fails almost every rollout early in training and has little to learn from, even when those failures execute coherent behavior. Such a failure, however, is a success at a different task. We present Learning from Hindsight (LfH), which brings hindsight relabeling to RL post-training of VLAs by scoring failed rollouts against the tasks they actually achieved. A single vision-language model relabels both the instruction and the reward, proposing a hindsight instruction for a group of failed rollouts and scoring how well each satisfies it, and the policy trains on the relabeled and original rollouts jointly. Because VLAs generalize across language, relabeling in language lets the policy learn more from the same trajectories. On out-of-distribution LIBERO-PRO tasks, where standard RL improves only slowly, LfH achieves $5\\times$ improvement in sample efficiency, and outperforms a dense progress-reward baseline. The gains hold across VLA backbones and on a physical Franka robot.",
+      "authors": [
+        "Iris Xu",
+        "Sunshine Jiang",
+        "John Marangola",
+        "Nitish Dashora",
+        "Richard Li",
+        "Thomas Liu",
+        "Zexue He",
+        "Yuheng Zhi",
+        "Alex Pentland",
+        "Pulkit Agrawal",
+        "Zhang-Wei Hong"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-10T02:17:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.09042v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reinforcement learning post-training for manipulation tasks",
+      "llm_evidence_cn": "用于操作任务的强化学习后训练",
+      "llm_evidence": "用于操作任务的强化学习后训练",
+      "canonical_evidence": "用于操作任务的强化学习后训练",
+      "llm_tldr_en": "Presents Learning from Hindsight (LfH), a method that applies hindsight relabeling to RL post-training of VLAs for manipulation, improving sample efficiency by relabeling failed rollouts as successes for different tasks.",
+      "llm_tldr_cn": "针对强化学习后训练视觉-语言-动作模型时样本效率低的问题，提出后见之名学习（LfH）。该方法将失败回放重新标记为其他任务的成功，从而在稀疏奖励环境下提供更多学习信号。实验表明，LfH显著提高了机械手操作策略的样本效率，使弱策略也能从失败中学习。该工作为将后见之名的思想引入VLA强化学习后训练提供了有效途径。",
+      "llm_tldr": "针对强化学习后训练视觉-语言-动作模型时样本效率低的问题，提出后见之名学习（LfH）。该方法将失败回放重新标记为其他任务的成功，从而在稀疏奖励环境下提供更多学习信号。实验表明，LfH显著提高了机械手操作策略的样本效率，使弱策略也能从失败中学习。该工作为将后见之名的思想引入VLA强化学习后训练提供了有效途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.09866v1",
+      "source": "arxiv",
+      "title": "Robo-ValueRL: Reliable Value Estimation for Offline-to-Online Reinforcement Learning",
+      "abstract": "Offline-to-online reinforcement learning is promising for generalizable robotic manipulation, yet its full-stack complexity obscures reproduction and diagnosis. Within such systems, value estimation plays a central role in prioritizing heterogeneous data for policy improvement. Despite its importance, the central question remains underexplored: how value-function reliability shapes policy optimization in offline-to-online reinforcement learning. To answer this question, we propose Robo-ValueRL, a unified framework that enables reliable value estimation and systematically traces its downstream effects on policy pretraining and online improvement. Concretely, Robo-ValueRL learns a history-conditioned value estimator and evaluates its reliability through global-progress and local-preference metrics. These resulting value estimates are propagated into quality-conditioned consistency-policy pretraining and a residual adaptation module on online rollouts, providing a unified testbed for analyzing how value reliability shapes downstream policy performance. Across 240 hours of offline demonstrations and over 3,000 online rollout trajectories, our extensive experiments show that downstream performance is strongly associated with value reliability. Reliable value functions provide better action-quality estimates, allowing value-guided offline RL to scale more effectively than quality-agnostic behavior cloning, and stabilize online improvement by prioritizing high-quality rollout data. Integrating reliable value guidance through offline pretraining with online improvement, our system achieves 86% success on millimeter-level precise chip insertion and 84% on generalizable block disassembly. We hope these findings highlight the importance of value-guided data utilization for effective policy improvement from heterogeneous robotic experience.",
+      "authors": [
+        "Wenke Xia",
+        "Pei Ren",
+        "Wenbo Yu",
+        "Yizhuo Zhang",
+        "Jifan Li",
+        "Yixue Zhang",
+        "Yinuo Zhao",
+        "Qingyang Gao",
+        "Jianlong Fu",
+        "Jian Tang",
+        "Ji-Rong Wen",
+        "Zhengping Che",
+        "Di Hu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-07-10T18:01:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.09866v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for robot manipulation value estimation",
+      "llm_evidence_cn": "用于机器人操作的强化学习的价值估计",
+      "llm_evidence": "用于机器人操作的强化学习的价值估计",
+      "canonical_evidence": "用于机器人操作的强化学习的价值估计",
+      "llm_tldr_en": "Proposes Robo-ValueRL, a framework for reliable value estimation in offline-to-online RL for robotic manipulation, showing how value function reliability shapes policy optimization.",
+      "llm_tldr_cn": "针对离线到在线强化学习在机器人操作中应用时值函数可靠性影响不明确的问题，提出了Robo-ValueRL框架。该方法通过学习历史条件值估计器，系统追踪值函数可靠性对策略预训练和在线优化的影响。实验表明，可靠的值估计能显著提升策略性能，为离线到在线强化学习在机器人操作中的有效应用提供了关键见解。",
+      "llm_tldr": "针对离线到在线强化学习在机器人操作中应用时值函数可靠性影响不明确的问题，提出了Robo-ValueRL框架。该方法通过学习历史条件值估计器，系统追踪值函数可靠性对策略预训练和在线优化的影响。实验表明，可靠的值估计能显著提升策略性能，为离线到在线强化学习在机器人操作中的有效应用提供了关键见解。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13653v1",
+      "source": "arxiv",
+      "title": "Exploratory, Communicative, and Deployable: Vision-Driven Embodied Agents for Open-World Mobile Manipulation",
+      "abstract": "Real-world deployment of embodied agents requires active exploration, visual grounding, and interactive intent disambiguation. However, existing frameworks often rely on privileged simulator states or assume complete instructions, bypassing realistic deployment challenges. To bridge this gap, we present REAL, an agentic framework for open-world mobile manipulation. REAL establishes sim-to-real-consistent environment APIs without oracle perception and integrates a simulated user to enable human-in-the-loop interaction. Within this environment, we design diverse task compositions to drive data collection, supervised fine-tuning, and online reinforcement learning, systematically optimizing agent performance. To comprehensively evaluate this approach, we introduce REAL-Bench, a benchmark spanning 241 tasks across active exploration, visual distraction, articulated manipulation, and interactive disambiguation.   Experimental results demonstrate that our trained agent outperforms leading commercial closed-source VLMs on interactive tasks with a 56.9% success rate. Further empirical analysis reveals that our hierarchical training pipeline successfully aligns the model's tool-use capabilities while maintaining robust open-vocabulary reasoning under extended exploration horizons. Finally, we deploy and evaluate our framework on a physical dual-arm mobile robot, where it achieves a 78.3% end-to-end success rate over 60 real-world episodes. These physical trials demonstrate robust zero-shot transferability to unseen household scenarios, validating that our sim-to-real-consistent design successfully bridges the reality gap for long-horizon mobile manipulation. Code is available at https://github.com/InternRobotics/REAL.",
+      "authors": [
+        "Boyu Mi",
+        "Mengchen Ma",
+        "Yifei Yao",
+        "Xing Gao",
+        "Junting Chen",
+        "Yangzi Li",
+        "Zihou Zhu",
+        "Guohao Li",
+        "Zhenfei Yin",
+        "Tai Wang",
+        "Yao Mu",
+        "Jiangmiao Pang",
+        "Hanqing Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-07-15T09:55:45+00:00",
+      "link": "https://arxiv.org/pdf/2607.13653v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uses RL for open-world mobile manipulation with arm",
+      "llm_evidence_cn": "使用强化学习进行包含机械臂的开放世界移动操作",
+      "llm_evidence": "使用强化学习进行包含机械臂的开放世界移动操作",
+      "canonical_evidence": "使用强化学习进行包含机械臂的开放世界移动操作",
+      "llm_tldr_en": "Proposes REAL framework combining exploration, visual grounding, and RL for open-world mobile manipulation; uses sim-to-real consistent APIs and human-in-the-loop, improving deployment readiness.",
+      "llm_tldr_cn": "该论文提出REAL框架，针对开放世界移动操作中的部署挑战，通过建立仿真到真实一致的API并集成模拟用户实现人机交互，结合在线强化学习优化智能体性能。实验表明该方法在多样任务中有效提升了部署鲁棒性和适应性，为移动操作提供了一套可信的基准框架。",
+      "llm_tldr": "该论文提出REAL框架，针对开放世界移动操作中的部署挑战，通过建立仿真到真实一致的API并集成模拟用户实现人机交互，结合在线强化学习优化智能体性能。实验表明该方法在多样任务中有效提升了部署鲁棒性和适应性，为移动操作提供了一套可信的基准框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.13960v2",
+      "source": "arxiv",
+      "title": "GigaWorld-Policy-0.5: A Faster and Stronger WAM Empowered by AutoResearch",
+      "abstract": "World Action Models (WAMs) improve robot policy learning by jointly modeling actions and future visual observations, using future scene evolution as dense supervision for physically grounded action generation. However, a common design in existing WAMs is to explicitly generate future videos at inference time, incurring substantial computational overhead and hindering real-time closed-loop deployment. GigaWorld-Policy addresses this issue with an action-centered formulation, where future visual dynamics are used during training while action-only decoding is used at inference time. Building upon this framework, we present GigaWorld-Policy-0.5, an enhanced action-centered WAM designed for more efficient robot control. During pretraining, GigaWorld-Policy-0.5 adopts a mixed Action-Conditioned World Modeling (AC-WM) and WAM training strategy. This strengthens the coupling between visual dynamics and robot actions and improves the transferability of action representations for downstream policy learning. For efficient inference, GigaWorld-Policy-0.5 introduces a Mixture-of-Transformers architecture that separates visual dynamics modeling and action generation into specialized experts, reducing active computation during action-only inference and achieving 85 ms inference latency on a local RTX 4090 setup. In addition, we employ an agent-based AutoResearch pipeline to systematically search training configurations, enabling more efficient identification of optimal experimental setups while reducing the time and manual intervention required for hyperparameter tuning. Experiments and ablations show that GigaWorld-Policy-0.5 preserves the training benefits of future visual dynamics while improving inference efficiency for robot control.",
+      "authors": [
+        "GigaWorld Team",
+        "Angen Ye",
+        "Angyuan Ma",
+        "Boyuan Wang",
+        "Chaojun Ni",
+        "Fangzheng Ye",
+        "Guan Huang",
+        "Guo Li",
+        "Guosheng Zhao",
+        "Haodong Yan",
+        "Hengtao Li",
+        "Jiwen Lu",
+        "Kai Wang",
+        "Mingming Yu",
+        "Qitang Hu",
+        "Qiuping Deng",
+        "Songling Liu",
+        "Xiaoyu Tian",
+        "Xiaofeng Wang",
+        "Xinyu Zhou",
+        "Xiuwei Xu",
+        "Xinze Chen",
+        "Yang Wang",
+        "Yejun Zeng",
+        "Yifan Chang",
+        "Yun Ye",
+        "Zhenyu Wu",
+        "Zhanqian Wu",
+        "Zheng Zhu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-15T15:46:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.13960v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "World Action Model jointly models actions and future observations for robot control.",
+      "llm_evidence_cn": "世界动作模型联合建模动作和未来观察，用于机器人控制。",
+      "llm_evidence": "世界动作模型联合建模动作和未来观察，用于机器人控制。",
+      "canonical_evidence": "世界动作模型联合建模动作和未来观察，用于机器人控制。",
+      "llm_tldr_en": "GigaWorld-Policy-0.5 presents an action-centered World Action Model that uses future visual dynamics for training but only action decoding at inference, enabling efficient robot control without generating future videos at runtime.",
+      "llm_tldr_cn": "现有世界动作模型（WAM）在推理时需显式生成未来视频，计算开销大，阻碍实时部署。本文提出动作中心化WAM，训练时利用未来视觉动力学，推理时仅解码动作，消除视频生成。GigaWorld-Policy-0.5在此基础上进一步优化，实现更高效的机器人控制。实验表明该方法在保持性能的同时大幅提升速度。",
+      "llm_tldr": "现有世界动作模型（WAM）在推理时需显式生成未来视频，计算开销大，阻碍实时部署。本文提出动作中心化WAM，训练时利用未来视觉动力学，推理时仅解码动作，消除视频生成。GigaWorld-Policy-0.5在此基础上进一步优化，实现更高效的机器人控制。实验表明该方法在保持性能的同时大幅提升速度。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.15180v1",
+      "source": "arxiv",
+      "title": "RTS Smoother-Guided Learning of Physics-Based Neural Differential Models",
+      "abstract": "Ordinary differential equations (ODEs) are widely used to model dynamical systems in physics, biology, neuroscience, and physiology, but in many applications some equations of the dynamics are unknown and only a subset of the state variables are measured. We propose a hybrid neural--physics framework in which the known components of the ODE are kept explicit and the missing components are represented by a neural network. The proposed method consists of two stages where we alternate between state and parameter estimation and iterate until a predetermined criterion is met. Specifically, in the first step, we treat the model parameters as being known and we infer the latent states from the available measurements using a Rauch--Tung--Striebel (RTS) smoother. In the second stage, we treat the smoothed trajectories as being known and use them to estimate the neural networks' parameters through backpropagation. We evaluate the method on benchmark systems spanning linear, nonlinear, and stiff dynamics under partial state observation. Across these settings, the proposed method learns missing ODE components from incomplete measurements while exploiting and retaining interpretable mechanistic structure and improving latent-state reconstruction and long-horizon prediction.",
+      "authors": [
+        "Ahmet Demirkaya",
+        "Georgios Stratis",
+        "Tales Imbiriba",
+        "Zachary D. Danziger",
+        "Deniz Erdogmus"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "eess.SY"
+      ],
+      "published": "2026-07-16T16:34:48+00:00",
+      "link": "https://arxiv.org/pdf/2607.15180v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "hybrid neural-physics ODE framework",
+      "llm_evidence_cn": "混合神经-物理ODE框架",
+      "llm_evidence": "混合神经-物理ODE框架",
+      "canonical_evidence": "混合神经-物理ODE框架",
+      "llm_tldr_en": "Proposes a hybrid neural-physics framework for learning unknown ODE dynamics using RTS smoothing, enabling differentiable physics modeling.",
+      "llm_tldr_cn": "该论文针对物理系统中动力学方程部分未知的问题，提出了一种混合神经-物理框架，将已知ODE部分保留，未知部分用神经网络建模，并通过RTS平滑器交替估计状态与参数。该方法本质上是可微分的物理建模，适用于可微物理在机器人操作中的应用场景。",
+      "llm_tldr": "该论文针对物理系统中动力学方程部分未知的问题，提出了一种混合神经-物理框架，将已知ODE部分保留，未知部分用神经网络建模，并通过RTS平滑器交替估计状态与参数。该方法本质上是可微分的物理建模，适用于可微物理在机器人操作中的应用场景。",
+      "llm_tags": [
+        "query:diff-physics:composite"
+      ],
+      "matched_query_tag": "query:diff-physics:composite",
+      "matched_query_text": "Papers central to 可微物理在机械臂操作任务中的应用, especially work that connects or combines: differentiable physics for robotic manipulation; robot arm manipulation using differentiable methods; differentiable simulation for manipulation tasks; differentiable control in robotics; differentiable dynamics for robot arms; differentiable models for manipulation tasks; differentiable physics for robotic arm manipulation; differentiable simulation of robotic manipulation; end to end differentiable control for robot arms.",
+      "matched_requirement_id": "req-composite-diff-physics",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.14708v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning for the Full Strawberry Harvesting Process: Obstacle Separation, Detachment, and Placement",
+      "abstract": "Severe occlusions and deformable plant structures introduce complex contact dynamics that challenge robotic strawberry harvesting. A policy-driven reinforcement learning (RL) framework with heuristic phase coordination was developed, in which obstacle separation, fruit detachment, and placement were formulated as a sequential decision-making task. A shared interaction-aware policy generated Cartesian motions across all task phases, while lightweight heuristic logic coordinated task progression and gripper events. A shared structured observation space was used to represent target, obstacle, end-effector, and task-context information. A hierarchical architecture combined the high-level policy with low-level Cartesian impedance control for compliant interaction. To support zero-shot sim-to-real transfer, feasibility-first observation alignment and domain randomization were adopted. The policy achieved success rates of 89.7% in simulation and 82.0% in real-world experiments. As the occlusion level increased from 1 to 5, the average execution time increased from 12.99 s to 21.73 s, reflecting greater interaction complexity. These results demonstrated effective transfer of interaction-aware harvesting behaviors to a structurally different robotic platform.",
+      "authors": [
+        "Changyou Miao",
+        "Teng Li",
+        "Ya Xiong"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-16T08:16:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.14708v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL framework for strawberry harvesting including obstacle separation, detachment, placement",
+      "llm_evidence_cn": "强化学习框架用于草莓采摘包括障碍分离、摘取和放置",
+      "llm_evidence": "强化学习框架用于草莓采摘包括障碍分离、摘取和放置",
+      "canonical_evidence": "强化学习框架用于草莓采摘包括障碍分离、摘取和放置",
+      "llm_tldr_en": "Develops a policy-driven RL framework with heuristic phase coordination for full strawberry harvesting; uses shared interaction-aware policy and hierarchical architecture for sequential decision-making.",
+      "llm_tldr_cn": "该论文为草莓采摘全流程（障碍分离、果实摘取、放置）构建了基于强化学习的决策框架。采用启发式阶段协调与共享交互感知策略生成笛卡尔运动，分层架构结合高层策略与底层控制器，有效处理了复杂接触动力学与遮挡问题。",
+      "llm_tldr": "该论文为草莓采摘全流程（障碍分离、果实摘取、放置）构建了基于强化学习的决策框架。采用启发式阶段协调与共享交互感知策略生成笛卡尔运动，分层架构结合高层策略与底层控制器，有效处理了复杂接触动力学与遮挡问题。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
