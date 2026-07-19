@@ -1,0 +1,1472 @@
+Title: Wearing A Coat: Dual-Arm Robot-Assisted Dressing with Differentiable Clothing Simulation
+
+URL Source: https://arxiv.org/pdf/2607.10999v1
+
+Published Time: Tue, 14 Jul 2026 02:34:39 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+> JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 1
+
+# Dual-Arm Robot-Assisted Dressing with Differentiable Clothing Simulation 
+
+Yiming Liu, Lijun Han, and Hesheng Wang, Senior Member, IEEE 
+
+Abstract —The development of assistive robots for dressing tasks serves to augment human convenience and improve the quality of life for individuals with physical impairments. However, due to the intricate contact interactions between garments and the human limbs during dressing, most robot-assisted dressing algorithms can only achieve partial dressing, struggling to handle with the remaining garments under contact constraints. To overcome this challenge, we propose a novel robotic dressing control algorithm that integrates real-time differentiable clothing simulation. The simulation algorithm employs explicit iterative scheme with intentionally introduced high-order bias to enhance computational efficiency while maintaining stability under large time-step conditions. Through simulation, we resolve the garment state under contact constraints, which then enables a multi-stage control strategy for successful dressing assistance. To further improve real-time performance, a constrained local model is introduced along with its corresponding optimization solver, per-mitting high-frequency local compensation for the differentiable simulation based global controller. By comparing with the Pro-jective Dynamics algorithm in simulation, we validated the real-time computational advantages of our differentiable simulation. Physical dressing experiments were conducted on users with various poses and motion patterns, conclusively demonstrating the feasibility and efficacy. 
+
+Index Terms —Robot-assisted dressing, differentiable clothing simulation, human-robot interaction 
+
+I. I NTRODUCTION 
+
+With the development of artificial intelligence, assistive robots [1], [2] are increasingly used in daily life, which especially enhances the quality of life for elderly and mobility-impaired individuals. Among different daily tasks, robot-assisted dressing is one of the most common yet critical tasks. As the dressing process necessitates the manipulation of deformable garments while maintaining indirect physical interaction with humans, this task encompasses challenges in both deformable object manipulation and human-robot collaboration, rendering it a representative and demanding benchmark for cooperative robotics. Advancements in this domain hold substantial implications for improving assistive robotic capabilities. During dressing process, complex contact interactions arise between garments and the human limbs, especially when partial structures of the clothing have been worn completely. 
+
+*This work was supported in part by the Natural Science Foundation of China under Grant 62225309, 62073222, U21A20480 and 62361166632, in part by the Open Research Projects of Zhejiang Lab under Grant 2022NB0AB01. Y. Liu, L. Han, and H. Wang are with the Department of Automa-tion, Shanghai Jiao Tong University, Shanghai 200240, China (e-mail: lym5634@sjtu.edu.cn; lijun han@sjtu.edu.cn; wanghesheng@sjtu.edu.cn). 
+
+For garments like coats, the donned sleeve establishes tight physical contact [3], providing support and constraining the overall motion and deformation of the garment. Approaches [4]–[6] have overlooked these constraints by simplifying gar-ments as independent armholes, thereby failing to address the secondary sleeve dressing problem. To properly account for deformable garment constraints, it is essential to formulate an appropriate garment model, leveraging clothing simulation to predict contact deformation in constrained dressing tasks. The effectiveness of assisted dressing is influenced by the user’s pose and motion patterns. Previous work [7]–[9] treats assisted dressing as a synchronized dual-arm trajectory tracking problem. However, when the user’s arms are naturally extended beyond the garment’s shoulder width, the garment is unable to be directly draped over both arms, causing these methods to converge to infeasible local minima and ultimately fail. Moreover, during the garment donning process, human arms may exhibit either passive compliance to follow the garment or active cooperation with robots, which dynamically alter the dressing trajectory and consequently affect overall dressing performance. To accommodate varying user’s state, a coordinated dual-arm control strategy is valuable to guide the garment into the proper position, enabling sequential completion of the dressing task of two sleeves. In this paper, we propose a real-time differentiable clothing simulation algorithm and a corresponding multi-stage goal-guided control strategy to address the complex human-garment interaction and diverse user poses, culminating in a compre-hensive dual-arm dressing assistance system. To effectively utilize clothing contact simulation, we develop a novel explicit iterative algorithm with dry friction, enabling rapid differen-tiable clothing simulation for real-time control applications. By incorporating predicted human motion trajectories, the multi-stage control strategy facilitates dual-sleeve donning while accommodating garment constraints across diverse human mo-tion patterns. Through simplified local modeling, an optimal controller with local compensation is devised to enhance high-frequency dressing assistance. Experimental results validate the proposed methodology, demonstrating successful dressing assistance across different coats without prior models. The contributions are summarized as follows:  
+
+> •
+
+A novel explicit differentiable clothing simulation algo-rithm with dry friction is designed for real-time simu-lation and optimal control. By decoupling the position and velocity and incorporating distinct high-order bias, we achieve fast-converging explicit iteration that rapidly 
+
+0000–0000/00$00.00 © 2021 IEEE arXiv:2607.10999v1 [cs.RO] 13 Jul 2026 JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 2
+
+attains equilibrium states with large time steps.  
+
+> •
+
+We propose a multi-stage objective-driven strategy to guide each sleeve donned by the arm separately for coats. By integrating human motion prediction, this framework dynamically adapts to diverse human intents while ensur-ing coordinated dual-arm manipulation.  
+
+> •
+
+To improve the real-time performance of the simulation-based controller, we introduce a localized solver for high-frequency corrective adjustments. A linearized dressing model with state feasibility constraints, coupled with an active-set optimization solver is developed to achieve rapid response to unpredictable human motions. II. R ELATED WORK 
+
+A. Robot-Assisted Dressing 
+
+As a fundamental task, robot-assisted dressing has received significant attention in recent years. To dress an upper-body garment, the conventional approaches utilize the arm poses and directly generate the robot trajectories through rules [10], [11] or learning [12], [13]. These methods struggle with fabric constraints and are typically limited to donning the first sleeve. Several researches [5], [14], [15] have explored hospital gown dressing and achieved notable success. Yet, gowns present a simplified scenario as their loose fit and rear opening allow for straightforward front-side donning. With the development of simulation, Sun et al. [16] proposed a vision-based reinforcement learning approach to learn the dress strategy offline. Due to the lack of real-time simulation, this method loses the accurate clothing state and is ineffective for varying constraints induced by garment deformation and human motions. For conventional coats, it remains challenging to dress two sleeves simultaneously, particularly when the initial arm span exceeds shoulder width. 
+
+B. Cloth Simulation 
+
+In physics-based cloth simulation, garments are typically modeled as nodes with local constraints, for which the implicit Euler integration is employed to achieve robust large-step simulation [17]. This formulation can be framed as an energy minimization problem [18], ensuring system convergence and iterative stability. To enhance computational efficiency, Projec-tive Dynamics (PD) [19]–[21] decompose the iterations into global linear systems and local nonlinear constraints, utilizing the global/local solver alternately to address the nonlinearity of implicit integration. Another popular approach, Position-Based Dynamics (PBD) [22]–[24], projects constraints into a Gauss-Seidel like fashion, enabling highly parallelized con-straint resolution at the positional level. Despite progress, the computational cost of implicit iterations hinders real-time applications. Previous work [17] attempted to leverage gradient to estimate the results of implicit integration, cir-cumventing the nonlinear equation solving. However, this idea fails to adequately handle static friction and limits subsequent development. More recently, Kotsovolis et al. [25] employed diffusion models to learn garment dynamics for dressing as-sistance. Nevertheless, the complex human-robot interactions inherent in the dressing process pose significant challenges for real-world data acquisition. 
+
+C. Differentiable Cloth Simulation 
+
+The incorporation of gradient information within simu-lation frameworks has demonstrated significant potential in parameter identification [26], motion planning [27], and neural network training [28]. This versatility has led to the growing adoption of differentiable cloth simulation techniques in recent research. In the domain of PD, Du et al. [29] developed the DiffPD, a differentiable simulator that formulates derivatives through backward iterations analogous to the PD solvers. Building upon this foundation, DiffCloth [26] extended these capabilities to incorporate nodal collision and frictional contact [30], including the computation of dry friction gradients. To solve cloth self-collision and interpenetration, DiffClothAI [31] derived the differentiable formulation of Incremental Potential Contact (IPC) [32], expanding the applicability of differentiable cloth simulation. In this work, we extend our cloth simulation method from DiffCloth to include the com-putation of gradients, which enhances its garment control capabilities for dressing. III. A RCHITECTURE AND PROBLEM FORMULATION 
+
+A. Problem Formulation 
+
+In this work, we study the robot-assisted dressing problem for coats. As shown in Fig. 1, two manipulators are controlled to pick the both sides of the coat’s collar. The user to be dressed stands or sits in front of the coat and faces to the same direction with two arms opening naturally. Two RGBD cameras are placed on the front and rear sides of the platform to observe the state of the user and the coat. The dressing task aims to put the sleeves over the corresponding arms and pull the clothing armholes to the corresponding shoulders. To model the problem in mathematical form, we construct the tetrahedral grids with n nodes from point cloud to describe the garment state. The i − th nodal position of the grids is denoted as pi ∈ R3, i = 1, · · · , n . For each sleeve, the center and the orientation vector of the armhole are employed to represent the sleeve state, which is written as 
+
+xci = ( pci , vci ), i ∈ { l, r }. Denote the positions of two end-effectors as prl , prr . Nodes with distances less than lp are seen as the picked nodes and move along with the actuators through spring constraints. For arms of the user, we extract the positions of shoulders, elbows, and hands as the arm states, which are denoted as psi , pei , phi , i ∈ { l, r }.Referred to [6], we define the dressing coordinates around two arms to calculate the task progress for two sleeve states. The dressing coordinate (si, l i, θ i), i ∈ { l, r } is a cylinder coordinate, composed of the progress scalar, sleeve-to-arm distance, and rotation angle. The progress scalar si is a scalar quantity to indicate the progress from phi to psi , with si = 0 at the hand, si = 1 at the elbow, and si = 2 at the shoulder. The sleeve not covered to the arm is defined as si = 0 . The axis of the cylinder coordinate system is consisted of the axes of the forearm and upper-arm, which are connected by a tangent arc to keep smooth. li is calculated as the distance to the axis while 
+
+θi is the corresponding angle, with the reference 0◦ directed to (pei − phi ) × (psi − pei ).Thus, we define the following control problem: JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 3Differentiable clothing simulation 
+
+Human and garment perception 
+
+Dual-arm Control 
+
+Cost function 
+
+Global controller 
+
+Local compensation 
+
+> Forward
+> prediction
+> Backward
+> optimization
+> Base trajectory
+> Action
+
+Human prediction                        
+
+> GarmentNet
+> RTMPose
+> `
+> Decoupled
+> forward
+> Δ𝒙 =ℎ𝒗 +1
+> 2ℎ2𝑴 −1𝒇 +1
+> 2ℎ2𝑴 −1∇𝒇 Δ𝒙
+> Δ𝒗 =ℎ𝑴 −1𝒇 +1
+> 2ℎ2𝑴 −1𝑑
+> 𝑑𝑡 𝒇 +1
+> 2ℎ2𝑴 −1∇𝒇 Δ𝒗
+> Back camera
+> Front camera
+> Grasping point
+> Human and garment state
+> Garment mesh
+> Human pose
+> Point cloud
+> RGBD image
+> High-order bias
+
+Multi-stage strategy   
+
+> Dress the first sleeve Adjust the first arm Dress the second sleeve
+
+Fig. 1. The pipeline of our proposed robotic-assisted dressing framework. The system comprises three components: human and garment perception, differentiable clothing simulation, and dual-arm control. The perception module provides the clothing reconstruction and human pose, facilitating the differentiable clothing simulation. Using the simulated human and garment states, the control module decomposes the dressing task into multiple sequential phases. By incorporating human prediction, the framework accomplishes the dressing procedure through an optimal control scheme with local compensation. 
+
+Problem : Given the observation of two RGBD cameras, the body size of the user, and the material property of the coat (including mass, stiffness, and friction coefficient with human), extract and track the coat grids and the arm states as the input. With the sleeve state calculated from the grids, design a controller to control the position of two end-effectors 
+
+prl , prr to drive the dressing coordinates to si = 2 , i ∈ { l, r }
+
+for two sleeves. 
+
+B. Overall View of Proposed Framework 
+
+To achieve robotic-assisted dressing, we propose an inte-grated framework as illustrated in Fig. 1. This framework employs garment point clouds and human RGB-D images acquired from depth cameras to perform garment mesh re-construction, tracking, and human pose estimation. Building upon the perception results, we develop a novel differen-tiable clothing simulation algorithm. This algorithm adopts a position-velocity decoupled explicit iterative scheme to enhance computational efficiency while incorporating high-order bias terms to ensure stability under large time steps. By leveraging the simulated human and garment states, our framework decomposes the dressing task into a sequential multi-stage process: dressing the first sleeve, adjusting the arm, and dressing the second sleeve. Coupled with human motion prediction, these stages are mathematically defined via cost functions, steering the dressing progression. Ultimately, robotic dressing assistance is achieved through a simulation-based global optimal controller, augmented with real-time lo-cal compensation to facilitate efficient, rapid, and coordinated dual-arm control. IV. D IFFERENTIABLE CLOTHING SIMULATION 
+
+A. Forward Simulation 
+
+Denote x(t) = [ pT 
+
+> 1
+
+, ..., pTn ]T , v(t) = [ ˙pT 
+
+> 1
+
+, ..., ˙pTn ]T as the positions and velocities of all nodes at time t. Denote h as the time step and M ∈ R3n×3n as the positive diagonal mass matrix. f int ∈ R3n, f ext ∈ R3n are the internal and external forces at all nodes. Based on the Taylor expansion, we consider the time-stepping scheme discretizing x(t) and 
+
+v(t) as follows: 
+
+xn+1 = xn + hvn + 12 h2M −1(f ext + f int ) + ... 
+
+vn+1 = vn + hM −1(f ext + f int )+ 12 h2M −1 ddt (f ext + f int ) + ... 
+
+(1) Notably, in the following, we assume f int , f ext do not contain contact forces, which will be introduced in Sec. IV-B. f ext 
+
+is calculated as the constant gravity and wind forces. f int is calculated based on the cloth material model described in [19]. Referring to [21], we can define the potential energy W to calculate f int by its spatial gradient: f int = −∇ W (xn). W
+
+can be divided into a sum of quadratic terms: 
+
+W (xn) = X
+
+> i
+
+min 
+
+> qi∈M i
+
+wi
+
+2 ∥Aixn − qi∥22 (2) Each constraint corresponds to one quadratic term with stiff-ness wi and linear transformation operator Ai. qi is the auxil-iary projection variable and Mi is the constraint manifold. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 4
+
+More details about their definitions can be found in [21]. According to (2), the derivative of f int can be obtained as: 
+
+ddt f int = −∇ 2W (xn) dxn
+
+dt = X
+
+> i
+
+wi(ATi ∇qi − ATi Ai)vn
+
+(3) Assuming elastic potential energy dominates the deformation behavior, the potential energy W can be decomposed into stretching and bending components, whose constraint manifold 
+
+Mi is SO (3) with qi ∈ R3×3. Denote ˆAixn − ˆqi ∈ R9
+
+to expand Aixn − qi as a vector. ˆqi is calculated from a rotation matrix with three freedoms, whose differentiation can be defined as: 
+
+dˆqi = Bi(ˆqi)dωi (4) where Bi(ˆqi) ∈ R9×3 is the Jacobian matrix with respect to 
+
+ωi ∈ R3. At the minimizer ˆq∗ 
+
+> i
+
+∈ R9 of ˆqi 7 → ∥ ˆAixn − ˆqi∥2,the spatial gradient ∇ωi satisfies: 
+
+∇ωi = Bi(ˆq∗ 
+
+> i
+
+)† ˆAi (5) where (·)† is the Moore-Penrose pseudoinverse. Thus, the term 
+
+ATi ∇qi can be calculated as: 
+
+ATi ∇qi = ˆATi Bi(ˆq∗ 
+
+> i
+
+)Bi(ˆq∗ 
+
+> i
+
+)† ˆAi (6) The explicit iterative method using (1) performs poorly and unstably under large steps and large stiffness. In this case, the internal force changes significantly at each iteration, which can be captured by Taylor expansion only in a brief interval. With the increase of iteration steps, the deviation of force makes the simulation oscillation and unstable. By contrast, the implicit Euler method [19] calculates the force based on the next state 
+
+xn+1 , which incorporates the variation of force promoted by its own influence. However, the implicit method needs to solve the non-linear equation to obtain xn+1 , which restricts the solving speed and affects the calculation of differentiation. To avoid the nonlinear equation and ensure fast solution, we introduce the force compensation into the second-order forward Taylor expansion as follows: 
+
+xn+1 = xn + hvn + 12 h2M −1(f ext + f int ) + h2F x∆xvn+1 = vn + hM −1(f ext + f int )+ 12 h2M −1 ddt (f ext + f int ) + h2F x∆v
+
+(7) where ∆x = xn+1 − xn, ∆v = vn+1 − vn, and F x =
+
+M −1∇f int . Referred to the implicit Euler method, the com-pensation terms utilize the variation to calculate the change of internal force, which incorporates the impact of the state change and overcomes the instability of the explicit method. Notably, we introduce distinct compensation terms for position and velocity, thereby decoupling the consideration of nodal velocity and position changes. This approach accounts for scenarios involving large step sizes, where the nodal velocity may rapidly decay to zero in the initial phase of a single step, independent of the average velocity, as well as the displacement within that step. Through repeated iterations, ∆x
+
+and ∆v can be written as: 
+
+∆x =
+
+> ∞
+
+X
+
+> i=1
+
+(h2F x)i[hvn + 12 h2M −1(f ext + f int )] ∆v =
+
+> ∞
+
+X
+
+> i=1
+
+(h2F x)i(hM −1 + 12 h2M −1 ddt )( f ext + f int )
+
+(8) The compensation terms satisfy ∆x = o(h3) and ∆v = o(h3),serving as high-order bias terms for both position and velocity in their respective Taylor expansions. For sufficiently small timestep h, our method preserves accuracy equivalent to second-order Taylor expansion. As the increase of the iterative steps, (8) diverges. Based on (7), ∆x and ∆v can be solved by linear equation, which can be written as: 
+
+∆x = ( I − h2F x)−1[hvn + 12 h2M −1(f ext + f int )] ∆v = ( I − h2F x)−1(hM −1 + 12 h2M −1 ddt )( f ext + f int )
+
+(9) According to (3) and (6), we have: 
+
+(I−h2F x)−1 = [ M +
+
+h2 X
+
+> i
+
+wi ˆATi (I − Bi(ˆq∗ 
+
+> i
+
+)Bi(ˆq∗ 
+
+> i
+
+)†) ˆAi]−1M −1 (10) As (I − Bi(ˆq∗ 
+
+> i
+
+)Bi(ˆq∗ 
+
+> i
+
+)†) is a projection matrix, our force compensation can be seen as the semi-definite compensation on the mass matrix M , which reduces the variation ∆x and 
+
+∆v in one step. Under large steps and large stiffness, ∆x and 
+
+∆v satisfy: 
+
+lim  
+
+> h,w i−>∞
+
+∆x = − 12 F −1 
+
+> x
+
+M −1(f int + f ext )lim  
+
+> h,w i−>∞
+
+∆v = − 12 F −1 
+
+> x
+
+M −1 ddt f int = − 12 vn
+
+(11) (12) Thus, with the increase of the step h, our method reduces the variation in one step to approach the equilibrium state with zero force to ensure stability. To accelerate the calculation, we use iterative solver to replace the matrix inversion. The solution for ∆x can be written as: 
+
+P ∆xk+1 = ∆ P ∆xk + hM v n + 12 h2(f ext + f int )
+
+P = M + h2 X
+
+> i
+
+wiATi Ai
+
+∆P = h2 X
+
+> i
+
+wiATi ∇qi
+
+(13) where P is a fixed positive definite symmetric matrix, which can be decomposed by Cholesky factorization to accelerate the iteration. Such an iterative solver converges from any initialization when the spectral radius ρ(P −1∆P ) < 1. For any z ∈ R3n, according to (6), (13), we have: 
+
+zT ∆P z ≤ h2 X
+
+> i
+
+wizT ATi Aiz < zT P z (14) JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 5
+
+Thus, the Rayleigh Quotient for P −1∆P is less than 1, as well as all the eigenvalues. The iterative solver converges for different constraints. ∆v can be derived similarly. In practical applications, the results of one-step iteration can be employed to achieve faster simulation. In this case, the accuracy is still guaranteed to be o(h3). Meanwhile, this approximation further reduces the variation of x and v as the Rayleigh Quotient for P −1(P − ∆P ) is less than 1, making the new state closer to equilibrium in simulation. 
+
+B. Contact Update 
+
+Signorini-Coulomb law describes the contacts force applied to each node respectively [33]. At each step, denote the indices of all collision nodes as I ⊆ { 1, 2, 3, ...n }. I can be obtained as the mixture of the previous contact nodes and the new collision nodes. For each node j ∈ I , its local contact force 
+
+rj ∈ R3 and velocity uj ∈ R3 satisfy one of the following conditions: 
+
+
+
+Take off: rj = 0 , uj · nj > 0,
+
+Stick: || rj|T || < μ || rj|N || , uj = 0 ,
+
+Slip: || rj|T || = μ|| rj|N || , uj|N = 0 , rj|T = −kj uj|T
+
+(15) where μ is the frictional coefficient and kj is a positive coeffi-cient. The notations (·)j|T and (·)j|N represent the tangential and normal components respect to the contact surface. nj is the normal direction deviated from the surface for node j. With 
+
+m contact nodes, the vertical stacks of all contact forces and velocities are defined as r ∈ R3m and u ∈ R3m, respectively. For convenience, we utilize a constant contact force r
+
+at each step, which satisfies the contact conditions in (15). The corresponding u is calculated as the mean velocity: 
+
+u = ∆x/h . According to (9), u can be obtained based on the force applied to the nodes. When utilizing one-step iteration for forward simulation, the relationship between r
+
+and u satisfies: 
+
+u = 12 hP ic r + bb = IcP −1[M v n + 12 h(f ext + f int )] 
+
+(16) where P ic ∈ R3m×3m is the sub matrix by extracting the related rows and columns from P −1. Ic ∈ R3m×3n is the matrix to extract the velocity of contact nodes from all nodes. b
+
+represents the motion trend without contact. When performing a complete forward simulation, we can derive from (9) a linear constraint relationship between u and r, analogous in form to the expression given in (16). To distinguish the contact types, we suppose all contact nodes stick and calculate the corresponding contact force as 
+
+−2P −1 
+
+> ic
+
+b/h . Three types is distinguished by the following conditions: 
+
+
+
+Take off: rj · nj < 0,
+
+Stick: || rj|T || ≤ μ|| rj|N || , rj · nj > 0,
+
+Slip: || rj|T || > μ || rj|N || , rj · nj > 0
+
+(17) Based on the contact types, we define the matrix Cr ∈
+
+R3m×3m, Cu ∈ R3m×3m to apply the constraints in (15) for r𝒓 = − 2               
+
+> ℎ 𝑷 𝑖𝑐 −1𝒃 𝒓 𝑏 𝒓 𝑓 Calculate stick contact force Obtain feasible contact force Transform into feasible velocity 𝒖 = 12ℎ𝑷 𝑖𝑐 𝒓 𝑏 +𝒃 𝒇 𝑒𝑥𝑡 𝒖 𝑓 𝒇 𝑒𝑥𝑡 𝒇 𝑒𝑥𝑡
+> Fig. 2. An example of the process to solve the contact force: A rectangular fabric patch is placed on a cylindrical surface and subjected to a horizontal external force fext . The fabric exhibits sliding motion with edge detachment. The figure demonstrates the calculation of the sticking force, the feasible force
+> rband the resulting force rfwith feasible velocity uf.
+
+and u, respectively. The direction constraint rj|T = −kj uj|T
+
+for slipping nodes is ignored as our contact force and velocity are the mean values for process and do not correspond exactly. Then, the feasible contact force rb ∈ R3m to prevent the motion b is obtained as: 
+
+rb = − 2
+
+h Cr P −1 
+
+> ic
+
+b (18) However, u corresponding to this contact force may violate (15). For the process values, the nodal velocity satisfies the constraints always to ensure they remain in the surface while the force does not need. Thus, we introduce rb into (16) to obtain the feasible velocity uf ∈ R3m and the corresponding force rf ∈ R3m:
+
+uf = Cu(I − P ic Cr P −1 
+
+> ic
+
+)brf = 2
+
+h P −1 
+
+> ic
+
+(uf − b) (19) A representative example of the solution process is illustrated in Fig. 2, in which a rectangular fabric patch is slid and par-tially detached on a cylindrical surface under applied tension. Thus, the fast explicit iteration with contact force can be written as: 
+
+xn+1 = xn + P −1[hM v n + 12 h2(f ext + f int + ITc rf )] 
+
+vn+1 = vn + P −1(h + 12 h2 ddt )( f ext + f int + ITc rf )
+
+(20) 
+
+Remark: Considering that the object movement and uneven contact surfaces may cause the contact nodes following (15) to detach, we make corrections to all contact points after collision detection. The contact nodes are first updated to ensure their positions unchanged in the object coordinate system. Then, we project them to the nearest positions on contact surfaces to maintain contact. In summary, our method utilizes the advantage of explicit iteration to construct the relationship between contact force and new state, which ensures the friction constraints and quick calculation. The update process is shown as Algorithm 1. 
+
+C. Backward Differentiation 
+
+The key idea to achieve differentiation is to derive the Jacobian of the output (xn+1 , vn+1 ) with respect to the input JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 6
+
+Algorithm 1: Explicit Iteration with Contact Force 
+
+Data: Mass matrix M , time step h, total steps Ns,potential energy function W , initial nodal position x0 and velocity v0
+
+Input: external force f ext  
+
+> 1
+
+I ← ∅ , n ← 0; 
+
+> 2
+
+P ← M + h2 P 
+
+> i
+
+wiATi Ai; 
+
+> 3
+
+pre-calculate P −1; 
+
+> 4
+
+while n < N s do  
+
+> 5
+
+n ← n + 1 ; 
+
+> 6
+
+get external force f ext ; 
+
+> 7
+
+I ← I ∪ CheckCollision (xn); 
+
+> 8
+
+xn ← CorrectContact (I, xn); 
+
+> 9
+
+f int ← −∇ W (xn); 
+
+> 10
+
+extract P ic from P −1; 
+
+> 11
+
+calculate b by (16);  
+
+> 12
+
+r ← − 2P −1 
+
+> ic
+
+b/h ; 
+
+> 13
+
+distinguish contact types by (17);  
+
+> 14
+
+calculate rf by (19);  
+
+> 15
+
+calculate xn+1 , vn+1 by (20);  
+
+> 16
+
+update I 
+
+> 17
+
+end 
+
+(xn, vn). Regarding the forward iteration (13) without contact, we can differentiate the equivalent formula (7) to obtain: 
+
+dxn+1 = dxn + hd vn + 12 h2F xdxn + h2F x(dxn+1 
+
+− dxn) + h2∇F x∆xdxn
+
+dvn+1 = dvn + hF xdxn + 12 h2F xdvn + 12 h2∇F xvndxn
+
++ h2F x(dvn+1 − dvn) + h2∇F x∆vdxn
+
+(21) which can be re-written as: 
+
+I − h2F x 00 I − h2F x
+
+  dxn+1 
+
+dvn+1 
+
+
+
+= H
+
+dxn
+
+dvn
+
+
+
+(22) where 
+
+H =
+
+ I − 12 h2F x + h2∇F x∆x hI
+
+hF x + h2∇F x( 12 vn + ∆ v) I − 12 h2F x
+
+
+
+(23) In back propagation, the Jacobian matrices are coupled with the gradients of a loss function L. We can pass the gradient vector with respect to L to replace the Jacobian matrix. By utilizing the chain role to (22), we have: 
+
+ ∂L ∂xn
+
+> ∂L ∂vn
+
+
+
+= HT
+
+"(I − h2F Tx )−1 ∂L ∂xn+1 
+
+(I − h2F Tx )−1 ∂L ∂vn+1 
+
+#
+
+(24) Denote d = ( I − h2F Tx )−1∂L/∂ xn+1 . d can be calculated based on the iterative method similar to (13): 
+
+P M −1dk+1 = ∆ P T M −1dk + ∂L ∂xn+1 
+
+(25) 
+
+(I − h2F Tx )−1∂L/∂ vn+1 is calculated in the same way. The number of iterations is the same as the forward update to ensure consistency in the solution. The iteration is converged as verified in Sec IV-A. Under contact, the forward iteration is solved as (20). The contact force and the new states are calculated through matrix multiplication directly. We can take the derivative to obtain the directly calculated through matrix multiplication. By Differentiating xn and vn on both sides respectively, we have: 
+
+∂xn+1 
+
+∂xn
+
+= I + 12 h2P −1( ∂f int 
+
+∂xn
+
++ ITc
+
+∂rf
+
+∂xn
+
+)
+
+∂xn+1 
+
+∂vn
+
+= hP −1M + 12 h2P −1ITc
+
+∂rf
+
+∂vn
+
+∂vn+1 
+
+∂xn
+
+= hP −1( ∂f int 
+
+∂xn
+
++ ITc
+
+∂rf
+
+∂xn
+
++ 12 h ∂2f int 
+
+∂x2
+
+> n
+
+vn)
+
+∂vn+1 
+
+∂vn
+
+= I + hP −1(ITc
+
+∂rf
+
+∂vn
+
++ 12 h ∂f int 
+
+∂xn
+
+)
+
+(26) According to (16) and (19), the derivative of rf is: 
+
+∂rf
+
+∂xn
+
+= Cp
+
+∂f int 
+
+∂xn
+
+∂rf
+
+∂vn
+
+= 2
+
+h CpM
+
+(27) where Cp = P −1 
+
+> ic
+
+(Cu −CuP ic Cr P −1 
+
+> ic
+
+−I)IcP −1. For con-venience, the derivative is written as Jfsim in the following. V. M ULTI -S TAGE DUAL -A RM CONTROL 
+
+A. Task Decomposition 
+
+Based on the differentiable clothing simulation, the model predictive control is employed to robot control. Building upon human motion prediction, the bimanual optimization addresses human-robot interaction dynamics and inter-manipulator co-ordination for garment dressing tasks. Denote the current sleeve states as xci, 0, i ∈ { l, r }. Following the robot motion 
+
+vri,j = pri,j +1 − pri,j , i ∈ {l, r } and predicted human trajectory px,j , x ∈ { sl, sr, el, er, hl, hr } with time interval h,the predicted states xci,j , i ∈ { l, r } can be calculated through the simulation. Due to the motion constraints between two sleeves and direction limitation for insertion, we decompose the dressing task into multiple stages. The objective function 
+
+Jtask in the predictive horizon N for different stages is defined respectively as follows. For one sleeve case, to ensure that the sleeve can fit smoothly onto the arm, we divide the dressing process into two stages: pulling the armhole to the hand and putting the sleeve up. In the beginning, we try to pull the armhole pci 
+
+behind the hand, with the sleeve direction vci pointing towards the hand phi . By dragging the sleeves to the back, the clothing can avoid contact with the user before dressing, providing convenience for later insertion. With the front direction of the human denoted as vf , the cost function Jpi for one sleeve is given as: 
+
+Jpi (xci , vri ) =  
+
+> N−1
+
+X
+
+> j=0
+
+(|| phi,j − lhvf − pci,j || 2 
+
+> W
+
++
+
+|| vci,j − vf || 2 
+
+> Q
+
++ ∥vri,j ∥2
+
+> R
+
+)
+
+(28) where ∥ · ∥ 2 
+
+> W
+
+stands for the square norm weighted by W .
+
+W , Q and R are positive diagonal weighting matrices. lh is JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 7
+
+a varied scalar to control the distance between the sleeve and the hand, which is defined as: 
+
+lh =
+
+
+
+¯lh, If 
+
+q
+
+∥(I − vf vTf )( phi,j − pci,j )∥ > ¯lh
+
+q
+
+∥(I − vf vTf )( phi,j − pci,j )∥, o.w. (29) 
+
+lh gradually decreases as the sleeve approaches the hand, causing the armhole to eventually reach the hand position. When the cost Jpi is the less than the threshold ϕp, the sleeve is prepared and the operation process enters the second stage. Denote the current armhole in the dressing system as 
+
+(si, l i, θ i). The cost function Jdi in this stage is defined as: 
+
+Jdi (xci , vri ) =  
+
+> N−1
+
+X
+
+> j=0
+
+(|| pci,j − G i,j (si + jk )|| 2 
+
+> W
+
++
+
+|| vci,j − D i,j (si + jk )|| 2 
+
+> Q
+
++ || vri,j || 2
+
+> R
+
+)
+
+(30) where Gi,j (si) and Di,j (si) are the world coordinate and arm direction calculated at the arm coordinate (si, 0, 0) , respec-tively. si is limited in [0 , 2] before calculation. k is the pre-defined distance for one step. As si increases to 2, assisted dressing with one single sleeve is completed. When considering two sleeves as a whole, the sleeves are restricted by the middle fabric connection and move with the maximum distance limit. This requires additional dressing policy to avoid clothes getting stuck between two arms as a local optima. Denote the sets of sleeves in the first stage and second stage as Λp and Λd, respectively. Denote the index of the sleeve nearer to the arm as n and the other as f .When the distance between two armholes is less than the threshold ϕc, there is no restriction between two sleeves, and we obtain vrl , vrr by applying the above loss functions for two sleeves, respectively. Otherwise, we deal with two sleeves one by one based their stages. ϕc is derived as the geodesic distance between two armholes from the clothing model. When n, f ∈ Λp, we prioritize putting sleeve n on the arm, which is solved utilizing Jpn directly. Then, n ∈ Λd while 
+
+f ∈ Λp. In this configuration, the garment is constrained by the dressed arm. Upward pulling of sleeve n potentially interferes with the donning process of the remaining parts. We proceed with donning sleeve f while maintaining sleeve n on arm. To minimize the restriction of sleeve n, we optimize the state 
+
+pcn to approach the other target hand phf along the arm. Let (ˆ sf , ˆlf , ˆθf ) represent the dressing coordinate of phf on the dressed arm. The cost function Jwn for sleeve n is then formulated as: 
+
+Jwn (xcn , vrn ) =  
+
+> N−1
+
+X
+
+> j=0
+
+(|| pcn,j − G n,j (ˆ sf,j )|| 2 
+
+> W
+
++
+
+|| vcn,j − D n,j (ˆ sf,j )|| 2 
+
+> Q
+
++ || vrn,j || 2
+
+> R
+
+)
+
+(31) To avoid detaching, we limit ˆsf to be larger than a positive threshold. vrl , vrr are derived by combining the cost function 
+
+Jwn and Jpf . When n, f ∈ Λd, we obtain vrl , vrr just like the unconstrained case, as two sleeves require to be pulled up both. Target generator  Global controller                        
+
+> DDP solver
+> with constraints Local model
+> Differential clothing simulation
+> ∑𝒑 𝑟𝑙 ,𝒑 𝑟𝑟 𝒑 𝑠𝑙 ,𝒑 𝑒𝑙 ,𝒑 ℎ𝑙 ,𝒑 𝑠𝑟 ,𝒑 𝑒𝑟 ,𝒑 ℎ𝑟 𝒥 𝑡𝑎𝑠𝑘 𝒗 𝑔 𝒙 ,𝒗 ,𝑱 𝑓 𝑠𝑖𝑚 𝒙 𝑙 𝒗 𝑙 𝒙 𝑐 𝑙 ,𝒙 𝑐 𝑟 𝒑 𝑐 𝑙 ,𝒑 𝑐𝑟 ,𝒑 𝑟 𝑙 ,𝒑 𝑟𝑟
+> Fig. 3. The control strategy designed for the dressing task.
+
+Thus, the loss function Jtask for different cases can be integrated as: 
+
+Jtask =
+
+
+
+Jϕ(l)l + Jϕ(r)r , If ∥pcl − pcr ∥ < ϕ c ∨ ∥ Λp∥ = 0 
+
+Jpn , If ∥pcl − pcr ∥ ≥ ϕc ∧ ∥ Λp∥ = 2 
+
+Jwn + Jpf , If ∥pcl − pcr ∥ ≥ ϕc ∧ ∥ Λp∥ = 1 
+
+(32) where ϕ(i) ∈ { p, d } represents the stage of sleeve i.
+
+B. Model Predictive Control with Local Compensation 
+
+According to the loss function Jtask obtained from task decomposition, we employ the differentiable simulation to cal-culate the global control quantity vg = ( vrl , vrr ). Meanwhile, due to the high computational costs involved in collision detec-tion and fabric simulation, a simplified local model is utilized to compensate for vg in real-time, which further improves the controller update speed. The controller framework is shown in the Fig. 3. When solving based on the global model, we introduce additional safety loss Jsaf e . Commonly, the force between the clothing and human is limited to ensure wearing clothes safely. However, the contact area constantly changes during the dressing process, making it difficult to obtain gradients for optimization. Alternately, we control the actuator force, which can be seen as the combined force between the clothing and user, to ensure safe. Thus, Jsaf e is defined as: 
+
+Jsaf e = wsN −1X
+
+> j=0
+
+X
+
+> i∈Λa
+
+wi
+
+2 min 
+
+> qi∈M i
+
+∥Aixj − qi∥22 (33) where Λa is the indices set of the actuator attachment con-straints. ws is a positive weight coefficient. In this way, the global MPC law is obtained based on the following optimization problem: 
+
+vg = argmin 
+
+> vg
+
+Jtask + Jsaf e 
+
+subject to xj+1 , vj+1 = fsim (xj , vj , prl,j +1 , prr,j +1 )
+
+prl,j +1 = prl,j + vrl,j h
+
+prr,j +1 = prr,j + vrr,j h
+
+xcl,j , xcr,j = fsleeve (xj )
+
+(34) where fsim is the process of differentiable clothing simulation while fsleeve is the function to extract the sleeve state from the clothing nodes. Based on Jfsim , the derivative of fsim 
+
+calculated in Sec. IV-C, (34) is solved by gradient descent method [34]. Due to the high dimension of the global model, the matrix operation in fabric simulation requires millisecond level time JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 8
+
+consumption. The point by point collision detection and the calculation of the inverse matrix P ic in contact update further intensify the time required. Nonlinear optimization (34) takes several seconds to complete, making our method unable to respond to human behaviors quickly and amplifying the impact of simulation errors. Thus, a linear local model is employed to compensated vg and provide robot’s real-time response to interaction. Denote the compensation for the sleeve states and control inputs as xl = (∆ pcl , ∆pcr , ∆prl , ∆prr ) and vl =(∆ vrl , ∆vrr ), respectively. In the local model, we directly consider the impact of robots on the sleeves states. When ∥pcl −pcr ∥ < ϕ c, the change ∆pri 
+
+of end-effector only affects the corresponding sleeve ∆pci . In this case, due to the influence of gravity and contact force, the fabric between the pci and pri is straightened, making pci 
+
+follow a similar motion to pri . Thus, the compensation xl is updated as: 
+
+xl,j +1 = xl,j + ( vl,j , vl,j )h (35) When ∥pcl − pcr ∥ ≥ ϕc, ∆pri affects both sleeves to keep their distance less than the threshold ϕf , a geodesic distance from one armhole to the far pick point. The local model is defined as: 
+
+xl,j +1 = xl,j +
+
+ 1 − kl kl
+
+kr 1 − kr
+
+
+
+vl,j , vl,j 
+
+
+
+h (36) where 
+
+kl = 12 − ϕf − ∥ pcl, 0 − prr, 0∥
+
+2( ϕf − ϕc)
+
+kr = 12 − ϕf − ∥ pcr, 0 − prl, 0∥
+
+2( ϕf − ϕc)
+
+(37) 
+
+kl, k r are influence weights that increase with distance. When 
+
+∥prl −pcr ∥ or ∥prr −pcl ∥ equal ϕf , the corresponding weight reaches its maximum value of 1/2, indicating that the sleeve is equally affected by two grippers. Denote the states with compensation as ˆpci,j = pci,j +∆pci,j and ˆpri,j = pri,j + ∆ pri,j . A simple linear model cannot avoid the occurrence of infeasible states, e.g. ∥pcl −
+
+pcr ∥ > ϕ c. Thus, we introduce additional constraints on the sleeve states ˆpci to represent the motion limitations from clothing stretching and external contact. To avoid excessive deformation, we limit the maximum distance between ˆpci and other points, which is written as: 
+
+∥ ˆpcl,j − ˆprr,j ∥ ≤ ϕf
+
+∥ ˆpcr,j − ˆprl,j ∥ ≤ ϕf
+
+∥ ˆpcl,j − ˆpcr,j ∥ ≤ ϕc
+
+(38) When the sleeve covers the arm as i ∈ Λd, the relative tangential position and speed between ˆpci and its target point 
+
+G(si) are restricted to prevent the movement of the contact. This can be expressed as: 
+
+∥Di,j ( ˆpci,j − G i,j (si + jk )) ∥ ≤ ϕx ∨ i ∈ Λp
+
+∥Di,j ( ˆpci,j +1 − ˆpci,j − G i,j (si + jk + k)+ 
+
+Gi,j (si + jk )) ∥ ≤ ϕv h ∨ i ∈ Λp
+
+(39) where ϕx and ϕv are the thresholds for positions and veloc-ities, respectively. Di,j = I − D i,j (si + jk )Di,j (si + jk )T .Through the threshold, the sleeves can move within a range of deviation from the arm, which allow us to pull user’s arm and adjust clothing deformation by contact, promoting the completion of the task. The above constraints prevent excessive stretching of clothing at contact points, replacing the safety loss Jsaf e and ensuring the force of clothing on users is within a safe threshold. For convenience, the above all constraints are integrated as gj (xl,j , vl,j ) ≤ 0.Based on the global trajectory, the local model is employed to provide higher frequency local compensation, which is conducted based on the following optimization problem: 
+
+vl =argmin 
+
+> vl
+
+Jtask 
+
+subject to xl,j +1 = floc (xl,j , vl,j )
+
+gj (xl,j , vl,j ) ≤ 0
+
+(40) where floc is the local model defined in (35), (36). The final control law is derived as ˆvr = vg + vl. Notably, before each round of local model solution, we truncate and extend the global solution based on the current time. The global trajectory is also divided into more segments for analysis with higher temporal resolution. Afterwards, we use fsim to calculate the global trajectory that matches new vg , as the basis for (40). 
+
+C. Solution for Optimal Problem with Constraints 
+
+To solve the optimization problem (40), we extend the constrained-Differential Dynamic Programming (CDDP) algo-rithm [35] to deal with the fabric state constraints. The standard DDP method utilizes a quadratic function to construct the optimal cost function from any time to the end (known as the cost-to-go function). In the backward pass, a lower-order approximated system function along the nominal trajectory is employed to update the cost-to-go function. In the forward pass, the nominal trajectory is re-calculated by solving the optimal input from the cost-to-go function. With the two processes conducted alternately, the nominal trajectory converges as the optimal trajectory. In CDDP algorithm, an active set is introduced to repre-sent critical inequality constraints. With the active constraint functions approximated by a first-order form, each step input solved in backward and forward pass is limited to meet the corresponding constraints. This method requires that the constraint dimension of each step is lower than the control dimension and is related to the control input, which ensures the existence of feasible control inputs that satisfy the constraints. In our problem, the constraints is introduced to describe the fabric behavior, parts of which are independent of the control inputs and may have a higher dimension in the local states, violating the conditions for CDDP. For convenience, denote the cost function at each step as 
+
+Lj (xl,j , vl,j ). Lj is quadratic function based on (28), (30), (31). Then, the cost-to-go function Vj and the action value function Qj at each step satisfy: 
+
+Vj (xl,j ) = min     
+
+> gj(xl,j ,vl,j )≤0
+
+Qj (xl,j , vl,j )
+
+Qj (xl,j , vl,j ) = Lj (xl,j , vl,j ) + Vj+1 (floc (xl,j , vl,j )) 
+
+(41) JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 9
+
+As Vj , Lj are quadratic functions and floc is a linear function, 
+
+Qj is also quadratic. For convenience, we re-define Qj in terms of deviation from the nominal trajectory, which can be written as: 
+
+Qj (δx,j , δv,j ) = Qj (0, 0) + QTx,j δx,j + QTv,j δv,j +12 (δTx,j Qxx,j δx,j + δTv,j Qvv,j δv,j ) + δTv,j Qvx,j δx,j 
+
+(42) The deviation δx,j , δv,j also satisfy the linear model, which can be denoted as: 
+
+δx,j +1 = f xδx,j + f v δv,j (43) Denote the subset of active constraints as ˆgj . The lineariza-tion of the active constraints satisfy: 
+
+ˆgx,j δx,j + ˆgv,j δv,j = 0 (44) The constraints independent of vl or with a higher dimension than vl cause the null space of ˆgTv,j to be non-empty. Denote 
+
+ˆg+ 
+
+> v,j
+
+as a set of orthogonal bases in the null space of ˆgTv,j .
+
+ˆgx,j δx,j has no components in the null space, which can be written as: 
+
+(ˆg+ 
+
+> v,j
+
+)T ˆgx,j δx,j = 0 (45) By calculating the constraint (45) at the step j + 1 and replacing δx,j +1 by (43), we obtain the equations to ensure the feasibility of future constraints: 
+
+(ˆg+ 
+
+> v,j
+
+)T ˆgx,j f xδx,j + ( ˆg+ 
+
+> v,j
+
+)T ˆgx,j f v δv,j = 0 (46) Notably, the additional constraints introduced in (45) can also create new null space. When transmitting the future constraints to the previous step, we use the combination of (44) and (46) to calculate the limitation on δx,j , ensuring the feasibility of all constraints. Thus, in the backward pass, the function Vj can be updated as: 
+
+min 
+
+> δv,j
+
+12 δTv,j Qvv,j δv,j + δTv,j Qvx,j δx,j + QTv,j δv,j 
+
+subject to ˆgx,j δx,j + ˆgv,j δv,j = 0 
+
+cj+1 f xδx,j + cj+1 f v δv,j = 0 
+
+(47) where cj =
+
+ ˆgv,j 
+
+cj+1 f v
+
++!T  ˆgx,j 
+
+cj+1 f x
+
+
+
+.The solution for (47) can be expressed analytically through KKT conditions, which is written as: 
+
+Y
+
+
+
+δv,j 
+
+λ1,j 
+
+λ2,j 
+
+ = −
+
+
+
+Qvx,j 
+
+ˆgx,j 
+
+cj+1 f x
+
+ δx,j −
+
+
+
+Qv,j 
+
+σ1,j 
+
+σ2,j 
+
+
+
+Y =
+
+ Qvv,j ˆgTv,j (cj+1 f v )T
+
+ˆgv,j 0 0
+
+cj+1 f v 0 0
+
+
+
+(48) 
+
+σ1,j ≥ 0 and σ2,j ≥ 0, representing the slack variables for inequality constraints. λ1,j , λ2,j are the corresponding Lagrangian multipliers. According to the current active set, these constraints are all active with σ1,j = 0 and σ2,j = 0 .Then, by utilizing δu,j , λ1,j , λ2,j as variables, we can obtain 
+
+δv,j as a function of δx,j :
+
+δv,j = Kj δx,j + kj (49) where Kj and kj are feedback gain and the open-loop term, with details provided in [35]. By applying (49) to (41), we can update the cost-to-go function iteratively backwards. In the forward pass, a new nominal trajectory is calculated by the control law (49). Meanwhile, we update the active set about the new nominal trajectory. To determine the influence of different constraints, we reduce the Lagrange multipliers to 0 and convert them into the corresponding slack variables σ1,j ,
+
+σ2,j . In this case, δv,j reaches the optimal solution without constraints at the jth step. σ1,j and σ2,j are solved as: 
+
+σ1,j = −ˆgx,j δx,j + ˆgv,j Q−1 
+
+> vv,j
+
+(Qvx,j δx,j + Qv,j )
+
+σ2,j = −cj+1 f xδx,j + cj+1 f v Q−1 
+
+> vv,j
+
+(Qvx,j δx,j + Qv,j )
+
+(50) Denote the complete slack variable for constraints ˆgj as σj .
+
+σ1,j and σ2,j impact its variations outside and inside the null space of ˆgTv,j respectively. Through the cj+1 component in cj ,
+
+σ2,j can affect the null space from the (j + 2) th step to the end. Thus, σj is calculated as: 
+
+ σj
+
+σn,j 
+
+
+
+=
+
+σ1,j 
+
+0
+
+
+
++
+
+ ˆgv,j 
+
+cj f v
+
++
+
+(σ2,j −1 + σn,j −1) (51) where σn,j describes the influence of σ2,j −1 on the (j +1) step. σn, 0 is defined as 0. To update the active set, we check constraints not in ˆgj and update σj by (51). Constraints reaching boundary conditions are added, while constraints with corresponding rows positive in σj are removed. In practice, We introduce a line search strategy. When the optimization problem results in infeasible solutions, we shorten the update step to enhance the solution performance. To ensure that the new solution with line search satisfies the constraints, we replace δv,j with eδv,j in the object function of (47), while keeping δv,j unchanged in the constraints. e is the line search factor. Based on the new optimization problem, 
+
+Kj , kj with e are obtained as the control law for updating the nominal trajectory in forward pass. Initially, e = 1 , which is reduced when the new nominal trajectory obeys the constraints or has a higher loss. The whole process to solve (40) is shown as Algorithm 2. VI. C LOTHING TRACKING AND HUMAN PREDICTION 
+
+A. Reconstruction and Tracking for Clothing 
+
+To adopt diverse garments and provide feedback, we recon-struct garment meshes pi from point cloud and extract the sleeve states xci for garment control. The GarmentNets framework [36] serves as our foundation for reconstruction. Specifically, a canonical space with space resolution cx × cy × cz is defined for coats first. In this space, the clothing is fully extended in a standardized pose. Then the point cloud’s probability distribution in this canonical space is computed to establish a mapping from partial observations to the canonical representation. This mapping enables anal-ysis of the winding number field and the deformation flow JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 10 
+
+Algorithm 2: The approach to solving (40) 
+
+Data: Maximum step No, termination indicator ϕt
+
+Input: Global trajectory (xg , vg ) 
+
+> 1
+
+initialize nominal local trajectory (xl, vl) as zeros;  
+
+> 2
+
+for j = 0 , 1, · · · , N − 1 do  
+
+> 3
+
+initialize active constraints ˆgj by xl,j ; 
+
+> 4
+
+end  
+
+> 5
+
+k ← 0, d ← 2 · ϕt ; 
+
+> 6
+
+cnow ← J task (xg + xl, vg + vl) ; 
+
+> 7
+
+while k < N o and d > ϕ t do  
+
+> 8
+
+e ← 1, c new ← 2 · cnow ; 
+
+> 9
+
+VN ← 0 ; 
+
+> 10
+
+for j = N − 1, N − 2, · · · , 0 do  
+
+> 11
+
+update Qj by (41) ;  
+
+> 12
+
+update Vj by (41) and (49);  
+
+> 13
+
+end  
+
+> 14
+
+while cnew > c now and k < N o do  
+
+> 15
+
+k ← k + 1 ; 
+
+> 16
+
+δx, 0 ← 0, σn, 0 ← 0; 
+
+> 17
+
+for j = 0 , 1, · · · , N − 1 do  
+
+> 18
+
+solve Kj , kj with e from (48);  
+
+> 19
+
+xn,j ← xl,j + δx,j ; 
+
+> 20
+
+vn,j ← vl,j + Kj δx,j + kj ; 
+
+> 21
+
+δx,j +1 ← floc (xn,j , vn,j ) − xl,j +1 ; 
+
+> 22
+
+update σj , σn,j by (51) ;  
+
+> 23
+
+end  
+
+> 24
+
+cnew ← J task (xg + xn, vg + vn) ; 
+
+> 25
+
+if cnew > c now then  
+
+> 26
+
+e ← e/ 2; 
+
+> 27
+
+else  
+
+> 28
+
+d ← cnew − cnow ; 
+
+> 29
+
+cnow ← cnew ; 
+
+> 30
+
+(xl, vl) ← (xn, vn) ; 
+
+> 31
+
+for j = 0 , 1, · · · , N − 1 do  
+
+> 32
+
+update ˆgj by xl,j and σj ; 
+
+> 33
+
+end  
+
+> 34
+
+end  
+
+> 35
+
+end  
+
+> 36
+
+end  
+
+> 37
+
+return (xl, vl)
+
+from canonical to observed spaces. The smooth 3D garment structure is extracted through winding number field, with mesh sampling from the deformation flow yielding the current garment mesh. For implementation details, we refer readers to [36]. In practical applications, GarmentNets calculate separable probability heatmaps for each spatial dimension in canonical space, which leads to the inconsistency of distributions in different dimensions. To mitigate this, we precompute the distance field W c ∈ R×cx×cy ×cz from canonical space to gar-ment grid as weights to punish the deviation from the clothing grid due to the inconsistency. Denote the probability heatmap along respective axes as px ∈ Rcx×1×1, P y ∈ R1×cy ×1,
+
+P z ∈ R1×1×cz . The loss function for observed-to-canonical space mapping is: 
+
+Jcano = − 1
+
+cx · cy · cz
+
+X(W c ⊙ log(1 − P x ⊙ P y ⊙ P z )+ 
+
+W gt ⊙ log( P x ⊙ P y ⊙ P z )) 
+
+(52) where A ⊙ B represents the element-wise multiplication of 
+
+A and B. W gt ∈ Rcx×cy ×cz is the one-hot encoding of the corresponding canonical space position. Upon the reconstructed mesh, we segment both sleeves using the canonical garment model and select six uniformly distributed keypoints at each sleeve’s cross-section. The mean position of these keypoints is utilized as the armhole position 
+
+pci while the smallest component in PCA decomposition is derived as the armhole orientation vci .During operation, we acquire the mapping of the current observation in the canonical space and the corresponding de-formation flow from the updated reconstruction. By comparing the garment mesh with the current observation in the canonical space, mesh nodes pi existing matched observations are iden-tified as visible surface points and subsequently updated via the computed deformation flow. The final corrected garment is obtained by the fusion of these observed nodes with model predictions, ensuring clothing tracking throughout the dressing procedure. For dataset, we leveraged the CLOTH3D [37] to obtain canonical garment models and compute the corresponding winding number fields. Within the Assistive Gym framework [38], the dressing tasks were executed across diverse garment and human models, which yields 11000 samples of com-prehensive point cloud and garment mesh under occlusion scenarios typical of dressing operations. To mitigate sim-to-real gap, the training pipeline only utilized point cloud inputs, avoiding reliance on synthetic rendering features that may not generalize to real-world scenarios. 
+
+B. Human Perception and Prediction 
+
+To enable personalized robotic dressing assistance, we achieve human perception and prediction to adopt the user motion under occlusion. Specifically, we extract human poses from observations and leverage historical observation se-quences to generate future motion forecasts, which enhances optimal control and corrects the update of occluded human poses. At each step, a pretrained RTMPose model [39] is utilized to extract 2D human keypoints, which are subsequently recon-structed into 3D poses using the depth information from the calibrated RGBD camera. The visible keypoints are matched against the prior motion prediction through a minimum joint deviation criterion, yielding the new joint states to calculate the occluded points. For human motion prediction, we categorize human intent into passive and active behaviors. In passive scenarios, human adjusts their poses following garment motion to minimize garment contact forces. In active cases, human exhibits independent intent by moving toward arbitrary spatial targets. The former characterizes the human’s passive adap-tation to garment motion, while the latter models the spatio-temporal relationship of human motion intention during the JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 11 
+
+dressing process. We employ an attention-based discriminator network to select between these prediction modalities. Then, a diffusion model [40] predicts arm trajectories conditioned on 20 steps historical motion sequences and the corresponding sleeve states. As to the dataset, we employed the local garment model with relaxed human-garment contact constraints (39) to solve clothing motion under passive human intention. In this case, the garment model only consider the deformation limits. The clothing moved without the influence of the human pose as the user collaborates perfectly. Then, by using the garment as arm constraints, we derived the minimal human actions, representing the passive dressing behavior. For active data, we randomly sampled target positions and generate arm tra-jectories toward them. The corresponding sleeve states were solved by the local model with the whole contact constraints. After random initialization of garment and human parameters, we collected 2,000 dressing sequences respectively for both scenarios. VII. E XPERIMENTS 
+
+A. Experimental Setup 
+
+The experimental setup is illustrated in the upper left corner of Fig. 1. The system comprises a dual-arm configuration em-ploying two 7-degree-of-freedom Franka robotic manipulators. Each manipulator grasped the coat shoulder from the inner side to facilitate garment unfolding, thereby enabling subsequent manipulation tasks. Two Gemini 335 depth cameras were po-sitioned on the anterior and posterior sides of the robotic arms to provide garment reconstruction and human pose estimation. Our algorithm was executed on a workstation equipped with an Intel(R) Core i9-13900HX processor, 31 GiB of RAM, and an NVIDIA RTX 4060 Desktop GPU, delivering updates to the local optimization problem at a frequency of 10 Hz .Based on the perception results, we employed vertex clus-tering to simplify the garment mesh with 5 cm grid resolution, which ensures computational efficiency while maintaining collision detection accuracy. For human body representation, the user’s morphology was reconstructed as a kinematic com-position of cylindrical and spherical primitives, with joint positions dynamically updated through keypoint observations. The simulation scenario for the dressing task is shown in the upper right corner of Fig. 1. To prevent inter-arm collisions during the dressing process, redundancy freedom was employed to maintain separation between the robotic manipulators. Let ql ∈ R7 and qr ∈ R7
+
+denote the joint angles of the left and right manipulators, respectively. The desired end-effector positions are represented as ˆprl ∈ R3 and ˆprr ∈ R3, with corresponding end-effector Jacobian matrices Jl ∈ R3×7 and Jr ∈ R3×7. Additionally, denote the Jacobian matrices for the third link positions as 
+
+J3l ∈ R3×7 and J3r ∈ R3×7. The control law for the manipulators is formulated as follows: 
+
+˙ql = J† 
+
+> l
+
+( ˆprl − prl ) + ( I − J† 
+
+> l
+
+Jl)J†
+
+> 3l
+
+( ˆprr − prl )
+
+˙qr = J† 
+
+> r
+
+( ˆprr − prr ) + ( I − J† 
+
+> r
+
+Jr )J† 
+
+> 3r
+
+( ˆprl − prr ) (53) Given that the grasping points of the robotic arms were positioned on either side of the user during the dressing task, and the manipulator bodies are actively displaced outward, potential collisions between the dual-arm system and the human subject can be effectively mitigated. 
+
+B. Validation for Clothing Simulation 
+
+To validate the efficacy of our clothing simulation, we con-ducted comparative experiments involving draping and place-ment operations using a coat model, benchmarking against the standard PD algorithm to quantitatively evaluate the com-putational efficiency and accuracy of our proposed method. The employed coat model comprises a 6,121-node mesh, whose geometric structure is similar to the garments used in the assisted dressing task. In the subsequent simulation, the garment was initialized in a normalized object state, with grasping points defined as the 10 proximal nodes to each shoulder position. Spring connections are established between these points and prl , prr , which represents the robot’s impact on clothing. In the draping simulation, the clothing was released from the normalized object state and stretched downward under the influence of gravity. The deformation process is illustrated in the first column of Fig. VII-B, which is calculated by our method with the step h = 0 .01 s. To evaluate the performance of our method under large time-step conditions, we conducted a systematic comparative analysis between our method and the PD algorithm across varying temporal resolutions (as 
+
+h ∈ { 0.001 s, 0.005 s, 0.01 s, 0.05 s, 0.1s}). The obtained results were compared against the high temporal resolutions PD simulation at a time step of 0.0001 s, thereby elucidating the different impacts of increased steps on both our approach and the PD method. The difference with the fine-grained simula-tion are presented in Fig. VII-B (a), while the computational cost required for 1s of simulation time is shown in Fig. VII-B (b). This metric measures the real-time performance of the method. A value below 1s indicates that real-time simulation can be achieved. The mean computational time per step for each configuration is tabulated in Table I. As illustrated in Fig. VII-B, our method produces visually plausible and physically reasonable deformation predictions for garments in collision-free scenarios. Owing to its second-order accuracy guarantees, our approach derived the results more similar to high-resolution simulation during the initial simulation steps, as highlighted by the green bounding box in Fig. VII-B (a). However, as simulation progresses, accu-mulation of numerical errors leads to gradually increasing deviation across all tested time steps. The distance peaks at approximately t = 1 .5s, which stems from the stabilization effect induced as the high-order terms in (7). This artificial damping accelerates energy dissipation within the system. In contrast, the PD method maintains better energy preservation at small step sizes, resulting in persistent fabric oscillations that diverge from our predictions. Over extended durations, the PD simulation eventually exhibits gradual energy decay and converges to a stable deformation state. At this time, our method achieves comparable accuracy to PD at sufficiently JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 12 t = 0 s t = 1 s t = 3 s t = 7 s       
+
+> t= 0 st= 2 st= 4 st= 6 s
+> Drapping
+> Placement
+
+Fig. 4. Simulation results of our proposed algorithm with step h = 0 .01 s for both garment draping and placement tasks. 0.0 2.5 5.0 7.5 10.0      
+
+> t/s
+> 0.00
+> 0.05
+> 0.10
+> 0.15
+> 0.20
+> 0.25
+> Distance/m
+> (a)
+> PD
+> Ours
+> 0.0 2.5 5.0 7.5 10.0
+> t/s
+> 10 1
+> 10 0
+> 10 1
+> 10 2
+> 10 3
+> Time per second/s
+> (b)
+> PD
+> Ours
+
+Fig. 5. The results of draping task. Our method and the PD algo-rithm are shown by blue and red, respectively. The time steps h ∈{0.001 s, 0.05 s, 0.01 s, 0.05 s, 0.1s} are represented by color gradient from light to dark. (a) The nodal mean distance with the high temporal resolutions PD simulation. (b) The computational cost for 1s of simulation. 
+
+small step sizes. This performance characteristic represents our method’s numerical damping properties, which aligns with real-world scenarios where natural energy dissipation occurs through air resistance and other damping effects. As to the simulation cost shown in Table I, PD method needs 0.110 s for per step. However, due to growing nonlin-earity in its implicit formulation, the solution cost increases synchronously with the step size. Despite employing larger time steps, the PD method still suffers from comparable computational overhead and increased simulation errors, re-sulting in poor performance. Instead, our approach maintains consistent computational efficiency across different step sizes 
+
+h, demonstrating the superior real-time capability. To validate the simulation with contacts, we conducted experiments by placing and folding a coat on the horizontal table. During this process, the contact points between the garment and the surface gradually increased until full contact was achieved. This procedure is illustrated in the second col-umn of Fig. VII-B. Similarly, we evaluated the computational efficiency and accuracy of our method versus PD method at different time steps ( 0.001 s, 0.005 s, 0.01 s, 0.05 s, and 0.1s). The results are presented in Fig. VII-B, and Table I. Similar to the draping task, our method initially exhibited deviation during the early simulation phase. With the motion of grasping points, garment-table contact was established, and the method achieved comparable results to PD at small step sizes. 0.0 2.5 5.0 7.5 10.0      
+
+> t/s
+> 0.00
+> 0.05
+> 0.10
+> 0.15
+> 0.20
+> 0.25
+> Distance/m
+> (a)
+> PD
+> Ours
+> 0.0 2.5 5.0 7.5 10.0
+> t/s
+> 10 1
+> 10 0
+> 10 1
+> 10 2
+> 10 3
+> Time per second/s
+> (b)
+> PD
+> Ours
+
+Fig. 6. The results of placement task. Our method and the PD algo-rithm are shown by blue and red, respectively. The time steps h ∈{0.001 s, 0.05 s, 0.01 s, 0.05 s, 0.1s} are represented by color gradient from light to dark. (a) The nodal mean distance with the high temporal resolutions PD simulation. (b) The computational cost for 1s of simulation. TABLE I PER -FRAME COMPUTATIONAL TIME FOR DIFFERENT SIMULATION TASKS .Tasks Step 0.001 s 0.005 s 0.01 s 0.05 s 0.1s
+
+PD in draping 0.110 s 0.194 s 0.348 s 1.394 s 2.321 s
+
+Ours in draping 0.036 s 0.033 s 0.034 s 0.026 s 0.029 s
+
+PD in placement 0.110 s 0.184 s 0.421 s 2.938 s 5.249 s
+
+Ours in placement 0.135 s 0.215 s 0.198 s 0.319 s 0.620 s
+
+Notably, the computational overhead of our method increased with growing contact, as (19) requires inverse analysis of forward process for all contact nodes. When contact involved all nodes, this incurred cubic time complexity. In assisted dressing tasks, garment-body contact primarily occurs through sleeves, involving only a small subset of garment nodes. Besides, by reducing the mesh dimensionality, the number of contact points was further diminished. Given the O(n3)
+
+complexity of matrix inversion, the contact prediction never dominates the overall computational cost. In summary, while our method trades marginal accuracy in highly dynamic scenarios, it can achieve plausible predictions while maintaining real-time performance. Given the forward and backward equations (20) and (26), the computational bottleneck lies in the multiplication with P −1 and the cal-culation of P −1 
+
+> ic
+
+. Denote the number of contact nodes as nc.The time complexity of one whole step is O(n3 
+
+> c
+
++ n2). In subsequent experiments, a refined mesh spacing of 0.05 cm JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 13 t = 0 s t = 1 s        
+
+> t= 8 st= 15 s
+> Fig. 7. The results of single-arm dressing using the differentiable garment simulation. The target position xtar is represented by red points, while the grasping points are indicated by brown points. The target position xtar is represented by red points. The contour of armhole is shown in blue.
+
+(yielding approximately 1,800 nodes) was employed, enabling faster-than-real-time simulation at the step size h = 0 .01 s.Additionally, to ensure efficient global controller updates, sim-ulation with h = 1 s was employed for predictive optimization, while the initial values for local optimizer was calculated with 
+
+h = 0 .01 s.Subsequently, we evaluated the differentiable ability of our simulation on a simplified single-sleeve dressing task. In this scenario, the garment was grasped at bilateral shoulder posi-tions prl , prr , with six nodes sampled around the left armhole to compute the sleeve state xcl . The human’s left arm was raised, and the target position xtar was sequentially selected along the arm coordinate system. With xtar progressively moving along the arm, we maneuvered the grasping points to track xtar by the sleeve state xcl , thereby accomplishing the garment dressing task. Based on the invertible simulation derivatives, we implemented the following control law: 
+
+˙prl = K( ∂xcl 
+
+∂xn+1 
+
+∂xn+1 
+
+∂xn
+
+∂xn
+
+∂prl 
+
+)T (xtar − xcl )
+
+˙prr = K( ∂xcl 
+
+∂xn+1 
+
+∂xn+1 
+
+∂xn
+
+∂xn
+
+∂prr 
+
+)T (xtar − xcl )
+
+(54) where K is a proportional coefficient. The dressing process is illustrated in Fig. 7. Since the left sleeve was closer to the left shoulder grasping point, xcl was predominantly influenced by this point, driven by the motion of prl . The corresponding manipulation trajectory is depicted in Fig. 8 (a). During the initial phase of the task, the target point xtar was positioned at the end of the arm, far from the sleeve state xcl , resulting in large control input that drove rapid convergence to the target position. Subsequently, as xtar 
+
+gradually translated along the arm, our controller can track 
+
+xtar from hand to shoulder, maintaining minimal position error as shown in Fig. 8 (b). As xcl reached the shoulder position, the entire sleeve was successfully donned onto the arm, com-pleting the single-arm dressing task. The experimental results (a)           
+
+> 010 20
+> t/s
+> 0.0
+> 0.2
+> error/m
+> (b)
+> armhole of clothing
+> trajectory of grasp point
+> centerline of arm
+> Fig. 8. (a) The motion trajectories of the sleeve state xcl and grasp point
+> prl during dressing. (b) The errors between the sleeve state xcl and target position xtar .
+> Fig. 9. The reconstruction of the human body and garment in the point cloud.
+
+validate the efficacy of our garment differentiable simulation method. 
+
+C. Robot-Assisted Dressing Experiments 
+
+To validate the efficacy of the assisted dressing methodol-ogy, we initially conducted experiments on a dummy. Due to the disparity between the human and dummy characteristics, the pose estimation derived from RTMPose exhibits inac-curacies. For convenience, we manually annotated keypoint positions and employed Cotracker [41] for real-time tracking as a surrogate for human perception. Subsequently, a human body model was generated from these keypoints, while the garment meshes were reconstructed using the point cloud on the back. As shown in Fig. 9, the reconstructed human body and garments aligned with their actual positions in distance and scales. Given the absence of intent in dummy, we consistently utilized the passive intent for the behavior prediction, representing the dummy’s compliant deformation to follow the garment manipulation. The experimental results are presented in Fig. 10. In Fig. 10, we illustrate the progress scalar si and the sleeve-to-arm distance li for two sleeves in their corresponding arm coordinate systems. These variables quantitatively assessed the dressing task progression and bilateral sleeves dressing quality, respectively. Based on their temporal trends, the entire dressing procedure was naturally divided into three distinct phases: dressing the first sleeve, adjusting garment-body pose, and dressing the both sleeves simultaneously. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 14 Initialization Dressing the first sleeve Adjusting arms for second sleeve Dressing both sleeves            
+
+> 010 20 30 40 50 60
+> t/s
+> 0.0 0.5 1.0 1.5 2.0
+> Progress scalar
+> 0.0 0.1 0.2 0.3 0.4
+> Sleeve-to-arm Distance/m
+> left progress scalar sl
+> right progress scalar sr
+> left sleeve to arm ll
+> right sleeve to arm lr
+> Fig. 10. The task phase segmentation and the corresponding sleeve states during dummy dressing.
+
+Initially, the garment exhibited global motion toward the left arm with the corresponding distance ll decreasing. After the left arm squeezed into the armhole, the sleeve was raised along the left arm with progress scalar sl increasing. Upon exceeding a predetermined threshold (0.5) for sl, the system transitioned to adjusting body pose, redirecting the garment toward the second arm. In this case, the contact force with the left sleeve facilitated pose adaptation, bringing both arms into proximity for simultaneous sleeve donning. Finally, with the second arm inserted into the sleeve, both sleeves ascended along their respective arms until their progression scalars reach 
+
+si = 2, indicating task completion. Stage-wise snapshots in Fig. 10 demonstrates that our method has successfully provided dressing assistance for the dummy. To evaluate the contribution of each component in our approach, we conducted ablation studies examining different method combinations for robotic dressing on a dummy. Be-yond the complete method (global+local method), we inves-tigated two reduced variants: using only the global controller (34) for control (denoted as global-only method), and employ-ing solely the local linear model (36) for updating the sleeve state xci (denoted as local-only method). The resulting sleeve state transitions and maximum simulated inner forces across methods are presented in Fig. 11 In Fig. 11 (a) and (b), we calculated the sleeve states within the arm coordinate system through cloth simulation. Through the incorporation of the local model in control, the complete method represented higher dressing efficiency than the global-only approach. The local compensation enhances the controller update frequency and enables dynamic response to real-time garment changes, accelerating state convergence toward target configuration. Conversely, due to the modeling inaccuracies, the local-only method exhibited larger li when donning the second sleeve. Given that the local model (36) is incapable of capturing sleeve opening orientation changes, it attempted to insert the second sleeve from inappropriate directions, which substantially increases dressing failure rates. On the other hand, as shown in Fig. 11 (c), the global model 0.0 2.0 Progess scalar                 
+
+> 020 40 60 t/s 0.0 0.5 Sleeve-to-arm distance/m
+> (a)
+> 020 40 60 t/s
+> (b)
+> 010 20 30 40 50 60 70 t/s 050 Inner force/N
+> (c)
+> global model + local model global model local model
+> Fig. 11. Evolution of the sleeve state and maximum simulated inner forces under different methods. (a) The state of the left sleeve in the arm coordinate system. (b) The state of the right sleeve state in the arm coordinate system. (c) The maximum inner force caused by constrained deformation.
+
+inclusive approaches incorporate force cost (33) into control, thereby reducing peak deformation forces during dressing. In summary, for dummy dressing, the local-only method proves inadequate for donning the second sleeve due to its lacking deformation modeling capacity. While the global-only model alone achieves comparable results to the complete method for stationary targets, the complete method’s higher control frequency and dressing efficiency become particularly advantageous for human dressing scenarios, as it can better accommodate subject’s motion. To validate the performance of our method in real-world dressing scenarios, we conducted comprehensive experiments with diverse garments, motion patterns, and human poses, as illustrated in Fig. 12, 13. Fig. 12 demonstrates the human passive dressing outcomes for two garments in both standing and sitting poses. In these trails, the participant compliantly followed garment guidance to adjust arm poses, enabling suc-cessful task completion. Experimental results demonstrate the robot’s capability to properly position garments relative to arm locations, successfully don the first sleeve, and subsequently align the second sleeve while maintaining the first sleeve’s JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 15 Standing Pose  Sitting Pose     
+
+> Insertion of the first sleeve
+> Insertion of the second sleeve Dressing completion Insertion of the first sleeve
+> Insertion of the second sleeve Dressing completion
+> Garment 1 Garment 1
+> Garment 2 Garment 2
+
+Fig. 12. The assisted dressing outcomes for two garments in both standing and sitting poses with human passive motion. Each case is illustrated through three critical phases: the insertion of the first and the second sleeve, and final dressing completion. Dressing with h uman active cooperation         
+
+> Moving the first sleeve to the outstretched arm
+> Slid ing the first sleeve
+> with the arm raised
+> Adjusting the garment with human motion
+> Dressing sleev es onto the
+> arms brought forward Finish Initialization
+
+Fig. 13. The assisted dressing process with active human cooperation. According to the variations in human strategy, the donning process is illustrated through two phases: the preparation for the sleeve insertion and upward sliding motion for each sleeve. 0.0 1.0 2.0 Progess scalar       
+
+> left sleeve right sleeve
+> 0.0 0.3 0.6 Sleeve-to-arm distance/m 0510 15 20 25 30 t/s 030 60 Inner force/N
+
+Fig. 14. Evolution of the sleeve state and maximum simulated inner forces during active human cooperation. 
+
+position to complete the outerwear dressing procedure. We further investigated the dressing performance with active human cooperation, where the subject deliberately adjusted stance and actively extended arms toward the garment. The donning process for both sleeves under this condition is depicted in Fig. 13. Throughout the process, we detected arm poses and employed behavioral prediction algorithm to estimate occluded points. The derived pose estimation enabled the computation of the sleeve states within the arm coordinate system for control. As shown in Fig. 14, we recorded the progress scalars and sleeve-to-arm distances for both sleeves, and the maximum garment deformation force. Notably, at approximately 15 s, the subject completed donning of the first sleeve and adjusted the stance, inducing observed changes in the sleeve state. Subsequently, our system accurately tracked arm positions and adapted to human motion, successfully com-pleting the secondary sleeve donning and subsequent dressing tasks. These experiments conclusively validate the efficacy of our assisted dressing algorithm in practical applications. VIII. C ONCLUSION 
+
+In this paper, to address the intricate garment-body interac-tion in robotic-assisted dressing, we propose a novel explicit iterative differentiable cloth simulation. Along with the multi-stage control algorithm, we effectively exploit the contact to adjust human poses with cloth deformation, successfully achieving sequential dressing of different coat sleeves. Re-garding cloth simulation, designed high-order bias terms are introduced to enhance computational stability while main-taining iterative precision, thereby accelerating the forward simulation to an O(n2) complexity parallel computation. For the dressing control, we augment our differentiable model solution with a constraint-based local cloth model and develop a constrained DDP algorithm to handle the high-dimensional state constraints, thus achieving real-time controller update. JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 16 
+
+Finally, we validate our approach in real-world scenarios, demonstrating its efficacy and practical feasibility. While demonstrating satisfactory performance in coat dress-ing tasks, our method currently exhibits limitations in han-dling cloth self-collisions, and the intentionally introduced high-order bias induce more pronounced energy dissipation, making it less suitable for highly dynamic scenarios. In the future work, it is valuable to expand the model’s applicability domain to develop more general assisted-dressing and cloth manipulation algorithms. REFERENCES [1] A. Nanavati, V. Ranganeni, and M. Cakmak, “Physically assistive robots: A systematic review of mobile and manipulator robots that physically assist people with disabilities,” Annual Review of Control, Robotics, and Autonomous Systems , vol. 7, 2023. [2] Y. Liu, X. Cao, T. Chen, Y. Jiang, J. You, M. Wu, X. Wang, M. Feng, Y. Jin, and J. Chen, “From screens to scenes: A survey of embodied ai in healthcare,” Information Fusion , vol. 119, p. 103033, 2025. [3] Z. Erickson, A. Clegg, W. Yu, G. Turk, C. K. Liu, and C. C. Kemp, “What does the person feel? Learning to infer applied forces during robot-assisted dressing,” in 2017 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, May 2017, pp. 6058–6065. [4] Z. Erickson, H. M. Clever, G. Turk, C. K. Liu, and C. C. Kemp, “Deep Haptic Model Predictive Control for Robot-Assisted Dressing,” in 2018 IEEE International Conference on Robotics and Automation (ICRA) ,May 2018, pp. 4437–4444. [5] A. Kapusta, Z. Erickson, H. M. Clever, W. Yu, C. K. Liu, G. Turk, and C. C. Kemp, “Personalized collaborative plans for robot-assisted dressing via optimization and simulation,” Autonomous Robots , vol. 43, no. 8, pp. 2183–2207, Dec. 2019. [6] J. Zhu, M. Gienger, G. Franzese, and J. Kober, “Do you need a Hand? – A Bimanual Robotic Dressing Assistance Scheme,” IEEE Transactions on Robotics , vol. 40, pp. 1906–1919, 2024. [7] Y. Gao, H. J. Chang, and Y. Demiris, “Iterative path optimisation for personalised dressing assistance using vision and force information,” in 2016 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . IEEE, 2016, pp. 4398–4403. [8] J. Qie, Y. Gao, R. Feng, X. Wang, J. Yang, E. Dasgupta, H. J. Chang, and Y. Chang, “Cross-Domain Representation Learning for Clothes Unfolding in Robot-Assisted Dressing,” in Computer Vision – ECCV 2022 Workshops , L. Karlinsky, T. Michaeli, and K. Nishino, Eds. Springer Nature Switzerland, 2023, vol. 13806, pp. 658–671. [9] K. Yamasaki, T. Shibata, and P. H´ enaff, “Personalized assist-as-needed dressing assistance robot without human modeling using rowat-selverston cpg controller,” Advanced Robotics , vol. 38, no. 19-20, pp. 1408–1423, 2024. [10] F. Zhang, A. Cully, and Y. Demiris, “Probabilistic Real-Time User Posture Tracking for Personalized Robot-Assisted Dressing,” IEEE Transactions on Robotics , vol. 35, no. 4, pp. 873–888, Aug. 2019. [11] Y. Kuribayashi, Y. Takase, and K. Yamazaki, “Motion Generation for Mobile Manipulators to Assist in Putting on a Jacket While Walking,” in 2024 IEEE 20th International Conference on Automation Science and Engineering (CASE) . Bari, Italy: IEEE, Aug. 2024, pp. 2229–2236. [12] E. Pignat and S. Calinon, “Learning adaptive dressing assistance from human demonstration,” Robotics and Autonomous Systems , vol. 93, pp. 61–75, Jul. 2017. [13] R. P. Joshi, N. Koganti, and T. Shibata, “A framework for robotic clothing assistance by imitation learning,” Advanced Robotics , vol. 33, no. 22, pp. 1156–1174, Nov. 2019. [14] A. Clegg, Z. Erickson, P. Grady, G. Turk, C. C. Kemp, and C. K. Liu, “Learning to Collaborate From Simulation for Robot-Assisted Dressing,” 
+
+IEEE Robotics and Automation Letters , vol. 5, no. 2, pp. 2746–2753, Apr. 2020. [15] F. Zhang and Y. Demiris, “Learning garment manipulation policies toward robot-assisted dressing,” Science Robotics , vol. 7, no. 65, p. eabm6010, Apr. 2022. [16] Z. Sun, Y. Wang, D. Held, and Z. Erickson, “Force-Constrained Visual Policy: Safe Robot-Assisted Dressing via Multi-Modal Sensing,” IEEE Robotics and Automation Letters , vol. 9, no. 5, pp. 4178–4185, May 2024. [17] D. Baraff and A. Witkin, “Large steps in cloth simulation,” in Pro-ceedings of the 25th Annual Conference on Computer Graphics and Interactive Techniques - SIGGRAPH ’98 . ACM Press, 1998, pp. 43– 54. [18] T. Liu, A. W. Bargteil, J. F. O’Brien, and L. Kavan, “Fast simulation of mass-spring systems,” ACM Transactions on Graphics , vol. 32, no. 6, pp. 1–7, Nov. 2013. [19] S. Bouaziz, S. Martin, T. Liu, L. Kavan, and M. Pauly, “Projective Dy-namics: Fusing Constraint Projections for Fast Simulation,” in Seminal Graphics Papers: Pushing the Boundaries, Volume 2 , 1st ed., M. C. Whitton, Ed. ACM, 2023, pp. 787–797. [20] R. Narain, M. Overby, and G. E. Brown, “Admm ⊇ projective dynamics: fast simulation of general constitutive models,” in Proceedings of the ACM SIGGRAPH/Eurographics Symposium on Computer Animation ,ser. SCA ’16. Goslar, DEU: Eurographics Association, 2016, p. 21–28. [21] T. Liu, S. Bouaziz, and L. Kavan, “Quasi-Newton Methods for Real-Time Simulation of Hyperelastic Materials,” ACM Transactions on Graphics , vol. 36, no. 3, pp. 1–16, 2017. [22] M. M¨ uller, B. Heidelberger, M. Hennix, and J. Ratcliff, “Position based dynamics,” J. Vis. Comun. Image Represent. , vol. 18, no. 2, p. 109–118, Apr. 2007. [23] J. Bender, D. Koschier, P. Charrier, and D. Weber, “Position-based simulation of continuous materials,” Computers & Graphics , vol. 44, no. 0, pp. 1 – 10, 2014. [24] M. Macklin, M. M¨ uller, and N. Chentanez, “XPBD: Position-based simulation of compliant constrained dynamics,” in Proceedings of the 9th International Conference on Motion in Games . Burlingame California: ACM, Oct. 2016, pp. 49–54. [25] S. Kotsovolis and Y. Demiris, “Garment Diffusion Models for Robot-Assisted Dressing,” IEEE Robotics and Automation Letters , vol. 10, no. 2, pp. 1217–1224, Feb. 2025. [26] Y. Li, T. Du, K. Wu, J. Xu, and W. Matusik, “DiffCloth: Differentiable Cloth Simulation with Dry Frictional Contact,” ACM Transactions on Graphics , vol. 42, no. 1, pp. 1–20, Feb. 2023. [27] Y.-L. Qiao, J. Liang, V. Koltun, and M. Lin, “Differentiable simulation of soft multi-body systems,” in Advances in Neural Information Processing Systems , A. Beygelzimer, Y. Dauphin, P. Liang, and J. W. Vaughan, Eds., 2021. [28] J. Liang, M. C. Lin, and V. Koltun, Differentiable cloth simulation for inverse problems . Red Hook, NY, USA: Curran Associates Inc., 2019. [29] T. Du, K. Wu, P. Ma, S. Wah, A. Spielberg, D. Rus, and W. Ma-tusik, “Diffpd: Differentiable projective dynamics,” ACM Trans. Graph. ,vol. 41, no. 2, Nov. 2021. [30] M. Ly, J. Jouve, L. Boissieux, and F. Bertails-Descoubes, “Projective dynamics with dry frictional contact,” ACM Trans. Graph. , vol. 39, no. 4, Aug. 2020. [31] X. Yu, S. Zhao, S. Luo, G. Yang, and L. Shao, “DiffClothAI: Dif-ferentiable Cloth Simulation with Intersection-free Frictional Contact and Differentiable Two-Way Coupling with Articulated Rigid Bodies,” in 2023 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . Detroit, MI, USA: IEEE, Oct. 2023, pp. 400–407. [32] M. Li, Z. Ferguson, T. Schneider, T. Langlois, D. Zorin, D. Panozzo, C. Jiang, and D. M. Kaufman, “Incremental potential contact: intersection-and inversion-free, large-deformation dynamics,” ACM Trans. Graph. , vol. 39, no. 4, Aug. 2020. [33] B. Brogliato, Nonsmooth Lagrangian Systems . Springer Cham, 2016, pp. 241–370. [34] D. E. Kirk, Optimal control theory: an introduction . Courier Corpora-tion, 2004. [35] Z. Xie, C. K. Liu, and K. Hauser, “Differential dynamic programming with nonlinear constraints,” in 2017 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 2017, pp. 695–702. [36] C. Chi and S. Song, “GarmentNets: Category-Level Pose Estimation for Garments via Canonical Space Shape Completion,” in 2021 IEEE/CVF International Conference on Computer Vision (ICCV) . Montreal, QC, Canada: IEEE, Oct. 2021, pp. 3304–3313. [37] H. Bertiche, M. Madadi, and S. Escalera, “CLOTH3D: Clothed 3D Humans,” in Computer Vision – ECCV 2020 , A. Vedaldi, H. Bischof, T. Brox, and J.-M. Frahm, Eds. Cham: Springer International Publish-ing, 2020, vol. 12365, pp. 344–359. [38] Z. Erickson, V. Gangaram, A. Kapusta, C. K. Liu, and C. C. Kemp, “Assistive gym: A physics simulation framework for assistive robotics,” 
+
+IEEE International Conference on Robotics and Automation (ICRA) , pp. 10 169–10 176, 2020. [39] T. Jiang, X. Xie, and Y. Li, “Rtmw: Real-time multi-person 2d and 3d whole-body pose estimation,” 2024. [Online]. Available: https://arxiv.org/abs/2407.08634 JOURNAL OF L ATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2021 17 
+
+[40] W. Mao, C. Xu, Q. Zhu, S. Chen, and Y. Wang, “Leapfrog diffu-sion model for stochastic trajectory prediction,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition ,2023, pp. 5517–5526. [41] N. Karaev, I. Rocco, B. Graham, N. Neverova, A. Vedaldi, and C. Rup-precht, “Cotracker: It is better to track together,” in Computer Vision – ECCV 2024 . Springer Nature Switzerland, 2024, pp. 18–35.

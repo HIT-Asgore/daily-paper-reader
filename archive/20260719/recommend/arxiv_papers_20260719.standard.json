@@ -1,0 +1,181 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-19T20:01:30.915478+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.10999v1",
+      "source": "arxiv",
+      "title": "Wearing A Coat: Dual-Arm Robot-Assisted Dressing with Differentiable Clothing Simulation",
+      "abstract": "The development of assistive robots for dressing tasks serves to augment human convenience and improve the quality of life for individuals with physical impairments. However, due to the intricate contact interactions between garments and the human limbs during dressing, most robot-assisted dressing algorithms treat clothing as an assembly of discrete segments, thereby struggling to manage the partial worn garments under contact constraints. To overcome this challenge, we propose a novel robotic dressing control algorithm that integrates realtime differentiable clothing simulation. The simulation algorithm employs explicit iterative scheme with intentionally introduced higher-order perturbations to enhance computational efficiency while maintaining stability under large time-step conditions. Through simulation, we resolve the garment state under contact constraints, which then enables a multi-phase control strategy for successful coat dressing assistance. To further improve real-time performance, we introduce a constrained local model along with its corresponding optimization solver, permitting high-frequency local compensation for the differentiable simulation based global controller. Finally, we experimentally validate our approach through both simulated and physical dressing scenarios, conclusively demonstrating its feasibility and efficacy",
+      "authors": [
+        "Yiming Liu",
+        "Lijun Han",
+        "Hesheng Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-13T01:58:45+00:00",
+      "link": "https://arxiv.org/pdf/2607.10999v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable clothing simulation for dual-arm dressing",
+      "llm_evidence_cn": "可微衣物模拟用于双臂穿衣",
+      "llm_evidence": "可微衣物模拟用于双臂穿衣",
+      "canonical_evidence": "可微衣物模拟用于双臂穿衣",
+      "llm_tldr_en": "To address complex contact interactions in robot-assisted dressing, this work integrates real-time differentiable clothing simulation into a control algorithm, using explicit iteration with higher-order perturbations. The method effectively manages partial-worn garments, validated in dual-arm dressing simulations.",
+      "llm_tldr_cn": "本文针对机器人辅助穿衣中衣物与肢体复杂接触约束难以处理的问题，提出一种集成实时可微衣物模拟的穿衣控制算法。该算法采用显式迭代方案并引入高阶扰动以提升计算效率，在双机械臂穿衣仿真中实现了对部分穿戴衣物的有效管理。实验结果表明该方法能够稳健地完成穿衣任务，为可微物理在机器人操作中的应用提供了新范例。",
+      "llm_tldr": "本文针对机器人辅助穿衣中衣物与肢体复杂接触约束难以处理的问题，提出一种集成实时可微衣物模拟的穿衣控制算法。该算法采用显式迭代方案并引入高阶扰动以提升计算效率，在双机械臂穿衣仿真中实现了对部分穿戴衣物的有效管理。实验结果表明该方法能够稳健地完成穿衣任务，为可微物理在机器人操作中的应用提供了新范例。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.14177v1",
+      "source": "arxiv",
+      "title": "Adaptive Control of Motor-Position-Controlled Flexible Joint Robots with Uncertain Joint Stiffness",
+      "abstract": "Model-based control of flexible joint robots with position-controlled actuators relies on accurate knowledge of the joint compliance. In practice, precise stiffness models are often unavailable as the properties of physical elastic elements vary with operating conditions and slowly change over time due to wear and aging. To improve model-based control of these systems, we propose an adaptive control approach in this work, which updates an estimate of the uncertain, nonlinear torque-deflection relation of each joint. As opposed to classical adaptive control approaches for non-elastic robots, we rely on an implicit control law and a control-input-dependent regressor matrix to account for the uncertain joint stiffness. We analyze robustness of the approach against errors induced by the motor position controller. Experimental results on a flexible joint with nonlinear stiffness characteristics demonstrate the effectiveness of the proposed approach.",
+      "authors": [
+        "Annika Kirner",
+        "Grazia Zambella",
+        "Igor Kovacevic",
+        "Hannes Höppner",
+        "Jee-Hwan Ryu",
+        "Christian Ott"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-15T12:53:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.14177v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "model-based adaptive control for robot arms with flexible joints",
+      "llm_evidence_cn": "基于模型的自适应控制用于柔性关节机械臂",
+      "llm_evidence": "基于模型的自适应控制用于柔性关节机械臂",
+      "canonical_evidence": "基于模型的自适应控制用于柔性关节机械臂",
+      "llm_tldr_en": "Proposes an adaptive control approach for flexible-joint robots that updates joint stiffness estimates online, relying on an implicit control law and regressor matrix.",
+      "llm_tldr_cn": "针对柔性关节机械臂的模型控制中关节刚度不确定的问题，提出一种自适应控制方法，在线更新每个关节的非线性扭矩-变形关系估计。该方法采用隐式控制律和与控制输入相关的回归矩阵来应对刚度不确定性。分析和仿真验证了方法的有效性，提高了模型控制精度。这项工作为不确定性下的机械臂控制提供了实用的自适应方案。",
+      "llm_tldr": "针对柔性关节机械臂的模型控制中关节刚度不确定的问题，提出一种自适应控制方法，在线更新每个关节的非线性扭矩-变形关系估计。该方法采用隐式控制律和与控制输入相关的回归矩阵来应对刚度不确定性。分析和仿真验证了方法的有效性，提高了模型控制精度。这项工作为不确定性下的机械臂控制提供了实用的自适应方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.12423v1",
+      "source": "arxiv",
+      "title": "Model-Based Diffusion Optimal Control for Multi-Robot Motion Planning",
+      "abstract": "Multi-Robot Motion Planning in continuous environments, where robots must generate dynamically feasible, collision-free trajectories, is challenging due to the combinatorial growth of the joint trajectory space and the difficulty of enforcing dynamic feasibility and hard safety constraints. Recent approaches recast trajectory planning as probabilistic inference, sampling from a posterior over trajectories using diffusion models whose score functions are learned from demonstration data. While showing promising performance, these approaches are limited: they often rely on sizable demonstration datasets and struggle to rigorously enforce dynamics and hard safety constraints during sampling. To this end, we introduce Model-Based Diffusion Optimal Control (MDOC), a model-based diffusion planner that efficiently produces dynamically feasible trajectories without relying on data. Crucially, we show that MDOC's safety mechanism -- combining known dynamics models with Control Barrier Function-constrained projections -- naturally scales to multi-robot planning settings through Conflict-Based Search. Across simulation experiments, this integrated method consistently outperforms representative baseline planners in sample efficiency, geometric smoothness, and success rate, while reducing computation time and producing collision-free trajectories.",
+      "authors": [
+        "Zhilin He",
+        "Yorai Shaoul",
+        "Jiaoyang Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-14T06:54:03+00:00",
+      "link": "https://arxiv.org/pdf/2607.12423v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based diffusion optimal control for multi-robot motion planning",
+      "llm_evidence_cn": "基于模型的扩散最优控制用于多机器人运动规划",
+      "llm_evidence": "基于模型的扩散最优控制用于多机器人运动规划",
+      "canonical_evidence": "基于模型的扩散最优控制用于多机器人运动规划",
+      "llm_tldr_en": "Proposes model-based diffusion optimal control for multi-robot motion planning, combining diffusion models with safety constraints; method could transfer to model-based arm manipulation.",
+      "llm_tldr_cn": "该论文针对多机器人运动规划问题，提出基于模型的扩散最优控制方法，利用扩散模型从演示数据中学习轨迹分布，并引入动力学可行性约束和安全约束。实验表明该方法在保持高质量轨迹的同时能严格满足约束。这一基于模型的规划框架可潜在地迁移到机械臂操作任务中，为基于模型的控制提供新思路。",
+      "llm_tldr": "该论文针对多机器人运动规划问题，提出基于模型的扩散最优控制方法，利用扩散模型从演示数据中学习轨迹分布，并引入动力学可行性约束和安全约束。实验表明该方法在保持高质量轨迹的同时能严格满足约束。这一基于模型的规划框架可潜在地迁移到机械臂操作任务中，为基于模型的控制提供新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.14943v1",
+      "source": "arxiv",
+      "title": "Steering Robustness into World Action Models via Mechanistic Interpretability and Optimal Control",
+      "abstract": "World Action Models (WAMs) enable semantically- and physically-informed control but are brittle under distribution shift. In this work, we use mechanistic interpretability to study how robustness-relevant perturbations are represented in WAM activation space. Comparing activations across successful and unsuccessful rollouts, we find some WAM architectures exhibit low-dimensional linear separability for robustness-critical features, while others do not. This motivates the use of contrastive activation directions for training-free WAM steering. We also show that local linearity in WAM activation dynamics enables efficient feedback steering via model-based optimal control, yielding World-Action Linear Quadratic Regulator (WA-LQR), a minimally-invasive reduced-order LQR controller. Via mechanistic evaluations, we predict strong steerability in the Cosmos-Policy and DiT4DiT models but weak steerability in LingBot-VA, consistent with steering intervention results. On Cosmos-Policy and DiT4DiT, WA-LQR generalizes contrastive directions to new tasks and improves robustness to camera, gripper, and visual-noise perturbations over unsteered and prompt steering baselines.",
+      "authors": [
+        "Jihoon Hong",
+        "Julian Skifstad",
+        "Qiyue Dai",
+        "Alice Chan",
+        "Glen Chou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-07-16T12:52:49+00:00",
+      "link": "https://arxiv.org/pdf/2607.14943v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based control via World Action Models and LQR",
+      "llm_evidence_cn": "通过世界动作模型和LQR进行基于模型的控制",
+      "llm_evidence": "通过世界动作模型和LQR进行基于模型的控制",
+      "canonical_evidence": "通过世界动作模型和LQR进行基于模型的控制",
+      "llm_tldr_en": "Uses mechanistic interpretability to steer World Action Models and proposes WA-LQR for efficient model-based optimal control.",
+      "llm_tldr_cn": "针对世界动作模型在分布偏移下脆弱的问题，利用机械可解释性研究鲁棒特征的表示，发现某些架构具有低维线性可分性。据此提出无训练干预方法和基于局部线性的最优控制（WA-LQR），在不重新训练的情况下提升鲁棒性。在机器人控制任务中验证了方法的有效性。该工作将可解释性与模型控制结合，提升模型鲁棒性。",
+      "llm_tldr": "针对世界动作模型在分布偏移下脆弱的问题，利用机械可解释性研究鲁棒特征的表示，发现某些架构具有低维线性可分性。据此提出无训练干预方法和基于局部线性的最优控制（WA-LQR），在不重新训练的情况下提升鲁棒性。在机器人控制任务中验证了方法的有效性。该工作将可解释性与模型控制结合，提升模型鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

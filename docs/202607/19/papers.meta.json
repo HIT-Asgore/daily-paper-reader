@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-19",
+  "date": "2026-07-19",
+  "generated_at": "2026-07-19T20:04:26",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/19/2607.10999v1-wearing-a-coat-dual-arm-robot-assisted-dressing-with-differentiable-clothing-simulation",
+      "section": "deep",
+      "title_en": "Wearing A Coat: Dual-Arm Robot-Assisted Dressing with Differentiable Clothing Simulation",
+      "authors": "Yiming Liu, Lijun Han, Hesheng Wang",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.10999v1",
+      "score": "8.0",
+      "evidence": "可微衣物模拟用于双臂穿衣",
+      "tldr": "针对机器人辅助穿衣中衣物与人体复杂接触导致难以处理局部穿戴状态的问题，提出一种集成实时可微分衣物仿真的控制算法。该算法采用显式迭代方案引入高阶扰动以提升大时间步长下的计算稳定性，通过仿真解析接触约束下的衣物状态，并设计多阶段控制策略完成穿衣。为提升实时性，引入带约束的局部模型与优化求解器，对全局控制器进行高频局部补偿。仿真与实物实验验证了方法的可行性和有效性。",
+      "tags": "query:diff-physics",
+      "abstract_en": "The development of assistive robots for dressing tasks serves to augment human convenience and improve the quality of life for individuals with physical impairments. However, due to the intricate contact interactions between garments and the human limbs during dressing, most robot-assisted dressing algorithms treat clothing as an assembly of discrete segments, thereby struggling to manage the partial worn garments under contact constraints. To overcome this challenge, we propose a novel robotic dressing control algorithm that integrates realtime differentiable clothing simulation. The simulation algorithm employs explicit iterative scheme with intentionally introduced higher-order perturbations to enhance computational efficiency while maintaining stability under large time-step conditions. Through simulation, we resolve the garment state under contact constraints, which then enables a multi-phase control strategy for successful coat dressing assistance. To further improve real-time performance, we introduce a constrained local model along with its corresponding optimization solver, permitting high-frequency local compensation for the differentiable simulation based global controller. Finally, we experimentally validate our approach through both simulated and physical dressing scenarios, conclusively demonstrating its feasibility and efficacy",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.14177v1-adaptive-control-of-motor-position-controlled-flexible-joint-robots-with-uncertain-joint-stiffness",
+      "section": "deep",
+      "title_en": "Adaptive Control of Motor-Position-Controlled Flexible Joint Robots with Uncertain Joint Stiffness",
+      "authors": "Annika Kirner, Grazia Zambella, Igor Kovacevic, Hannes Höppner, Jee-Hwan Ryu, Christian Ott",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.14177v1",
+      "score": "8.0",
+      "evidence": "基于模型的自适应控制用于柔性关节机械臂",
+      "tldr": "针对柔性关节机器人中关节刚度不确定且时变的问题，提出一种自适应控制方法。该方法利用隐式控制律和输入相关回归矩阵，在线更新非线性扭矩-变形关系的估计。实验结果表明，该方法能有效补偿刚度不确定性，并对电机位置控制器误差具有鲁棒性，从而提升了模型控制的精度与适应性。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Model-based control of flexible joint robots with position-controlled actuators relies on accurate knowledge of the joint compliance. In practice, precise stiffness models are often unavailable as the properties of physical elastic elements vary with operating conditions and slowly change over time due to wear and aging. To improve model-based control of these systems, we propose an adaptive control approach in this work, which updates an estimate of the uncertain, nonlinear torque-deflection relation of each joint. As opposed to classical adaptive control approaches for non-elastic robots, we rely on an implicit control law and a control-input-dependent regressor matrix to account for the uncertain joint stiffness. We analyze robustness of the approach against errors induced by the motor position controller. Experimental results on a flexible joint with nonlinear stiffness characteristics demonstrate the effectiveness of the proposed approach.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.12423v1-model-based-diffusion-optimal-control-for-multi-robot-motion-planning",
+      "section": "quick",
+      "title_en": "Model-Based Diffusion Optimal Control for Multi-Robot Motion Planning",
+      "authors": "Zhilin He, Yorai Shaoul, Jiaoyang Li",
+      "date": "2026-07-14",
+      "pdf": "https://arxiv.org/pdf/2607.12423v1",
+      "score": "6.0",
+      "evidence": "基于模型的扩散最优控制用于多机器人运动规划",
+      "tldr": "多机器人运动规划面临组合爆炸和动态约束挑战。本文提出模型驱动扩散最优控制（MDOC），利用已知动力学模型与控制障碍函数约束投影，无需演示数据即可生成可行轨迹。该方法通过冲突搜索自然扩展到多机器人场景，在仿真实验中样本效率、轨迹平滑度及成功率均显著优于基线，同时降低计算时间，为实现安全高效的多机器人协作提供了新范式。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Multi-Robot Motion Planning in continuous environments, where robots must generate dynamically feasible, collision-free trajectories, is challenging due to the combinatorial growth of the joint trajectory space and the difficulty of enforcing dynamic feasibility and hard safety constraints. Recent approaches recast trajectory planning as probabilistic inference, sampling from a posterior over trajectories using diffusion models whose score functions are learned from demonstration data. While showing promising performance, these approaches are limited: they often rely on sizable demonstration datasets and struggle to rigorously enforce dynamics and hard safety constraints during sampling. To this end, we introduce Model-Based Diffusion Optimal Control (MDOC), a model-based diffusion planner that efficiently produces dynamically feasible trajectories without relying on data. Crucially, we show that MDOC's safety mechanism -- combining known dynamics models with Control Barrier Function-constrained projections -- naturally scales to multi-robot planning settings through Conflict-Based Search. Across simulation experiments, this integrated method consistently outperforms representative baseline planners in sample efficiency, geometric smoothness, and success rate, while reducing computation time and producing collision-free trajectories.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.14943v1-steering-robustness-into-world-action-models-via-mechanistic-interpretability-and-optimal-control",
+      "section": "quick",
+      "title_en": "Steering Robustness into World Action Models via Mechanistic Interpretability and Optimal Control",
+      "authors": "Jihoon Hong, Julian Skifstad, Qiyue Dai, Alice Chan, Glen Chou",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.14943v1",
+      "score": "6.0",
+      "evidence": "通过世界动作模型和LQR进行基于模型的控制",
+      "tldr": "世界动作模型在分布偏移下脆弱。本文通过机制可解释性发现鲁棒性关键特征在激活空间中低维线性可分，提出对比激活方向实现无训练引导；利用局部线性动力学设计WA-LQR最优控制反馈引导。在Cosmos-Policy和DiT4DiT上成功引导，提升对相机、夹爪、视觉噪声的鲁棒性，并泛化到新任务。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World Action Models (WAMs) enable semantically- and physically-informed control but are brittle under distribution shift. In this work, we use mechanistic interpretability to study how robustness-relevant perturbations are represented in WAM activation space. Comparing activations across successful and unsuccessful rollouts, we find some WAM architectures exhibit low-dimensional linear separability for robustness-critical features, while others do not. This motivates the use of contrastive activation directions for training-free WAM steering. We also show that local linearity in WAM activation dynamics enables efficient feedback steering via model-based optimal control, yielding World-Action Linear Quadratic Regulator (WA-LQR), a minimally-invasive reduced-order LQR controller. Via mechanistic evaluations, we predict strong steerability in the Cosmos-Policy and DiT4DiT models but weak steerability in LingBot-VA, consistent with steering intervention results. On Cosmos-Policy and DiT4DiT, WA-LQR generalizes contrastive directions to new tasks and improves robustness to camera, gripper, and visual-noise perturbations over unsteered and prompt steering baselines.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

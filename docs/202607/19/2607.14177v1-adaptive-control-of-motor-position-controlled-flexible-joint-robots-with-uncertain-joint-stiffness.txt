@@ -1,0 +1,449 @@
+Title: Adaptive Control of Motor-Position-Controlled Flexible Joint Robots with Uncertain Joint Stiffness
+
+URL Source: https://arxiv.org/pdf/2607.14177v1
+
+Published Time: Fri, 17 Jul 2026 00:07:40 GMT
+
+Number of Pages: 7
+
+Markdown Content:
+# Adaptive Control of Motor-Position-Controlled Flexible Joint Robots with Uncertain Joint Stiffness 
+
+Annika Kirner 
+
+Automation and Control Institute TU Wien 
+
+Vienna, Austria kirner@acin.tuwien.ac.at 
+
+Grazia Zambella 
+
+Automation and Control Institute TU Wien 
+
+Vienna, Austria zambella@acin.tuwien.ac.at 
+
+Igor Kovaˇ cevi´ c
+
+Automation and Control Institute TU Wien 
+
+Vienna, Austria 
+
+Hannes H¨ oppner 
+
+Soft Interactive Robotics Laboratory Berliner Hochschule f¨ ur Technik 
+
+Berlin, Germany hannes.hoeppner@bht-berlin.de 
+
+Jee-Hwan Ryu 
+
+Dept. of Civil and Environmental Engineering Korea Advanced Institute of Science & Technology 
+
+Seoul, South Korea jhryu@kaist.ac.kr 
+
+Christian Ott 1
+
+Automation and Control Institute TU Wien 
+
+Vienna, Austria christian.ott@tuwien.ac.at 
+
+Abstract —Model-based control of flexible joint robots with position-controlled actuators relies on accurate knowledge of the joint compliance. In practice, precise stiffness models are often unavailable as the properties of physical elastic elements vary with operating conditions and slowly change over time due to wear and aging. To improve model-based control of these systems, we propose an adaptive control approach in this work, which updates an estimate of the uncertain, nonlinear torque-deflection relation of each joint. As opposed to classical adaptive control approaches for non-elastic robots, we rely on an implicit control law and a control-input-dependent regressor matrix to account for the uncertain joint stiffness. We analyze robustness of the approach against errors induced by the motor position controller. Experimental results on a flexible joint with nonlinear stiffness characteristics demonstrate the effectiveness of the proposed approach. 
+
+I. I NTRODUCTION 
+
+Common model-based control approaches for flexible joint robots require accurate models of the joint stiffness [1], [2]. In practice, however, the torque-deflection characteristics of physical elastic elements are subject to gradual variations due to effects such as material aging, temperature changes, and load-dependent hysteresis. Explicitly modeling these effects is challenging and often impractical. As a result, torque-deflection models identified from calibration measurements may not remain accurate over time or across operating condi-tions. This issue can degrade the achievable control performance of flexible joint robots, also if their elastic actuators employ servo motors. Examples for such actuators are the variable stiffness actuators (VSA) introduced in [3]. They have been 
+
+This work was supported in part by the European Research Council (ERC) through the European Union’s Horizon Europe research and innovation programme under Grant 101248099 (CORIM). 
+
+> 1
+
+Christian Ott is also with the Institute of Robotics and Mechatronics, German Aerospace Center (DLR), Wessling, Germany. 
+
+Fig. 1. Blockdiagram of the proposed adaptive link-side tracking controller for motor position controlled flexible joint robots. An estimate of the uncertain, nonlinear torque-deflection relation ψ(θ − q) is adapted online such that the link-side tracking errors converge. 
+
+designed to be low-cost and easily deployable while being inherently compliant. The actuators [3] have been used exten-sively in test benches for validating control strategies [4]–[6]. Further, they have been successfully incorporated into more complex robotic platforms such as the wheeled humanoid robot Alter-Ego [7] demonstrating their potential for being used in daily tasks involving physical interaction, such as opening a door [8]. Flexible joint robots equipped with servo motors provide a motor-position interface instead of a torque interface. Model-based link-side control approaches for these robots usually determine the desired motor position to be commanded from the desired torque to be injected by inverting the torque-deflection model [5], [7]. Consequently, the accuracy of the torque generation, and thus the overall control performance, strongly depends on the fidelity of the utilized model. This motivates the development of control strategies for motor-position-controlled flexible joint robots that enable accurate arXiv:2607.14177v1 [cs.RO] 15 Jul 2026 link-side control despite uncertainties in the joint stiffness characteristics. A common way to address uncertain system parameters is adaptive control. Adaptive controllers have been widely studied and successfully used to compensate for parametric uncertainties in inertial parameter by adjusting estimates on-line [9]–[11]. Extensions of these ideas to flexible-joint robots with uncertain inertial parameters have also been proposed [12]–[14]. Besides imprecise knowledge of inertial parameters, also uncertain stiffness is treated in [15]. However, these approaches typically assume a linear torque-deflection relation and access to a motor-torque interface. Besides classical adaptive controllers, neural adaptive con-trollers have also been proposed for flexible-joint robots [16]. In particular, [16] addresses motor-position controlled systems with uncertain inertial parameters. However, the joints are assumed to have a constant, known stiffness and an ideal motor-position controller. 
+
+A. Contribution 
+
+This work is motivated by improving model-based control of motor-position controlled flexible joint robots with uncer-tain, nonlinear stiffness. In particular:  
+
+> •
+
+We propose an adaptive control framework (cf. Fig. 1) adjusting an estimate of the uncertain, nonlinear torque-deflection map online. The design applies the Lyapunov-based methodology of [9]. Different to [9], our approach relies on a control-input-dependent regressor and an im-plicit control law to handle the uncertain, nonlinear joint stiffness.  
+
+> •
+
+We formally analyze robustness of the approach against errors in the inner-loop motor position controller.  
+
+> •
+
+We validate the approach experimentally on a flexible joint with strongly nonlinear torque-deflection charac-teristic, obtaining improved link-side trajectory tracking under adaptation. The remainder of this paper is structured as follows. We introduce the target system dynamics and problem formulation in Sec. II. The adaptive controller is presented in Sec. III followed by a robustness analysis against errors induced by the inner-loop motor-position controller in Sec. IV. We ex-perimentally validate the approach in Sec. V. Finally, Sec. VI concludes the work. II. S YSTEM DYNAMICS AND PROBLEM STATEMENT 
+
+Consider the dynamics of a robotic system with n flexible joints modeled as 
+
+M (q)¨ q + C(q, ˙q) ˙ q + g(q) = ψ(θ − q) (1a) 
+
+B¨θ + ψ(θ − q) = τ m. (1b) Therein, q ∈ Rn and θ ∈ Rn denote the vectors of link and motor positions, respectively. The link-side inertia matrix 
+
+M (q) ∈ Rn×n is positive definite and is assumed to have bounded eigenvalues. The Coriolis and centrifugal matrix 
+
+C(q, ˙q) ∈ Rn×n fulfills the skew symmetry of ( ˙M −2C). The motor inertia matrix and the vector of applied motor torques are denoted as B ∈ Rn×n and τ m ∈ Rn, respectively. The motor side and the link side are elastically coupled via the elastic torque vector ψ(θ − q) ∈ Rn. It is assumed to be derived from an elastic potential and thus to be monotonic and Lipschitz continuous in the deflection θ − q.
+
+A. Motor Position Controlled Flexible Joint Robots 
+
+We consider systems (1) under motor position control. More precisely, τ m is provided by an inner-loop controller such that the motor position θ follows a desired motor position trajectory θd(t) ∈ Rn. The link-side dynamics then reduce to 
+
+M ¨q + C ˙q + g = ψ(θd − q + eθ ). (2) Therein, eθ = θ − θd ∈ Rn denotes the motor-side tracking error. We consider the desired motor angle as our control input, i.e., u = θd.
+
+B. Link-Side Control 
+
+If the elastic torque relation ψ(θ − q) is known and if the motor position error remains sufficiently small such that it can be neglected, a controller for (2) can be implemented by solving 
+
+0 = ψ(u − q) − τ d (3) for the control input u. This results in the closed-loop link-side dynamics 
+
+M ¨q + C ˙q + g = τ d (4) corresponding to a rigid-body model driven by the virtual control input τ d, which can be chosen using standard rigid-body robot control techniques. Consequently, the controller design for a motor-position-controlled flexible-joint robot can then be reduced to the one for a conventional rigid-body robot. 
+
+C. Problem Statement 
+
+The objective of this work is to develop a model-based adaptive control scheme for the system (2), that achieves tracking of a desired link-side trajectory qd(t) ∈ Rn despite uncertainties in the nonlinear torque-deflection model and adapts an estimate of the model online. III. A DAPTIVE CONTROL APPROACH 
+
+The approach presented in this work builds upon the classical adaptive robot controller [9] for torque-controlled rigid robots with uncertain inertial parameters. Utilizing the associated Lyapunov-based design methodology, we derive an adaptive controller for the considered class of motor-position-controlled flexible-joint robots with known inertial parameters but uncertain joint stiffness. For this purpose, the uncertain torque-deflection relation ψ(θ −q) is expressed as the product of a known, control-input-dependent regressor matrix and an uncertain parameter vector, as detailed in Sec. III-B. Based on this representation, an implicit control law and a parameter adaptation law are formulated in Sec. III-C and Sec. III-D. A. Assumption on the Motor-Position Controller 
+
+For the derivation of the adaptive control law we will impose the following assumption. 
+
+Assumption 1. The motor position controller operates on a sufficiently fast time scale such that the resulting motor position error eθ remains negligible for the purposes of the subsequent analysis. In particular, we consider the case 
+
+eθ = 0.
+
+We will discard this idealization in Sec. IV analyzing robustness of the proposed approach. 
+
+B. Regressor and Parameter Vector 
+
+Given Assumption 1, it holds ψ(θ − q) = ψ(u − q).
+
+Assumption 2. The torque-deflection relation ψ(u − q) can be decomposed as 
+
+ψ(u − q) = Y (u − q) k, (5) 
+
+where Y (u − q) ∈ Rn×p is a regressor matrix containing a finite number of known basis functions of the deflection, and 
+
+k ∈ Rp is an uncertain constant parameter vector. 
+
+In practice, the required set of basis functions is typically not known a priori. However, the mechanical design and cali-bration measurements usually provide insight into the qualita-tive structure of ψ(u−q). This knowledge allows the selection of a sufficiently rich set of basis functions in Y (u − q)
+
+such that the resulting parameterization approximates the true torque-deflection relation over the relevant operating range. Given the uncertainty in k, only an estimate ˆk ∈ Rp is considered available, in the following. The estimated torque-deflection relation evaluates as 
+
+ˆψ(u − q) = Y (u − q) ˆk. (6) We will utilize this relation to formulate a link-side tracking controller and then provide a parameter adaptation law for ˆk,such that the tracking errors converge to zero. 
+
+C. Control Law 
+
+Following [9], we aim at injecting the torque 
+
+τ d = M (q)¨ qr + C(q, ˙q) ˙ qr + g(q) − Ks(t)s (7) on the link-side, i.e., a tracking controller based on the sliding-variable s ∈ Rn. The sliding variable is defined as 
+
+s = ˙ eq + Kpeq = ˙ q − ˙qr (8) with ˙qr = ˙qd − Kpeq and constant, positive definite gain matrix Kp ∈ Rn×n. By construction, convergence of s to zero implies convergence of the tracking errors eq = q − qd and 
+
+˙eq = ˙q − ˙qd to zero. The gain matrix Ks(t) ∈ Rn×n in (7) is continuous, positive definite with uniformly bounded eigenvalues. If the true parameter vector k from (5) were known, the motor input could be computed directly from (3) in order to inject the desired torque (7) exactly. With only the estimate ˆk
+
+available, we instead choose u such that the following is satisfied 
+
+0 = Y (u − q)ˆk − (M ¨qr + C ˙qr + g − Kss)
+
+| {z } 
+
+> τd
+
+. (9) Thus, the motor position is chosen such that the estimated 
+
+spring torque balances the desired torque τ d. Equation (9) constitutes an implicit control law. Existence of an analytical solution for u depends on the utilized basis functions in the regressor. Two common special cases admitting an explicit formulation of the control law are addressed in the following. If no analytical solution exists, (9) must be solved numerically for the control input. 
+
+1) Case 1: Linear Regressor: For joints with linear torque-deflection relation, where the only uncertainty is the joint stiff-ness, the regressor Y (u − q) = diag (u − q) ∈ Rn×n only contains linear functions. Equation (9) can then be solved for 
+
+u as 
+
+u = q +
+
+
+
+diag 
+
+ˆk
+
+ −1
+
+τd, (10) i.e., there exists an explicit control law. To ensure well-defined torque generation, the entries of ˆk must remain nonzero. 
+
+2) Case 2: Special Cubic Regressor: Consider a cu-bic torque-deflection relation of the i-th joint of the form 
+
+φi(θi − qi) = k3,i (θi − qi)3 + k1,i (θi − qi) with linear and cubic stiffness coefficients k1,i , k 3,i > 0, where all uncertainty is assumed to be contained in the coefficients. The mapping 
+
+φi(θi − qi) is strictly monotonically increasing. Hence, the relation is globally invertible. For this special case, the implicit control law (9) reduces componentwise to the cubic equation 
+
+(ui − qi)3 (ui − qi) ˆk3,i 
+
+ˆk1,i 
+
+
+
+= τd,i . (11) Using Cardano’s formula, the solution ui can be expressed analytically for arbitrary desired torques τd,i ∈ R as 
+
+ui = qi + 3
+
+s τd,i 
+
+2ˆk3,i 
+
++ ai + 3
+
+s τd,i 
+
+2ˆk3,i 
+
+− ai, (12) with 
+
+ai =
+
+vuut τ 2
+
+> d,i
+
+4ˆk23,i 
+
++ˆk31,i 
+
+27 ˆk33,i 
+
+. (13) as long as the estimates ˆk3,i and ˆk1,i remain nonzero. 
+
+D. Adaptation Law 
+
+Substituting (9) in the robot dynamics (2) with Assump-tions 1 and 2 yields the closed-loop dynamics 
+
+M ¨q + C ˙q + g = τ d + Y (u − q)ek, (14) 
+
+M ˙s + ( C + Ks)s = Y (u − q)ek. (15) The term Y (u − q)ek acts as a disturbance decreasing with the parameter estimation error ek = k − ˆk. We will formulate an adaptation law, such that s converges to zero despite this disturbance. We employ the Lyapunov function candidate 
+
+S(s, ek, t ) = 12 sT M (q)s
+
+| {z }
+
+> Ss(s,t )
+
++ 12 eTk Ae k
+
+| {z }  
+
+> Sk(ek)
+
+. (16) which is structurally identical to the one in [9]. It consists of a time-dependent tracking contribution Ss(s, t ) and a param-eter error contribution Sk(ek) with diagonal, positive definite matrix A ∈ Rp×p.As the inertia matrix M (q) is symmetric and positive definite with uniformly bounded eigenvalues, S is bounded from below and above by positive definite functions in (s, ek).The time derivative of S along the trajectories of the closed-loop system evaluates as 
+
+˙S = −sT Kss +   ˙eTk A + sT Y (u − q) ek (17) due to skew-symmetry of ˙M −2C. It becomes negative-semi-definite for the parameter adaptation law 
+
+˙ˆk = A−1Y T s, (18) which renders the equilibrium sT eTk
+
+ = 0 uniformly globally stable. To analyze convergence properties, Barbalat’s Lemma can be utilized equivalently as in [9]. In short, the boundedness of 
+
+¨S = −sT ˙Kss + 2 sT Ks ˙s implies that ˙S, which is known to be bounded, converges to zero for t → ∞ . Thus s globally uniformly converges to zero for t → ∞ . By (8), this implies global uniform convergence of eTq ˙eTq
+
+ → 0 for t → ∞ .
+
+E. Summary 
+
+We summarize the previous results as follows. 
+
+Theorem 1. Consider the motor-position controlled flexi-ble joint robot (2) with uncertain torque-deflection relation 
+
+ψ(θ − q) = Y (θ − q) k under Assumptions 1 and 2. Under the control law (9) and adaptation law (18) global uniform convergence of eTq ˙eTq
+
+ → 0 is achieved for t → ∞.A parameter estimate ˆk is adapted online such that the parameter estimation error remains bounded. 
+
+Note that convergence of ˆk is not guaranteed. Figure 1 shows the overall structure of the controller. IV. R OBUSTNESS AGAINST ERRORS INDUCED BY THE 
+
+MOTOR POSITION CONTROL 
+
+Let us now evaluate robustness of the proposed approach against errors induced by the inner-loop controller. Consider (2). It holds 
+
+ψ(θ − q) = ψ (θd − q + eθ ) (19) 
+
+= ψ (θd − q) + τ e, (20) with τ e ∈ Rn and || τ e|| 2 ≤ kψ || eθ || 2 due to the monotonicity and Lipschitz continuity of the spring torque. Here, kψ > 0
+
+denotes the Lipschitz constant of the joint with the largest maximum stiffness. Applying the adaptive controller (9) and (18) then results in the closed-loop system 
+
+M ˙s + ( C + Ks)s = Y (u − q)ek + τ e (21a) 
+
+˙ek = −A−1Y T s. (21b) The error dynamics (21a) in s now includes an additional disturbance term τe as an input, which depends on the motor position error eθ .
+
+Theorem 2. Consider the system (2) with motor position error 
+
+eθ (t) under the control law (9) and adaptation law (18) . The following holds: 
+
+1) The closed-loop system is finite-gain L2 stable with respect to the input eθ and the output s.
+
+2) If eθ ∈ L 2, s and ek are uniformly bounded. Further, 
+
+s → 0 for t → ∞ and thus eTq ˙eTq
+
+ → 0 for t → ∞ .Proof. Consider the function S(s, ek, t ) from (16). The time derivative along the trajectories of the closed-loop system (21) is then obtained as 
+
+˙S = −sT Kss + sT τ e (22) 
+
+≤ − (1 − ϵ)ks,min 
+
+| {z }
+
+> := c1
+
+sT s + (4 ϵk s,min )−1
+
+| {z }
+
+> := c2
+
+τ Te τ e (23) where ks,min > 0 is the smallest eigenvalue of Ks and ϵ is an arbitrary constant, such that it holds 0 < ϵ < 1.1 The positive constants c1 and c2 are defined by this relation. Using this as a starting point, we prove the statements 1 and 2 consecutively. 
+
+Statement 1): Let us integrate (23) from t = 0 to t = T .We obtain 
+
+ST − S0 ≤ − c1
+
+Z T
+
+> 0
+
+sT s dt + c2
+
+Z T
+
+> 0
+
+τ Te τ e dt (24) with ST = S(s(T ), ek(T ), T ) and S0 = S(s(0) , ek(0) , 0) .With ST ≥ 0, this immediately yields 
+
+sZ T
+
+> 0
+
+sT s dt ≤ γ1
+
+sZ T
+
+> 0
+
+τ Te τ e dt + β (25) 
+
+≤ γ2
+
+sZ T
+
+> 0
+
+eTθ eθ dt + β (26) with γ1 =
+
+q
+
+c2c−11 , β =
+
+q
+
+S0c−11 and γ2 = kψ γ1. Consid-ering T → ∞ , this implies that the closed-loop system with input eθ and output s is finite-gain L2 stable (c.f., e.g. [17, Definition 5.1]). 
+
+Statement 2): Consider again (24). For eθ ∈ L 2 it holds 
+
+τ e ∈ L 2. Further, we just showed that then s ∈ L 2. Thus, the right hand side of (24) is bounded ∀t. This implies uniform boundedness of ST , which, in turn, yields uniform boundedness of s and ek.Consider the function f (t) = R t 
+
+> 0
+
+sT s dr . Given eθ ∈ L 2 it holds s ∈ L 2 as it has been shown in the proof of Statement 1. As f (t) is thus upper bounded and as the integrand is        
+
+> 1Note that (23) holds due to Young’s inequality. Fig. 2. Experimental setup consisting of one VSA by qbRobotics rotating a
+> 0.5 kg weight in a horizontal plane (a). The utilized cubic torque-deflection models for the high and low stiffness settings approximately match the datasheet models for relevant deflections |θ−q| ≤ 0.4 rad (b).
+
+monotonically increasing, f (t) approaches a finite limit for 
+
+t → ∞ .Now consider ¨f (t) = 2 sT ˙s. As s and ek have been shown to be bounded, we can conclude boundedness of ˙s from (21a). Thus, ¨f (t) is bounded. This implies that ˙f (t) = sT s is uniformly continuous. By Barbalat’s Lemma, we can now conclude ˙f (t) → 0 for 
+
+t → ∞ . Thus, s → 0 and eTq ˙eTq
+
+ → 0.V. E XPERIMENTS 
+
+To validate the performance of the approach under distinct torque-deflection characteristics, we perform trajectory track-ing experiments with a variable stiffness actuator varying the physical stiffness during the motion. 
+
+A. Setup 
+
+The utilized setup is depicted in Fig. 2. It consists of the motor-position controlled VSA [3] rotating a weight of 0.5 kg 
+
+attached on a lever in the horizontal plane. 
+
+1) Dynamics and Nominal Torque-Deflection Model: The considered actuator contains two servo motors with mo-tor positions θ1 and θ2. Stiffness and position adjustments are decoupled [3]. Via increasing the relative motor po-sition ∆θ = 0 .5( θ2 − θ1), the stiffness setting can be in-creased, whereas the equilibrium position is determined as 
+
+θ = 0 .5( θ1 + θ2). Given a fixed ∆θ, the actuator can thus be treated as a series elastic actuator [5], [7]. The link-side system dynamics can then be expressed in terms of θ in the form (2) as 
+
+M ¨q = ψ(θ − q) (27) 
+
+= ψ(u − q) + τ e (28) with M = 0 .0129 Nms 2/rad and control input u.In the following, we operate the actuator at two distinct relative motor positions. We will refer to the setting with 
+
+∆θ = 0 .5 rad as the high stiffness preset and ∆θ = 0 .35 rad 
+
+as the low stiffness preset. According to the datasheet and [7],  
+
+> TABLE I GAINS AND TORQUE -DEFLECTION -MODEL USED FOR THE IMPLEMENTATION OF THE BASELINE AND PROPOSED APPROACHES .
+
+the corresponding nonlinear torque-deflection relations with deflection δ = θ − q are obtained as 
+
+ψhigh (δ) = 0 .166 sinh (8 .999 δ) , (29a) 
+
+ψlow (δ) = 0 .043 sinh (8 .999 δ) , (29b) respectively. 
+
+2) Regressor and Parameter Vector: Considering (29), a hyperbolic sine function could be a suitable choice for a basis function of the regressor. Moreover, as depicted in Fig. 2(b), the functions (29) can be approximated by the cubic function 
+
+ψcubic (δ) = k3δ3 + k1δ (30) 
+
+= δ3 δ k3
+
+k1
+
+
+
+= Y (δ)k (31) with parameters khigh = 28 1.5T for (29a) and 
+
+klow = 8 0.38 T for (29b) in a range of deflections 
+
+δ ≤ 0.4 rad .We will utilize the cubic regressor Y (u−q) from (30) with 
+
+δ = u − q for the formulation of the adaptive controller. This choice is guided by the datasheet relation and allows for an explicit formulation of the control law while the behavior for large and small deflections can be adjusted distinctly via the cubic and linear parameter. 
+
+3) Desired Trajectory: For the experiments, we aim at tracking a desired link-side trajectory 
+
+qd(t) = 0 .5π
+
+
+
+sin 
+
+ 8πT t
+
+
+
++ sin 
+
+ 2πT t
+
+ 
+
+, (32) which is periodic with T = 6 .5 s . The actuator’s stiffness setting is held constant for two consecutive periods before being switched between the defined high and low settings. This alternating pattern is maintained over multiple cycles throughout the experiment. 
+
+4) Control Approaches: We compare the performance of the proposed adaptive controller using an initial parameter estimate ˆk0 = khigh against two baseline approaches, which we will refer to as baseline - high and baseline - low . These use the same control law (9), but the constant parameter estimates 
+
+ˆk = khigh = const. and ˆk = klow = const. , respectively, i.e., we deactivate the parameter adaptation. To ensure physically meaningful estimates of the torque-deflection models and to prevent numerical issues due to (12), we implement lower thresholds for the parameter estimates, i.e. ˆk1, ˆk3 ≥ 10 −3.Fig. 3. Tracking performance of baseline approaches (cf. Table I) utilizing constant torque-deflection models (top) versus our proposed adaptive controller (middle). The norm of s integrated over a cycle reduces under the parameter adaptation (bottom), such that the adaptive controller eventually outperforms the baseline approaches both for high and low stiffness presets of the VSA. 
+
+We provide an overview of utilized gains and initial param-eter estimates in Table I. The controllers are implemented at a control frequency of 
+
+200 Hz .
+
+B. Results 
+
+Figure 3 shows the tracking results over five stiffness cycles. We provide q(t) under the baseline approaches without adaptation (top), q(t) under the proposed adaptive controller (middle) and the normed error 
+
+qR t0+2 Tt0 sT s dt per cycle with cycle starting time t0.As the adaptive controller (red) has been initialized with 
+
+ˆk(t = 0) = khigh , its performance is comparable to the baseline approach using the high stiffness model (blue) during the first cycle. However, then the tracking of qd(t) improves. Starting from the third cycle, the adaptive controller achieves the least normed tracking error in both the cycles with high and low stiffness setting. The evolution of the parameter estimates is depicted in Fig. 4. Both the cubic and the linear parameter estimates reduce during the high stiffness setting of the first cycle. With the second cycle, the adaptation rate further decreases to account for the reduced stiffness. Notably, the cubic estimate reaches its lower threshold at almost zero during this cycle. Conversely, the linear parameter stabilizes at ˆk1 ≈ 0.5, which is larger than the linear contribution to klow obtained from the datasheet. It may contradict the expectation that the parameter esti-mates do not increase in the third and fifth cycle, after the stiffness setting is switched from low to high. However, the adaptive controller does not guarantee convergence of the pa-rameter estimate to its real value. It only adjusts the estimate, if there is a tracking error. Notably, the tracking performance remains consistent starting from the third cycle even without parameter adjustment. This may be due to the fact that the estimated, low, constant stiffness can be understood as high gain on the desired link-side torque (cf. (10)). Note that this interpretation aligns with the observation that the baseline -low controller (yellow) is more performant than the baseline -high one (blue). Fig. 4. Evolution of the parameter estimates ˆk3 and ˆk1 during the adaptation as compared to the datasheet values. The absolute value of the adaptation rate clearly increases as the VSA’s stiffness preset is reduced 1⃝. The cubic parameter estimate runs into its lower limit 2⃝ whereas the linear parameter estimate converges to a value above the datasheet value for the low stiffness preset. 
+
+VI. C ONCLUSION AND OUTLOOK 
+
+This work addressed adaptive control of motor-position-controlled flexible-joint robots with uncertain, nonlinear joint stiffness. We designed an implicit control law and an adap-tation law for the case of an ideal motor-position interface proving convergence of tracking errors to zero. Further, we analyzed robustness of the approach with respect to motor-side control errors. Experimental results confirm that the proposed approach can enhance the tracking performance of a motor-position-controlled flexible joint with an uncertain torque-deflection relation. The approach was able to react to the stiffness changes introduced via a variable stiffness mechanism and outperformed controllers utilizing a constant torque-deflection model. This motivates applying the approach in robotic joints, whose torque-deflection characteristics are expected to strongly depend on operating conditions. This could, e.g., be promising for systems involving low-cost elastic elements such as the springs fabricated from PLA introduced in [18]. Future work could develop adaptation laws that ensure physically meaningful estimates of the stiffness characteristics. To improve parameter estimation, it seems also promising to utilize information from the torque prediction error as in [10]. Finally, extensions to further classes of robots with joint flexibility, such as antagonistically driven VSA or twisted string actuators, seem promising. REFERENCES [1] A. De Luca and W. Book, “Robots with Flexible Elements,” in Springer Handbook of Robotics , B. Siciliano and O. Khatib, Eds. Berlin, Heidelberg: Springer Berlin Heidelberg, 2008, pp. 287–319. [2] M. W. Spong, “Modeling and Control of Elastic Joint Robots,” Journal of Dynamic Systems, Measurement, and Control , vol. 109, no. 4, pp. 310–318, Dec. 1987. [3] M. G. Catalano, G. Grioli, M. Garabini, F. Bonomo, M. Mancini, N. Tsagarakis, and A. Bicchi, “VSA-CubeBot: A modular variable stiffness platform for multiple degrees of freedom robots,” in 2011 IEEE International Conference on Robotics and Automation , May 2011, pp. 5090–5095. [4] C. Della Santina, M. Bianchi, G. Grioli, F. Angelini, M. Catalano, M. Garabini, and A. Bicchi, “Controlling Soft Robots: Balancing Feedback and Feedforward Elements,” IEEE Robotics & Automation Magazine , vol. 24, no. 3, pp. 75–83, Sept. 2017. [5] J. Moyr´ on, C. Ott, A. Kirner, and J. Moreno-Valenzuela, “Elastic Structure Preserving Control for Flexible Joint Robots With Position-Controlled Actuators,” IEEE Transactions on Control Systems Technol-ogy , vol. 33, no. 5, pp. 1810–1819, Sept. 2025. [6] M. Pierallini, F. Angelini, R. Mengacci, A. Palleschi, A. Bicchi, and M. Garabini, “Trajectory Tracking of a One-Link Flexible Arm via Iterative Learning Control,” in 2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , Oct. 2020, pp. 7579–7586. [7] G. Lentini, A. Settimi, D. Caporale, M. Garabini, G. Grioli, L. Pallottino, M. G. Catalano, and A. Bicchi, “Alter-Ego: A Mobile Robot With a Functionally Anthropomorphic Upper Body Designed for Physical Interaction,” IEEE Robotics & Automation Magazine , vol. 26, no. 4, pp. 94–107, Dec. 2019. [8] G. Zambella, D. Caporale, G. Grioli, L. Pallottino, and A. Bicchi, “Com-posite Whole-Body Control of Two-Wheeled Robots,” IEEE Transac-tions on Robotics , vol. 41, pp. 2301–2321, 2025. [9] J.-J. E. Slotine and W. Li, “On the Adaptive Control of Robot Manip-ulators,” The International Journal of Robotics Research , vol. 6, no. 3, pp. 49–59, Sept. 1987. [10] ——, “Composite adaptive control of robot manipulators,” Automatica ,vol. 25, no. 4, pp. 509–519, July 1989. [11] T. Lee, J. Kwon, and F. C. Park, “A Natural Adaptive Control Law for Robot Manipulators,” in 2018 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) . Madrid: IEEE, Oct. 2018, pp. 1–9. [12] M. W. Spong, “Adaptive control of flexible joint manipulators,” Systems & Control Letters , vol. 13, no. 1, pp. 15–21, July 1989. [13] F. Ghorbel, J. Hung, and M. Spong, “Adaptive control of flexible joint manipulators,” in 1989 International Conference on Robotics and Automation Proceedings , May 1989, pp. 1188–1193 vol.2. [14] R. Lozano-Leal and B. Brogliato, “Adaptive Control of Robot Manipu-lators with Flexible Joints,” in 1991 American Control Conference , June 1991, pp. 938–943. [15] L. Tian and A. Goldenberg, “Robust adaptive control of flexible joint robots with joint torque feedback,” in Proceedings of 1995 IEEE International Conference on Robotics and Automation , vol. 1, May 1995, pp. 1229–1234 vol.1. [16] S. Chen and J. T. Wen, “Adaptive Neural Trajectory Tracking Control for Flexible-Joint Robots with Online Learning,” in 2020 IEEE International Conference on Robotics and Automation (ICRA) , May 2020, pp. 2358– 2364. [17] H. K. Khalil, Nonlinear Systems , 3rd ed. Upper Saddle River, NJ: Prentice Hall, 2002. [18] H. H¨ oppner, A. Kirner, J. G¨ ottlich, L. Jakob, A. Dietrich, and C. Ott, “Variable Stiffness Actuation via 3D-Printed Nonlinear Torsional Springs,” IEEE Robotics and Automation Letters , vol. 10, no. 5, pp. 4324–4331, May 2025.
