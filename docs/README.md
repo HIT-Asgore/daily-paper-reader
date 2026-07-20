@@ -6,32 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-19
-- 运行时间：2026-07-19 20:04:20 UTC
+- 最新运行日期：2026-07-20
+- 运行时间：2026-07-20 20:27:36 UTC
 - 运行状态：成功
-- 本次总论文数：4
+- 本次总论文数：6
 - 精读区：2
-- 速读区：2
+- 速读区：4
 
 ### 今日简报（AI）
-今日推荐4篇论文，精读2篇得分8.0：《双机械臂辅助穿衣的可微分模拟》与《不确定关节刚度柔性机器人的自适应控制》均是高价值成果。最值得关注“机器人穿衣”和“柔性关节控制”两个方向，前者结合物理模拟与操作，后者解决实际工程不确定性。普通读者可优先精读这两篇，掌握机器人应用与鲁棒控制的前沿方法。
-- 详情：[/202607/19/README](/202607/19/README)
+今日推荐6篇机器人方向论文，精读2篇聚焦神经驱动建模与避碰强化学习。最值得关注《NeuralActuator》（9.0分）的动力学与力感知方法，以及《Learning Reach-Avoid Task》（8.0分）的矢量仿真基准。建议优先精读这两篇，后续可跟进物理增强强化学习在实时控制中的应用。
+- 详情：[/202607/20/README](/202607/20/README)
 
 ### 精读区论文标签
-1. [Wearing A Coat: Dual-Arm Robot-Assisted Dressing with Differentiable Clothing Simulation](/202607/19/2607.10999v1-wearing-a-coat-dual-arm-robot-assisted-dressing-with-differentiable-clothing-simulation)  
-   标签：评分：8.0/10、query:diff-physics
-   evidence：可微衣物模拟用于双臂穿衣
-2. [Adaptive Control of Motor-Position-Controlled Flexible Joint Robots with Uncertain Joint Stiffness](/202607/19/2607.14177v1-adaptive-control-of-motor-position-controlled-flexible-joint-robots-with-uncertain-joint-stiffness)  
+1. [NeuralActuator: Neural Actuation Modeling for Robot Dynamics and External Force Perception](/202607/20/2607.11734v2-neuralactuator-neural-actuation-modeling-for-robot-dynamics-and-external-force-perception)  
+   标签：评分：9.0/10、query:diff-physics
+   evidence：可微仿真器在策略学习和模型预测控制中的应用
+2. [Learning Reach-Avoid Task with Reinforcement Learning: Vectorized Simulation and Benchmark](/202607/20/2607.15935v1-learning-reach-avoid-task-with-reinforcement-learning-vectorized-simulation-and-benchmark)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：基于模型的自适应控制用于柔性关节机械臂
+   evidence：机械臂到达回避任务的强化学习基准
 
 ### 速读区论文标签
-1. [Model-Based Diffusion Optimal Control for Multi-Robot Motion Planning](/202607/19/2607.12423v1-model-based-diffusion-optimal-control-for-multi-robot-motion-planning)  
+1. [Dynamics-Aware Meta-Imitation for Generalization to Unseen Robotic Manipulation](/202607/20/2607.15880v1-dynamics-aware-meta-imitation-for-generalization-to-unseen-robotic-manipulation)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：通过元模仿学习机器人控制所需的动力学模型
+2. [Physics-enhanced reinforcement learning for real-time optimal control of dynamical systems](/202607/20/2607.16177v1-physics-enhanced-reinforcement-learning-for-real-time-optimal-control-of-dynamical-systems)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：利用可微物理增强强化学习控制
+3. [SKooP: Symmetric Koopman Predictions for Faster and More Generalizable Legged Robot Locomotion with Reinforcement Learning](/202607/20/2607.11624v1-skoop-symmetric-koopman-predictions-for-faster-and-more-generalizable-legged-robot-locomotion-with-reinforcement-learning)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于模型的扩散最优控制用于多机器人运动规划
-2. [Steering Robustness into World Action Models via Mechanistic Interpretability and Optimal Control](/202607/19/2607.14943v1-steering-robustness-into-world-action-models-via-mechanistic-interpretability-and-optimal-control)  
+   evidence：利用Koopman模型学习动力学增强强化学习
+4. [GigaWorld-Policy-0.5: A Faster and Stronger WAM Empowered by AutoResearch](/202607/20/2607.13960v3-gigaworld-policy-05-a-faster-and-stronger-wam-empowered-by-autoresearch)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：通过世界动作模型和LQR进行基于模型的控制
+   evidence：通过世界动作模型学习机器人控制所需的动力学模型
 
 
 <div class="dpr-home-promo-card">
