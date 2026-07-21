@@ -1,0 +1,301 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-21T21:33:37.397364+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.16501v1",
+      "source": "arxiv",
+      "title": "Certifiable Safe Model-Based Reinforcement Learning with Control-Affine Dynamics Approximation",
+      "abstract": "Safe model-based reinforcement learning (RL) often bridges control-theoretic analysis and RL for robots to safely explore (partially) unknown system dynamics while deriving control actions for task efficiency. The control performance and safety assurance typically rely on prior knowledge of partially modeled nominal system dynamics and the data-driven models that compensate for residual model uncertainties. However, existing methods often overlook the structure of residual model uncertainties (e.g., components affine in control), which could lead to overly conservative robot behaviors or invalid safety guarantees under the safe learning-based controllers. This paper proposes a safe reinforcement learning framework that learns control-affine dynamics with a certifiable data-driven safe policy using control barrier functions (CBF). Specifically, we first use Control-Affine Random Fourier Features (ARFF) to model robot dynamics in a control-affine form, which offers computational efficiency that scales with dataset size and reduces potential model bias for model-based reinforcement learning. Then, a model-free, efficient uncertainty quantification method using adaptive conformal prediction (ACP) is applied to quantify the uncertainty in the safety constraint arising from the learned control-affine dynamics. This allows for data-driven safety assurance amenable to principled and efficient controller synthesis with CBF. Simulation results on the cartpole and the 3D quadrotor platforms demonstrate the effectiveness of the proposed framework.",
+      "authors": [
+        "Hao Zhou",
+        "Yanze Zhang",
+        "Cameron Reid",
+        "Wenhao Luo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-17T20:45:28+00:00",
+      "link": "https://arxiv.org/pdf/2607.16501v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "certifiable safe model-based reinforcement learning with dynamics approximation",
+      "llm_evidence_cn": "具有可证明安全性的基于模型强化学习与动力学近似",
+      "llm_evidence": "具有可证明安全性的基于模型强化学习与动力学近似",
+      "canonical_evidence": "具有可证明安全性的基于模型强化学习与动力学近似",
+      "llm_tldr_en": "Proposes safe MBRL framework learning control-affine dynamics approximation for certifiable safety guarantees.",
+      "llm_tldr_cn": "该论文针对安全强化学习中残差模型不确定性结构被忽视导致过于保守或无效安全保证的问题，提出一种安全的基于模型强化学习框架。通过学习控制仿射的残差动力学近似，在保证安全性的同时降低了保守性。实验验证了该方法在机器人控制中的有效性，为基于模型强化学习提供了可证明的安全保障。",
+      "llm_tldr": "该论文针对安全强化学习中残差模型不确定性结构被忽视导致过于保守或无效安全保证的问题，提出一种安全的基于模型强化学习框架。通过学习控制仿射的残差动力学近似，在保证安全性的同时降低了保守性。实验验证了该方法在机器人控制中的有效性，为基于模型强化学习提供了可证明的安全保障。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.16508v1",
+      "source": "arxiv",
+      "title": "Differentiable Reinforcement Learning for Path Tracking by an Agile Fish-Like Robot",
+      "abstract": "Fish-like swimming has inspired the design of several dozens if not hundreds of bioinspired robots in the last few decades. But the control and motion planning of such robots has been challenging due to the poorly modeled fluid-structure interaction and the nonlinear underactuated dynamics of such robots. While reinforcement learning has allowed significant advances in the context of ground and aerial robots, the lack of a suitable simulation environment with appropriate computational speed and accuracy have prevented similar progress for fish-like robots. We address this two-fold problem by developing a simulation platform that approximates the motion of our fish-like robot with computational efficiency. Then the motion control and path tracking by the robot is performed using PID control where the (variable) gains are learned using back propagation through time and training on a curriculum. The policy learned in the simulation is then applied on the physical platform, demonstrating an excellent match.",
+      "authors": [
+        "Prashanth Chivkula",
+        "Kartik Loya",
+        "Venkata Ravindhra Reddy Varikuti",
+        "Phanindra Tallapragada"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-07-17T21:02:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.16508v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable reinforcement learning for robot path tracking",
+      "llm_evidence_cn": "面向机器人路径跟踪的可微强化学习",
+      "llm_evidence": "面向机器人路径跟踪的可微强化学习",
+      "canonical_evidence": "面向机器人路径跟踪的可微强化学习",
+      "llm_tldr_en": "Develops a differentiable simulation platform and uses differentiable RL for fish-like robot path tracking.",
+      "llm_tldr_cn": "该论文针对仿生鱼形机器人因流体交互建模困难而难以应用强化学习的问题，开发了一个高效的可微仿真平台，并采用可微强化学习方法进行路径跟踪控制。可微性使得策略梯度计算更高效，实验证明该方法在仿真中实现了精确的路径跟踪，展示了可微强化学习在复杂非线性系统控制中的潜力。",
+      "llm_tldr": "该论文针对仿生鱼形机器人因流体交互建模困难而难以应用强化学习的问题，开发了一个高效的可微仿真平台，并采用可微强化学习方法进行路径跟踪控制。可微性使得策略梯度计算更高效，实验证明该方法在仿真中实现了精确的路径跟踪，展示了可微强化学习在复杂非线性系统控制中的潜力。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic manipulation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.18154v1",
+      "source": "arxiv",
+      "title": "World Translation: Minimizing Sim-to-Real Gap with Backward Dynamics Extraction and Unpaired Domain Translation",
+      "abstract": "The gap between simulation and reality remains a fundamental challenge in deploying simulation-trained robotic policies in the real world. Real-to-sim methods narrow this gap from the real side, learning transition dynamics from real data to build a more realistic digital world. Learned dynamics models are their dominant instance. Such methods, however, face a partial observability problem: the same observation may branch to different transitions due to unobservable factors. Existing methods assume these factors can be recovered from observation history. However, this may fail whenever observation history is uninformative, such as a sudden contact event with no prior warning. To address this limitation, we propose \\textit{World Translation}, which exploits a complementary strength of simulators and learned dynamics. Simulators are deterministic but physically imperfect, while learned models are accurate but underdetermined under partial observability. Rather than predicting transitions forward from history, we extract the unobservable dynamics information backward from an observed transition, then translate this feature across simulation and reality as an unpaired domain-translation problem that preserves dynamics content while transferring domain style. Experiments across humanoid, quadruped, and manipulator platforms show that our method achieves more accurate dynamics modeling than baselines, with the largest gains when unobservable factors cannot be recovered from observation history. Real-robot deployment on Go2 quadruped confirms improved policy transfer.",
+      "authors": [
+        "Xinchen Yao",
+        "Leixin Chang",
+        "Hua Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-20T16:52:58+00:00",
+      "link": "https://arxiv.org/pdf/2607.18154v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "proposes backward dynamics extraction and unpaired domain translation for learning dynamics models from real data",
+      "llm_evidence_cn": "提出利用反向动力学提取和无配对域翻译从真实数据学习动力学模型",
+      "llm_evidence": "提出利用反向动力学提取和无配对域翻译从真实数据学习动力学模型",
+      "canonical_evidence": "提出利用反向动力学提取和无配对域翻译从真实数据学习动力学模型",
+      "llm_tldr_en": "Introduces World Translation, a method that learns backward dynamics from real data and uses unpaired domain translation to minimize sim-to-real gap, addressing partial observability in learned dynamics models.",
+      "llm_tldr_cn": "该论文提出World Translation方法，通过从真实数据中提取反向动力学并结合无配对域翻译，最小化仿真到真实的差距。该方法解决了学习动力学模型中的部分可观测性问题，即在无信息历史观测下（如突然接触事件）的失败情况。实验表明该方法在多个机器人操作任务中有效提高了策略迁移的成功率。",
+      "llm_tldr": "该论文提出World Translation方法，通过从真实数据中提取反向动力学并结合无配对域翻译，最小化仿真到真实的差距。该方法解决了学习动力学模型中的部分可观测性问题，即在无信息历史观测下（如突然接触事件）的失败情况。实验表明该方法在多个机器人操作任务中有效提高了策略迁移的成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.14455v1",
+      "source": "arxiv",
+      "title": "Motion Planning with Model-Based Diffusion via Constraint Optimization and Adaptive Scheduling",
+      "abstract": "Single-Robot Motion Planning (SRMP) in highly non-convex constrained environments, where robots must satisfy collision-free guarantees, dynamic feasibility, and task-related constraints, is challenging under complex constraints and computational limits. Recent Model-Based Diffusion (MBD) approaches recast the SRMP as trajectory optimization that samples from a posterior over trajectories, using known dynamics, and analytically estimates the score function from rollout samples to guide diffusion denoising toward a low-cost, clean trajectory without demonstration learning. While existing works further adapt MBD to constrained environments and showcase promising performance, they are still limited by (1) enforcing safety either via soft feasibility diffusion priors or hard projection operators, but lack a unified framework to integrate both, and (2) fixing safety enforcement to neglect the changing of diffusion scheduling. Therefore, we introduce Model-Based Diffusion via Constraint Optimization and Adaptive Scheduling (MD-COAS) for SRMP that unifies the inexact Augmented Lagrangian Method (iALM) soft diffusion prior with a Convex Feasible Set (CFS)-based hard projection operator, and adaptively schedules and co-optimizes safety enforcement, along with diffusion scheduling. Experiments demonstrate that our method achieves higher safety \\& success rates, faster convergence, and lower final costs than baseline planners on randomly generated highly non-convex 2D benchmarks and a 7-DoF robot arm avoidance task.",
+      "authors": [
+        "Zhilin He",
+        "Bowei Li",
+        "Jianlin Dou",
+        "Yuner Zhang",
+        "Changliu Liu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-16T01:04:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.14455v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "model-based diffusion for motion planning using known dynamics",
+      "llm_evidence_cn": "基于模型的扩散方法使用已知动力学进行运动规划",
+      "llm_evidence": "基于模型的扩散方法使用已知动力学进行运动规划",
+      "canonical_evidence": "基于模型的扩散方法使用已知动力学进行运动规划",
+      "llm_tldr_en": "Model-Based Diffusion approach for motion planning that uses known dynamics and analytic score estimation, relevant to learning dynamics models for robot control and model-based methods.",
+      "llm_tldr_cn": "单机器人运动规划在非凸约束环境中面临挑战。现有基于模型的扩散方法虽然利用已知动力学和解析得分函数，但在安全约束和采样效率上仍有局限。本文提出一种结合约束优化和自适应调度的模型扩散方法，在保证安全的同时提升轨迹质量。该方法属于基于模型的方法，通过学习动力学模型指导规划，可用于机械臂操作任务。",
+      "llm_tldr": "单机器人运动规划在非凸约束环境中面临挑战。现有基于模型的扩散方法虽然利用已知动力学和解析得分函数，但在安全约束和采样效率上仍有局限。本文提出一种结合约束优化和自适应调度的模型扩散方法，在保证安全的同时提升轨迹质量。该方法属于基于模型的方法，通过学习动力学模型指导规划，可用于机械臂操作任务。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.14488v1",
+      "source": "arxiv",
+      "title": "Safe Execution of RL Policies Via Acceleration-Based CBF-QP Constraint Enforcement for Real-World Robotic Deployments",
+      "abstract": "Reinforcement Learning (RL) has demonstrated remarkable capabilities for solving complex robotic control problems, but its lack of safety guarantees severely limits deployment on hardware. In particular, as legged robots and manipulators often operate near safety-critical boundaries, out-of-distribution states can lead to failure upon deployment. To address this, we introduce Acc-CBF-QP, an acceleration-based Quadratic Program (QP) safety filter using Control Barrier Functions (CBFs) that constrains any RL policy onto a safe set at runtime without modifying training. The method applies to unconstrained and Safe-RL policies, and enforces joint position, velocity, torque, and collision constraints within a unified optimization framework. A key contribution is the formulation of RL+QP tasks that regulate deviation from the RL command when constraints would otherwise be violated. We introduce a TorqueTask, minimizing torque deviation, and a Forward Dynamics Task, minimizing induced acceleration deviation, thus providing principled control over safety-performance trade-offs. Experiments on a 7-DoF Kinova Gen3 manipulator and a 19-DoF Unitree H1 humanoid, both in simulation and on hardware, highlight substantial reductions in constraint violations. On the real H1 hardware, a Safe-RL policy alone yielded 10.04 violations/s, which were reduced by 92% to 0.80 violations/s when augmented with Acc-CBF-QP. On the Kinova Gen3, Acc-CBF-QP fully eliminated violations. Nominal task performance of the RL objective is preserved in violation-free regimes. Under aggressive velocity commands on H1, Acc-CBF-QP improves execution by preventing constraint-induced shutdowns, yielding longer survival times. The full pipeline is open-source.",
+      "authors": [
+        "Bastien Muraccioli",
+        "Alice Cariou",
+        "Pierre-Alexandre Leziart",
+        "Mathieu Celerier",
+        "Arnaud Demont",
+        "Gentiane Venture",
+        "Mehdi Benallegue"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-16T02:00:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.14488v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "safety filter for RL policies on manipulators",
+      "llm_evidence_cn": "针对机械臂强化学习策略的安全过滤器",
+      "llm_evidence": "针对机械臂强化学习策略的安全过滤器",
+      "canonical_evidence": "针对机械臂强化学习策略的安全过滤器",
+      "llm_tldr_en": "Proposes Acc-CBF-QP, an acceleration-based safety filter for RL policies that enforces constraints on manipulators without modifying training, improving real-world deployment safety.",
+      "llm_tldr_cn": "该论文针对强化学习策略在真实机械臂部署中缺乏安全保证的问题，提出了一种基于加速度的控制障碍函数二次规划安全过滤器Acc-CBF-QP。该方法在不修改训练过程的前提下，在运行时将任何RL策略约束到安全集合内，能强制执行关节位置、速度、力矩和碰撞约束。实验表明该过滤器可有效保障机械臂操作的安全性，为RL策略的安全部署提供了实用工具。",
+      "llm_tldr": "该论文针对强化学习策略在真实机械臂部署中缺乏安全保证的问题，提出了一种基于加速度的控制障碍函数二次规划安全过滤器Acc-CBF-QP。该方法在不修改训练过程的前提下，在运行时将任何RL策略约束到安全集合内，能强制执行关节位置、速度、力矩和碰撞约束。实验表明该过滤器可有效保障机械臂操作的安全性，为RL策略的安全部署提供了实用工具。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.15733v1",
+      "source": "arxiv",
+      "title": "A Task-Space Receding Horizon Controller for Fast Collision Avoidance",
+      "abstract": "Real-time collision avoidance for robotic manipulators requires fast reactions to unexpected obstacle motion and lookahead to avoid becoming trapped by near-future constraints. Full model predictive control can provide this foresight, but its online cost may grow quickly with horizon length, model fidelity, and the number of active geometric constraints. Conversely, horizon-free reactive methods are computationally efficient but can be short-sighted in dynamic clutter. We present a task-space receding-horizon controller that uses a short contact-consistent rollout to generate a terminal kinematic reference satisfying internal non-penetration constraints, then computes only the first input of a smooth minimum-acceleration transition toward that reference. Starting from a closed-loop inverse-kinematics regulation law, the rollout is performed with an iterative dynamics solver operating on inflated convex robot and obstacle geometries, so that robot-obstacle contacts, dynamic obstacle motion, and self-collisions can shape the terminal reference without requiring full constrained trajectory optimization. We analyze the contact-inactive closed loop and show local exponential task-space regulation under standard regularity assumptions. For contacts activated inside the rollout, we characterize the corresponding discrete updates and bound the effect of moving obstacles on regular operating sets. Simulations on a 40-DOF multi-chain system show that intermediate horizons balance anticipation, responsiveness, and computational cost. Hardware experiments on a 6-DOF platform demonstrate consistent sim-to-real behavior without accurate inertial parameter estimation, and comparisons against dynamic optimization fabrics and model predictive control (MPC) baselines show improved success rates in dynamic clutter while preserving solve times compatible with real-time execution in the tested regimes.",
+      "authors": [
+        "Mattia Penzotti",
+        "Marco Controzzi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-17T08:13:12+00:00",
+      "link": "https://arxiv.org/pdf/2607.15733v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based receding horizon controller for robot arm",
+      "llm_evidence_cn": "基于模型的机械臂滚动时域控制器",
+      "llm_evidence": "基于模型的机械臂滚动时域控制器",
+      "canonical_evidence": "基于模型的机械臂滚动时域控制器",
+      "llm_tldr_en": "Presents a task-space receding-horizon controller that uses model-based rollout for collision avoidance, relevant to model-based approaches for robot arm control.",
+      "llm_tldr_cn": "针对机械臂实时碰撞避免问题，现有全模型预测控制计算成本高，而纯反应式方法缺乏远见。本文提出任务空间滚动时域控制器，利用短时接触一致性滚动生成终端参考，仅计算最小加速度过渡的第一个输入。该方法在动态杂乱环境中兼顾了计算效率和前瞻性，实验验证其快速性和安全性。属于基于模型的控制方法，可用于机械臂操作任务。",
+      "llm_tldr": "针对机械臂实时碰撞避免问题，现有全模型预测控制计算成本高，而纯反应式方法缺乏远见。本文提出任务空间滚动时域控制器，利用短时接触一致性滚动生成终端参考，仅计算最小加速度过渡的第一个输入。该方法在动态杂乱环境中兼顾了计算效率和前瞻性，实验验证其快速性和安全性。属于基于模型的控制方法，可用于机械臂操作任务。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.17651v1",
+      "source": "arxiv",
+      "title": "HCPG-Flow:Hierarchical Contact-Progress Guidance for Flow-Policy Robot Manipulation",
+      "abstract": "Flow policies can represent multimodal action distributions for robot manipulation, yet a robot must execute one action at each control step. When several proposals are sampled, critic-based ranking makes data collection depend on value estimates over candidate actions that may be weakly represented in replay. We introduce HCPG-Flow, an analytic rollout-time selector that augments SAC-Flow with hierarchical, object-centric contact-progress guidance while preserving its actor and critic objectives. HCPG switches from end-effector approach to task progress after contact, scores each proposal by the first-order reduction of a task-relevant distance, standardizes scores within the candidate set, and executes a temperature-controlled action embedding. Across ten simulated tasks, HCPG improves mean success over SAC-Flow on both benchmarks, including a 9.5 percentage-point gain on Maniskill. Four physical tasks further show high success with a 17.4% reduction in successful completion steps.Project page: https://hitxraz.github.io/HCPG-Flow/",
+      "authors": [
+        "Guanghu Xie",
+        "Mingxu Li",
+        "Shuo Zhang",
+        "Yonglong Zhang",
+        "Yifan Yang",
+        "Yang Liu",
+        "Zongwu Xie",
+        "Baoshi Cao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-20T08:04:35+00:00",
+      "link": "https://arxiv.org/pdf/2607.17651v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "flow policy with contact-progress guidance for RL manipulation",
+      "llm_evidence_cn": "基于流策略与接触进度引导的强化学习操作",
+      "llm_evidence": "基于流策略与接触进度引导的强化学习操作",
+      "canonical_evidence": "基于流策略与接触进度引导的强化学习操作",
+      "llm_tldr_en": "Introduces HCPG-Flow, which augments SAC-Flow with hierarchical contact-progress guidance for selecting action proposals in robot manipulation RL.",
+      "llm_tldr_cn": "该论文针对流策略在机器人操作中多模态动作选择困难的问题，提出HCPG-Flow，通过层次化的物体中心接触进度引导来选择动作候选。方法在保持SAC-Flow演员-评论家目标的同时，在部署时使用解析选择器替代基于评论家的排名。实验表明该方法能更有效地利用接触信息，提升操作成功率。",
+      "llm_tldr": "该论文针对流策略在机器人操作中多模态动作选择困难的问题，提出HCPG-Flow，通过层次化的物体中心接触进度引导来选择动作候选。方法在保持SAC-Flow演员-评论家目标的同时，在部署时使用解析选择器替代基于评论家的排名。实验表明该方法能更有效地利用接触信息，提升操作成功率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
