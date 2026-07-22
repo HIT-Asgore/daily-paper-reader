@@ -6,45 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-21
-- 运行时间：2026-07-21 21:36:38 UTC
+- 最新运行日期：2026-07-22
+- 运行时间：2026-07-22 20:06:07 UTC
 - 运行状态：成功
-- 本次总论文数：7
-- 精读区：3
-- 速读区：4
+- 本次总论文数：5
+- 精读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日精选7篇论文，聚焦强化学习安全性与仿生机器人控制，精读2篇高分工作。
-
-最值得关注：精读的《Certifiable Safe Model-Based RL》提供可认证安全保障，《Differentiable RL for Fish-Like Robot》实现敏捷水下路径跟踪。
-
-建议优先精读这两篇，尤其适合关注强化学习安全验证与生物启发式机器人控制的读者。
-- 详情：[/202607/21/README](/202607/21/README)
+今天精读两篇高分论文、速读三篇，聚焦世界建模与机器人操控前沿。最值得关注的是《Masked Visual Actions for Unified World Modeling》（9.0分）和《Model-Agnostic Meta Learning for Differentiable MPC》（8.0分）。建议优先阅读这两篇精读论文，掌握世界建模和元学习在机器人控制中的新思路。
+- 详情：[/202607/22/README](/202607/22/README)
 
 ### 精读区论文标签
-1. [Certifiable Safe Model-Based Reinforcement Learning with Control-Affine Dynamics Approximation](/202607/21/2607.16501v1-certifiable-safe-model-based-reinforcement-learning-with-control-affine-dynamics-approximation)  
+1. [Masked Visual Actions for Unified World Modeling](/202607/22/2607.19343v1-masked-visual-actions-for-unified-world-modeling)  
    标签：评分：9.0/10、query:mbrl-manip
-   evidence：具有可证明安全性的基于模型强化学习与动力学近似
-2. [Differentiable Reinforcement Learning for Path Tracking by an Agile Fish-Like Robot](/202607/21/2607.16508v1-differentiable-reinforcement-learning-for-path-tracking-by-an-agile-fish-like-robot)  
+   evidence：学习机器人控制的动力学模型
+2. [Model-Agnostic Meta Learning for Differentiable MPC](/202607/22/2607.19271v1-model-agnostic-meta-learning-for-differentiable-mpc)  
    标签：评分：8.0/10、query:diff-physics
-   evidence：面向机器人路径跟踪的可微强化学习
-3. [World Translation: Minimizing Sim-to-Real Gap with Backward Dynamics Extraction and Unpaired Domain Translation](/202607/21/2607.18154v1-world-translation-minimizing-sim-to-real-gap-with-backward-dynamics-extraction-and-unpaired-domain-translation)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：提出利用反向动力学提取和无配对域翻译从真实数据学习动力学模型
+   evidence：可微模型预测控制用于自适应控制
 
 ### 速读区论文标签
-1. [Motion Planning with Model-Based Diffusion via Constraint Optimization and Adaptive Scheduling](/202607/21/2607.14455v1-motion-planning-with-model-based-diffusion-via-constraint-optimization-and-adaptive-scheduling)  
+1. [Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models](/202607/22/2607.16506v1-foresight-residual-rl-for-long-horizon-robot-manipulation-with-vision-language-action-models)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于模型的扩散方法使用已知动力学进行运动规划
-2. [Safe Execution of RL Policies Via Acceleration-Based CBF-QP Constraint Enforcement for Real-World Robotic Deployments](/202607/21/2607.14488v1-safe-execution-of-rl-policies-via-acceleration-based-cbf-qp-constraint-enforcement-for-real-world-robotic-deployments)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：针对机械臂强化学习策略的安全过滤器
-3. [A Task-Space Receding Horizon Controller for Fast Collision Avoidance](/202607/21/2607.15733v1-a-task-space-receding-horizon-controller-for-fast-collision-avoidance)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于模型的机械臂滚动时域控制器
-4. [HCPG-Flow:Hierarchical Contact-Progress Guidance for Flow-Policy Robot Manipulation](/202607/21/2607.17651v1-hcpg-flowhierarchical-contact-progress-guidance-for-flow-policy-robot-manipulation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于流策略与接触进度引导的强化学习操作
+   evidence：机械臂操作的强化学习方法
+2. [BoxTwin: Learning Elastoplastic Articulated Object Dynamics from Videos](/202607/22/2607.17132v1-boxtwin-learning-elastoplastic-articulated-object-dynamics-from-videos)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：学习弹塑性物体动力学用于机器人控制
+3. [WorldScape Policy 2.0: Empowering Steerable World Action Modeling with Reasoning-Augmented Memory](/202607/22/2607.18840v1-worldscape-policy-20-empowering-steerable-world-action-modeling-with-reasoning-augmented-memory)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：WorldScape Policy 2.0是一种具有记忆的世界动作模型，学习操控动力学模型
 
 
 <div class="dpr-home-promo-card">

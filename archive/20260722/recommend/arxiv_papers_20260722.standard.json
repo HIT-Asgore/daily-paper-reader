@@ -1,0 +1,244 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-22T20:03:31.516684+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.19343v1",
+      "source": "arxiv",
+      "title": "Masked Visual Actions for Unified World Modeling",
+      "abstract": "Video models absorb rich priors over how the visual world moves, interacts, and responds to contact, making them promising substrates for robotic world modeling. The central challenge is how to communicate action to such models in a form aligned with the visual space in which they learned these interaction priors, yet still grounded in physical manipulation. We introduce Masked Visual Actions, a pixel-space control interface that expresses action as a partially revealed trajectory of an arbitrary entity in a video. Revealing robot motion makes the model act as a forward dynamics model that predicts the scene's response to low-level robot actions, while revealing desired object motion makes the same model recover robot behavior consistent with that outcome. Finetuned with only 15 hours of masked examples from real videos and simulation, a single checkpoint achieves strong visual fidelity and controllability across diverse scenes and multiple embodiments. In downstream manipulation settings, the model produces imagined rollouts whose outcomes correlate with real-world execution for policy evaluation, improves decision making by ranking candidate futures in model-based planning, and supports inverse modeling by synthesizing robot motion from desired object motion.",
+      "authors": [
+        "Hadi Alzayer",
+        "Wenlong Huang",
+        "Haonan Chen",
+        "Christopher Luey",
+        "Lvmin Zhang",
+        "Maneesh Agrawala",
+        "Gordon Wetzstein",
+        "Li Fei-Fei",
+        "Yilun Du",
+        "Jiajun Wu",
+        "Jia-Bin Huang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-07-21T17:59:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.19343v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "learning dynamics models for robot control",
+      "llm_evidence_cn": "学习机器人控制的动力学模型",
+      "llm_evidence": "学习机器人控制的动力学模型",
+      "canonical_evidence": "学习机器人控制的动力学模型",
+      "llm_tldr_en": "Masked Visual Actions uses pixel-space control to turn video models into forward dynamics models for robotic manipulation, enabling task planning without detailed action labels.",
+      "llm_tldr_cn": "本文针对机器人世界建模中如何将动作信息有效融入视频模型的问题，提出Masked Visual Actions方法，通过像素空间控制接口将机器人的低级动作表达为部分揭示的轨迹，使预训练视频模型能够作为前向动力学模型预测场景响应。实验表明该方法能预测操作场景的演变，并能够通过揭示期望物体运动逆向恢复机器人行为，为统一世界建模提供了新思路，有助于提升机器人操作的任务规划能力。",
+      "llm_tldr": "本文针对机器人世界建模中如何将动作信息有效融入视频模型的问题，提出Masked Visual Actions方法，通过像素空间控制接口将机器人的低级动作表达为部分揭示的轨迹，使预训练视频模型能够作为前向动力学模型预测场景响应。实验表明该方法能预测操作场景的演变，并能够通过揭示期望物体运动逆向恢复机器人行为，为统一世界建模提供了新思路，有助于提升机器人操作的任务规划能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.19271v1",
+      "source": "arxiv",
+      "title": "Model-Agnostic Meta Learning for Differentiable MPC",
+      "abstract": "Applying policy optimization to Model Predictive Control (MPC) yields high-performance and reliable controllers. However, the resulting controllers often overfit their training conditions and suffer significant performance degradation in unseen tasks. We propose a novel framework combining policy optimization with meta-learning to train highly adaptable MPC controllers. Our approach enables rapid adaptation to unseen tasks, maintaining high performance at a fraction of the computational cost required for full retraining. Furthermore, we integrate system identification into the pipeline to continuously refine both the MPC hyperparameters and the underlying predictive models. We validate our proposed methodology on a Ball-on-Plate system, demonstrating superior adaptability across various parameterized trajectory-tracking tasks.",
+      "authors": [
+        "Salma Elfeki",
+        "Riccardo Zuliani",
+        "Niklas Schmid",
+        "Efe C. Balta",
+        "John Lygeros"
+      ],
+      "primary_category": "eess.SY",
+      "categories": [
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-07-21T16:42:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.19271v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Differentiable MPC for adaptable control",
+      "llm_evidence_cn": "可微模型预测控制用于自适应控制",
+      "llm_evidence": "可微模型预测控制用于自适应控制",
+      "canonical_evidence": "可微模型预测控制用于自适应控制",
+      "llm_tldr_en": "Combines policy optimization with meta-learning to train adaptable differentiable MPC controllers, demonstrated on Ball-on-Plate.",
+      "llm_tldr_cn": "针对模型预测控制（MPC）在未知任务上性能下降的问题，论文提出一种结合策略优化与元学习的框架，训练高度可适应的可微MPC控制器。该方法能够快速适应新任务，只需少量计算成本即可保持高性能，并在Ball-on-Plate系统上验证了其优越的自适应性。",
+      "llm_tldr": "针对模型预测控制（MPC）在未知任务上性能下降的问题，论文提出一种结合策略优化与元学习的框架，训练高度可适应的可微MPC控制器。该方法能够快速适应新任务，只需少量计算成本即可保持高性能，并在Ball-on-Plate系统上验证了其优越的自适应性。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.16506v1",
+      "source": "arxiv",
+      "title": "Foresight Residual RL for Long-Horizon Robot Manipulation with Vision-Language-Action Models",
+      "abstract": "Vision-Language-Action (VLA) policies offer strong general-purpose manipulation priors, but often fail on tight-tolerance, contact-rich assembly due to long-horizon credit assignment and subtask coupling: a state that is geometrically successful for the current skill can be brittle for downstream skills. We show this failure mode in residual reinforcement learning (RL) over a frozen VLA base policy: constant sparse success rewards improve each subtask in isolation yet yield little or no gain when skills are chained, because terminal state quality is uncontrolled. We propose Foresight Residual RL, which optimizes handoff quality by augmenting each subtask's sparse success reward with an offline-estimated foresight value -- the probability of future subtask success conditioned on the terminal state of the current subtask. Concretely, we (i) train a visual foresight predictor from images of terminal states of the base policy, labeled using downstream rollout statistics, and (ii) train residual policies via backward foresight induction, using the predictor output as a reward multiplier. On a three-phase wrench-based nut-tightening assembly task in Isaac Gym (grasp, move-insert, rotate), our method achieves 85.6% full-task success, outperforming standard subtask residual RL (54.5%) and VLA baselines, while leaving per-subtask success unchanged. These results highlight that improving long-horizon performance requires shaping which successful states are produced at each sub-task, not only whether success occurs.",
+      "authors": [
+        "Yuhan Liu",
+        "Xinyu Zhang",
+        "Litao Liu",
+        "Abdeslam Boularias"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-07-17T21:00:28+00:00",
+      "link": "https://arxiv.org/pdf/2607.16506v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for robot arm manipulation",
+      "llm_evidence_cn": "机械臂操作的强化学习方法",
+      "llm_evidence": "机械臂操作的强化学习方法",
+      "canonical_evidence": "机械臂操作的强化学习方法",
+      "llm_tldr_en": "Proposes Foresight Residual RL that augments sparse success rewards with offline-estimated foresight value to improve handoff quality in long-horizon robotic arm manipulation with VLA policies, achieving better chained task success.",
+      "llm_tldr_cn": "针对长时域机器人操作中VLA基策略在接触密集装配任务失败的问题，提出Foresight Residual RL方法。该方法通过为每个子任务的稀疏成功奖励附加离线估计的前瞻价值，优化技能间的交接质量。实验表明，该方法在链式任务中显著提升成功率和鲁棒性，为结合视觉-语言模型与强化学习实现复杂长时域操作提供了有效途径。",
+      "llm_tldr": "针对长时域机器人操作中VLA基策略在接触密集装配任务失败的问题，提出Foresight Residual RL方法。该方法通过为每个子任务的稀疏成功奖励附加离线估计的前瞻价值，优化技能间的交接质量。实验表明，该方法在链式任务中显著提升成功率和鲁棒性，为结合视觉-语言模型与强化学习实现复杂长时域操作提供了有效途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.17132v1",
+      "source": "arxiv",
+      "title": "BoxTwin: Learning Elastoplastic Articulated Object Dynamics from Videos",
+      "abstract": "Digital twins enable robots to anticipate and adapt to physical interactions, but existing models struggle with elastoplastic articulated objects (EAOs) that exhibit nonlinear elasticity, plastic yielding, and damage accumulation. We present BoxTwin, an interactive digital twin framework that learns the full dynamics of EAOs from videos. Our pipeline reconstructs the scene, identifies a physics aware constitutive model for each EAO. Experiments on manual folding and dual arm manipulation of EAOs show that BoxTwin accurately tracks joint trajectories and reproduces post contact plastic behavior over long horizons. By integrating video driven reconstruction with elastoplastic damage modeling, BoxTwin advances digital twins toward predictive, adaptive control of deformable articulated objects in unstructured environments.",
+      "authors": [
+        "Heng Zhang",
+        "Gehan Zheng",
+        "Kaifeng Zhang",
+        "Jay Song",
+        "Shivansh Patel",
+        "Sonny Hu",
+        "Yunzhu Li",
+        "Changxi Zheng",
+        "Peter Yichen Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-19T08:37:40+00:00",
+      "link": "https://arxiv.org/pdf/2607.17132v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learns full dynamics of elastoplastic objects for control",
+      "llm_evidence_cn": "学习弹塑性物体动力学用于机器人控制",
+      "llm_evidence": "学习弹塑性物体动力学用于机器人控制",
+      "canonical_evidence": "学习弹塑性物体动力学用于机器人控制",
+      "llm_tldr_en": "BoxTwin learns elastoplastic articulated object dynamics from videos for digital twins, enabling accurate long-horizon trajectory tracking and post-contact behavior reproduction in dual-arm manipulation tasks.",
+      "llm_tldr_cn": "针对现有数字孪生难以处理弹塑性铰接物体动力学的问题，本文提出BoxTwin框架，从视频中学习物体完整动力学并识别本构模型。在手动折叠和双机械臂操作实验中，BoxTwin能准确跟踪关节轨迹并复现长时间后的塑性行为。该工作为机器人预测性自适应操控提供了新的工具。",
+      "llm_tldr": "针对现有数字孪生难以处理弹塑性铰接物体动力学的问题，本文提出BoxTwin框架，从视频中学习物体完整动力学并识别本构模型。在手动折叠和双机械臂操作实验中，BoxTwin能准确跟踪关节轨迹并复现长时间后的塑性行为。该工作为机器人预测性自适应操控提供了新的工具。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.18840v1",
+      "source": "arxiv",
+      "title": "WorldScape Policy 2.0: Empowering Steerable World Action Modeling with Reasoning-Augmented Memory",
+      "abstract": "World Action Models (WAMs) offer a promising paradigm for robotic manipulation by jointly modeling visual state transitions and robot actions. However, existing WAMs are constrained by limited temporal context, coarse episode-level language supervision, and predominantly text-only conditioning, which hinder task-progress tracking and fine-grained language-video-action grounding while limiting visual-context reasoning and cross-embodiment transfer. In this paper, we introduce WorldScape Policy 2.0, a controllable WAM with reasoning-augmented long short-term memory. Its causal short-term visual memory supplies recent observations as DiT prefill to preserve local interaction dynamics, while its long short-term event memory organizes historical VLM outputs into global-history, local-active, and event-boundary representations for progress-aware retrieval. The retrieved history augments perception and autoregressively generated planning tokens, yielding an implicit subgoal condition for autonomous planning; semantic forcing further transfers event-level instruction semantics into this latent planning pathway. To establish fine-grained multimodal controllability, we construct ManipEvent-5M, an event-grounded embodied pretraining dataset containing nearly 5 million event segments with aligned action trajectories, episode-level task instructions, segment-level subtask captions, goal images, and video demonstrations. These designs provide a unified interface for autonomous planning from high-level instructions and controllable execution from fine-grained text, goal-image, or video-context prompts. Experiments in both simulation and real-world platforms demonstrate superior capabilities in long-horizon autonomous planning, fine-grained instruction following and in-context adaptation.",
+      "authors": [
+        "Haisheng Su",
+        "Zongdai Liu",
+        "Xin Jin",
+        "Haoxuan Dou",
+        "Chengming Hu",
+        "Baorun Li",
+        "Zhanwang Liu",
+        "Ruiyan Xu",
+        "Jianjie Fang",
+        "Xin Zhang",
+        "Zhenjie Yang",
+        "Xue Yang",
+        "Chen Gao",
+        "Junchi Yan",
+        "Yong Li",
+        "Wei Wu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-07-21T08:25:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.18840v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "WorldScape Policy 2.0 is a world action model with memory, learning dynamics models for manipulation",
+      "llm_evidence_cn": "WorldScape Policy 2.0是一种具有记忆的世界动作模型，学习操控动力学模型",
+      "llm_evidence": "WorldScape Policy 2.0是一种具有记忆的世界动作模型，学习操控动力学模型",
+      "canonical_evidence": "WorldScape Policy 2.0是一种具有记忆的世界动作模型，学习操控动力学模型",
+      "llm_tldr_en": "WorldScape Policy 2.0 introduces reasoning-augmented long short-term memory to world action models, enabling better temporal context and cross-embodiment transfer for robotic manipulation.",
+      "llm_tldr_cn": "该论文针对现有世界动作模型时间上下文有限、语言监督粗粒度等问题，提出WorldScape Policy 2.0，配备因果短期视觉记忆和长期事件记忆，增强对操控任务进展的跟踪与多模态对齐。实验表明该模型在任务跟踪和跨实体迁移上表现优越。该工作推进了世界模型在机器人操控中的实用化。",
+      "llm_tldr": "该论文针对现有世界动作模型时间上下文有限、语言监督粗粒度等问题，提出WorldScape Policy 2.0，配备因果短期视觉记忆和长期事件记忆，增强对操控任务进展的跟踪与多模态对齐。实验表明该模型在任务跟踪和跨实体迁移上表现优越。该工作推进了世界模型在机器人操控中的实用化。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
