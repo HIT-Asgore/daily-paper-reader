@@ -1,0 +1,2762 @@
+Title: SoRoMoX: Fast, Differentiable, and Parallelizable Soft Robot Models
+
+URL Source: https://arxiv.org/pdf/2608.06650v1
+
+Published Time: Mon, 10 Aug 2026 00:21:13 GMT
+
+Number of Pages: 32
+
+Markdown Content:
+> IEEE ROBOTICS AND AUTOMATION MAGAZINE 1
+
+# SoRoMoX: Fast, Differentiable, and Parallelizable Soft Robot Models 
+
+Maximilian St¨ olzle, Solange Gribonval, Daniel Feliu-Talegon, Vito Daniele Perfetta *, Michele Martini *, Chuhan Zhang *, Kiwan Wong *,Mohammed Tarnini, Anup Teejo Mathew, Federico Renda, Daniela Rus, and Cosimo Della Santina 
+
+Abstract —Reduced-order models based on Cosserat-rod theory are now well established, and modeling theory is no longer the primary bottleneck in soft-robot control. Their implementations, however, do not support the differentiable, GPU-parallel, and control-oriented workflows that underpin advanced rigid-robotics applications. Here, we fill this gap with SoRoMoX (Soft Robot Models in JAX), a fully numerical, JIT-compilable Python/JAX framework. SoRoMoX implements articulated, Piecewise Con-stant Strain, and Variable Strain models through a unified, control-ready interface that provides inertia matrices, gravi-tational and elastic forces, Jacobians, and their derivatives. To our knowledge, it is the first rod/strain-based soft-robot modeling framework that runs directly on GPUs and is end-to-end differentiable with respect to states, inputs, and parameters. Sequential CPU rollouts are up to 18 .1× faster than state-of-the-art alternatives, while GPU-parallel rollouts increase throughput by up to 234 .6×. This performance enables workflows that were previously impractical or impossible: static-equilibrium system identification with 66% lower marker RMSE; residual-force learning with a further 64% reduction; computed-torque tracking with RMSE reduced by a factor of approximately 500 
+
+relative to model-free PD; control-gain optimization with up to 62% lower loss than untuned gains; safety-constrained control using high-order control barrier functions to keep the peak contact force within a prescribed 5 N bound, compared with 
+
+33 .5 N without the safety constraint; and reinforcement-learning policy training up to 7× faster than a CPU PyElastica discrete-rod baseline through massively parallel rollouts. 
+
+Index Terms —Modeling, Control, and Learning for Soft Robots; Dynamics; Simulation and Animation; Machine Learn-ing for Robot Control; Motion Control; Model Learning for Control; Software Tools for Benchmarking and Reproducibility; Soft Robot Applications. 
+
+I. I NTRODUCTION 
+
+# SOFT robots derive physical intelligence from their com-pliance [1], but this same property complicates their control. Over the past decade, the soft robotics community has developed control-oriented formulations that reduce the theoretically infinite-dimensional deformation of soft bodies to tractable coordinates while retaining the dominant nonlinear, geometric, and material couplings [2]–[8]. We focus here on a class of models that is becoming a practical reference: Cosserat-rod models based on modal parametrizations of the 
+
+> M. St¨ olzle, S. Gribonval, D. Feliu-Talegon, V. D. Perfetta, M. Martini, C. Zhang, and C. Della Santina are with Delft University of Technology, Delft, The Netherlands. M. St¨ olzle, K. Wong, and D. Rus are with the Massachusetts Institute of Technology, Cambridge, MA, USA. M. Martini is also with the Italian Institute of Technology, Genoa, Italy. M. Tarnini, A. T. Mathew, and F. Renda are with Khalifa University, Abu Dhabi, United Arab Emirates.
+> *V. D. Perfetta, M. Martini, C. Zhang, and K. Wong contributed equally.
+
+strain field, including Piecewise Constant Strain (PCS) [9] and variable-strain formulations, particularly their Geometric Variable Strain (GVS) implementation [3], [8], [10], [11]. The central limitation has therefore shifted from model derivation to model deployment. In rigid robotics, differ-entiable dynamics engines and accelerator-based parallelism have made the Equations of Motion (EOM) directly usable within large-scale optimization and learning pipelines, span-ning system identification, trajectory optimization, reinforce-ment learning, and design [12], [13]. Comparable capabilities remain largely unavailable for soft robots. Existing imple-mentations are often closed source or embedded in legacy computational ecosystems, do not differentiate end to end with respect to states, inputs, and parameters, cannot exploit modern accelerators, or expose only a subset of the quantities needed by model-based control algorithms [5], [14], [15]. We address this limitation with Soft Robot Models in jaX (SoRoMoX), a JAX/Python framework that brings expressive soft-robot models into a modern computational stack [16]. SoRoMoX provides a common interface to control-relevant quantities, supports Just-in-Time (JIT) compilation and Au-tomatic Differentiation (AD), and evaluates single models or large batches on CPUs, GPUs, and TPUs. We use this infras-tructure for gradient-based static-equilibrium system identifi-cation, residual-force learning, model-based control [5], [17], control-gain optimization, massively parallel Reinforcement Learning (RL), and safety-constrained control with High-Order Control Lyapunov Functions (HOCLFs) and High-Order Control Barrier Functions (HOCBFs) [18]. These case studies show how computational tools already common in rigid robotics can be transferred to reduced-order soft-robot models. In summary, this article makes the following contributions.  
+
+> •
+
+SoRoMoX implements articulated, PCS, and GVS mod-els through a numerical core that supports JIT compi-lation, differentiation with respect to states, inputs, and parameters, and direct execution on GPUs.  
+
+> •
+
+A common interface provides kinematics, dynamics, energies, fused forward dynamics, operational- and actuation-space maps, and packaged model-based con-trollers across model families and actuation types.  
+
+> •
+
+Benchmarks show up to 18 .1× faster execution than SoRoSim [15] and up to 234 .6× higher throughput through GPU batching. Six case studies cover static-equilibrium identification, residual learning, model-based control, control-gain optimization, safety-constrained control with HOCBFs [18], and parallel RL.  
+
+> •
+
+Sidebars 1 to 4 collect the implementation practices that support these results, including a control-ready inter-arXiv:2608.06650v1 [cs.RO] 6 Aug 2026 IEEE ROBOTICS AND AUTOMATION MAGAZINE 2
+
+TABLE I 
+
+CAPABILITY MATRIX FOR SELECTED ROD /STRAIN -BASED SOFT ROBOT MODEL IMPLEMENTATIONS . WE USE THE FOLLOWING ABBREVIATION :AUTOMATIC DIFFERENTIATION (AD). I F A PACKAGE SUPPORTS A GENERAL STRAIN MODEL (E.G., V ARIABLE STRAIN (VS)), WE REPORT MORE SPECIALIZED STRAIN MODELS (E.G., PCC, PCS) ONLY IF IT CONTAINS A DEDICATED IMPLEMENTATION FOR THOSE CASES .                                                          
+
+> Implementation Rod Models Actuator Models Interfaces Control API Compilation Accel. Differentiation Docs
+> SoMoGym [27] Segmented rigid-link approximation
+> ✗Python; PyBullet; Gym
+> ✗PyBullet C++ backend CPU ✗Sparse SoftManiSim [28] PyBullet PCC proxy ✗Python; PyBullet; Gym
+> ✗PyBullet C++ CPU ✗Sparse TMTDyn [29] Lumped segmented Euler–Bernoulli beam Fluidic pressure (equivalent chamber wrenches) MATLAB ✗MATLAB codegen to C-MEX CPU ✗Sparse PyElastica [26] Discrete Cosserat rods Prescribed distributed muscle torques Python; NumPy
+> ✗Numba JIT CPU ✗Excellent DisMech [30] Discrete elastic rods ✗C++; Python bindings
+> ✗C++ AOT CPU ✗Good Sorotoki [31] PCC; PCS; VS Threadlike actuation MATLAB ✓✗CPU ✗Good SoRoSim [15] GVS Threadlike actuation MATLAB ✓MATLAB codegen to C-MEX CPU Analytical state derivatives [14] Sparse SoRoMoX (ours) PCC; PCS; GVS Threadlike actuation; articulated tendon; McKibben; functional metamaterial Python; JAX ✓JAX/XLA JIT CPU; GPU; TPU AD: states, inputs, parameters Excellent
+
+face, structure-aware batched evaluation, singularity- and gradient-safe maps, and continuous-integration testing. 
+
+Relation to existing tools: SoRoMoX connects three families of existing software. JAX-based dynamics engines such as MuJoCo XLA (MJX) [19], [20], JaxSim [21], and Adam [22], together with GPU learning platforms such as Isaac Sim/Gym [13] and Newton [23], provide contemporary execution models but primarily target rigid multibody systems. Particle- and MPM-based differentiable simulators such as ChainQueen [24] and SoftZoo [25] resolve rich deformations but do not expose reduced-order dynamics in a form tailored to control. Rod-based packages are the closest alternatives. SoRoSim [15] implements GVS models in MATLAB but is CPU-bound and not AD-native 1, while PyElastica [26] provides a fast CPU-based 2 Cosserat-rod solver without a control-oriented model interface. SoRoMoX combines the reduced-order structure of PCS and GVS models with AD, JIT compilation, and batched execution on modern accelerators. 
+
+Access to the tool: The SoRoMoX package is available as open source under the MIT license on GitHub 3, with documentation hosted on GitHub Pages 4.II. W HAT SOROMOX P ROVIDES 
+
+A. Model Families 
+
+SoRoMoX focuses on soft robot models that are rich enough to capture the dominant deformations of real systems, but com-pact enough to be useful for simulation, control, optimization, and learning. The package currently covers two broad families: articulated soft robots, which keep the serial-chain structure of 
+
+> 1
+
+SoRoSim does not support analytical differentiation with respect to arbi-trary quantities, such as robot parameters or control inputs, although it has recently introduced analytical derivatives with respect to system states [14]. 
+
+> 2
+
+A recent experimental repository includes a JAX implementation that enables GPU & TPU parallelization. 
+
+> 3
+
+https://github.com/tud-phi/soromox 
+
+> 4
+
+https://tud-phi.github.io/soromox/ 
+
+Fig. 1. Overview of SoRoMoX. Implemented in Python/JAX, the framework provides control-oriented models for soft robots, including articulated systems and continuum rod formulations such as PCS [9] and GVS [10], [11]. JIT compilation, automatic differentiation, and batched accelerator execution support gradient-based system identification, model-based control, control-gain optimization, parallel RL, and CBF-based safety-constrained control. 
+
+classical robots while adding compliance, and continuum soft robots, whose shape is described by a small number of strain coordinates along a deformable backbone. Across these families, the models share a common control-oriented form. Rather than introducing the full derivation here, we use the following equation to fix the notation used IEEE ROBOTICS AND AUTOMATION MAGAZINE 3 
+
+> TABLE II SOFT ROBOT MODEL FAMILIES IMPLEMENTED IN SOROMOX.
+
+Model Planar Implementation Actuation Modalities Example Instantiations 
+
+ARTICULATED SOFT ROBOT MODELS 
+
+Articulated Soft Robot [32] ✓ (Soft Pendulum) Generalized-coordinate actuation (joint torques); articulated-tendon actuation; McKibben actuation UMArm [33] CONTINUUM SOFT ROBOT MODELS 
+
+Piecewise Constant Strain (PCS) [9], [34] 
+
+✓ (Planar PCS) Generalized-strain actuation; threadlike actuation; functional-metamaterial actuation (HSA) I-SUPPORT [35]; planar HSA robot [36] Geometric Variable Strain (GVS) [8], [10], [11] 
+
+✗ Generalized-coordinate actuation; threadlike actuation Tapered cable-driven soft tentacle [37] 
+
+throughout the article [5], [17]: 
+
+M (q) ¨ q + C(q, ˙q) ˙ q + G(q) + K(q) + D ˙q = A(q) u. (1) Here, q ∈ Rn collects the model coordinates and ˙q their velocities. The terms on the left describe inertia M (q), Cori-olis and Centrifugal effects τC = C(q, ˙q) ˙ q,5 gravity G(q),elasticity K(q), and damping D ˙q. The right-hand side maps actuator commands u ∈ Rm into generalized forces through the actuation matrix A(q). We also write τC = C(q, ˙q) ˙ q and 
+
+τU = G(q) + K(q) for the Coriolis and potential generalized-force terms. The same notation carries over to kinematics for a robot with length L. A point at curvilinear abscissa s ∈ (0 , L ] along the robot has pose g(q, s ) ∈ SE (3) , and its spatial velocity is written as η = J(q, s ) ˙ q ∈ R66, where J(q, s ) is the Jacobian. When accelerations are needed, SoRoMoX also exposes the Jacobian time derivative ˙J(q, ˙q, s ). For compactness, we write these quantities in the spatial SE (3) setting; the planar models use the analogous SE (2) quantities. Table II summarizes the model families, actuation modal-ities, and representative robot-specific instantiations currently provided in SoRoMoX. 
+
+1) Articulated Soft Robot Models: Articulated soft robots combine rigid or nearly rigid links with com-pliant joints, deformable transmissions, or soft actua-tors [32], [38]. In SoRoMoX, this family is represented by 
+
+ArticulatedSoftRobot , an open spatial serial chain whose coordinates are scalar joint variables. Each joint is described by a screw axis, fixed transforms define the parent-to-joint frames, and each link contributes inertia, gravity, and optional stiffness, damping, and rest-position terms. This representation allows the same class structure to cover rigid serial mechanisms, soft-joint chains, tendon-actuated pendulums, and fluidic-pressure-actuated examples such as the McKibben-driven UMArm [33]. For controller design, SoRoMoX exposes the same quantities as in (1): inertia, grav-ity, elastic and damping forces, actuation maps, and forward   
+
+> 5The factorization of the Coriolis term is not unique; the physically relevant quantity is the product C(q, ˙q) ˙ q.
+> 6This assumes a configuration-independent and time-invariant strain basis.
+
+dynamics. Internally, these quantities are assembled from stan-dard rigid-body kinematics and energy expressions [39]–[41]. When only accelerations are required, the implementation can use the articulated-body algorithm to avoid repeatedly solving dense equations of motion [42]. 
+
+2) Continuum Soft Robot Models: Continuum soft robots are described through reduced strain coordinates derived from Cosserat rod theory [8]–[11], [34]. Instead of representing the full elastic body with an infinite-dimensional field, the configuration q captures a finite set of dominant bending, shear, torsional, and axial deformation modes. This gives a finite-dimensional model while preserving the mechanical structure needed for simulation, differentiation, and model-based control [5], [43]. PCS models use one particularly simple idea: within each segment, the strain is constant. This leads to compact and effi-cient models, with a spatial PCS class for SE (3) motion and a PlanarPCS specialization for planar bending, axial, and shear deformation. Composable threadlike actuators reuse the same constant-strain backbone and provide actuator-specific maps A(q) through presets for tendons, push rods, simplified muscles, and equivalent pressure chambers, including the fluidic-pressure-actuated spatial I-SUPPORT model [35]. VS denotes the general class of strain-based continuum de-scriptions in which the strain field is allowed to vary along the backbone, rather than being constant within each segment [3], [5], [8]. Without a spatial reduction, this strain field is infinite-dimensional and the corresponding Cosserat-rod dynamics are governed by Partial Differential Equations (PDEs). The GVS formulation [8], [10], [11] obtains a finite-dimensional reduced-order model by approximating the backbone strain with a prescribed finite set of basis functions, encoded by the strain basis. 7 The generalized coordinates are then the time-varying coefficients of this strain parametrization, and the resulting dynamics take the Ordinary Differential Equation (ODE) form used in (1). In SoRoMoX, each GVS segment can define its own link properties, joint type, strain basis, active                     
+
+> 7Under a VS approximation, the strain basis need not be fully spatially continuous; it can also be discontinuous or piecewise. Indeed, GVS is implemented in both SoRoSim and SoRoMoX as Piecewise Variable Strain. IEEE ROBOTICS AND AUTOMATION MAGAZINE 4Rendering Rendering
+> 3D View Trajectories Plots Video export
+> SoRoMoX Installation # Python 3.10+
+> pip install soromox
+> Robot Model Construction Kinematics Modelling Choice Properties of the Robot Kinematic Terms Actuation External Forces Closed-Loop Rollout Open-Loop Rollout Controller Construction Actuation Inputs
+> Installation Soft Robot Model Simulation
+> Lumped Masses PCS GVS Mass Density Geometry Properties Elasticity Properties Dynamic Terms Jacobian J(q,s)
+> Jacobian derivative J(q,q,s)
+> Forward Kinematics g(q,s )
+> Mass Matrix M(q)
+> Coriolis Matrix C(q,q)
+> Actuation Matrix A(q)
+
+## ...                 
+
+> robot =PCS (params )
+> params =PCSParams (length=l, young_modulus=E, ...)
+> trajectory =robot .rollout_to( initial_state=state0, t1=1.0, ...) M = robot .inertia_matrix (q) g_tip = robot .forward_kinematics (q, s_tip)
+> Robot State Initialization
+> state0 = SystemState (t=t0, y = [q0, qd0])
+> trajectory =robot .rollout_closed _loop_to( initial_state=state0, controller = C, t1=1.0, ...)
+> Control Gains
+> C = PotentialCompensationRegulator
+> (robot, reference_traj, pid_control)
+> Controller State Initialization
+> Controller
+
+## ... 
+
+Fig. 2. SoRoMoX user workflow. High-level path from installation and robot definition to querying model terms, constructing model-based controllers, running open- and closed-loop simulations, and rendering resulting trajectories and shape evolutions. 
+
+strain components, and quadrature resolution, while fixed-shape runtime arrays keep the implementation compatible with JAX compilation, differentiation, and batching. GVS systems support threadlike actuation through fixed material-frame path routing on top of the same segment representation. Although PCS models can be expressed as special cases of VS, SoRoMoX keeps dedicated planar and spatial PCS implementations. The reason is practical: specialized models are easier to read, adapt, and test, and they can exploit closed-form constant-strain kinematics instead of numerical integration. The computational benefit of this specialization is reported in Section IV. Additional continuum instantiations include the functional-metamaterial-driven planar Handed Shearing Auxetics (HSA) robot [36], [44] and the tapered cable-driven soft tentacle model used in contact-rich manipulation [37]. Detailed deriva-tions are available in the original modeling papers and recent surveys [8], [9], [11], [43]. 
+
+B. A Control-Ready Model Interface 
+
+The central software idea in SoRoMoX is that a model should be more than a black-box simulator. A rollout trajectory is useful, but many downstream algorithms also need direct access to the structure of the model: controllers need gravity and elastic compensation, optimization routines need deriva-tives, safety filters need Jacobians and constraint sensitivities, and benchmarking needs comparable model quantities across formulations. For this reason, the articulated, PCS, and GVS classes expose a common interface for forward kinematics g(q, s ),Jacobians J(q, s ), Jacobian derivatives ˙J(q, ˙q, s ), energies 
+
+T (q, ˙q) and U(q), the dynamic terms in (1), and fused forward dynamics. SoRoMoX also provides transformations to operational-space dynamics for task-space objectives [45] and actuation-space dynamics for underactuated systems with integrable actuator-coordinate maps, including systems with threadlike actuation [46]. On the implementation side, robot parameters, system states, controller states, and optional environment states are represented as typed JAX/Equinox objects. This keeps the numerical data compatible with JIT compilation, automatic differentiation, vectorized batch evaluation, and execution on CPU, GPU, or TPU backends [16]. Open-loop, continuous closed-loop, and sampled-data closed-loop rollouts are in-tegrated with Diffrax [47]. Section III turns this interface into concrete user-facing code examples, while the sidebars before the conclusion summarize the underlying interface and implementation choices. 
+
+C. Model-Based Controllers 
+
+SoRoMoX implements model-based controllers around the same model interface used for simulation. This avoids main-taining separate robot descriptions for dynamics, control, and IEEE ROBOTICS AND AUTOMATION MAGAZINE 5
+
+rollout evaluation. At a high level, each controller follows the map 
+
+πζd : ( t, y, z ) 7 → (u, ˙z), u = umb + ufb , (2) where ζ = ψ(q) is the controlled output, ζd is the desired reference, y = [ q⊤, ˙q⊤]⊤ is the robot state, z is an optional controller state, umb is a model-based cancellation or feedfor-ward term, and ufb is the feedback term. This notation covers both stateless controllers and controllers with internal states, such as integral-action controllers. References can be setpoints or time-varying trajectories. Depending on the controller, they may be expressed in con-figuration space, task space, or actuation space, with optional desired velocities and accelerations. SoRoMoX supports both continuous-time closed-loop rollouts, where the controller is queried during numerical integration, and sampled-data roll-outs, where the actuation is updated at a fixed control period and held constant between updates. The implemented controller families are organized by the space in which the feedback law is defined. Configuration-space controllers include PID feedback, gravity and potential compensation, feedforward compensation, mixed-state feed-back, and computed-torque tracking [5], [17], [48], [49]. Actuation-space controllers support underactuated systems with integrable actuator-coordinate maps, including systems with threadlike actuation, through transformed collocated dy-namics [46], [50]. Operational-space controllers support task-space objectives such as impedance tracking and synergistic control [45], [49], [51], [52]. Table VI provides the detailed controller overview in the appendix. 
+
+D. Extensibility 
+
+The implementation is designed so that users can adapt existing model families to new robots without copying an en-tire system implementation. Robot-specific instantiations, such as the McKibben-actuated UMArm [33] and the I-SUPPORT pneumatic arm [35], illustrate this pattern. A custom system can inherit from the common SoftRobot interface or from an existing concrete model, such as a PCS or articulated-robot class, and override only the quantities that change. In practice, these model-specific quantities often include geometry, cross-sectional area, second moments of area, ma-terial parameters, actuator routing, or the actuation matrix that maps actuator inputs to generalized forces. The separation between kinematics, dynamics, actuation, simulation, control, rendering, and differentiation also leaves room for larger extensions, including optimized specializations for particular kinematic parametrizations and future support for floating-base systems or open-chain kinematic trees. This extensibility is supported by explicit interfaces, extensive docstrings, and the common API contract summarized in Sidebar 1. 
+
+E. Rendering and Visualization 
+
+SoRoMoX includes rendering tools because visual inspec-tion is often the fastest way to understand whether a soft robot model, controller, or learned policy is behaving as                       
+
+> #Lightweight installation from PyPI.
+> pip install soromox
+> #Reproducible source checkout with example dependencies.
+> git clone https://github.com/tud-phi/soromox. git cd soromox
+> uv sync --extra examples
+> Fig. 3. Installing SoRoMoX. The PyPI command installs the core package, while the uv sync workflow installs the source checkout together with optional example dependencies.
+
+intended. The renderers share a common abstraction: they sam-ple forward kinematics along the robot backbone and expose common methods for rendering a single configuration, a full trajectory, or an interactive scene. This keeps visualization independent of whether the underlying robot is represented by a planar PCS, spatial PCS, or more general GVS model [9]– [11]. Different backends target different use cases. Matplotlib ren-dering supports static figures, notebooks, and quick debugging. Open3D supports interactive 3D inspection and frame cap-ture [53]. Browser-based rendering supports live visualization, playback, and multi-robot scenes [54]. OpenCV-based render-ing provides lightweight planar visualization and video export. Shared camera, color, palette, and video-export settings make it possible to reuse the same robot and trajectory objects for debugging views, rollout animations, and publication figures. III. G ETTING STARTED AND USER INTERFACE 
+
+A central design goal of SoRoMoX is to make control-oriented soft robot models directly usable from Python. The package exposes robot models as typed JAX/Equinox ob-jects, with a common interface for kinematics, dynamics, simulation, control, rendering, and differentiation. The high-level workflow is summarized in Figure 2, while this section turns the main steps into short user-facing code snippets; longer tutorials, complete scripts, and the full Application Programming Interface (API) reference are provided in the online documentation 8.
+
+A. Installation and Running Your First Simulation 
+
+Figure 3 shows the two most common installation paths. The first command installs the core package from PyPI. The second path is intended for reproducing examples from the source repository and installs optional dependencies for visualization, optimization, and notebooks through uv sync . The core package currently requires Python 3.10 or newer. Optional rendering backends such as Open3D and Viser are included in the examples and rendering dependency groups. Figure 4 gives a compact first simulation using the spatial PCS model. The example illustrates the three objects users encounter most often: a typed parameter object, the robot object, and a SystemState object whose state vector is ordered as y = [ q⊤, ˙q⊤]⊤. The same robot object then exposes kinematic quantities, dynamic matrices, rollout methods, and renderer calls. 
+
+> 8https://tud-phi.github.io/soromox/
+
+IEEE ROBOTICS AND AUTOMATION MAGAZINE 6 
+
+> 1
+
+import jax.numpy as jnp  
+
+> 2
+
+from soromox.rendering import ViserRenderer  
+
+> 3
+
+from soromox.systems import PCS , PCSParams , SystemState  
+
+> 45
+
+# Two-segment spatial PCS rod hanging along world -z.  
+
+> 6
+
+strain_ref = jnp.array([0.0, 0.0, 0.0, 1.0, 0.0, 0.0])  
+
+> 7
+
+params = PCSParams .hanging(  
+
+> 8
+
+length=jnp.array([0.15, 0.15]),  
+
+> 9
+
+radius=jnp.array([0.01, 0.01]),  
+
+> 10
+
+density=jnp.array([1000.0, 1000.0]),  
+
+> 11
+
+young_modulus=jnp.array([1e6, 1e6]),  
+
+> 12
+
+shear_modulus=jnp.array([1e5, 1e5]),  
+
+> 13
+
+material_damping_coefficient=362.0, # Pa s 
+
+> 14
+
+reference_strain=jnp.tile(strain_ref, 2),  
+
+> 15
+
+) 
+
+> 16 17
+
+# Construct robot and straight initial state y = [q, qd].  
+
+> 18
+
+robot = PCS (params=params)  
+
+> 19
+
+q = qd = jnp.zeros(robot.num_dofs)  
+
+> 20
+
+s_tip = robot.segment_length. sum ()  
+
+> 21
+
+state0 = SystemState (t=0.0, y=jnp.concatenate([q, qd]))  
+
+> 22 23
+
+# Control-oriented model quantities at the tip.  
+
+> 24
+
+g_tip = robot.forward_kinematics(q, s_tip)  
+
+> 25
+
+J_tip = robot.jacobian(q, s_tip)  
+
+> 26
+
+M = robot.inertia_matrix(q)  
+
+> 27
+
+tau_U = robot.potential_force(q)  
+
+> 28
+
+A = robot.actuation_matrix(q)  
+
+> 29
+
+u0 = jnp.zeros(robot.num_actuators)  
+
+> 30 31
+
+yd = robot.forward_dynamics(  
+
+> 32
+
+t=0.0,  
+
+> 33
+
+y=state0.y,  
+
+> 34
+
+actuation_args=(u0,),  
+
+> 35
+
+) 
+
+> 36 37
+
+# One second of open-loop dynamics with zero actuation.  
+
+> 38
+
+trajectory = robot.rollout_to(  
+
+> 39
+
+initial_state=state0,  
+
+> 40
+
+u=u0,  
+
+> 41
+
+t1=1.0,  
+
+> 42
+
+solver_dt=1e-4,  
+
+> 43
+
+save_dt=1e-2,  
+
+> 44
+
+) 
+
+> 45 46
+
+# Render the saved configuration trajectory.  
+
+> 47
+
+q_ts, qd_ts = jnp.split(trajectory.y, 2, axis=1)  
+
+> 48
+
+renderer = ViserRenderer (robot, num_points=80)  
+
+> 49
+
+renderer.render_sequence(  
+
+> 50
+
+trajectory.t,  
+
+> 51
+
+q_ts,  
+
+> 52
+
+playback_speed=1.0,  
+
+> 53
+
+loop=True,  
+
+> 54
+
+autoplay=True,  
+
+> 55
+
+)
+
+Fig. 4. Minimal spatial PCS workflow. The named hanging constructor mounts the backbone along world −z under the default world-frame gravity. The typed parameter object defines the robot, the system class exposes kinematics and dynamics, rollout_to integrates the dynamics using Diffrax [47], and the saved trajectory is passed to a renderer. 
+
+B. API Overview 
+
+Most systems follow the construction pattern shown in Figure 4: numerical model values are stored in a typed param-eter object, while the robot class exposes the computational interface. Parameter families provide named horizontal ,
+
+upright , and hanging constructors for common mount-ings; omitting the mounting and gravity instead selects an up-right backbone and negative-vertical Earth gravity by default. The GVS model uses a slightly richer construction interface, shown in Figure 5, because each segment can have its own link, joint, strain basis, and quadrature resolution. Table III summarizes the main methods exposed by robot objects. To make the interface explicit, the table lists represen-tative call signatures together with the corresponding returned  
+
+> 1
+
+import jax.numpy as jnp  
+
+> 2
+
+from soromox.systems import ( 
+
+> 3
+
+GVS , 
+
+> 4
+
+GVSSegment , 
+
+> 5
+
+JointSpec , 
+
+> 6
+
+LinkSpec , 
+
+> 7
+
+StrainBasisSpec , 
+
+> 8
+
+) 
+
+> 910
+
+# A GVS segment bundles link data, joint, basis,  
+
+> 11
+
+# and the quadrature rule used for integration.  
+
+> 12
+
+link = LinkSpec .circular(  
+
+> 13
+
+E=1e6,  
+
+> 14
+
+nu=0.45,  
+
+> 15
+
+rho=1000.0,  
+
+> 16
+
+eta=1e4,  
+
+> 17
+
+L=0.3,  
+
+> 18
+
+r=0.03,  
+
+> 19
+
+) 
+
+> 20
+
+segment = GVSSegment ( 
+
+> 21
+
+link=link,  
+
+> 22
+
+joint= JointSpec .fixed(),  
+
+> 23
+
+basis= StrainBasisSpec ( 
+
+> 24
+
+type ="monomial",  
+
+> 25
+
+active=[1, 1, 1, 1, 0, 0],  
+
+> 26
+
+orders=[1, 1, 1, 1, 0, 0],  
+
+> 27
+
+xi_ref=[0, 0, 0, 1, 0, 0],  
+
+> 28
+
+),  
+
+> 29
+
+num_gauss_points=5,  
+
+> 30
+
+) 
+
+> 31 32
+
+# Omitting environment arguments selects upright +z  
+
+> 33
+
+# mounting and default world -z gravity.  
+
+> 34
+
+# The factory separates static structure from parameters.  
+
+> 35
+
+robot = GVS .from_segments(  
+
+> 36
+
+[segment],  
+
+> 37
+
+)
+
+Fig. 5. Constructing a GVS robot. In contrast to PCS, GVS is assembled from segment specifications that describe links, joints, basis functions, and integration settings. With no environment arguments, the robot points along the positive world z axis under gravity directed along the negative world z
+
+axis. 
+
+quantity. Kinematic routines are available both pointwise and in batched form along the backbone. Dynamic routines expose the individual terms of the equations of motion as well as fused forward-dynamics calls for simulation. For control design, SoRoMoX addition-ally provides coordinate-transform utilities. 
+
+OperationalSpaceDynamics projects the model to selected task-space points and exposes task-space inertia, Coriolis terms, forces, Jacobians, and dynamically consistent pseudoinverses. ActuationSpaceDynamics transforms systems with an integrable actuator-coordinate map into coordinates in which the actuation matrix has the collocated form [I, 0] ⊤, which is useful for underactuated soft robots. Figure 6 shows how these transformations connect to packaged controllers and closed-loop rollouts; Appendix A specifies the underlying abstractions and interface contracts. In the example, routing denotes a previously configured 
+
+ThreadlikeRouting object. Simulation is handled through Diffrax [47]. The default solver is Tsitouras’ 5/4 ( Tsit5 ) [55], but any compatible Diffrax solver and step-size controller can be passed to the rollout methods. The solver step size, controller sampling time, and saved output time grid are configured separately through arguments such as solver_dt , control_dt , save_dt ,and save_ts .Figure 7 shows how the same interface connects to JAX transformations and gradient-based parameter optimization. IEEE ROBOTICS AND AUTOMATION MAGAZINE 7                    
+
+> TABLE III SELECT METHODS FROM THE SOROMOXUSER /API INTERFACE . H ERE q, ˙q∈Rn,u∈Rm,sIS AN ARC -LENGTH COORDINATE ,y= [ q⊤,˙q⊤]⊤,AND
+> nsamp DENOTES THE NUMBER OF SAMPLED BACKBONE POINTS .
+
+Task Representative call Returns Purpose 
+
+Kinematics forward_kinematics(q, s) forward_kinematics_batched(q, s_ps) 
+
+Pose g(q, s ); batched shape 
+
+(nsamp , ·)
+
+Evaluate poses at arbitrary backbone points or sampled point sets. Jacobians jacobian(q, s) jacobian_and_time_derivative(q, qd, s) 
+
+J(q, s ) and optionally 
+
+˙J(q, ˙q, s )
+
+Map generalized velocities to inertial-frame twists. Dynamical matrices inertia_matrix(q) coriolis_matrix(q, qd) damping_matrix(q) 
+
+M (q), C(q, ˙q), D Expose matrix terms of the Euler-Lagrange equations. Forces gravitational_force(q) elastic_force(q) potential_force(q) 
+
+G(q), K(q), τU (q) Return conservative generalized forces. Actuation actuation_matrix(q) actuation_force(q, u) 
+
+A(q) and A(q)u Map actuator commands to generalized forces. Open-loop simulation forward_dynamics(t, y, (u,)) rollout_to(state0, u, t1) 
+
+˙y or a trajectory 
+
+SystemState 
+
+Evaluate state derivatives and integrate open-loop dynamics. Closed-loop simulation rollout_closed_loop_to(...) rollout_discrete_closed_loop_to(...) 
+
+Trajectory SystemState Integrate with continuous or sampled controller calls. Parameter updates update_params(length=..., density=...) with_params(params) 
+
+Updated robot PyTree Replace same-structure numerical parameters. 
+
+Since the core methods are JAX-compatible, users can com-pile model evaluations with jax.jit , vectorize them with 
+
+jax.vmap , and differentiate objectives with jax.grad ,
+
+jax.jacfwd , or jax.jacrev . This enables workflows such as parameter identification, where a loss is differentiated with respect to model parameters and the robot is updated through same-shape parameter replacements. IV. C OMPUTATIONAL PERFORMANCE EVALUATION 
+
+a) Sequential Rollouts on the CPU: Here, we present the benchmarking study of SoRoMoX, comparing its accuracy and computational efficiency with two well-known open-source libraries for simulating flexible rods: PyElastica [26] and SoRoSim [15], which both run on the CPU. PyElastica imple-ments a Discretized Cosserat Rod Model (DCM) [56], while SoRoSim implements reduced-order strain-based soft robot models. These libraries provide simulation-oriented interfaces centered on model construction and rollout. SoRoMoX ad-ditionally exposes a control-oriented model API for querying kinematics, Jacobians, inertia, gravitational, elastic, and damp-ing terms, actuation maps, coordinate transformations, and differentiable rollouts. This interface is used in the case studies for static-equilibrium system identification, model-based con-trol, safety-constrained control, and gain optimization, where access to model structure is required in addition to simulated trajectories. Figure 8.A shows the tip response for a representative beam-deflection case across the three libraries, while Table IV reports the computation time required by each library to simulate 3 s for four model variants. The benchmark proto-col, hardware, beam parameters, and scenario definitions are given in Appendix B-A; the quantitative SoRoSim–SoRoMoX comparison in Table V reports tip-position RMSE values of 
+
+0.86 mm to 7.21 mm , corresponding to 0.14 % to 1.20 % of the soft robot length, across the four cases. PyElastica is the             
+
+> TABLE IV COMPUTATION TIME ↓(S)REQUIRED TO SIMULATE 3S OF MOTION USING THE O D E 45 SOLVER IN SOROSIM AND SOROMOX ,AND THE SECOND -ORDER SYMPLECTIC PO S I T I O N VE R L E T SOLVER IN
+> PYELASTICA .
+
+Model Case Elastica [26] SoRoSim [15] SoRoMoX FEM/PCS Planar 2.25 75.73 4.18 Spatial 2.45 78.65 13.26 FEM/GVS Spatial – 55.54 36.33 Tendons 11.40 75.80 36.47 
+
+fastest library for all cases in this rollout-only benchmark. Among the reduced-order model implementations, SoRoMoX is consistently faster than SoRoSim, with speedups of about 
+
+18 .1× for planar PCS, 5.9× for spatial PCS, 1.5× for complex GVS, and 2.1× for tendon-driven GVS. 
+
+b) Parallel Rollouts on the GPU: As discussed in the introduction, parallel, batched rollouts of the (soft) robot models on the GPU are nowadays crucial for efficient training of RL policies [57], batched optimization with differentiable simulation [24], [25], [58], [59], sampling-based planning methods (e.g., Model Predictive Path Integral (MPPI) [60], [61]), and related tasks. To the best of our knowledge, SoRoMoX is the first rod/strain-based simulator that can be readily deployed on modern GPUs. This deployment is straightforward in our package: a JAX vectorization operator (jax.vmap ) can be wrapped around the simulation method (e.g., robot.rollout_to ) to evaluate nb independent sys-tems along a leading batch axis on the GPU, where the batch entries may correspond to robots, environments, trajectories, or controller initializations. The key variable is the leading batch size nb: ideally, the total throughput scales linearly with 
+
+nb until the GPU capacity is reached. In practice, however, such linear scaling is only an upper theoretical bound, and IEEE ROBOTICS AND AUTOMATION MAGAZINE 8 
+
+> 1
+
+import jax.numpy as jnp  
+
+> 2
+
+from soromox.actuation import ThreadlikeActuator  
+
+> 3
+
+from soromox.control import ( 
+
+> 4
+
+ConfigurationSpacePIDController,  
+
+> 5
+
+PIDControl,  
+
+> 6
+
+ReferenceTrajectory,  
+
+> 7
+
+) 
+
+> 8
+
+from soromox.coordinate_transformations import ( 
+
+> 9
+
+ActuationSpaceDynamics , 
+
+> 10
+
+OperationalSpaceDynamics , 
+
+> 11
+
+) 
+
+> 12 13
+
+# Operational-space dynamics for a tip-position task.  
+
+> 14
+
+osd = OperationalSpaceDynamics ( 
+
+> 15
+
+robot=robot,  
+
+> 16
+
+s_ps=jnp.array([s_tip]),  
+
+> 17
+
+task_selector=jnp.array(  
+
+> 18
+
+[False, False, False, True, True, True]  
+
+> 19
+
+),  
+
+> 20
+
+) 
+
+> 21
+
+Mx = osd.inertia_matrix(q)  
+
+> 22
+
+cx = osd.coriolis_force(q, qd)  
+
+> 23
+
+tau_Ux = osd.gravitational_force(q) + osd.elastic_force(q)  
+
+> 24 25
+
+# Actuation-space dynamics for a threadlike-actuated system.  
+
+> 26
+
+threadlike_robot = PCS ( 
+
+> 27
+
+params=params,  
+
+> 28
+
+actuators=ThreadlikeActuator.tendons(routing),  
+
+> 29
+
+) 
+
+> 30
+
+asd = ActuationSpaceDynamics (robot=threadlike_robot)  
+
+> 31
+
+q_act = jnp.zeros(threadlike_robot.num_dofs)  
+
+> 32
+
+M_phi = asd.inertia_matrix(q_act)  
+
+> 33
+
+tau_U_phi = asd.potential_force(q_act)  
+
+> 34
+
+A_phi = asd.actuation_matrix(q_act)  
+
+> 35 36
+
+# Packaged configuration-space PID controller.  
+
+> 37
+
+ts = jnp.array([0.0, 1.0])  
+
+> 38
+
+q_des_ts = jnp.stack([q, q])  
+
+> 39
+
+qd_des_ts = jnp.stack([qd, qd])  
+
+> 40
+
+ref_traj = ReferenceTrajectory(  
+
+> 41
+
+ts=ts,  
+
+> 42
+
+x_des_ts=q_des_ts,  
+
+> 43
+
+xd_des_ts=qd_des_ts,  
+
+> 44
+
+) 
+
+> 45
+
+pid = PIDControl(Kp=20.0, Ki=0.0, Kd=2.0)  
+
+> 46
+
+builtin_controller = ConfigurationSpacePIDController(  
+
+> 47
+
+robot=robot,  
+
+> 48
+
+reference_trajectory=ref_traj,  
+
+> 49
+
+pid_control=pid,  
+
+> 50
+
+) 
+
+> 51 52
+
+# Rollouts call the controller during integration.  
+
+> 53
+
+closed_loop = robot.rollout_closed_loop_to(  
+
+> 54
+
+initial_state=state0,  
+
+> 55
+
+controller=builtin_controller,  
+
+> 56
+
+t1=1.0,  
+
+> 57
+
+solver_dt=1e-4,  
+
+> 58
+
+save_dt=1e-2,  
+
+> 59
+
+)
+
+Fig. 6. Coordinate transformations and controllers. Task-space and actuation-space dynamics expose projected model quantities, while packaged controllers use the same interface for closed-loop simulation. 
+
+the marginal performance gains from parallelization decrease as nb grows. We quantify this scaling using the simulation-throughput factor Γsim , defined as the total simulated time across all batched rollouts divided by the measured wall-clock runtime. The full experimental protocol is given in Appendix B-B. The results displayed in Figure 9 show that parallel roll-outs on the GPU can significantly increase the simulation throughput. The articulated soft robot exhibits the strongest parallel scaling in the segment/link sweep, reaching speedups of 203 .6×–234 .6× from nb = 1 to nb = 256 , corresponding to 79 .5 % –91 .6 % of ideal linear scaling. Although planar  
+
+> 1
+
+import jax  
+
+> 2
+
+import equinox as eqx  
+
+> 34
+
+# JIT caches optimized kernels after the first call.  
+
+> 5
+
+fast_fk = jax.jit(robot.forward_kinematics)  
+
+> 67
+
+# Vectorize forward dynamics over a leading batch axis.  
+
+> 8
+
+n_b = 2 
+
+> 9
+
+# y_batch shape: (n_b, 2*num_dofs).  
+
+> 10
+
+y_batch = jnp.repeat(state0.y[None, :], n_b, axis=0)  
+
+> 11
+
+# u_batch shape: (n_b, num_actuators).  
+
+> 12
+
+u_batch = jnp.zeros((n_b, robot.num_actuators))  
+
+> 13
+
+yd_batch = jax.vmap(  
+
+> 14
+
+lambda y_i, u_i: robot.forward_dynamics(  
+
+> 15
+
+0.0, y_i, (u_i,)  
+
+> 16
+
+) 
+
+> 17
+
+)(y_batch, u_batch)  
+
+> 18 19
+
+# A loss can depend on kinematics, dynamics, or a rollout.  
+
+> 20
+
+# measured_tip_positions has shape (T, 3).  
+
+> 21
+
+def loss_for_robot(candidate_robot):  
+
+> 22
+
+traj = candidate_robot.rollout_to(  
+
+> 23
+
+initial_state=state0,  
+
+> 24
+
+u=u0,  
+
+> 25
+
+t1=1.0,  
+
+> 26
+
+solver_dt=1e-4,  
+
+> 27
+
+save_dt=1e-2,  
+
+> 28
+
+) 
+
+> 29
+
+q_pred_ts, _ = jnp.split(traj.y, 2, axis=1)  
+
+> 30
+
+tip_pos_ts = jax.vmap(  
+
+> 31
+
+lambda q_i: candidate_robot.forward_kinematics(  
+
+> 32
+
+q_i, s_tip  
+
+> 33
+
+)[:3, 3]  
+
+> 34
+
+)(q_pred_ts)  
+
+> 35
+
+error = tip_pos_ts - measured_tip_positions  
+
+> 36
+
+return jnp.mean(error**2)  
+
+> 37 38
+
+# Gradient descent over same-shape physical parameters.  
+
+> 39
+
+optimized_robot = robot  
+
+> 40
+
+learning_rate = 1e-3  
+
+> 41
+
+grad_loss = eqx.filter_value_and_grad(loss_for_robot)  
+
+> 42
+
+for _ in range (100):  
+
+> 43
+
+loss_value, grads = grad_loss(optimized_robot)  
+
+> 44
+
+optimized_robot = optimized_robot.update_params(  
+
+> 45
+
+young_modulus=(  
+
+> 46
+
+optimized_robot.params.young_modulus  
+
+> 47
+
+- learning_rate * grads.params.young_modulus  
+
+> 48
+
+),  
+
+> 49
+
+density=(  
+
+> 50
+
+optimized_robot.params.density  
+
+> 51
+
+- learning_rate * grads.params.density  
+
+> 52
+
+),  
+
+> 53
+
+)
+
+Fig. 7. JAX transformations and parameter optimization. SoRoMoX methods can be compiled, vectorized, and differentiated, enabling gradient-based updates of physical parameters while keeping the model structure fixed. 
+
+PCS and spatial PCS show decreasing efficiency with in-creasing segment count, they still achieve substantial speedups of 27 .5×–196 .2× and 11 .3×–155 .6×, respectively. Spatial GVS maintains stronger large-model scaling than spatial PCS, reaching 98 .4×–175 .4× speedup across 1–16 segments despite reduced efficiencies of 38 .4 % –68 .5 % . Under these benchmark settings, aggregate real-time throughput at nb =256 is reached for all tested articulated and planar PCS models, spatial PCS with up to four segments, and spatial GVS with up to two segments; these boundaries are hardware- and discretization-dependent. V. A PPLICATION CASE STUDIES 
+
+This section summarizes downstream case studies that use SoRoMoX’s control-oriented model interface together with its support for automatic differentiation and paral-lelization for different tasks: identifying physical parameters IEEE ROBOTICS AND AUTOMATION MAGAZINE 9C DA B               
+
+> 0.0 0.5 1.0 1.5 2.0 2.5 3.0 Time [s]
+> −0.6
+> −0.4
+> −0.2
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8 Tip coordinates [m]
+> SoRoSim PyElastica SoRoMoX xyz
+> Initial parameters Optimal parameters Optimal residual NN-predicted residual
+> 0.00
+> 0.01
+> 0.02
+> 0.03
+> 0.04 Overall RMSE [m]
+> M 1
+> M 2
+> M 3
+> M 4
+> 0.02
+> 0.04
+> 0.06
+> 0.08
+> 0.10
+> Position RMSE [m] Initial parameters Optimal parameters Optimal residual NN-predicted residual
+> −0.10
+> −0.05 0.00 0.05 0.10 0.15 0.20 0.25
+> x [m]
+> −0.15 −0.10 −0.05 0.00 0.05 0.10 0.15
+> y[m]
+> −0.35
+> −0.30
+> −0.25
+> −0.20
+> −0.15
+> −0.10
+> −0.05 0.00
+> z [m]
+> Initial backbones Optimized backbones Initial predicted markers Optimized predicted markers Measured markers
+
+Fig. 8. Benchmarking Comparison and Static-Equilibrium Identification/Residual-Learning Case Study. (A) CPU rollout benchmark of SoRoMoX against SoRoSim and PyElastica, showing the simulated tip response of a cylindrical soft beam initially aligned with the global z axis and deflected in the 
+
+x-z plane by a distributed load of gravity-equivalent magnitude along the global x direction. ( B) Static-equilibrium system-identification and residual-learning application case study: overall soft robot model accuracy across four estimation procedures, quantified as the aggregate RMSE computed over all marker positions for pre-optimized physical parameters (blue), optimized physical parameters (orange), optimal residual generalized-force estimation (magenta), and NN-predicted residual generalized force (dark red). ( C) Per-marker breakdown of the same accuracy evaluation, showing the individual position RMSE for each of the four markers across the four estimation procedures. ( D) Backbone configurations from the same application case study, comparing pre-optimized physical parameters (blue lines) with optimal residual generalized-force estimation (orange lines). 
+
+Fig. 9. Benchmark of batched GPU simulation scaling for varying numbers of robot segments N and different soft robot models: articulated soft robot, planar PCS, spatial PCS, and spatial GVS. As the leading batch size nb is increased, the simulation-throughput factor Γsim also increases, highlighting the benefits of massively parallel GPU rollouts. Full hardware and solver settings are given in Appendix B-B. 
+
+from static-equilibrium data, learning residual forces, deriving model-based controllers, optimizing controller gains, enforcing contact-aware control constraints, and training policies with parallel rollouts, as illustrated in Figure 10. The technical definitions of the robots, objectives, and controllers are given in Appendix D. 
+
+A. Static-Equilibrium System Identification 
+
+Here, the Young’s modulus, Poisson’s ratio, and mass den-sity of a conical tendon-driven continuum arm are identified from four-marker measurements collected at static equilib-rium. Other geometric parameters, such as length, cross-section dimensions, and tendon routing, are measured directly from the hardware. Efficient parameter identification is difficult for nonlinear soft robot dynamics, especially for full dynamical evolutions where closed-form linear least-squares formulations are gen-erally unavailable. The same issue already appears in the nonlinear static-equilibrium fitting used here: each parameter IEEE ROBOTICS AND AUTOMATION MAGAZINE 10 System Identification Model-Based Control Safety Guarantees Policy Training 
+
+> Predicted Sys. Evolution Recorded Physical System Actuation Seq. Optimizer
+
+-
+
+> Optimizer Predicted Motion Policy
+
+-
+
+> Motion with Safety Guarantees Optimizer Model-based Controller Reference Configuration Soft Robot
+
+- 
+
+> Safety Constraints
+> Unsafe Nominal Motion Parameter Estimation
+> Sys. Evolution
+> Reference Configuration
+> Fig. 10. Application case studies for SoRoMoX: physical parameter iden-tification and residual learning, model-based control and gain optimization, policy training, and safety-constrained control.
+
+update changes the elastic and nonlinear gravitational terms and therefore the predicted marker positions. SoRoMoX ad-dresses this by providing differentiable GVS models, forward kinematics along the entire robot, static-equilibrium evalua-tion, and derivatives with respect to physical parameters within the same computation. The arm is modeled with two GVS links: the first uses a 7-Degrees of Freedom (DOF) strain basis with linear bending, constant torsion, and constant axial deformation, while the second uses a 2-DOF constant-bending basis, yielding a 9-DOF model. Quantitatively, the optimizer identifies θ⋆ =[0 .315 MPa , 0.45 , 1320 kg /m3] and reduces the overall static-equilibrium marker Root Mean-Squared Error (RMSE) from 
+
+56 .9 mm to 19 .3 mm , an improvement of about 66 % , as shown in Figure 8B. 
+
+B. Residual Learning 
+
+Residual learning corrects model mismatch that remains after static-equilibrium system identification by adding input-dependent residual generalized forces. In this case study, these forces are fitted from equilibrium data and account for repeatable effects not captured by the nominal model [62]. The central algorithmic challenge is the efficient gener-ation of residual-force targets. Each target is the solution of an optimization problem through the simulator or system model; without differentiability, generating such targets across many inputs becomes computationally expensive. SoRoMoX supports differentiable static-equilibrium evaluation, allowing residual forces to be optimized through the same robot model used for marker prediction. For each tendon input, we estimate an optimal residual generalized force and then use these optimized residuals as training targets for a neural network that maps tendon forces to residual-force predictions. Quantitatively, Figure 8B–D shows that the optimized residual and the neural-network residual reduce the overall static-equilibrium marker RMSE to 6.6 mm 
+
+and 6.9 mm , respectively, corresponding to improvements of about 66 % and 64 % relative to the model identified at static equilibrium. 
+
+C. Model-Based Control 
+
+Model-based control uses robot dynamics and kinematics to synthesize feedback laws for regulation and tracking, rather than treating the simulator as a black-box rollout engine. In this case study, we evaluate whether the same PCS model implementation can support both strain-coordinate / shape control and operational-space pose tracking for fully actuated soft robots. The central implementation challenge is that such con-trollers require many coupled model quantities to be available with consistent coordinates and conventions: inertial, Coriolis, gravitational, elastic, and damping terms, actuation maps, forward kinematics, Jacobians, and Jacobian derivatives [5], [46]. SoRoMoX exposes these quantities through one control-oriented API and provides closed-loop rollout utilities, allow-ing controller derivation, implementation, and simulation to share the same robot model. We evaluate two spatial PCS examples based on the defini-tions in Appendices D-C1 and D-C2. First, a fully actuated one-segment robot is used to compare five configuration-space controllers under the same robot, reference, gains, and rollout: model-free proportional–derivative (PD), model-free proportional–integral–derivative (PID), potential compensation (PC), feedforward compensation (FF), and computed torque (CT). These controllers progressively add model terms, from no model compensation in PD/PID to static gravitational and elastic compensation, desired-trajectory inverse dynamics, and measured-state feedback linearization. Second, an operational-space impedance controller tracks a spherical figure-eight end-effector pose trajectory with a fully actuated two-segment robot. Figure 11 summarizes both closed-loop demonstrations. Quantitatively, exploiting model terms substantially improves performance over the model-free baselines: in terminal reg-ulation, potential compensation reduces the errors in all six coordinates relative to both PD and PID, with coordinate-wise reductions across these comparisons ranging from 43 % 
+
+to 98 % . During trajectory tracking, feedforward compensation reduces the RMSEs of all six coordinates by 86 .3 % to 99 .7 % 
+
+relative to potential compensation. Computed torque achieves the lowest RMSE in every commanded and uncommanded generalized strain coordinate; during trajectory tracking, it further reduces the commanded-coordinate errors of κy, κz,and ∆σx by 62 % , 79 % , and 79 % , respectively, relative to feedforward compensation, as detailed in Table VIII. For operational-space tracking, the Euclidean position-error norm has an RMSE of 2.84 mm , or 2.11 % of the desired-position span, while the geodesic orientation-error norm has an RMSE of 2.29 ◦, or 2.00 % of the desired-orientation span. IEEE ROBOTICS AND AUTOMATION MAGAZINE 11 ¡10 010       
+
+> ∙y [rad m ¡1]
+> ¡10 0
+> ∙z [rad m ¡1]
+> 0510 15 20 25 30
+
+Time [s]      
+
+> 1.0 1.1
+> ¾x [¡]
+> 0.0 0.2
+> Pos. [m]
+> ¡50
+> ep [mm]
+> 0246810
+
+Time [s]      
+
+> ¡2.5 0.0
+> Orient. [rad]
+> 0246810
+
+Time [s]        
+
+> ¡505
+> er [deg]
+> t= 4 :50 s t= 5 :50 s t= 6 :50 s t= 7 :50 s
+
+Setpoint regulation Trajectory tracking 
+
+AB    
+
+> Desired PD (model-free) PID (model-free) Potential Compensation Feedforward Compensation Computed Torque
+> xyzActual Desired
+
+Fig. 11. Model-based control with fully actuated spatial PCS robots. ( A) Configuration-space response of a one-segment robot during stepwise setpoint regulation ( 0–15 s ) and trajectory tracking ( 15 s –30 s ). The desired and actual commanded strains κy, κz, and σx are shown for model-free PD and PID control, potential compensation, feedforward compensation, and computed-torque control. ( B) Operational-space impedance control of a two-segment robot tracking a spherical figure-eight pose trajectory. The plots compare actual and desired end-effector position and orientation coordinates and show their componentwise errors. In the snapshots, the coral body and dark base show the robot configuration, the translucent gray mesh is the target sphere, and the light-green beads trace the desired tip path. The green disk denotes the instantaneous target pose: its center gives the desired position, while its normal and crosshair give the outward-normal and tangent-frame axes, respectively. 
+
+D. Control Gain Optimization 
+
+Control gain optimization selects controller parameters for desired soft robot closed-loop behavior. Manual gain tuning is time-consuming, inconsistent, and often leads to suboptimal transient responses. The algorithmic difficulty is that the closed-loop response depends on the nonlinear coupling between the controller and the soft robot model. As a result, gradients of closed-loop performance metrics with respect to the gains are usually not available in closed form. SoRoMoX makes this optimization tractable by differentiating through full closed-loop rollouts and by evaluating multiple gain initializations in parallel. Two tendon-driven PCS robots with three linearly routed tendons are considered: a one-segment model regulated in actuation coordinates using a potential-shaping controller [50], and a two-segment model regulated in operational space using a synergistic controller [5], [52]. The optimized variables are the diagonal proportional, integral, and derivative gains, and the objective is the weighted time integral of the squared closed-loop tracking error. Figure 12 reports the loss over 100 
+
+optimization iterations and the corresponding convergence of the configuration and tip position to their targets. Quantitatively, the loss decreases by 62 % and 57 % from the initial median values to the optimized best values across the batch for the actuation-space control and operational-space control cases, respectively. The optimized gains im-prove the settling time, defined by the 5 % target band, by 
+
+64 % and 62 % ; they reduce the overshoot by 50 % in the IEEE ROBOTICS AND AUTOMATION MAGAZINE 12 20 40 60 80 100 Iterations 
+
+> 4
+> 6
+> 8Loss
+
+# A Min-Max Range Best      
+
+> 012345Time [s]
+> −6
+> −4
+> −2
+> 0
+> 2Angular strains [rad/m]
+
+# B    
+
+> Target Initial (median ± range) Optimized (best ± range)
+> 20 40 60 80 100 Iterations
+> 2
+> 4
+> 6
+> 8
+> 10 Loss
+
+# C     
+
+> 012345Time [s]
+> −0.1
+> 0.0
+> 0.1
+> 0.2 End-e ff ector position [m]
+
+# D     
+
+> Fig. 12. Results of the control gain optimization demo. ( A) Loss function (41) along the iterations of the system controlled in actuation coordinates via (35); the system with minimum loss across the batch is shown in solid dotted line, while the shaded area represents the min-max range across the batch. ( B) The first three configuration variables (coinciding with the angular strains) of the one-segment PCS system, showing in dashed line the target setpoint, in dash-dot line the median system across the batch at the first iteration, in solid line the median system across the batch at the last iteration; the shaded areas represent the min-max range across the batch of each strain. κx, κ y, κ zshown in yellow, green, and red, respectively. ( C) Same as ( A) but for the two-segment PCS system controlled via (38). ( D) Tip position of the two-segment PCS system controlled via (38); x, y, z coordinates shown in yellow, green, and red, respectively.
+
+actuation-space control case, while increasing it by 82 % in the 
+
+operational-space control case. The final cumulative tracking errors are 0.18 rad /m and 10 mm , respectively. The overshoot increase in the operational-space case illustrates a competing objective: reducing the integral tracking error favors earlier settling despite a larger overshoot, especially along the z-coordinate. 
+
+E. Safety-Constrained Control 
+
+Safety-constrained control drives a soft robot toward atarget while enforcing contact-force limits near obstacles. Compliance can reduce impact severity, but it does not by itself guarantee bounded forces in closed loop, so control-barrier-function methods are increasingly used to impose explicit force-safety constraints [18], [63], [64]. The central algorithmic challenge is formulating these con-straints for accurate soft robot dynamics rather than only simplified template models. The contact-force barrier depends on task and contact quantities whose derivatives must be propagated through second-order soft robot dynamics. SoRo-MoX provides differentiable forward kinematics and dynamics for State-of-the-Art (SOTA) rod-based soft robot models, en-abling the derivation and implementation of high-order control Lyapunov and control barrier function (HOCLFs+HOCBFs) constraints used in this case study. The simulated robot is a tendon-actuated PCS continuum arm with two 0.15 m segments, total backbone length 0.30 m ,and six straight tendons. In panels A and B of Figure 13, the arm is commanded toward a target while satisfying a prescribed contact-force bound of 5 N . We compare a safety-unaware HOCLF controller with a sequential-projection HO-CLF–HOCBF controller that prioritizes the contact-force con-straint. Quantitatively, the nominal HOCLF controller achieves the smallest terminal goal error, with final goal distance approx-imately 0.003 m , but its maximum pairwise normal force reaches approximately 33 .5 N , exceeding the prescribed force bound by about 28 .5 N . In contrast, the HOCLF–HOCBF con-troller keeps the maximum pairwise normal force at or below the 5 N safety limit throughout the simulation, while reaching a final goal distance of approximately 0.032 m . Equivalently, the inclusion of the HOCBF term reduces the maximum contact-force violation, normalized by the 5 N bound, from approximately 570 % to 0 % .
+
+F. Parallel Reinforcement Learning 
+
+Reinforcement learning trains a feedback policy through interactions with an environment or a simulation of that environment [65]. In this case study, the environment is a tendon-actuated soft continuum arm tracking a moving target on a hemispherical surface, as shown in panel C of Figure 13. IEEE ROBOTICS AND AUTOMATION MAGAZINE 13 
+
+The central computational challenge is the sequential nature of rollout-based policy improvement. When trajectories are collected one simulation at a time, each policy update is limited by the rate at which new interaction data can be generated, causing learning to progress slowly. This limitation has motivated massively parallel rollout pipelines for legged-robot RL, where quadruped and biped locomotion policies can be trained in minutes rather than days [13], [57], [66]. SoRoMoX uses JAX/GPU vectorization to run many PCS rollout environments in parallel with the same robot model, increasing interaction throughput on a single GPU. We train the policy with PPO [67] using tendon-force actions for a single-segment PCS continuum robot actuated by four tendons, and compare JIT-compiled, GPU-parallel SoRoMoX training against a two-core CPU PyElastica base-line using a DCM in panel D of Figure 13. Quantitatively, across nb = 128 parallel evaluation trajectories, the trained policy reaches a final mean tracking error of 6.19 mm and a step-wise success rate of 91 .4 % , where success is defined as the end effector being within 10 mm of the target. Relative to this baseline, SoRoMoX reduces wall-clock training time by approximately 4× and 7× with nb = 256 and 512 ,respectively; these values jointly reflect model formulation, JIT compilation, hardware acceleration, and rollout parallelization. 
+
+Sidebar 1: What Makes a Soft Robot Model “Control-Ready”? 
+
+A rollout function is enough to simulate a soft robot, but too narrow to control one. Model-based control, system identification, trajectory optimization, and safety filtering all need intermediate model quantities, not just trajecto-ries. A control-ready implementation therefore exposes, with a documented contract, at least: backbone kinemat-ics g(q, s ); the Jacobian J(q, s ) and its time derivative 
+
+˙J(q, ˙q, s ); the EOM terms M (q), C(q, ˙q), G(q), K(q), D;the actuation map A(q); energies; and forward dynamics 
+
+˙y = f0(y) + fu(y) u, rather than only a black-box rollout. Two design rules make this usable. First, every method states its mathematical contract: input/output shapes, co-ordinate conventions, reference frames, units, sign con-ventions, and valid domains. This matters acutely in soft robotics, where poses may live in SE(2) or SE(3) , Jaco-bians may be body- or inertial-frame, actuation may mean tendon tensions, pressures, or generalized forces, and the arclength s may be a length, a normalized coordinate, or a link index. Second, the same contract holds across model classes, so a controller, optimizer, or renderer can call 
+
+inertia_matrix or actuation_matrix without knowing whether the underlying model is PCS, GVS, or articulated or which compatible actuator components it uses. The payoff is reuse: modeling assumptions, con-trollers, coordinate transformations, and benchmarks all compose. Looking ahead, the field would benefit from a standardized robot-description format for continuum soft robots, a soft robot analogue of URDF, to make models portable across simulators and control stacks. Further details about the API interface can be found in Section III-B and the corresponding code blocks. 
+
+Sidebar 2: Structure-Aware Evaluation 
+
+SoRoMoX exposes model structure explicitly instead of routing every strain-based robot through the most general formulation. Dedicated planar PCS, spatial PCS, and GVS systems use, respectively, lower-dimensional SE (2) op-erations, closed-form constant-strain segment maps, and numerical variable-strain integration. This specialization is complementary to GVS-centered implementations such as SoRoSim [15]: the general formulation remains avail-able, while simpler model assumptions can be evaluated with lower-dimensional algebra and fewer integration operations. A second important distinction is the use of a static runtime layout together with early reduction to active coordinates. Heterogeneous GVS segment descriptions are converted into fixed-shape arrays for compilation, but the generalized state remains restricted to active coordinates through selector maps, gather indices, and masks. Consequently, inactive strain components are not merely discarded after assembling full dynamical ma-trices; they are removed before propagating Jacobians, Jacobian derivatives, and dynamic integrands whenever possible. This makes reduced parametrizations, such as Piecewise Constant Curvature (PCC) [2] models with only bending strains, cheaper than a full PCS [9] parametriza-tion even when both share much of the same implemen-tation path. The propagation of state-dependent quantities follows the serial structure of the robot body. Forward kinematics, Jacobians, and Jacobian derivatives are advanced from proximal to distal segments with lax.scan , whereas independent Gaussian-quadrature contributions within a segment are evaluated in parallel using batched array op-erations such as vmap . State-independent data, including quadrature grids, basis evaluations, local mass matrices, and active stiffness and damping blocks, are cached at model construction time rather than reconstructed dur-ing every dynamics evaluation. Finally, the implemen-tation distinguishes between query types: routines that only require potential forces, gravity, or inertia avoid computing Jacobian time derivatives or convective-force terms, whereas forward dynamics uses a fused path that reuses shared kinematic quantities and directly evaluates 
+
+C(q, ˙q) ˙ q. Further details on efficient evaluation are given in Appendix E-A. 
+
+Sidebar 3: Singularities Are Not Failures 
+
+Closed-form strain-based models often contain expres-sions that have well-defined limits but appear numeri-cally as 0/0 in their raw algebraic form. For example, Lie-group exponentials and constant-strain tangent maps IEEE ROBOTICS AND AUTOMATION MAGAZINE 14 Trained RL controller Initialized RL controller 
+
+# ACBD
+
+HOCLF controller HOCLF+HOCBF controller 
+
+> Time Time
+
+0 1 2 3 4 5 6 7 8Time [s] 
+
+0
+
+7
+
+14 
+
+21 
+
+29 
+
+36 
+
+> Max Pairwise Normal Force [N]
+
+HOCLF controller HOCLF+HOCBF controller Goal distance Normal force 0.00 0.02 0.05 0.07 0.10 0.12 
+
+> Goal Distance [m]
+
+0 100 200 300 400 Training time [min] 
+
+−50 
+
+−25 
+
+0
+
+25 
+
+50 
+
+75 
+
+100 
+
+125 
+
+150 
+
+> Reward
+
+PyElastica SoRoMoX 64 envs SoRoMoX 128 envs SoRoMoX 256 envs SoRoMoX 512 envs 
+
+Fig. 13. Safety-constrained regulation under the HOCLF– HOCBF controller and parallel RL for goal tracking. (A) Rendered shape evolution of a safety-unaware HOCLF controller (top) and a safety-constrained HOCLF+HOCBF controller (bottom) on the task end-effector regulation for a soft continuum arm (two PCS segments). The end-effector goal is marked in green, and the spherical obstacles are rendered in purple. ( B) Time evolution of the contact force and goal distance for both controllers during contact-force-constrained goal reaching, comparing the safety-unaware HOCLF and the safety-constrained HOCLF+HOCBF. The dotted orange line indicates the prescribed contact-force limit. ( C) RL task description: a tendon-actuated soft continuum arm (one constant-strain segment) is trained to track a dynamically moving target constrained on a hemispherical surface. The target (green sphere) follows a smooth, velocity-limited trajectory (green line). The top panel shows a random policy that leads to poor tracking performance. The bottom panel shows a successful policy learned via reinforcement learning, where the arm accurately follows the target trajectory in 3D space. ( D) Comparison of parallel training efficiency between SoRoMoX and PyElastica. The plot shows the evolution of the mean episode reward over time (in minutes) for different leading batch sizes nb.SoRoMoX demonstrates faster convergence and achieves higher rewards at earlier stages of training. The advantage becomes more pronounced with greater parallelization: using nb = 256 parallel environments yields an approximately 4 × training speedup, while scaling to nb = 512 parallel environments achieves up to a 7 × speedup relative to the CPU PyElastica DCM baseline. 
+
+contain coefficients such as sin ϑ/ϑ , (1 − cos ϑ)/ϑ 2, and 
+
+(ϑ − sin ϑ)/ϑ 3. For a constant strain propagated along a segment, the Lie-algebra argument is χ = sξ , with rotational part χrot = ( sξ )rot . The scalar ϑ = ∥χrot ∥ =
+
+|s| ∥ ξrot ∥ vanishes not only for straight or zero-bending shapes but also at zero arclength, s → 0. These are removable singularities: the underlying maps have finite limits; for example, lim s→0 exp SE(3) (sξ ) = I4. The error is never the model, only a naive implementation that evaluates the indeterminate ratio. Handling them correctly has a subtlety that bites under automatic differentiation. It is not enough to compute both branches and mask the bad one: AD can still propagate undefined intermediate values, such as NaNs, through the inactive branch. The fix is a true conditional, for example 
+
+lax.cond , that never evaluates the singular expression off-branch; it switches to a Taylor or limiting form near 
+
+ϑ = 0 . Even the branch selector needs care: the magnitude IEEE ROBOTICS AND AUTOMATION MAGAZINE 15 
+
+ϑ = pχ⊤
+
+> rot
+
+χrot is finite at χrot = 0 but its gradient is not, so it is computed through a protected expression. Done properly, both the function values and their forward-and reverse-mode gradients stay well defined for straight reference shapes and other zero-rotational-strain cases, as well as at zero arclength; these are precisely the regimes where controllers and optimizers tend to operate. Further details on singularity-safe evaluation are given in Appendix E-B. 
+
+Sidebar 4: Trust, but Verify: Correctness as a Tested Property 
+
+Soft robot kinematics and dynamics are too long to validate by manual inspection: even a single constant-strain segment produces intricate dynamic expressions. Correctness is therefore best treated as a property that is continuously tested, not checked once. We use a layered strategy, run automatically in a continuous-integration (CI) pipeline so it survives every refactor, performance tweak, and extension: 1) Primitives. Verify the SE(2) /SE(3) Lie-algebra op-erations, namely hat maps, exponentials and log-arithms, adjoints, and tangent maps, against their definitions and known block structure. 2) Special cases. Check kinematics and dynamics where closed-form answers are easy: straight ref-erence shapes, pure axial-strain displacement, zero velocity, single planar segments. 3) Internal consistency. Cross-check independent routes to the same quantity: pointwise versus batched evaluation; forward and inverse kinematic loops; body- versus inertial-frame Jacobians; fused versus unfused forward dynamics; and explicit expressions against identities obtained by automatic differentiation, for example ˙J = AD q (J) ˙ q, or conservative forces as gradients of potential energy. 4) Cross-model coherence. Embed specialized models in more general ones, for example planar PCS in a GVS implementation configured with constant strain bases, and require agreement on matched ge-ometric and material parameters, reference strains, and generalized configurations. Finally, randomized tests sample near singular configura-tions and assert finite outputs and well-defined forward-and reverse-mode gradients. To our knowledge, this kind of systematic correctness testing for soft robot models has not been discussed in the literature; yet it is what lets the package be refactored and optimized without silent regressions. Further verification details are given in Appendix E-C. VI. C ONCLUSION 
+
+This article presented SoRoMoX, a fast, differentiable, and parallelizable JAX/Python framework for control-oriented soft robot models. By providing fully numerical and JIT-compatible implementations of articulated and rod-based mod-els, including PCS and GVS formulations, SoRoMoX makes key model quantities accessible for simulation, control, op-timization, learning, and safety-constrained decision making. The benchmarking results and application case studies show that modern software design choices such as automatic differ-entiation, batched execution, and accelerator compatibility can substantially broaden the practical use of soft robot models. Future development will extend SoRoMoX along several complementary directions. A faster planar VS setting would support rapid prototyping of controllers and algorithms that use higher-order geometric shape parametrizations before moving to full spatial models. Existing and future systems could also be extended with support for floating-base dy-namics, kinematic trees for branched soft robot architectures, and closed-chain kinematics for systems such as parallel soft robots. The actuation interface can also be expanded beyond the currently implemented modalities to include shape-memory alloys, dielectric elastomer actuators, electrohydraulic actuators, hydrogels, jamming-based mechanisms, and other emerging soft-actuation technologies [68]. Finally, providing ready-to-use model instantiations for specific soft robots, espe-cially open-source designs, would make the framework easier to benchmark, reproduce, and adopt across the community. More broadly, a standardized robot-description protocol for continuum and soft robots could help the community share robot designs across simulators and model implementations, reducing the effort required to turn a physical or open-source design into an executable computational model. ACKNOWLEDGMENTS 
+
+The work by M. St¨ olzle was supported under the European Union’s Horizon Europe Program from Project EMERGE -Grant Agreement No. 101070918. The work by S. Gribonval was supported by the Erasmus+ program of the European Union. The work by D. Feliu-Talegon was supported by the Dutch Research Foundation (NWO) through the VENI grant ROSES 20297. The work of V.D. Perfetta and C. Della Santina was supported by the European Union’s ERC grant RIPLEy No. 101165078. The work by K. Wong was supported by The Hong Kong Jockey Club Scholarships. This work by M. Tarnini, A. Teejo Mathew, and F. Renda was funded by the Center for Autonomous Robotic Systems, Khalifa University of Science and Technology (KU-CARS). The work by D. Rus and M. St¨ olzle was supported in part by the Singapore MIT Alliance on Research and Technology (SMART) under the Mens, Manus, et Machina (M3S) program, by the BARI EMERGE program under grant N00014-26-1-2304, and by the MIT-GIST collaboration. The work of C. Della Santina was further supported by the GRAIL project under Grant Agreement No. XXXX. We thank Runze Zuo and Daniel Bruder from the University of Michigan for contributing the model for the UMArm [33]. REFERENCES [1] E. Milana, C. D. Santina, B. Gorissen, and P. Rothemund, “Physical control: A new avenue to achieve intelligence in soft robotics,” Science Robotics , vol. 10, no. 102, p. eadw7660, 2025. IEEE ROBOTICS AND AUTOMATION MAGAZINE 16 
+
+[2] R. J. Webster III and B. A. Jones, “Design and kinematic modeling of constant curvature continuum robots: A review,” The International Journal of Robotics Research , vol. 29, no. 13, pp. 1661–1683, 2010. [3] C. Della Santina and D. Rus, “Control oriented modeling of soft robots: The polynomial curvature case,” IEEE Robotics and Automation Letters ,vol. 5, no. 2, pp. 290–298, 2019. [4] S. Grazioso, G. Di Gironimo, and B. Siciliano, “A geometrically exact model for soft continuum robots: The finite element deformation space formulation,” Soft robotics , vol. 6, no. 6, pp. 790–811, 2019. [5] C. Della Santina, C. Duriez, and D. Rus, “Model-based control of soft robots: A survey of the state of the art and open challenges,” IEEE Control Systems Magazine , vol. 43, no. 3, pp. 30–65, 2023. [6] B. Caasenbrood, A. Pogromsky, and H. Nijmeijer, “Control-oriented models for hyperelastic soft robots through differential geometry of curves,” Soft Robotics , vol. 10, no. 1, pp. 129–148, 2023. [7] C. Alessi, C. Agabiti, D. Caradonna, C. Laschi, F. Renda, and E. Falotico, “Rod models in continuum and soft robot control: a review,” 
+
+arXiv preprint arXiv:2407.05886 , 2024. [8] A. T. Mathew, D. Feliu-Talegon, A. Y. Alkayas, F. Boyer, and F. Renda, “Reduced order modeling of hybrid soft-rigid robots using global, local, and state-dependent strain parameterization,” The International Journal of Robotics Research , vol. 44, no. 1, pp. 129–154, 2025. [9] F. Renda, F. Boyer, J. Dias, and L. Seneviratne, “Discrete cosserat ap-proach for multisection soft manipulator dynamics,” IEEE Transactions on Robotics , vol. 34, no. 6, pp. 1518–1533, 2018. [10] F. Renda, C. Armanini, V. Lebastard, F. Candelier, and F. Boyer, “A geometric variable-strain approach for static modeling of soft manipula-tors with tendon and fluidic actuation,” IEEE Robotics and Automation Letters , vol. 5, no. 3, pp. 4006–4013, 2020. [11] F. Boyer, V. Lebastard, F. Candelier, and F. Renda, “Dynamics of continuum and soft robots: A strain parameterization based approach,” 
+
+IEEE Transactions on Robotics , vol. 37, no. 3, pp. 847–863, 2020. [12] C. D. Freeman, E. Frey, A. Raichuk, S. Girgin, I. Mordatch, and O. Bachem, “Brax - a differentiable physics engine for large scale rigid body simulation,” 2021. [Online]. Available: http://github.com/google/brax [13] V. Makoviychuk, L. Wawrzyniak, Y. Guo, M. Lu, K. Storey, M. Macklin, D. Hoeller, N. Rudin, A. Allshire, A. Handa et al. , “Isaac gym: High performance gpu based physics simulation for robot learning,” in Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 2) .[14] A. T. Mathew, F. Boyer, V. Lebastard, and F. Renda, “Analytical derivatives of strain-based dynamic model for hybrid soft-rigid robots,” 
+
+The International Journal of Robotics Research , p. 02783649251346209, 2024. [15] A. T. Mathew, I. B. Hmida, C. Armanini, F. Boyer, and F. Renda, “Sorosim: A matlab toolbox for hybrid rigid–soft robots based on the geometric variable-strain approach,” IEEE Robotics & Automation Magazine , vol. 30, no. 3, pp. 106–122, 2022. [16] J. Bradbury, R. Frostig, P. Hawkins, M. J. Johnson, C. Leary, D. Maclaurin, G. Necula, A. Paszke, J. VanderPlas, S. Wanderman-Milne, and Q. Zhang, “JAX: composable transformations of Python+NumPy programs,” 2018. [Online]. Available: http://github.com/jax-ml/jax [17] M. St¨ olzle, “Safe yet precise soft robots: Incorporating physics into learned models for control,” Dissertation (TU Delft), Mechanical Engi-neering, Delft University of Technology, 09 2025. [18] K. Wong, M. St¨ olzle, W. Xiao, C. D. Santina, D. Rus, and G. Zardini, “Contact-aware safety in soft robots using high-order control barrier and lyapunov functions,” IEEE Robotics and Automation Letters , vol. 10, no. 12, pp. 12 485–12 492, 2025. [19] E. Todorov, T. Erez, and Y. Tassa, “Mujoco: A physics engine for model-based control,” in 2012 IEEE/RSJ international conference on intelligent robots and systems . IEEE, 2012, pp. 5026–5033. [20] Google DeepMind, “MuJoCo XLA (MJX),” https://mujoco.readthedocs. io/en/stable/mjx.html, 2023, accessed: 2026-06-19. [21] F. L. Ferretti, D. Ferigo, A. Croci, C. Sartore, O. G. Younis, S. Traver-saro, and D. Pucci, “Contact-aware morphology optimization via physi-cally consistent differentiable simulation,” IEEE Robotics and Automa-tion Letters , vol. 11, no. 5, pp. 6456–6463, 2026. [22] Giuseppe L’Erario, Silvio Traversaro, Carlotta Sartore, Riccardo Grieco, Stefano Dafarra, Giulio Romualdi, Filippo Luca Ferretti, and Daniele Pucci, “adam,” Jan. 2026. [Online]. Available: https: //github.com/gbionics/adam [23] Newton Contributors, “Newton: GPU-accelerated physics simulation for robotics, and simulation research.” Newton a Series of LF Projects, LLC, 2025. [Online]. Available: https://github.com/newton-physics/newton [24] A. Spielberg, T. Du, Y. Hu, D. Rus, and W. Matusik, “Advanced soft robot modeling in chainqueen,” Robotica , vol. 41, no. 1, pp. 74–104, 2023. [25] T.-H. Wang, P. Ma, A. E. Spielberg, Z. Xian, H. Zhang, J. B. Tenenbaum, D. Rus, and C. Gan, “Softzoo: A soft robot co-design benchmark for locomotion in diverse environments,” in The Eleventh International Conference on Learning Representations , 2023. [26] N. Naughton, J. Sun, A. Tekinalp, T. Parthasarathy, G. Chowdhary, and M. Gazzola, “Elastica: A compliant mechanics environment for soft robotic control,” IEEE Robotics and Automation Letters , vol. 6, no. 2, pp. 3389–3396, 2021. [27] M. A. Graule, T. P. McCarthy, C. B. Teeple, J. Werfel, and R. J. Wood, “Somogym: A toolkit for developing and evaluating controllers and reinforcement learning algorithms for soft robots,” IEEE Robotics and Automation Letters , vol. 7, no. 2, pp. 4071–4078, 2022. [28] M. Kasaei, H. Kasaei, and M. Khadem, “Softmanisim: A fast simulation framework for multi-segment continuum manipulators tailored for robot learning,” in 8th Annual Conference on Robot Learning , 2025. [29] S. H. Sadati, S. E. Naghibi, A. Shiva, B. Michael, L. Renson, M. Howard, C. D. Rucker, K. Althoefer, T. Nanayakkara, S. Zschaler 
+
+et al. , “Tmtdyn: A matlab package for modeling and control of hy-brid rigid–continuum robots based on discretized lumped systems and reduced-order models,” The International Journal of Robotics Research ,vol. 40, no. 1, pp. 296–347, 2021. [30] A. Choi, R. Jing, A. P. Sabelhaus, and M. K. Jawed, “Dismech: A discrete differential geometry-based physical simulator for soft robots and structures,” IEEE Robotics and Automation Letters , vol. 9, no. 4, pp. 3483–3490, 2024. [31] B. J. Caasenbrood, A. Y. Pogromsky, and H. Nijmeijer, “Sorotoki: a matlab toolkit for design, modeling, and control of soft robots,” IEEE Access , vol. 12, pp. 17 604–17 638, 2024. [32] W. Huang, X. Huang, C. Majidi, and M. K. Jawed, “Dynamic simulation of articulated soft robots,” Nature communications , vol. 11, no. 1, p. 2233, 2020. [33] R. Zuo, D. H. Han, R. Li, S. Jamal, and D. Bruder, “Umarm: Untethered, modular, portable, soft pneumatic arm,” arXiv preprint arXiv:2505.11476 , 2025. [34] F. Renda, V. Cacucciolo, J. Dias, and L. Seneviratne, “Discrete cosserat approach for soft robot dynamics: A new piece-wise constant strain model with torsion and shears,” in 2016 IEEE/RSJ International Con-ference on Intelligent Robots and Systems (IROS) . IEEE, 2016, pp. 5495–5502. [35] L. Arleo, G. Stano, G. Percoco, and M. Cianchetti, “I-support soft arm for assistance tasks: a new manufacturing approach based on 3D printing and characterization,” Progress in Additive Manufacturing , vol. 6, no. 2, pp. 243–256, 2021. [Online]. Available: https://link.springer.com/article/10.1007/s40964-020-00158-y [36] M. St¨ olzle, D. Rus, and C. Della Santina, “An experimental study of model-based control for planar handed shearing auxetics robots,” in 
+
+Experimental Robotics . Cham: Springer Nature Switzerland, 2024, pp. 153–167. [37] M. Ram´ ırez Montero, E. Shahabi, G. Franzese, J. Kober, B. Maz-zolai, and C. Della Santina, “Mastering contact-rich tasks by com-bining soft and rigid robotics with imitation learning,” arXiv preprint arXiv:2410.07787 , 2024. [38] C. Della Santina, M. G. Catalano, and A. Bicchi, “Soft robots,” in 
+
+Encyclopedia of Robotics . Springer, 2020, pp. 1–14. [39] R. M. Murray, Z. Li, and S. S. Sastry, A mathematical introduction to robotic manipulation . CRC press, 2017. [40] J. M. Hollerbach, “A recursive lagrangian formulation of manipulator dynamics and a comparative study of dynamics formulation complexity,” 
+
+IEEE Transactions on Systems, Man, and Cybernetics , vol. SMC-10, no. 11, pp. 730–736, 1980. [41] M. W. Walker and D. E. Orin, “Efficient dynamic computer simulation of robotic mechanisms,” Journal of Dynamic Systems, Measurement, and Control , vol. 104, no. 3, pp. 205–211, 1982. [42] R. Featherstone, “The calculation of robot dynamics using articulated-body inertias,” The International Journal of Robotics Research , vol. 2, no. 1, pp. 13–30, 1983. [43] C. Armanini, F. Boyer, A. T. Mathew, C. Duriez, and F. Renda, “Soft robots modeling: A structured overview,” IEEE Transactions on Robotics , vol. 39, no. 3, pp. 1728–1748, 2023. [44] M. St¨ olzle, L. Chin, R. L. Truby, D. Rus, and C. Della Santina, “Modelling handed shearing auxetics: Selective piecewise constant strain kinematics and dynamic simulation,” in 2023 IEEE International Con-ference on Soft Robotics (RoboSoft) . IEEE, 2023, pp. 1–8. IEEE ROBOTICS AND AUTOMATION MAGAZINE 17 
+
+[45] O. Khatib, “A unified approach for motion and force control of robot manipulators: The operational space formulation,” IEEE Journal on Robotics and Automation , vol. 3, no. 1, pp. 43–53, 2003. [46] P. Pustina, C. Della Santina, F. Boyer, A. De Luca, and F. Renda, “Input decoupling of lagrangian systems via coordinate transformation: General characterization and its application to soft robotics,” IEEE transactions on robotics , vol. 40, pp. 2098–2110, 2024. [47] P. Kidger, “On Neural Differential Equations,” Ph.D. dissertation, Uni-versity of Oxford, 2021. [48] C. Della Santina, A. Bicchi, and D. Rus, “On an improved state parametrization for soft robots with piecewise constant curvature and its use in model based control,” IEEE Robotics and Automation Letters ,vol. 5, no. 2, pp. 1001–1008, 2020. [49] C. Della Santina, R. K. Katzschmann, A. Bicchi, and D. Rus, “Model-based dynamic feedback control of a planar soft robot: trajectory track-ing and interaction with the environment,” The International Journal of Robotics Research , vol. 39, no. 4, pp. 490–513, 2020. [50] P. Pustina et al. , “Analysis and control of the underactuation in contin-uum soft robots: a kinematic independent approach,” Ph.D. dissertation, Universit` a degli Studi di Roma” La Sapienza”, 2025. [51] M. St¨ olzle, S. Baberwal, D. Rus, S. Coyle, and C. Della Santina, “Guiding soft robots with motor-imagery brain signals and impedance control,” in 2024 IEEE 7th International Conference on Soft Robotics (RoboSoft) . IEEE, 2024, pp. 1–8, received the Best Paper Award. [52] C. D. Santina, L. Pallottino, D. Rus, and A. Bicchi, “Exact task execution in highly under-actuated soft limbs: An operational space based approach,” IEEE Robotics and Automation Letters , vol. 4, no. 3, pp. 2508–2515, 2019. [53] Q.-Y. Zhou, J. Park, and V. Koltun, “Open3d: A modern library for 3d data processing,” arXiv preprint arXiv:1801.09847 , 2018. [54] B. Yi, C. M. Kim, J. Kerr, G. Wu, R. Feng, A. Zhang, J. Kulhanek, H. Choi, Y. Ma, M. Tancik, and A. Kanazawa, “Viser: Imperative, web-based 3d visualization in python,” arXiv preprint arXiv:2507.22885 ,2025. [55] C. Tsitouras, “Runge–kutta pairs of order 5 (4) satisfying only the first column simplifying assumption,” Computers & Mathematics with Applications , vol. 62, no. 2, pp. 770–775, 2011. [56] M. Gazzola, L. H. Dudte, A. G. McCormick, and L. Mahadevan, “Forward and inverse problems in the mechanics of soft filaments,” 
+
+Royal Society open science , vol. 5, no. 6, p. 171628, 2018. [57] N. Rudin, D. Hoeller, P. Reist, and M. Hutter, “Learning to walk in minutes using massively parallel deep reinforcement learning,” in 
+
+Conference on robot learning . PMLR, 2022, pp. 91–100. [58] T. Du, J. Hughes, S. Wah, W. Matusik, and D. Rus, “Underwater soft robot modeling and control with differentiable simulation,” IEEE Robotics and Automation Letters , vol. 6, no. 3, pp. 4994–5001, 2021. [59] T.-H. J. Wang, J. Zheng, P. Ma, Y. Du, B. Kim, A. Spielberg, J. Tenen-baum, C. Gan, and D. Rus, “Diffusebot: Breeding soft robots with physics-augmented generative diffusion models,” Advances in Neural Information Processing Systems , vol. 36, pp. 44 398–44 423, 2023. [60] G. Williams, P. Drews, B. Goldfain, J. M. Rehg, and E. A. Theodorou, “Aggressive driving with model predictive path integral control,” in 2016 IEEE International Conference on Robotics and Automation (ICRA) ,2016, pp. 1433–1440. [61] C. Pezzato, C. Salmi, E. Trevisan, M. Spahn, J. Alonso-Mora, and C. H. Corbato, “Sampling-based model predictive control leveraging parallelizable physics simulations,” IEEE Robotics and Automation Letters , 2025. [62] J. Gao, M. Y. Michelis, A. Spielberg, and R. K. Katzschmann, “Sim-to-real of soft robots with learned residual physics,” IEEE Robotics and Automation Letters , 2024. [63] A. D. Ames, X. Xu, J. W. Grizzle, and P. Tabuada, “Control barrier function based quadratic programs for safety critical systems,” IEEE Transactions on Automatic Control , vol. 62, no. 8, pp. 3861–3876, 2016. [64] A. K. Dickson, J. C. Pacheco Garcia, M. L. Anderson, R. Jing, S. Alizadeh-Shabdiz, A. X. Wang, C. DeLorey, Z. J. Patterson, and A. P. Sabelhaus, “Safe autonomous environmental contact for soft robots using control barrier functions,” IEEE Robotics and Automation Letters ,2025, arXiv:2504.14755. [65] R. S. Sutton and A. G. Barto, Reinforcement Learning: An Introduction ,2nd ed. Cambridge, MA: MIT Press, 2018. [66] R. Grandia, E. Knoop, M. A. Hopkins, G. Wiedebach, J. Bishop, S. Pickles, D. M¨ uller, and M. B¨ acher, “Design and control of a bipedal robotic character,” in Robotics: Science and Systems (RSS) , 2024. [67] J. Schulman, F. Wolski, P. Dhariwal, A. Radford, and O. Klimov, “Prox-imal policy optimization algorithms,” arXiv preprint arXiv:1707.06347 ,2017. [68] O. Yasa, Y. Toshimitsu, M. Y. Michelis, L. S. Jones, M. Filippi, T. Buchner, and R. K. Katzschmann, “An overview of soft robotics,” 
+
+Annual Review of Control, Robotics, and Autonomous Systems , vol. 6, no. 1, pp. 1–29, 2023. [69] A. H. Khan, Z. Shao, S. Li, Q. Wang, and N. Guan, “Which is the best pid variant for pneumatic soft robots an experimental study,” IEEE/CAA journal of automatica sinica , vol. 7, no. 2, p. 451, 2020. [70] R. Kelly and R. Salgado, “Pd control with computed feedforward of robot manipulators: A design procedure,” IEEE Transactions on Robotics and Automation , vol. 10, no. 4, pp. 566–571, 1994. [71] J. Rader, T. Lyons, and P. Kidger, “Optimistix: modular optimisation in jax and equinox,” arXiv:2402.09983 , 2024. [72] DeepMind, I. Babuschkin, K. Baumli, A. Bell, S. Bhupatiraju, J. Bruce, P. Buchlovsky, D. Budden, T. Cai, A. Clark, I. Danihelka, A. Dedieu, C. Fantacci, J. Godwin, C. Jones, R. Hemsley, T. Hennigan, M. Hessel, S. Hou, S. Kapturowski, T. Keck, I. Kemaev, M. King, M. Kunesch, L. Martens, H. Merzic, V. Mikulik, T. Norman, G. Papamakarios, J. Quan, R. Ring, F. Ruiz, A. Sanchez, L. Sartran, R. Schneider, E. Sezener, S. Spencer, S. Srinivasan, M. Stanojevi´ c, W. Stokowiec, L. Wang, G. Zhou, and F. Viola, “The DeepMind JAX Ecosystem,” 2020. [Online]. Available: http://github.com/google-deepmind [73] M. Zaheer, S. Reddi, D. Sachan, S. Kale, and S. Kumar, “Adaptive methods for nonconvex optimization,” Advances in neural information processing systems , vol. 31, 2018. [74] K. Wong, M. St¨ olzle, W. Xiao, and D. Rus, “A closed-form clf-cbf controller for whole-body continuum soft robot collision avoidance,” in 
+
+2026 IEEE 9th International Conference on Soft Robotics (RoboSoft) .IEEE, 2026, pp. 1171–1178. [75] A. Raffin, A. Hill, A. Gleave, A. Kanervisto, M. Ernestus, and N. Dor-mann, “Stable-baselines3: Reliable reinforcement learning implementa-tions,” Journal of machine learning research , vol. 22, no. 268, pp. 1–8, 2021. [76] I. S. Godage, G. A. Medrano-Cerda, D. T. Branson, E. Guglielmino, and D. G. Caldwell, “Dynamics for variable length multisection continuum arms,” The International Journal of Robotics Research , vol. 35, no. 6, pp. 695–722, 2016. [77] B. Deutschmann, “Modeling and control for a class of tendon-driven continuum mechanisms,” Ph.D. dissertation, Leibniz Universit¨ at Han-nover, 2020. [78] B. J. Caasenbrood, “Design, modeling, and control strategies for soft robots,” 2024. [79] B. Siciliano, L. Villani, G. Oriolo, A. De Luca et al. , “Foundations of robotics,” Advanced Textbooks in Control and Signal Processing , pp. 1–719, 2025. [80] J. Liu, P. Borja, and C. Della Santina, “Physics-informed neural networks to model and control robots: A theoretical and experimental investiga-tion,” Advanced Intelligent Systems , vol. 6, no. 5, p. 2300385, 2024. [81] R. Valadas, M. St¨ olzle, J. Liu, and C. Della Santina, “Learning low-dimensional strain models of soft robots by looking at the evolution of their shape with application to model-based control,” in 2025 IEEE 8th International Conference on Soft Robotics (RoboSoft) . IEEE, 2025, pp. 1–8. IEEE ROBOTICS AND AUTOMATION MAGAZINE 18 
+
+APPENDIX ACORE ABSTRACTIONS AND INTERFACE CONTRACTS 
+
+Section III presents the principal user-facing operations. This appendix specifies the abstractions that support model construction, differentiation, simulation, control, and rendering without cataloguing the complete API. 
+
+A. Parameters and Structure 
+
+System definitions separate dynamic parameter PyTrees from static structure. Parameters contain numerical arrays for geometry, material properties, gravity, reference strain, stiff-ness, and damping; these leaves support AD, vectorization, and optimization. Structure records choices that determine array layout or compiled control flow, including quadrature counts, active-strain masks, joint, basis, and cross-section types, padding limits, and actuator topology. For GVS, factory meth-ods split the mixed construction specifications GVSSegment ,
+
+LinkSpec , JointSpec , and StrainBasisSpec into 
+
+GVSParams and GVSStructure .
+
+with_params(params) replaces the complete parame-ter object; update_params(...) replaces selected fields. Both return a new system, check compatibility with its struc-ture, and recompute dependent transforms, integration arrays, mass matrices, stiffness, and damping data. This permits pa-rameter updates inside the optimization workflow of Figure 7 without reconstructing the topology. Same-shape, same-dtype updates preserve the PyTree layout. Changes to segment count, active strains, basis or joint type, quadrature layout, actuator channels, or routing topology require reconstruction and may cause recompilation. 
+
+B. System Interfaces and State 
+
+DynamicalSystem requires 
+
+y = [ q⊤, ˙q⊤]⊤,
+
+˙y = f (t, y ; ( u, τ ext )) = [ ˙ q⊤, ¨q⊤]⊤, (3) implemented by forward_dynamics(t, y, actuation_args) . The result has the shape of y;the optional actuation tuple conventionally contains the input 
+
+u and external generalized force τext . The base class supplies open-loop, continuous closed-loop, and sampled-data rollouts. 
+
+SystemState is the public JAX PyTree exchanged with rollouts, controllers, and environment models. It contains time 
+
+t, plant state y, and optional fields for the applied input u,controller state, and environment state. The latter two may be arbitrary JAX-compatible PyTrees and are integrated alongside the plant when present. A returned trajectory uses the same object with a leading time dimension on every populated leaf. 
+
+SoftRobot extends DynamicalSystem with arc-length kinematics and Jacobians, dynamical and energy terms, cross-section geometry, and composed actuation. 
+
+C. Analytical Derivative Paths 
+
+Selected SoftRobot methods define custom Jacobian– vector products (JVPs). Their public signatures are unchanged: the derivative rule calls an analytical model hook when provided and otherwise differentiates the protected primal implementation. Representative identities are 
+
+∇q U(q) = τU (q) = G(q) + K(q),
+
+JVP q [J]( q, s ; ˙ q) = ˙J(q, ˙q, s ). (4) Analytical arc-length derivatives similarly reuse pose and Ja-cobian recurrences. PCS provides closed-form recurrences for selected kinematic paths and analytical force–energy relations. Other tangent combinations use AD when an analytical rule is unavailable or not advantageous. Consequently, the same 
+
+jax.grad , jax.jvp , jax.jacfwd , and jax.jacrev 
+
+calls apply to all models. 
+
+D. Task- and Actuation-Space Transformations 
+
+OperationalSpaceDynamics defines a task by back-bone coordinates s_ps and a Boolean task_selector . A single point yields an end-effector task; multiple points yield a shape task. The selector may be common to all points or point-specific and defaults to every twist component. Spatial tasks select three angular and three linear components; planar tasks select one angular and two linear components. Omitting angular components gives a position task. Planar orientation is selected independently, whereas spatial orientation includes either all three angular components or none at each point. 
+
+rotation_representation selects rotation vectors, quaternions, or continuous 6D coordinates for spatial poses and references; planar orientation is scalar. Jacobians and dynamics remain twist-based. Pose and velocity dimensions may therefore differ for quaternion or 6D representations. Full poses are retained for geometric orientation errors, while the selector determines task velocities, Jacobians, and forces. For a full-row-rank task Jacobian, the adapter uses [45] 
+
+Λ = ( JM −1J⊤)−1, J+M = M −1J⊤Λ, (5) and re-exposes the system matrix and force methods in task coordinates. ActuationSpaceDynamics augments the in-stalled transmission coordinates φa(q) with unactuated coor-dinates Huq to form the complete actuation-space coordinates 
+
+φ [46]: 
+
+φ =
+
+φa(q)
+
+Huq
+
+
+
+, Aφ =
+
+I
+
+0
+
+
+
+. (6) The user may specify Hu directly. Otherwise, the constructor evaluates A(0) , verifies rank A(0) = m, and computes a complete QR factorization. If Q⊥ contains the final n − m
+
+columns of Q, it sets Hu = Q⊤⊥; its rows therefore form an orthonormal basis of ker A(0) ⊤. For m = n, Hu is empty. The resulting coordinate Jacobian Jφ(q) = A(q) H⊤
+
+> u
+
+⊤ must re-main nonsingular. The transformed interface is collocated and retains the configuration-space matrix and force vocabulary. 
+
+E. Reference Trajectories and the Controller Contract 
+
+ReferenceTrajectory accepts time samples or con-tinuous functions for desired position or pose, velocity, and acceleration. It generates the complementary representation by linear interpolation or vectorized evaluation. Missing velocity and acceleration functions are obtained by differentiating the IEEE ROBOTICS AND AUTOMATION MAGAZINE 19 
+
+available position and velocity functions. Pose references instead convert orientation derivatives to geometric twists using the declared rotation representation, task-point count, and planar or spatial convention. Feedback controllers generally consume position and ve-locity; tracking feedforward and inverse-dynamics terms also require acceleration. Derivatives generated from sampled po-sitions correspond to the piecewise-linear interpolant. Smooth feedforward acceleration therefore requires explicit derivative data or a smooth continuous reference. Actuation-space con-version maps position through the coordinate map, velocity through its Jacobian, and acceleration through the Jacobian and its time derivative. Operational-space controllers retain full poses for geometric errors before velocity-space selection. The controller contract is the JAX-compatible map 
+
+SystemState 7 → (u, ˙z), with optional controller state 
+
+z. ClosedFormModelBasedController decomposes u
+
+into model-based and feedback terms and combines their state derivatives. Continuous rollouts evaluate this map at the integrator time and integrate z with the plant. Sampled-data rollouts evaluate it every control_dt , hold u between updates, and advance z at the sampling boundary. 
+
+F. Composable Actuation Models 
+
+Transmission defines actuator coordinates φa(q);
+
+EffortModel maps the control input to work-conjugate effort e; Actuator composes both. PassiveElement 
+
+contributes conservative forces, damping, and energy without a control channel. Compatibility is checked during system construction. 
+
+A(q) = 
+
+ ∂φ a(q)
+
+∂q 
+
+⊤
+
+, ˙φa = A(q)⊤ ˙q, τu = A(q)e, 
+
+(7) defines the common work-conjugate interface and preserves power, ˙q⊤τu = ˙φ⊤ 
+
+> a
+
+e. DirectEffort sets e = u; other effort laws may depend on actuator velocity or state. Body, actuator, and passive-element coefficients use immutable full, selective, or indexed updates. Component type, channel count, and routing topology remain structural. 
+
+G. Shared Rendering Interfaces 
+
+The rendering layer uses the forward kinematics of 
+
+SoftRobot base class rather than model-specific generalized coordinates. BaseSoftRobotRenderer samples the back-bone, evaluates poses, extracts positions and material frames, and prepares actuator layers, colors, and batched or multi-robot layouts. A renderer can therefore support different continuum parameterizations without inspecting their kinematic coordi-nates, provided that they implement the common forward-kinematics interface. Concrete renderers share a common construction pattern and implement render_frame , render_sequence ,and show . MatplotlibRenderer targets debugging, notebooks, static plots, and publication figures. 
+
+Open3DRenderer supports interactive 3D inspection, camera control, headless capture, and recorded sequences [53]. 
+
+ViserRenderer supports browser-based demonstrations, streamed states, GUI playback, multi-robot layouts, and polished scenes [54]. OpenCVPlanarRenderer provides fast planar rendering and video generation with limited interactivity. Robot-specific renderers retain the same interface when hardware geometry or actuator appearance requires specialized drawing. APPENDIX BADDITIONAL COMPUTATIONAL PERFORMANCE 
+
+EVALUATION DETAILS 
+
+A. CPU Sequential-Rollout Benchmark 
+
+For the CPU rollout comparison in Table IV, we consider a cylindrical beam with a length of 0.6 m , a radius of 3 cm ,a density of 1000 kg /m3, a Young’s modulus of 1 MPa , a Poisson ratio of 0.5, and a damping coefficient of 10000 .The benchmark was run on a PC with an Intel(R) Core(TM) Ultra 7 165H CPU (1.40 GHz) and 16 GB RAM. We use two piecewise elements for SoRoMoX and SoRoSim, and 10 −100 
+
+elements for PyElastica for every scenario. The number of ele-ments was selected to achieve comparable simulation accuracy across the three libraries. The simulation is performed over 3 s 
+
+with a sampling time of 0.1 ms , using an ode45 integrator. Three different scenarios are simulated, where the system is initially oriented upward along the global Z direction. First, a beam is subjected to a distributed force with magnitude equal to gravity, applied along the global X direction, resulting in deformation in the X − Z plane. Second, a beam is subjected to distributed forces with magnitude equal to gravity, applied along both the global X and Y directions, resulting in fully three-dimensional deformation. Third, a beam is subjected to a distributed force with magnitude equal to gravity applied along the global Z direction, combined with two straight tendons running from the base to the tip. These tendons are positioned 
+
+2 cm from the center and separated by 90 ◦, inducing deforma-tion in multiple directions. The second scenario is simulated in SoRoSim and SoRoMoX using both spatial PCS and GVS formulations to compare computational efficiency. In PyElas-tica, the second scenario remains identical, as PyElastica does not distinguish between strain-basis implementations because it relies on an Finite Element Method (FEM) formulation. We quantify the equal-time tip-translation agreement be-tween SoRoSim and SoRoMoX in Table V. Let pX(tk) and 
+
+pS(tk) denote the respective tip positions at a saved timestamp 
+
+tk common to both outputs. For N corresponding samples, we use 
+
+dk = ∥pX(tk) − pS(tk)∥2,
+
+¯d = 1
+
+N
+
+> N
+
+X
+
+> k=1
+
+dk, RMSE p =
+
+vuut 1
+
+N
+
+> N
+
+X
+
+> k=1
+
+d2
+
+> k
+
+,dmax = max  
+
+> k=1 ,...,N
+
+dk.
+
+(8) No temporal or phase alignment is applied, so the metrics compare the two rollouts at identical physical times. IEEE ROBOTICS AND AUTOMATION MAGAZINE 20         
+
+> TABLE V
+> EQUAL -TIME TIP -TRANSLATION AGREEMENT BETWEEN SOROSIM AND SOROMOX. THE TABLE REPORTS THE MEAN ,ROOT -MEAN -SQUARE ERROR (RMSE), BEAM -LENGTH -NORMALIZED RMSE, AND MAXIMUM
+> EUCLIDEAN POSITION -ERROR MAGNITUDE OVER EACH ROLLOUT .
+
+Case Mean 
+
+[mm] 
+
+RMSE 
+
+[mm] 
+
+RMSE /L
+
+[%] 
+
+Maximum 
+
+[mm] 
+
+Planar PCS 2.36 2.75 0.46 5.13 Spatial PCS 6.31 7.21 1.20 14.14 Complex GVS 0.71 0.86 0.14 1.82 Tendon-driven GVS 4.81 5.82 0.97 10.40 
+
+The tip-position RMSE values remain below 1 cm for all four cases and correspond to 0.14 % to 1.20 % of the 
+
+0.6 m beam length. The complex GVS case shows the closest agreement, with an RMSE of 0.86 mm and a maximum error of 1.82 mm . The planar PCS, tendon-driven GVS, and spatial PCS cases yield progressively larger RMSE values of 
+
+2.75 mm , 5.82 mm , and 7.21 mm , respectively; the largest instantaneous discrepancy is 14 .14 mm for spatial PCS. 
+
+B. GPU Batch-Scaling Benchmark 
+
+For the GPU batch-scaling benchmark in Figure 9, we define the simulation-throughput factor Γsim as the ratio between the total simulated time and the wall-clock time: 
+
+Γsim = nb Tsim 
+
+Twall 
+
+, (9) where nb is the leading batch size, Tsim ∈ R+ is the simulated time per batched rollout, and Twall ∈ R+ is the measured wall-clock runtime. We run the batch-scaling benchmark on a desktop worksta-tion equipped with an NVIDIA RTX 5090 GPU with 32 GB 
+
+of video memory, an AMD Ryzen 9 9950X3D CPU with 16 
+
+cores, and 188 GB of RAM. In the benchmark, we vary the leading batch size as nb ∈ { 1, 2, 4, 8, 16 , 32 , 64 , 128 , 256 } and the number of model links/segments as N ∈ { 1, 2, 4, 8, 16 }.For each setting, we apply constant zero actuation and simulate the soft robot for Tsim = 1 s using Tsitouras’ 5/4 solver [55] with a time step of δt = 0 .1 ms . Simulation data, such as the robot configurations, are saved every 0.01 s . For all systems that rely on numerical spatial integration, namely planar PCS, spatial PCS, and GVS, we use 5 Gaussian quadrature points. For GVS, we use a zero-order basis to isolate the inherent computational penalty of the algorithm that enables a more general functional parametrization of spatial strain compared with PCS. At the largest tested batch size, nb = 256 , the real-time threshold Γsim ≥ 1 is reached for every tested articulated and planar PCS model ( N ≤ 16 ), for spatial PCS with N ≤ 4,and for spatial GVS with N ≤ 2. These regimes apply only to the stated setup: the boundary depends on the hardware, simulation time step, integration solver and tolerances, spatial quadrature resolution, GVS strain-basis order, and number of segments. APPENDIX CADDITIONAL CONTROLLER DETAILS 
+
+Table VI summarizes the implemented controller families. In the table caption, A, M , C, G, K, and D denote the actuation, inertial, Coriolis, gravitational, elastic, and damping terms, respectively. APPENDIX DAPPLICATION CASE STUDIES 
+
+A. Static-Equilibrium System Identification 
+
+Here, the Young’s modulus, Poisson’s ratio, and mass den-sity are identified from four-marker measurements collected at static equilibrium, as even slight variations in stiffness or gravity can substantially change the resulting configurations. In this case, we consider a continuum soft robot with a conical shape, characterized by a base radius of rbase =15 .4 mm , a tip radius of rtip = 4 .8 mm , and a total length of L = 360 mm . Two tendons, routed straight along the robot up to 305 mm from the base, are displaced at angles of 30 ◦ and 150 ◦ from the horizontal axis of the cross-section. By actuating each tendon independently, the robot can reach points on a spherical surface patch covering nearly half a hemisphere. Due to the actuation discontinuity, the robot is decomposed into two distinct links, each modeled using the GVS formula-tion with a VS strain parametrization. Specifically, the first link is characterized by 7 DOFs, enabling linear bending, constant torsion, and constant axial deformation, while the second is re-stricted to 2 DOFs, allowing only constant bending along each axis. The resulting 9-DOFs full-body dynamics is governed by Eq. 1. Here, the stiffness matrix S is a function of the Young’s modulus E and Poisson’s ratio ν, which describe the material’s resistance to deformation. On the other side, the resulting gravitational force G(q) is directly influenced by the mass density ρ. Variations in these material parameters therefore modify both the elastic and gravitational contributions to the model, ultimately affecting the configurations that the robot can attain at steady state. Building on this information, the physical parameters can be identified by minimizing the discrepancy between the robot’s measured equilibrium configurations and the corresponding model predictions. Four markers are attached to its body as detailed in Table VII, each providing three-dimensional Carte-sian coordinates obtained through a motion capture system. Let θ = [ E, ν, ρ ] denote the vector of optimization variables. The optimal θ⋆ that best fits the static-equilibrium marker data can be computed by solving the following optimization problem: 
+
+min 
+
+> θne
+
+X
+
+> i=1
+> nm
+
+X
+
+> j=1
+
+∥pij (qi) − pmeas  
+
+> ij
+
+∥22
+
+s.t. G(qi, ρ ) + S(E, ν ) qi = A(qi) ui, i = 1 , . . . , n e
+
+Emin ≤ E ≤ Emax 
+
+νmin ≤ ν ≤ νmax 
+
+ρmin ≤ ρ ≤ ρmax 
+
+(10) IEEE ROBOTICS AND AUTOMATION MAGAZINE 21 
+
+TABLE VI 
+
+IMPLEMENTED MODEL -BASED CONTROLLERS IN SOROMOX. FOR A GENERIC CONTROLLED COORDINATE ζ,
+
+PID ζ = Kp(ζd − ζ) + Ki
+
+R sat Γ(ζd − ζ)dt + Kd( ˙ζd − ˙ζ), WHERE sat Γ(e) = Γ −1 tanh(Γ e) ACTS COMPONENTWISE , AND [·]a EXTRACTS THE ACTUATED ROWS . F OR THE IMPEDANCE ROW , F dx = ( J+M)⊤ (K(q) + D ˙q) + CxNx ˙q + Λ¨ xd + Kxex + Dx ˙ex , AND Nx = I − J+MJ , WITH J+M THE DYNAMICALLY CONSISTENT PSEUDOINVERSE AND Cx THE OPERATIONAL -SPACE CORIOLIS MATRIX .
+
+Controller Control Task Model-Based Term Error-Based Feedback Term Important Assumptions Best Used When 
+
+CONFIGURATION -SPACE CONTROLLERS 
+
+PID [69] Setpoint Regulation – A⊤(q) PID q Feedback authority limited by actuator map 
+
+A(q); potential forces need to be compensated by integral term; quasi-static objective. Model uncertainty is high, and baseline regulation is sufficient. Potential compensation [5], [50], [70] Setpoint Regulation 
+
+A−1(q)
+
+
+
+G(qd) + K(qd)
+
+
+
+A⊤(q) PID q Full actuation; A(q) invertible; feasible setpoint; quasi-static objective. Fully actuated setpoint regulation with mostly convex potential forces or limited model accuracy. Gravity cancellation [5], [49] Setpoint Regulation 
+
+A−1(q)
+
+
+
+G(q) + K(qd)
+
+
+
+A⊤(q) PID q Full actuation; A(q) invertible; feasible equilibrium; accurate gravity-force model; reliable q estimate; quasi-static objective. Fully actuated regulation when gravity dominates, and the gravity model and q are reliable. Potential cancellation [49], [50] Setpoint Regulation 
+
+A−1(q) ( G(q) + K(q)) A⊤(q) PID q Full actuation; A(q) invertible; accurate potential-force model; reliable q estimate; quasi-static objective. Fully actuated regulation when potential forces are only locally convex, and the potential model and 
+
+q are reliable. Feedforward compensation [5], [70] Trajectory Tracking 
+
+A−1(q)
+
+
+
+M (qd)¨ qd + C(qd, ˙qd) ˙ qd
+
++G(qd) + K(qd) + D ˙qd A⊤(q) PID q Full actuation; A(q) invertible; feasible reference. Fully actuated tracking when a planned trajectory is available, but model accuracy is limited. Mixed-state feedback [49] Trajectory Tracking 
+
+A−1(q)
+
+
+
+M (q)¨ qd + C(q, ˙q) ˙ qd
+
++G(q) + K(qd) + D ˙qd A⊤(q) PID q Full actuation; A(q) invertible; Coriolis consistency; accurate dynamical model; reliable q estimate. Fully actuated tracking when current-state gravity/dynamics should be compensated. Computed torque [49] Trajectory Tracking 
+
+A−1(q)
+
+
+
+M (q)¨ qd + C(q, ˙q) ˙ q
+
++G(q) + K(q) + D ˙q) A−1(q)M (q) PID q Full actuation; A(q) invertible; accurate dynamical model; reliable state estimates. Fully actuated tracking with an accurate full model and reliable q, ˙q.ACTUATION -SPACE CONTROLLERS 
+
+PID [36], [46] Setpoint Regulation – PID φa Integrable actuation map; stable zero dynamics; potential forces need to be compensated by integral term; φa
+
+measured/estimated. Underactuated baseline when the actuation map is integrable. Potential compensation [36], [50] Setpoint Regulation 
+
+h
+
+Gφ(qd) + Kφ(qd)
+
+i 
+
+> a
+
+PID φa Integrable actuation map; stable zero dynamics; feasible qd and φda .Underactuated setpoint regulation with integrable actuation map and mostly convex potential forces. Gravity cancellation [17], [46], [50] Setpoint Regulation 
+
+h
+
+Gφ(q) + Kφ(qd)
+
+i 
+
+> a
+
+PID φa Integrable actuation map; stable zero dynamics; accurate gravity-force model; feasible qd and φda .Underactuated regulation when gravity dominates and the gravity model and q are reliable. Potential cancellation [17], [50] Setpoint Regulation 
+
+Gφ(q) + Kφ(q) 
+
+> a
+
+PID φa Integrable actuation map; stable zero dynamics; accurate potential-force model; reliable q estimate. Underactuated regulation when potential forces are only locally convex and the potential model and q
+
+are reliable. Feedforward compensation [46], [50] Trajectory Tracking 
+
+h
+
+Mφ(qd) ¨ φd + Cφ(qd, ˙qd) ˙ φd
+
++Gφ(qd) + Kφ(qd) + Dφ(qd) ˙ φdi
+
+> a
+
+PID φa Integrable actuation map; stable zero dynamics; feasible reference. Underactuated tracking when an integrable actuation map and feasible trajectory are available. Mixed-state feedback [46], [50] Trajectory Tracking 
+
+h
+
+Mφ(q) ¨ φd + Cφ(q, ˙q) ˙ φd
+
++Gφ(q) + Kφ(qd) + Dφ(q) ˙ φdi
+
+> a
+
+PID φa Integrable actuation map; stable zero dynamics; feasible reference; Coriolis consistency; accurate dynamical model; reliable q estimate. Underactuated tracking when current-state gravity/dynamics should be compensated. OPERATIONAL -SPACE CONTROLLERS 
+
+Synergistic control [5], [52] Setpoint Regulation 
+
+PM,A = ( JM −1A)−1JM −1 PM,A J⊤ PID x Task and actuator dimensions match; 
+
+JM −1A full rank; stable internal dynamics, quasi-static objective. Underactuated task regulation when no integrable actuation map is available but task and actuator dimensions match. Impedance control [45], [49], [51] Trajectory Tracking 
+
+A−1(q)
+
+
+
+J⊤F dx + G(q)
+
+
+
+Full actuation; A(q) invertible; task Jacobian full row rank; stable null dynamics. Fully actuated task-space tracking or interaction with accurate full model and reliable q, ˙q.
+
+TABLE VII POSITIONS OF MARKERS ON THE SOFT ROBOT FOR STATIC -EQUILIBRIUM SYSTEM IDENTIFICATION .
+
+Marker ID Distance from base Distances from backbone 
+
+di,x [mm] (di,y , d i,z ) [mm] 1 129 .1 (0 , 25) 
+
+2 219 .5 (0 , −21) 
+
+3 280 .0 (0 , 20) 
+
+4 368 .0 (0 , 0) 
+
+where ne is the number of experiments, nm the number of markers, pmeas 
+
+ij is the measured position of the j-th marker in the i-th experiment, and pij the corresponding expected value according to the model. Here, the first constraint enforces the static equilibrium condition that q(θ⋆) has to satisfy. From an implementation standpoint, this nonlinear constraint is embedded directly into the cost function evaluation when computing pij (qi). As a result, the lower and upper bounds on the optimization variables are the only explicit constraints that need to be provided to the solver. The bounds for the Young’s modulus and Poisson’s ratio are selected based on typical values reported in the literature for silicone-based materials, with Emin = 0 .01 MPa , Emax = 1 MPa , νmin = 0 .4, and 
+
+νmax = 0 .5. The considered manipulator has a volume of 
+
+1.416 ×10 −4 m3 and a mass of 0.185 kg , yielding a theoretical material density of ρ = mrobot /V robot = 1310 kg /m3.However, material inhomogeneities and manufacturing imper-fections cause the actual value to deviate from this estimate. IEEE ROBOTICS AND AUTOMATION MAGAZINE 22 
+
+For this reason, the mass density is also included as an optimization variable, with the theoretical value used solely to define its physical bounds, ρmin = 1000 kg /m3 and ρmax =2000 kg /m3. Finally, the initial condition θ0 was assigned as the mean value of the lower and upper bounds of each physical parameter, i.e. θ0 = 0.505 MPa , 0.45 , 1500 kg /m3.The introduced optimization problem can be solved using a gradient-based approach by exploiting the fully differentiable structure of the SoRoMoX implementation in JAX. By lever-aging AD, the gradient of the loss function with respect to the physical parameters can be computed efficiently and exactly. This enables the use of first-order optimization algorithms, such as Adam, which iteratively update the parameter vector based on gradient information, leading to an efficient solution of the nonlinear optimization problem. Using the Adam algorithm provided by the optimistix pack-age [71] with a learning rate of 0.01 , the optimizer converges to the optimal solution θ⋆ = 0.315 MPa , 0.45 , 1320 kg /m3.Fig. 8B illustrates how the mathematical model of the soft robot becomes significantly more accurate at static equilibrium with the identified parameters, reducing the overall static-equilibrium RMS marker error from 56 .9 mm to 19 .3 mm, yielding an improvement of about 66 % . Specifically, although the error on the first two markers slightly increases, the accuracy on the last two is drastically improved, resulting in a more homogeneous and accurate fit across all markers. 
+
+B. Static-Equilibrium Identification and Residual Learning 
+
+Even after fitting physical parameters to equilibrium data, residual modeling errors persist, as anticipated in Fig. 8B. Rather than discarding these discrepancies, they can be rep-resented by a residual external force τext [62], which absorbs unmodeled effects and parametric uncertainty. Under this assumption, the system dynamics of Eq. 1 can be reformulated as: 
+
+M (q) ¨ q+C(q, ˙q) ˙ q+G(q)+ K(q)+ D ˙q = A(q) u+τext . (11) This residual external force can be estimated through an optimization procedure analogous to static-equilibrium system identification. However, this approach yields a fixed vector that struggles to minimize the error across the entire workspace. To improve generalizability, we instead model the external force as a function of the applied control input, since neglected manipulator effects may vary with the tendon pulling forces. Solving the resulting optimization problem for each control input ui produces a discrete dataset of optimal estimates 
+
+τ ⋆
+
+> ext ,i
+
+(ui). To recover the continuous representation required for the system dynamics, [62] proposed training a neural network on this dataset to learn a smooth mapping τext ,NN (u).Following this direction, the i-th optimal estimate τ ⋆ 
+
+> ext ,i
+
+can be obtained by solving the following optimization problem: 
+
+min 
+
+> τext ,i
+> nm
+
+X
+
+> j=1
+
+∥pij (qi) − pmeas  
+
+> ij
+
+∥22 + λ∥τext ,i ∥22
+
+s.t. G(qi) + S q i = A(qi) ui + τext ,i 
+
+τ ext ,i ≤ τext ,i ≤ τ ext ,i 
+
+(12) where the first constraint enforces static equilibrium under the applied external force τext ,i , and the second ensures physically admissible configurations of the soft robot. From empirical considerations, force bounds of ±1 N and ±0.01 N are assigned to the first and second links, respectively. As in the static-equilibrium identification step, this problem is solved via a gradient-based approach that exploits the fully differentiable structure of the SoRoMoX implementation, allowing exact gradient computation through automatic differ-entiation and efficient optimization via the Adam algorithm. Choosing λ = 10 −8, Fig. 8B,C illustrates how the mathe-matical model accuracy significantly improves thanks to the identified optimal residual forces τ ⋆
+
+> ext
+
+. Fig. 8D further shows that backbone configurations obtained with residual-force es-timation closely match their measured counterparts across all inputs ui, while pre-optimized results exhibit substantially larger errors. To train the Neural Network, the resulting dataset of ne =22 input-output pairs {(ui, τ ⋆
+
+> ext ,i
+
+)} is split into a training set (90% corresponding to M samples) and a test set ( 10% ). A fully-connected feedforward neural network with 4 hidden lay-ers of 512 units each and ReLU activations learns the smooth mapping τext ,NN (u) by minimizing the mean squared error between predicted and optimal generalized forces, regularized by an L2 penalty on the network weights Θ:
+
+L(Θ) = 12M
+
+> M
+
+X
+
+> i=1
+
+∥τext ,NN (ui, Θ) − τ ⋆
+
+> ext ,i
+
+∥22 + γ
+
+2 ∥Θ∥22 (13) with γ = 10 −5. Training was performed for 12 · 10 3 steps using the Adam optimizer, with an initial learning rate of 
+
+10 −3 decayed via a cosine schedule to 5% of its initial value, and gradient clipping with unit norm threshold to stabilize convergence. Fig. 8B,C highlights how the trained neural network ac-curately approximates the optimal residual external force for both the training and testing dataset. Overall, both the optimized residual and the learned resid-ual improve the agreement between predicted and measured equilibrium shapes, with overall RMSE errors of 6.6 mm 
+
+and 6.9 mm , respectively. This yields an improvement of about 66 % and 64 % relative to the model identified at static equilibrium. 
+
+C. Model-Based Control 
+
+The model-based control case study evaluates whether the decomposed dynamics and kinematics exposed by SoRoMoX can be used directly for feedback design. It compares progres-sively richer model compensation in configuration space and demonstrates simultaneous end-effector position and orienta-tion tracking in operational space. The following simulation cases use the spatial PCS strain convention 
+
+ξi(qi) = ξref + qi,ξi(qi) = κx,i κy,i κz,i σx,i σy,i σz,i 
+
+⊤ ,ξref = 0 0 0 1 0 0⊤ ,qi = κx,i κy,i κz,i ∆σx,i σy,i σz,i 
+
+⊤ .
+
+(14) IEEE ROBOTICS AND AUTOMATION MAGAZINE 23 
+
+Thus, κx,i denotes torsion, κy,i and κz,i bending, ∆σx,i =
+
+σx,i −1 the axial-strain displacement from the reference value, and σy,i and σz,i transverse shear. The full axial strain is therefore σx,i = 1 + ∆ σx,i . In both cases, all six generalized strain coordinates are active in every segment; no coordinate is deactivated. All segments also share the geometry and material parameters Li = 0 .1 m , ri = 0 .02 m , Ei = 2 kPa ,
+
+Gs,i = 1 kPa , and ρi = 1070 kg /m3.
+
+Shared implementation. Both cases assemble their con-trollers directly from the exposed model terms M , C, G, K,
+
+D, A, g, J, and ˙J, without model-specific dynamics code. Desired velocities and accelerations are generated from the continuous reference maps by AD and the built-in closed-loop rollout jointly integrates the controller and robot dynamics. 
+
+1) Configuration-Space Regulation and Tracking: The configuration-space study isolates the effect of increasingly complete model compensation under identical feedback, ref-erence, and rollout conditions. The control objective is to drive the generalized strain-displacement configuration q(t) to 
+
+qd(t) during one uninterrupted benchmark comprising step-wise setpoint regulation and time-varying trajectory tracking. The regulation phase tests equilibrium accuracy, whereas the tracking phase additionally tests compensation of the velocity- and acceleration-dependent dynamics. The resulting commanded-coordinate responses for all five controllers are shown in Figure 11A. We consider a horizontally mounted, fully actuated, one-segment spatial PCS robot with q ∈ R6,
+
+A(q) = I6, and q(0) = ˙q(0) = 0 . Only κy, κz, and ∆σx
+
+receive nonzero references, whereas κx, σy, and σz remain active and are regulated to zero. The integration and saved-sample periods are δt = 5 × 10 −5 s and δt s = 0.01 s ,respectively. Specifically, setpoint regulation is performed for t ∈
+
+[0 , 15 s) , followed by trajectory tracking for t ∈ [15 s , 30 s] .During regulation, the desired physical strains (κdy , κ dz , σ dx ) are 
+
+
+
+(0 , 0, 1.00) , 0 ≤ t < 3 s ,
+
+(14 , 7, 1.10) , 3 s ≤ t < 6 s ,
+
+(−14 , −7, 0.95) , 6 s ≤ t < 9 s ,
+
+(7 , −10 , 1.06) , 9 s ≤ t < 12 s ,
+
+(0 , 0, 1.00) , 12 s ≤ t < 15 s ,
+
+(15) where the bending strains are expressed in m−1 and the axial strain is dimensionless. For the tracking phase, let τ = t−15 s ,
+
+s(τ ) = clip 
+
+ τ
+
+1.5 s , 0, 1
+
+
+
+, h(s) = 10 s3 − 15 s4 + 6 s5.
+
+(16) The desired trajectory is 
+
+κdy (t) = 12 h s(τ ) sin (3 τ ) ,κdz (t) = 6 h s(τ ) sin 
+
+
+
+2τ + π
+
+4
+
+
+
+,σdx (t) = 1 + 0 .06 h s(τ ) sin 
+
+
+
+2.5τ + π
+
+2
+
+
+
+,
+
+(17) with angular frequencies 3, 2, and 2.5 rad /s, respectively. Proportional–derivative (PD) and proportional–integral– derivative (PID) feedback provide model-free baselines. Po-tential compensation (PC), feedforward compensation (FF), and computed torque (CT) then introduce, respectively, static-force compensation, desired-trajectory inverse dynamics, and measured-state inverse-dynamics cancellation [5], [49], [70]. All five implementations share the robot, reference, feedback gains, and rollout; only the model-compensation term changes. Let eq = qd − q. The integral state ηq evolves according to the unit-preserving saturation 
+
+˙ηq = sat Γ(eq ), ηq (0) = 0 ,
+
+sat Γ(e) = Γ −1 tanh(Γ e) , (18) where tanh( ·) acts componentwise and Γ = diag( esat )−1. For the coordinate ordering in (14), the physical error scales are 
+
+esat = 10 10 10 0.1 0.1 0.1⊤ , (19) where the first three entries are in m−1 and the final three are dimensionless. The rotational scale corresponds to one radian of angular error across the 0.1 m segment, and the linear scale corresponds to a 10 % extension or shear-strain error. This saturation preserves the units of the integrated error and has unit slope at the origin, leaving the nominal small-error integral gain unchanged. The shared feedback term is 
+
+PID q = Kpeq + Kiηq + Kd( ˙ qd − ˙q), (20) The controller PD q follows by setting Ki = 0 . For A(q) = I6,the five control laws are 
+
+uPD = PD q ,uPID = PID q ,uPC = G(qd) + K(qd) + PID q ,uFF = M (qd)¨ qd + C(qd, ˙qd) ˙ qd
+
++ G(qd) + K(qd) + D ˙qd + PID q ,uCT = M (q)  ¨qd + PID CT 
+
+> q
+
+
+
++ C(q, ˙q) ˙ q + G(q) + K(q) + D ˙q, 
+
+(21) where PID CT  
+
+> q
+
+= M (0) −1 PID q . The matched force-domain gains are 
+
+Kp = ω2
+
+> n
+
+M (0) , Kd = 2 ζω nM (0) , Ki = ωiω2
+
+> n
+
+M (0) .
+
+(22) with ωn = 30 rad /s, ζ = 0 .9, and ωi = 0 .75 rad /s.Metrics are evaluated separately over the regulation and tracking phases. Let Q = {κx, κ y, κ z, ∆σx, σ y, σ z} contain all active generalized strain coordinates. For phase P, saved-sample set IP , and j ∈ Q , let eq,j [k] = qd 
+
+> j
+
+[k] − qj [k] and 
+
+NP = |I P |. The reported metric is 
+
+RMSE P 
+
+> j
+
+=
+
+s 1
+
+NP
+
+X
+
+> k∈I P
+
+e2 
+
+> q,j
+
+[k]. (23) The metric remains coordinate-wise because angular and linear strain errors have different units. Reporting all six coordinates also exposes motion induced through dynamic coupling in the uncommanded torsion κx and shear coordinates σy and 
+
+σz, whose references remain zero throughout the experiment. For setpoint regulation, we additionally quantify the terminal tracking error over the final 10% of each of the four post-change constant-reference intervals Iterm  
+
+> m
+
+, m ∈ { 1, . . . , 4},corresponding to the final 0.3 s of each 3 s interval. The IEEE ROBOTICS AND AUTOMATION MAGAZINE 24 
+
+TABLE VIII 
+
+CONFIGURATION -SPACE REGULATION AND TRACKING ERRORS . THE ANGULAR -STRAIN ERRORS κx , κy , AND κz ARE REPORTED IN rad /m; THE AXIAL -STRAIN -DISPLACEMENT ERROR ∆σx AND TRANSVERSE -SHEAR ERRORS σy AND σz ARE DIMENSIONLESS . O NLY κy , κz , AND ∆σx RECEIVE NONZERO REFERENCES . T HE TERMINAL -REGULATION MEAN ABSOLUTE ERROR USES THE FINAL 10% OF EACH POST -CHANGE SETPOINT INTERVAL AND EXCLUDES THE INITIAL ZERO -REFERENCE INTERVAL . B OLD VALUES INDICATE THE LOWEST ERROR FOR EACH COORDINATE WITHIN EACH BLOCK ; ≈ 0 
+
+> DENOTES AN ERROR BELOW
+
+10 −12 .                                                                                                                                                                                                         
+
+> Controller κx
+> [rad /m]
+> κy
+> [rad /m]
+> κz
+> [rad /m]
+> ∆σx
+> [−]
+> σy
+> [−]
+> σz
+> [−]
+> SETPOINT REGULATION —RMSE PD (model-free) 2.817 3.067 1.573 1.806 ×10 −23.704 ×10 −21.133 ×10 −1
+> PID (model-free) 2.472 3.052 1.531 1.846 ×10 −23.606 ×10 −26.747 ×10 −2
+> Potential compensation 2.097 ×10 −12.965 1.408 1.832 ×10 −22.111 ×10 −24.591 ×10 −2
+> Feedforward compensation 2.097 ×10 −12.965 1.408 1.832 ×10 −22.111 ×10 −24.591 ×10 −2
+> Computed torque ≈02.088 1.026 1.198 ×10 −2≈0≈0
+> SETPOINT REGULATION —TERMINAL -WINDOW MAE PD (model-free) 2.827 1.081 0.7853 5.828 ×10 −33.180 ×10 −21.058 ×10 −1
+> PID (model-free) 0.9285 0.4410 0.3845 4.565 ×10 −31.446 ×10 −22.315 ×10 −2
+> Potential compensation 4.579 ×10 −20.2532 0.1546 1.924 ×10 −33.524 ×10 −34.549 ×10 −3
+> Feedforward compensation 4.579 ×10 −20.2532 0.1546 1.924 ×10 −33.524 ×10 −34.549 ×10 −3
+> Computed torque ≈05.963 ×10 −23.998 ×10 −24.466 ×10 −4≈0≈0
+> TRAJECTORY TRACKING —RMSE PD (model-free) 1.768 2.688 0.9485 2.501 ×10 −22.936 ×10 −21.204 ×10 −1
+> PID (model-free) 2.233 2.603 0.9200 2.652 ×10 −23.357 ×10 −27.504 ×10 −2
+> Potential compensation 0.1369 2.549 0.9085 9.478 ×10 −32.715 ×10 −27.290 ×10 −2
+> Feedforward compensation 1.870 ×10 −21.395 ×10 −23.960 ×10 −22.309 ×10 −41.099 ×10 −31.959 ×10 −4
+> Computed torque ≈05.309 ×10 −38.326 ×10 −34.881 ×10 −5≈0≈0
+
+initial zero-reference interval is excluded. Weighting the four setpoints equally gives 
+
+MAE term  
+
+> j
+
+= 14
+
+> 4
+
+X
+
+> m=1
+
+1
+
+Nm
+
+X
+
+> k∈I term
+> m
+
+|eq,j [k]| , Nm = |I term  
+
+> m
+
+|.
+
+(24) Table VIII reports the full-phase regulation and trajectory-tracking RMSEs together with the terminal-regulation mean absolute errors. The time histories in Figure 11A and the quantitative errors in Table VIII highlight three effects of model compensation. First, the full regulation-phase RMSEs include the transients following each setpoint change, whereas the terminal-window mean absolute errors isolate the residual tracking error. In these terminal windows, potential compensation reduces the errors in all six coordinates relative to both model-free con-trollers, with reductions across the two baselines and six coor-dinates ranging from 43 % to 98 % . Potential and feedforward compensation coincide in regulation because the desired veloc-ities and accelerations vanish between setpoint changes. Sec-ond, during trajectory tracking, adding the desired-trajectory inertial, Coriolis, and damping terms in the feedforward con-troller reduces the RMSEs of all six coordinates by 86 .3 % to 
+
+99 .7 % relative to potential compensation. Third, full feedback linearization with computed torque further reduces the tracking RMSEs of κy, κz, and ∆σx by 62 % , 79 % , and 79 % , respec-tively, relative to feedforward compensation, and suppresses the three uncommanded-coordinate errors to numerical pre-cision. For terminal regulation, computed torque reduces the mean absolute errors of these three commanded coordinates by 76 % , 74 % , and 77 % , respectively, relative to potential or feedforward compensation. 
+
+2) Operational-Space Position and Orientation Tracking: 
+
+The operational-space study evaluates simultaneous position and orientation tracking using the complete translational and rotational task-space dynamics. The control objective is to track a spherical surface-following figure eight: the desired position traverses a period-T = 4 s figure eight on the sphere 
+
+S = {p ∈ R3 | ∥ p − c∥ = rs} of radius rs = 0 .08 m , while the first end-effector axis follows the outward surface normal. This coupled pose task exercises all six coordinates of the 
+
+SE (3) operational-space formulation. The operational-space case uses a fully actuated two-segment spatial PCS robot with 
+
+q = [ q⊤ 
+
+> 1
+
+, q ⊤ 
+
+> 2
+
+]⊤ ∈ R12 , A(q) = I12 , and q(0) = ˙q(0) = 0 .The simulation interval is t ∈ [0 , 10 s] , with integration period 
+
+δt = 2 × 10 −5 s and saved-sample period δt s = 0 .01 s . The controlled output is the complete end-effector pose x(t) = (R(t), p (t)) ∈ SE (3) at s = L1 + L2, with all angular and translational task coordinates selected. The corresponding pose tracking, componentwise errors, and representative robot configurations are shown in Figure 11B. To construct the desired pose, let (R0, p 0) be the initial end-effector pose, let e1, e 2, e 3 denote the canonical basis of R3,and define n0 = R0e1, t1 = R0e2,t2 = R0e3, c = p0 − rsn0, (25) where c is the sphere center. With ϕ(t) = 2 πt/T , define the figure-eight displacement in the tangent plane as 
+
+pdtan (t) = 0 .08 m sin ϕ(t) t1 + 0 .04 m sin  2ϕ(t) t2. (26) The desired position on the sphere is 
+
+pd(t) = c + rs
+
+h
+
+cos 
+
+ ∥pdtan (t)∥
+
+rs
+
+
+
+n0
+
++ sinc 
+
+ ∥pdtan (t)∥
+
+rs
+
+ pdtan (t)
+
+rs
+
+i
+
+,
+
+(27) IEEE ROBOTICS AND AUTOMATION MAGAZINE 25 
+
+where sinc( z) = sin( z)/z for z̸ = 0 and sinc(0) = 1 . The surface-following reference frame is defined by 
+
+nd(t) = pd(t) − crs
+
+,yd(t) = 
+
+ I − nd(t)nd(t)⊤ t1
+
+∥(I − nd(t)nd(t)⊤) t1∥ ,zd(t) = nd(t) × yd(t),Rd(t) = nd(t) yd(t) zd(t) .
+
+(28) Consequently, the end-effector position follows the spherical figure eight while its first axis follows the outward surface normal. The geometric pose and velocity errors are 
+
+ex =
+
+eR
+
+ep
+
+
+
+, eR = log SO (3) 
+
+ RdR⊤∨ ,ep = pd − p, ˙ex = ˙ xd − J ˙q. 
+
+(29) Using Λ and J+M from (5) and Nx = I − J+MJ, the partial-feedback-linearization impedance controller is [17], [49] 
+
+u = J⊤F dx + G(q),F dx = ( J+M)⊤ (K(q) + D ˙q) + CxNx ˙q + Λ¨ xd
+
++ Kxex + Dx ˙ex.
+
+(30) The term CxNx ˙q cancels the Coriolis coupling induced by the null-space velocity. The operational-space adapter derives J, Λ, J+M, Cx, and Nx
+
+from the robot model, including the rotational task dynamics; the pose-reference utilities evaluate twist-consistent geometric errors. Let λi = [Λ(0)] ii , let ¯λp be the mean of the three translational entries, and let kp = 1 N /m denote each trans-lational stiffness entry. The common target natural frequency, rotational stiffnesses, and critically damped gains are 
+
+ωn =
+
+s
+
+kp
+
+¯λp
+
+, kR,i = λR,i ω2
+
+> n
+
+, di = 2 pkiλi. (31) Thus, the rotational and translational task coordinates have matched local modal bandwidths. To quantify position and orientation separately without de-pendence on the selected coordinate axes, define the Euclidean position-error magnitude εp[k] = ∥ep[k]∥2 and the geodesic orientation-error magnitude εR[k] = ∥eR[k]∥2. The corre-sponding reference spans are the maximum pairwise Euclidean and geodesic distances along the desired trajectory, 
+
+Sp = max  
+
+> k,ℓ
+
+∥pd[k] − pd[ℓ]∥2,SR = max  
+
+> k,ℓ
+
+log SO (3) 
+
+ Rd[k]Rd[ℓ]⊤∨
+
+> 2
+
+. (32) For a ∈ { p, R}, the RMSE and its range-normalized counter-part are 
+
+RMSE a =
+
+vuut 1
+
+N
+
+> N
+
+X
+
+> k=1
+
+ε2
+
+> a
+
+[k], NRMSE a = RMSE a
+
+Sa
+
+.
+
+(33) For the desired trajectory, Sp = 134 .6 mm and SR = 114 .6◦.Across the complete 10 s rollout, the position-error norm has 
+
+RMSE p = 2 .84 mm and NRMSE p = 2 .11 % . The corre-sponding geodesic orientation errors are RMSE R = 2 .29 ◦ and 
+
+NRMSE R = 2 .00 % .
+
+D. Control Gain Optimization 
+
+The dynamic performance of a closed-loop system is strongly dependent on the controller, whose parameters often require careful tuning in order to attain the desired transient characteristics. However, manually selecting the control pa-rameters can be non-trivial, and it may require extensive trial-and-error [69]. This section exemplifies how the SoRoMoX package allows for automatically tuning the gains of model-based feedback controllers by gradient-based optimization of the closed-loop dynamics of soft robots. The soft robot is parametrized as an PCS and actuated by three tendons with linear routing aligned to the robot’s backbone. Two cases are investigated in this example, one for the setpoint regulation of a one-segment PCS controlled via a model-based regulator in actuation coordinates, and the other for the setpoint regulation of a two-segment soft robot controlled with a synergistic controller in operational space. Two different controllers are implemented and optimized for the task of setpoint regulation in two different cases, detailed below. Note that the two systems are both underactuated, since the number of actuators m = 3 is lower than the degrees of freedom n = 6 and n = 12 .
+
+1) Model-Based Controllers: a) Potential Shaping Actuation Space Controller: It has been demonstrated in literature [46] that it is often possible to reformulate the robot dynamics in actuation coordinates 
+
+φ = [ φ⊤ 
+
+> a
+
+, φ ⊤ 
+
+> u
+
+]⊤ ∈ Rn, where φa ∈ Rm, φ u ∈ Rn−m are denoted as actuated and unactuated coordinates, respectively. If the integrability assumption is met, a transformation exists that enables the change of coordinates as ha(·) : Rn → Rm,such that ∂h a/∂q = AT (q) [46]. In the case of underactuation, to complete the change of coordinates, one must set the last 
+
+n − m variables, which are usually set as the remaining configuration variables, defining the transformation as [17] 
+
+φ = h(q) = 
+
+ha(q)0n−m
+
+
+
++
+
+ 0m×m 0m×(n−m)
+
+0(n−m)×m In−m
+
+
+
+q. (34) The SoRoMoX package natively implements the transforma-tion of coordinates h(·) : Rn → Rn from configuration to actuation space. In this example, the desired actuated variables derive from the target configuration as φda = ha(qd) ∈ Rm. The model-based setpoint regulation controller with potential compensa-tion in actuation coordinates is [50] 
+
+u(t) = A−1
+
+> φ, a
+
+(qd) Gφ, a(qd) + Kφ, a(qd) + PID (φda , φ a(t)) ,
+
+(35) where Aφ, a ∈ Rm×m, Gφ, a ∈ Rm, Kφ, a ∈ Rm are the first 
+
+m rows of the actuation matrix, the gravity force vector, and IEEE ROBOTICS AND AUTOMATION MAGAZINE 26 
+
+the elastic force vector, respectively, of the actuation-space dynamics [46]. Moreover, 
+
+PID( φda , φ a(t)) = Kp(φda − φa(t)) − Kd ˙φa(t)+ Ki
+
+Z t
+
+> 0
+
+tanh  φda − φa(t′)dt ′, (36) is the feedback term in actuation space, being Kp, K i, K d ∈
+
+Rm×m the proportional, integral, and derivative gains of an integral-saturated PID, respectively. 
+
+b) Synergistic Operational Space Controller: In this case, the target is defined as a position xd ∈ R3 that the tip of the soft arm is supposed to reach. The tip position of the robot is defined as x(t) = FK( q(t)) ∈ Rnx , where 
+
+nx = 3 is the dimension of the operational (or task) space and 
+
+FK( ·) : Rn → Rnx is the forward kinematics that maps the configuration to the tip position [5]. Established controllers in operational space developed for the fully actuated case [49], [51] can be transferred to the underactuated one by means of the synergistic projector , firstly introduced in [52], that maps forces from task space directly into the actuation space under the assumptions that (i) the actuation space has the same dimension of the task space, thus nx = m, and (ii) the matrix J(q)M −1(q)A(q) is full rank. Then, the synergistic projector is defined as 
+
+PM,A(q) =  J(q)M −1(q)A(q)−1 J(q)M −1(q), (37) where J = ∂ FK /∂q ∈ Rnx×n is the Jacobian of the forward kinematics, M (q) ∈ Rn×n is the inertia matrix, and A(q) ∈
+
+Rn×m is the actuation matrix. The resulting control law 
+
+u(t) = PM,A(q(t)) J⊤(q(t)) Fx(t), (38) generates a fully actuated dynamics in operational space, given a generic force Fx ∈ Rnx [5]. In this example, the target force is generated from a PID controller in task space 
+
+Fx(t) = PID (xd, x (t)) = Kp(xd − x(t)) − Kd ˙x(t)+ Ki
+
+Z t
+
+> 0
+
+tanh  xd − x(t′)dt ′,
+
+(39) where Kp, K i, K d ∈ Rnx×nx are the proportional, integral, and derivative gains, respectively. 
+
+2) Feedback Control Gain Optimization: We automatically tune the gains of the PID feedback controllers by optimizing the closed-loop behavior using gradient descent, combining the robot models and controllers from the SoRoMoX package with the Optax [72] optimization package. In this approach, we retrieve the gradients of the cost function encoding the perfor-mance of the closed-loop system response with respect to the chosen parameters by performing a forward and backward pass on the closed-loop simulation. Considering the diagonal terms of the control gain matrices kp = diag( Kp), ki = diag( Ki),and kd = diag( Kd), the optimization variables are defined as the vector ϕ = [ k⊤ 
+
+> p
+
+, k ⊤ 
+
+> i
+
+, k ⊤ 
+
+> d
+
+]⊤ that is updated via gradient descent 
+
+ϕ(j+1) = ϕ(j) − α(j) opt ∇ϕl(j) , (40) where αopt is the adaptive learning step of the Yogi opti-mizer [73], j denotes the jth iteration of the optimization loop, and the cost function is defined as 
+
+l = λ1
+
+Z t1
+
+> t0
+
+∥e(t′)∥2dt ′ + λ2
+
+Z t2
+
+> t1
+
+∥e(t′)∥2dt ′, (41) where e(t) is the error defined as e(t) = qd − q(t) in the actuation-space control case and e(t) = xd − x(t) in the operational-space control case, t0 and t2 are the initial and final simulation time, respectively, t1 = ( t2 − t0)/2 is the estimated settling time of the dynamics, and λ1, λ 2 are weights. In order to improve the robustness of the optimization and guard against “getting stuck” in local minima, we perform batch optimization for both cases. A batch is generated by randomly sampling a set of nb initial values of ϕ within valid intervals with uniform distribution, yielding the batched collection Φ = ( ϕ1, ..., ϕ nb ). We run nb parallel optimizations, one for each ϕi ∈ Φ, associated with the corresponding loss. 
+
+3) Results: Figure 12 summarizes the results for both gain-optimization cases. The left panels (Figure 12(a),(c)) show the loss over 100 optimization iterations, while the right panels show the corresponding convergence of the regulated configu-ration variables (Figure 12(b)) and tip position (Figure 12(d)) toward their targets. The optimized gains reduce the loss by 
+
+62 % for the actuation-space control case and by 57 % for the operational-space control case, measured from the initial median value across the batch to the best optimized value. Additional control-performance metrics provide a more detailed view of the resulting trade-offs. For the actuation-space control case, the cumulative tracking error decreases to 0.18 rad /m, corresponding to a 71 % reduction relative to the initial median value; the settling time, defined as the first time at which the response enters the 5 % target band, improves by 64 % ; and the overshoot decreases by 
+
+50 % . For the operational-space control case, the cumulative task-space tracking error reaches 10 mm , corresponding to a 45 % reduction; the settling time improves by 62 % ; and the overshoot increases by 82 % . This increase in overshoot indicates that the loss does not optimize each transient metric independently: in the operational-space case, reducing the integral tracking error favors earlier settling despite a larger overshoot, especially along the z-coordinate. The reduced batch spread, shown by the shaded regions, further suggests that the randomly initialized gain sets converge to similar best-performing solutions. This is supported by a batch-wise loss-variance reduction of 97 % and 99 % for the actuation-space control and operational-space control cases, respectively. 
+
+E. High-Order Control Lyapunov and Barrier Function (HO-CLF+HOCBF) Control 
+
+SoRoMoX enables the implementation of high-order CLF-CBF controllers for soft robotic systems by leveraging its fully differentiable dynamics. The goal of this section is to demonstrate that safety constraints can be incorporated in a modular fashion while simultaneously driving the soft robot end-effector toward a desired target. IEEE ROBOTICS AND AUTOMATION MAGAZINE 27 
+
+1) Approach: a) High-Order CLF-CBF Controller: The soft robot dy-namics are written in control-affine form as 
+
+˙y = f0(y) + fu(y) u, (42) where 
+
+y = [ q⊤, ˙q⊤]⊤,
+
+denotes the robot state and u is the vector of tendon-tension inputs. The drift and input vector fields f0(y) and fu(y) are obtained directly from the differentiable SoRoMoX forward dynamics. To encourage end-effector tracking, we define the control Lyapunov function 
+
+V (y) = ∥x(q) − xd∥, (43) where x(q) = FK( q) is the end-effector position and xd is the desired target position. 
+
+b) Distance-Based Contact Barrier: We discretize the robot backbone into sampled points indexed by i. For each sampled robot point and spherical obstacle Oj , we define the signed clearance 
+
+dij (q) = ∥pi(q) − cj ∥ − (robs ,j + rrobot ) , (44) where pi(q) is the position of the i-th backbone point, cj is the obstacle center, and robs ,j and rrobot are the obstacle and robot radii, respectively. The minimum pairwise clearance is converted into a force-like barrier quantity: 
+
+b(y) = Fmax + kc min  
+
+> i,j
+
+dij (q), (45) where Fmax is the maximally acceptable contact force and 
+
+kc is the stiffness of a penetration-based linear-elastic contact model that we assume in this case. Thus, satisfying 
+
+b(y) ≥ 0,
+
+corresponds to respecting the prescribed contact-force bound. Since the barrier depends on the robot configuration q, while the soft robot dynamics are second-order, the resulting safety constraint has relative degree two with respect to the control input. We therefore impose the high-order CBF condition 
+
+¨b(y, u ) + α1 ˙b(y) + α0 b(y) ≥ 0, (46) where α0, α 1 > 0 are HOCBF gains. 
+
+c) Projection-based controller implementation: At each control step, we first compute a task-stabilizing nominal control input using the HOCLF condition. Specifically, the HOCLF admissible set is defined as 
+
+CV (y) = 
+
+n
+
+u : ¨V (y, u ) + γ1 ˙V (y) + γ0V (y) ≤ 0
+
+o
+
+. (47) Since CV (y) is generally not a singleton, the HOCLF condition does not uniquely determine a control input. We therefore select the HOCLF-based nominal input as the minimum-norm control input satisfying the HOCLF condition, equivalently the Euclidean projection of the origin onto CV (y):
+
+¯u(y) := uCLF (y) = Π CV (y)(0) = arg min  
+
+> u∈C V(y)
+
+12 ∥u∥2. (48) This nominal input promotes convergence toward the desired trajectory through the HOCLF decrease condition, but does not by itself encode the hard contact-force safety requirement. Safety is then enforced by projecting the HOCLF-based nominal input onto the affine halfspace induced by the HOCBF condition: 
+
+u⋆ = Π Cb(y) (¯ u(y)) , (49) where 
+
+Cb(y) = 
+
+n
+
+u : ¨b(y, u ) + α1 ˙b(y) + α0b(y) ≥ 0
+
+o
+
+. (50) Here, ΠC (·) denotes the Euclidean projection onto the set 
+
+C. For control-affine dynamics, both the HOCLF and HOCBF conditions are affine in the control input and therefore define halfspaces in the control space. Specifically, for a halfspace of the form 
+
+H = u : w⊤u ≥ β , (51) the corresponding closed-form projection is 
+
+ΠH(v) = v + max  0, β − w⊤v
+
+∥w∥2 w. (52) Similarly, for a halfspace of the form 
+
+H = u : w⊤u ≤ β , (53) the Euclidean projection is 
+
+ΠH(v) = v − max  0, w ⊤v − β
+
+∥w∥2 w. (54) The HOCLF-based nominal controller promotes conver-gence toward the desired trajectory, while the HOCBF pro-jection enforces the contact-force safety requirement. This construction gives priority to safety: the final control input 
+
+u⋆ satisfies the HOCBF constraint whenever the HOCBF admissible halfspace is nonempty, even if doing so requires modifying the nominal HOCLF input ¯u(y) and potentially sacrificing the HOCLF decrease condition. 
+
+2) Simulation Setup: The simulation was performed using a tendon-actuated PCS model consisting of two constant-strain segments, each of length 0.15 m , resulting in a total backbone length of 0.30 m . Each segment has radius 36 mm , density 
+
+1070 kg /m3, Young’s modulus 20 kPa , and shear modulus 
+
+20 kPa . Gravity acts along the positive z direction. A diag-onal strain damping matrix is used, with translational strain damping weighted by 1 and rotational/shear strain damping weighted by 10 3, scaled by the segment length. The robot is actuated by six straight tendons, with three tendons attached to each segment. The tendon attachment points are placed around the segment cross-sections slightly inside the outer radius, at a radial offset of rrobot − 5 mm .The tendon routings are modeled as linear routings with zero slope along both local transverse directions. The initial condition is the straight reference configuration with zero strain displacement and zero velocity. The goal position for the end effector is set to 
+
+xd = [0 .10 , 0.05 , 0.32] ⊤m.IEEE ROBOTICS AND AUTOMATION MAGAZINE 28 
+
+The safety environment contains three spherical obstacles with centers 
+
+[0 .10 , 0.08 , 0.24] ⊤, [0 .12 , 0.06 , 0.32] ⊤, [0 .04 , 0.055 , 0.20] ⊤ m,
+
+each with radius 20 mm . For evaluating the barrier function, the robot backbone is sampled at 20 points uniformly along its length. The clearance is computed as the pairwise distance between each sampled robot point and each obstacle, minus the sum of the robot and obstacle radii. The contact force proxy is modeled as a linear penalty after penetration, with stiffness 1000 N /m, and the prescribed force safety limit is 
+
+5 N .Two closed-loop rollouts are compared: a safety-unaware HOCLF-only controller and the safety-constrained HOCLF-HOCBF controller [18]. The controller is implemented as a closed-form sequence of half-space projections [74]: the nominal zero input is first projected onto the HO-CLF constraint and then projected onto the HOCBF con-straint. The closed-loop simulations are run for 8 s the 
+
+robot.rollout_closed_loop_to with the Tsitouras 5/4 Runge–Kutta integrator [55]. The solver step size and the data saving interval are both set to 10 −3s.
+
+3) Results: The results are shown in Fig. 13. The pro-posed CLF-CBF controller drives the robot toward the goal while enforcing the prescribed force safety constraint. With the CBF, the goal distance decreases from approximately 0.11 m to 0.03 m over the 8 s simulation horizon. Meanwhile, the maximum pairwise normal force increases as the robot approaches the obstacle but converges to the prescribed safety limit of 5 N without exceeding it. In contrast, the controller without the CBF reaches a smaller goal distance but produces unsafe contact forces, with the maximum pairwise normal force rising above 30 N. This comparison highlights the safety-performance tradeoff introduced by the CBF and confirms that the proposed controller preserves the force constraint over the extended rollout. 
+
+F. Parallel Reinforcement Learning 
+
+To evaluate the efficiency of SoRoMoX for parallel rein-forcement learning, we construct a representative RL bench-mark and compare it with PyElastica. We consider a 3D tracking task where a tendon-actuated soft continuum arm tracks a dynamically moving target. The arm is modeled using a Cosserat-rod formulation in PyElastica and one PCS segment in SoRoMoX, and is actuated by m = 4 tendons. The RL scenario setting is illustrated in Figure 13B. The end-effector position target moves along a hemispherical surface, following a smooth trajectory with a randomly varying direction and a bounded velocity. We train a policy π(at | ot) with Proximal Policy Optimization (PPO) [67] on this task. Here, the agent observes a vector ot = [ x⊤, v ⊤, u ⊤ 
+
+> t
+
+, (xd)⊤, (vd)⊤]⊤ ∈ R16 ,where x ∈ R3 and v ∈ R3 denote the end-effector position and velocity, ut ∈ R4 represents the current tendon-force input, and xd ∈ R3, v d ∈ R3 correspond to the desired target position and velocity. The action space is defined as a four-dimensional continuous vector at ∈ [−1, 1] 4, representing incremental changes in tendon forces. The applied tendon-force vector is updated as ut+1 = clip( ut + ∆ umax at, 0, u max ), where 
+
+∆umax is the maximum input-increment scale and umax is the maximum allowable tendon-force input. The objective is to minimize both the positional tracking error and undesirable motion away from the target. Let ex = x − xd, εx = ∥ex∥.We define the relative velocity projected along the error direction as ˙εx = ( v − vd)⊤ ex 
+
+> εx+ϵRL
+
+, where ϵRL > 0 is a small numerical regularization constant. The reward function is given by 
+
+R = −
+
+ εx
+
+0.2 + max( ˙ εx, 0) 0.3
+
+
+
++ I(εx < 0.01) 1 .5. (55) The first term penalizes tracking error, while the second term penalizes motion that increases the distance to the target. A success bonus is added when the arm end is within 0.01 m of the target. We evaluate SoRoMoX and PyElastica on a single NVIDIA Tesla A100 GPU and two Intel Xeon Gold 6448Y CPU cores. For all experiments, the total training budget is fixed at 1 million environment steps, and the episode length is 105. To ensure a fair comparison, all PPO training runs use the same rollout size of 12,800 samples and a fixed PPO minibatch size of 428. All other training hyperparameters are set to their default values as implemented in Stable Baselines3 [75]. As shown earlier in Table IV, PyElastica achieves lower simulation latency than SoRoMoX in the single-environment setting due to differences in the underlying simulation models. In our experimental setup, the evaluated PyElastica configuration used two CPU cores and two parallel environments. In contrast, SoRoMoX runs entirely on the GPU, enabling substantially larger levels of parallelization. We therefore evaluate SoRoMoX with nb ∈ { 64 , 128 , 256 , 512 }
+
+parallel environments on a single GPU. The training performance and wall-clock efficiency are summarized in Fig. 13C. We simulated a soft robotic arm with a length of 250 mm and a radius of 25 mm to track a moving target ball. Tracking success was defined as the end-effector being within a 10 mm radius of the ball position. Across nb = 128 parallel evaluation trajectories, the mean tracking error at the final evaluated step was 6.19 mm , with a step-wise success rate of 91.4%. Despite its slower single-environment simulation speed, SoRoMoX rapidly closes the performance gap as nb increases and ultimately surpasses the PyElastica baseline in overall training efficiency. This advantage becomes increasingly pronounced at larger scales, where SoRoMoX converges faster and achieves higher rewards earlier in training. Notably, the configurations with nb = 256 
+
+and nb = 512 parallel environments achieve approximately 4× and 7 × reductions in wall-clock training time, respectively, while maintaining comparable or better learning performance. These values reflect an end-to-end comparison that combines the different model formulations and reductions (one-segment PCS in SoRoMoX versus a DCM in PyElastica), JIT execution stacks, hardware, and degree of rollout batching; they do not isolate the contribution of GPU batching. We did not evaluate a sequential CPU SoRoMoX or SoRoSim baseline on this RL task. Nevertheless, the CPU rollout results in Table IV and the GPU batch-scaling results in Figure 9 suggest that IEEE ROBOTICS AND AUTOMATION MAGAZINE 29 
+
+comparison against a sequential reduced-order CPU baseline could yield a larger relative wall-clock advantage. These results highlight the importance of GPU-native parallelism for RL workloads, where the ability to efficiently scale the number of simultaneous environments can outweigh per-environment simulation speed. APPENDIX EBEST PRACTICES FOR SOFT ROBOT MODEL 
+
+IMPLEMENTATION 
+
+This appendix expands on the implementation best practices summarized in Sidebars 2–4, covering efficient evaluation, singularity-safe expressions, and verification of mathematical correctness. 
+
+A. Implementation Principles for Efficient Evaluation 
+
+The computational cost of strain-based soft robot models is dominated by repeated evaluations of kinematics, Jacobians, and integral quantities along the robot body. In SoRoMoX, we therefore structure the implementation around the dependency pattern of the underlying mechanics: quantities are propagated serially from the proximal to the distal end of the robot, while independent quadrature-point contributions are evaluated in batch. This avoids large symbolic expressions, exposes parallelism, and keeps the implementation compatible with JIT compilation and AD. A first design choice is to use numerical spatial integration instead of deriving and evaluating closed-form symbolic ex-pressions for the full dynamics. This is particularly important for inertial, gravitational, and Coriolis/convective terms, whose symbolic expressions quickly become unwieldy even for sim-ple soft robots. At the same time, we do not use a single maximally general implementation for all models. Although the VS approximation [8], [10], [11] is expressive enough to represent PCS models [9], we provide specialized implemen-tations for planar PCS, spatial PCS, and GVS. The planar PCS implementation uses SE (2) operations and smaller matrix blocks, which are cheaper than their SE (3) counterparts. The spatial PCS implementation exploits constant-strain closed-form expressions for segment poses, adjoint maps, tangent maps, and their derivatives. The GVS implementation is used when variable strain distributions are required, and it then pays the additional cost of integrating the strain field along each segment. A second principle is to reduce the computation to active coordinates as early as possible. Inactive strain components are not merely removed from the final dynamical matrices; instead, Jacobians and Jacobian derivatives are assembled directly with respect to the active generalized coordinates whenever possible. As a result, a reduced parametrization such as PCC [2] can be cheaper than a full PCS parametrization even when both share the same implementation path. In the GVS model, this idea is combined with a fixed-shape runtime layout: heterogeneous segment descriptions are converted into padded arrays with fixed maximum numbers of degrees of freedom and quadrature points. Active-coordinate maps, gather indices, and masks allow the state to remain compact while still presenting static array shapes to JAX, which is essential for efficient compilation and batching. State-independent quantities are precomputed and cached. For PCS, this includes the quadrature grid, per-segment spatial mass matrices, and full and active stiffness and damping ma-trices. For GVS, the cached data additionally include length-scaled interior quadrature weights, local mass/stiffness/damp-ing matrices at quadrature nodes, and strain-basis matrices evaluated at the quadrature and Magnus integration points. This avoids repeatedly evaluating cross-section geometry, ma-terial matrices, and basis functions at every time step. The remaining state-dependent quantities are propagated using scan loops. Forward kinematics, body-frame Jacobians, and their time derivatives are advanced from segment to segment using lax.scan , matching the serial structure of an open kinematic chain. Within each segment, independent quadrature contributions are evaluated with batched operations such as vmap . Endpoint nodes are retained where useful for pose and Jacobian propagation, but omitted from integral assembly whenever their quadrature weights are zero. Forward dynamics uses a fused assembly path. Rather than computing the inertia matrix, gravitational force, and Coriolis matrix through separate public calls, the implementation evalu-ates shared kinematic quantities once and assembles the terms needed for the EOM from (1) in a single routine. In particular, the convective force C(q, ˙q) ˙ q is evaluated directly, avoiding materialization of the full Coriolis matrix in the common forward-dynamics path. The acceleration is then obtained by solving the linear system for ¨q rather than explicitly forming 
+
+M (q)−1.The implementation also avoids AD when compact an-alytical expressions are available. Analytical recursions are used for Jacobians, Jacobian time derivatives, constant-strain tangent-map derivatives, and convective-force terms. At the same time, cheaper paths are kept for queries that do not require all quantities: for example, inertia and gravity can be assembled from pose/Jacobian data, while Jacobian-derivative quantities are computed only when needed for convective terms or explicit Jacobian time derivatives. Finally, because these optimizations can otherwise lead to duplicated code, shared helper functions are used for the re-curring computational kernels: segment propagation, constant-strain step terms, GVS Magnus updates, Jacobian/Jacobian-derivative propagation, and individual dynamics integrands. This keeps the fused implementation maintainable while pre-serving the performance benefits of avoiding redundant kine-matic and dynamic evaluations. 
+
+B. Well-Defined Evaluation of Singular Closed-Form Expres-sions 
+
+It is well known in the soft robotics literature that many rod-and strain-based models exhibit apparent singularities near the straight or zero-bending configuration [17], [48], [76]–[78]. For PCS and GVS models, these singularities typically arise in closed-form Lie-group and constant-strain expressions, where trigonometric coefficients contain terms such as 
+
+sin ϑϑ , 1 − cos ϑϑ2 , ϑ − sin ϑϑ3 , (56) IEEE ROBOTICS AND AUTOMATION MAGAZINE 30 
+
+or higher-order analogues in tangent maps and their deriva-tives. Here, ϑ denotes the magnitude of the rotational part of the Lie-algebra argument. For a constant strain 
+
+ξ =
+
+ ξrot 
+
+ξtrans 
+
+
+
+∈ R6, ξrot , ξ trans ∈ R3, (57) propagated along a segment as 
+
+g(s) = g0 exp SE (3) (s ξ ), (58) the relevant scalar is 
+
+ϑ = ∥(s ξ )rot ∥ = |s| ∥ ξrot ∥. (59) Equivalently, using the matrix representation of the twist, 
+
+exp SE (3) (s ξ ) = exp( s bξ), (60) where the widehat operator maps the vector ξ ∈ R6 to its corresponding matrix in the Lie algebra se (3) . Thus, the same apparent singularity is reached either when the local rotational strain tends to zero, ξrot → 0, or when the arclength argument tends to zero, s → 0.These singularities are removable at the level of the under-lying maps. For example, 
+
+lim  
+
+> s→0
+
+exp SE (3) (s ξ ) = I4, (61) and, for fixed s and translational strain ξtrans ,
+
+lim  
+
+> ξrot →0
+
+exp SE (3) (s ξ ) = 
+
+I3 s ξ trans 
+
+0 1
+
+
+
+. (62) Similarly, the derivative with respect to the arclength param-eter is well defined: 
+
+∂∂s exp( s bξ) = exp( s bξ) bξ, (63) and therefore ∂∂s exp( s bξ)
+
+> s=0
+
+= bξ. (64) For the full pose g(s) = g0 exp( s bξ), this gives g′(0) = g0 bξ. At the mathematical complete-strain limit ξ = 0 , which is distinct from the zero-displacement configuration q = 0 whenever 
+
+ξref ̸ = 0 , the derivative with respect to s vanishes as well. If only the rotational strain vanishes, ξrot = 0 , the derivative remains finite and corresponds to a pure translational twist. The problem is therefore not the model itself, but a naive implementation that evaluates indeterminate closed-form ratios such as 0/0.In SoRoMoX, these removable singularities are handled at the lowest possible level of the implementation. This includes the computation of the rotational magnitude itself. Indeed, evaluating ϑ = pχ⊤
+
+> rot
+
+χrot for the Lie-algebra argument 
+
+χ = s ξ has a well-defined value at χrot = 0 , but its gradient is undefined there. The implementation therefore first forms 
+
+ϱ = χ⊤
+
+> rot
+
+χrot and evaluates the branch-selection scalar as 
+
+ϑε(χ) = 
+
+(
+
+0, ϱ ≤ ε2,
+
+√ϱ, ϱ > ε 2, (65) so that the square root is not evaluated in the zero-rotation branch. Let 
+
+ET(χ) = I4 + bχ + 12 bχ 2 + 16 bχ 3, (66) 
+
+Ecf (χ, ϑ ) = I4 + bχ + 1 − cos ϑϑ2 bχ 2 + ϑ − sin ϑϑ3 bχ 3. (67) With the protected value ϑε, the se3.exp implementation has the structure 
+
+exp SE (3) (χ) = 
+
+(
+
+ET(χ), ϑε(χ) ≤ ε, Ecf (χ, ϑ ε(χ)) , ϑε(χ) > ε. (68) Since χ = s ξ and ϑ = |s|∥ ξrot ∥, this single branch covers both the zero-arclength case s → 0 and the zero-rotational-strain case ξrot → 0.The same principle is used for the constant-strain tan-gent operators. There, the protected rotational magnitude is computed from the strain itself, i.e., with χ replaced by ξ
+
+in the definition above. For the tangent-map derivative, the implementation also guards the derivative of this magnitude: 
+
+˙ϑε =
+
+
+
+0, ϑε(ξ) ≤ ε, ξ⊤ 
+
+> rot
+
+˙ξrot 
+
+ϑε(ξ) , ϑε(ξ) > ε, (69) and evaluates the tangent derivative itself with the correspond-ing series branch in the small-rotation case. This is the tangent-map example: the undefined intermediate ξ⊤ 
+
+> rot
+
+˙ξrot /∥ξrot ∥ is never evaluated at ∥ξrot ∥ = 0 .A practical implementation detail is important for differen-tiability: these guards are implemented as conditional branches that do not evaluate the singular expression in the inactive branch. In JAX, this means using control-flow primitives such as lax.cond , rather than merely masking the output with an elementwise selection. This distinction matters because automatic differentiation may still encounter undefined in-termediate values if both sides of a masked expression are evaluated. The goal is therefore not to change the mathematical model, but to implement its removable singularities through the correct analytical limits. 
+
+C. Strategies for Verifying the Mathematical Correctness of the Implementation 
+
+The (mathematical) complexity of most soft robot models makes it essential to verify implementation correctness. In contrast to articulated rigid systems, where for low-DOF open serial chains the kinematics and dynamics can often be derived “by hand” or symbolically and then used to validate a numer-ical implementation, this is far less straightforward for soft robots: even for a single Constant Strain (CS) [9] segment, the expressions—especially for the dynamics—quickly become long and intricate. This calls for alternative (unit-)testing strategies that, for example, leverage modern techniques such as AD. Despite its importance and nontriviality, this topic has, to the best of our knowledge, not yet been systematically discussed in the soft robotics literature. Therefore, we implemented extensive unit testing that ver-ifies the correctness of the implementation of the soft robot models. Specifically, we test via Continuous Integration (CI) IEEE ROBOTICS AND AUTOMATION MAGAZINE 31 
+
+the following aspects: (i) the correctness of the SE(2) and SE(3) lie algebra underlying most models, (ii) the outputs of, for example, the forward kinematics at configurations for which closed-form solutions are easy to obtain (e.g., no rotational strains, single planar constant strain robots, etc), (iii) consistencies via the methods included in the same model, such as the forward-inverse kinematics loop, batched vs. pointwise functions (e.g., forward kinematics, Jacobians), bodyframe vs. inertia frame Jacobians, forward dynamics in the fused version vs. single calls of the dynamical matrices, etc., (iv) consistency of the explicit solutions to Jacobians J,Jacobian time derivatives ˙J, Coriolis matrix C(q, ˙q), and the gravitational forces vector G(q) with the results obtained using AD on the forward kinematics, the Jacobian, Christoffel sym-bols of the inertia matrix, and of the kinetic and gravitational potential energy, respectively, (v) the coherence in between the various models (e.g., planar PCS vs. 3D PCS vs. GVS) for the same, randomized system parameters and configurations, (vi) the differentiability of the system kinematics and dynamics for forward-mode and reverse-mode AD - particularly around singularities such as the straight configuration [48] - ensuring that the gradient obtained via AD is always well-defined. In the following, we will discuss strategies (ii), (iii), (iv), and (v) in more detail. 
+
+1) Evaluation of Lie Algebra in Special Cases: In our unit tests for the se (3) utilities 9, we first verify that the hat operator implements the standard twist–matrix correspondence. For ξ =(ω, v )⊤ ∈ R6 with ω, v ∈ R3 and [ω]× ∈ so (3) , we check that 
+
+bξ = hat SE (3) (ξ) = 
+
+[ω]× v
+
+01×3 0
+
+
+
+, (70) and, for planar twists ξ2D ∈ R3 lifted into the spatial (strain) case via a fixed linear map L : R3 → R6, that the induced 4 × 4 matrices reduce to the se (2) representation 
+
+Π2D 
+
+ hat SE (3) (Lξ 2D ) = hat SE (2) (ξ2D ), where Π2D projects the homogeneous 4 × 4 matrix to its planar 3 × 3 block. The exponential maps are tested by checking consistency with the matrix exponential and with the planar embedding: for random 
+
+ξ ∈ R6 we assert exp SE (3) (ξ) ≈ exp  bξ component-wise up to a numerical tolerance, and for planar twists ξ2D we require 
+
+Π2D 
+
+ exp SE (3) (Lξ 2D ) = exp SE (2) (ξ2D ). (71) The logarithm log SE (3) is checked via round-trip and special-case tests: for pure rotations 
+
+g =
+
+R 00 1
+
+
+
+⇒ log SE (3) (g) = 
+
+ω
+
+0
+
+
+
+,
+
+analogue for pure translations, and for random twists ξ we enforce the round-trip property log SE (3) 
+
+ exp SE (3) (ξ) ≈ ξ
+
+while also checking numerical well-posedness at the identity 
+
+g = I4 (no NaNs and log SE (3) (I4) = 0). The adjoint 
+
+> 9Please note that for conciseness, we focus on the testing procedure for the spatial/3D, but all outlined strategies naturally transfer to the planar case.
+
+and coadjoint maps are validated against their known block structure: Namely, we assert 
+
+Ad SE (3)  
+
+> g
+
+(ξ) = 
+
+ R 0[p]×R R
+
+  ωv
+
+
+
+,
+
+Ad ∗,SE (3)  
+
+> g
+
+(ξ) = 
+
+R [p]×R
+
+0 R
+
+
+
+,
+
+that the inverse of the Adjoint is given by applying the Adjoint to the inverse homogenous transformation, i.e., 
+
+Ad SE (3)  
+
+> g−1
+
+Ad SE (3)  
+
+> g
+
+= I6, and reduces to the planar formulas when restricted via the same L and Π2D (consistency with the Ad SE (2) and its coadjoint Ad ∗
+
+> SE (2)
+
+). Finally, the left-trivialized tangent map and its derivative, TSE (3)  
+
+> gi
+
+(ξ) and 
+
+˙TSE (3)  
+
+> gi
+
+(ξ, ˙ξ), are tested by enforcing the first-order consis-tency condition for small ∥δξ ∥,
+
+exp SE (3) (ξ + δξ ) ≈ exp SE (3) (ξ) exp SE (3) 
+
+ TSE (3)  
+
+> gi
+
+(ξ) δξ ,
+
+checking that TSE (3)  
+
+> gi
+
+(0) = I6 and ˙TSE (3)  
+
+> gi
+
+(ξ, 0) = 0,and comparing the explicitly implemented ˙T( ξ, ˙ξ) against 
+
+AD ξ (T( ξ)) ˙ξ = ∂T ∂ξ ˙ξ, which is obtained via JAX AD, while asserting that all entries remain finite at ξ = 0 .
+
+2) Evaluation of Special Cases of the Kinematics and the Kinematic Loop: First, consider a single-segment PCS soft robot with reference strain ξref = [0 , 0, 0, 1, 0, 0] ⊤, corre-sponding to a straight, unelongated shape. Then FK(0 n, s ),where q = 0 n denotes zero strain displacement rather than zero full strain, gives the translation p = [ s, 0, 0] ⊤ and identity rotation R = I3. A pure axial-strain displacement ∆σax 
+
+gives p = [ s(1 + ∆ σax ), 0, 0] ⊤, again with identity rotation; equivalently, in terms of the full axial strain σax = 1 + ∆ σax ,this is p = [ sσ ax , 0, 0] ⊤. Similarly, we can consider a single-segment PCC robot and compare the forward kinematics and the Jacobian against the expressions given in [2], [48]. Next, consider a PCS soft robot, where the functions gtips =FK tips (q) and q = IK tips (gtips ) define the closed-form for-ward and inverse kinematics for the segment tips, respectively. Here, gtips = ( gtip ,1, . . . , g tip ,N ) is a tuple that contains the homogeneous transformation gtip ,i = FK tip (q, s tip ) ∈ SE (3) 
+
+to the tip of the i-th segment. Then, we need to naturally assert that q = IK tips (FK tips (q)) .
+
+3) Test of Consistency of Kinematics and Dynamics via Auto-Differentiation: Many expressions in (soft) robot models (e.g., Jacobians, Jacobian derivatives, Coriolis matrix, poten-tial forces) can be written as derivatives of other quantities (e.g., forward kinematics, Jacobians, inertia matrix, potential energy). Consequently, they could in principle be implemented using AD techniques in AD . However, this is typically not desirable in practice when an explicit closed-form expression is available and can be implemented directly, since the use of AD usually incurs higher computational compilation-, run-time, and memory costs, in particular when the algorithm is cascaded with higher-order derivatives (e.g., differentiating the state trajectory with respect to the initial condition). In the following, let AD q (f (q)) = ∂f ∂q (q) denote the gradient of the function f (q) with respect to q obtained via auto-differentiation (e.g., the JAX jacfwd and jacrev 
+
+functions). IEEE ROBOTICS AND AUTOMATION MAGAZINE 32 
+
+a) Forward Kinematics → Inertial Frame Jacobian: Let 
+
+g(q, s ) ∈ SE (3) denote the homogeneous transform with rotation R(q, s ) ∈ SO(3) given in explicit form, and let 
+
+> s
+
+J(q, s ) ∈ R6×n denote the explicit expression for the inertial-frame (spatial) Jacobian. For each column j = 1 , . . . , n , we compute the directional derivative ∂j g(q, s ) := AD q (g(q, s ))[ ej ] ∈ R4×4, where ej is the j-th unit vector in Euclidean space, and left-trivialize it to the body Lie algebra by b bηj := g(q, s )−1∂j g(q, s ) ∈ se (3) .Writing  
+
+> b
+
+bηj =
+
+[bωj ]× bvj
+
+0⊤ 0
+
+
+
+,
+
+with [bωj ]× ∈ R3×3 the skew-symmetric matrix of the angular velocity vector, we obtain the body twist vector 
+
+> b
+
+ηj = (bωj )⊤ (bvj )⊤⊤ .
+
+We then express this twist in the inertial frame using the pure-rotation adjoint (i.e., without translational coupling), sωj := 
+
+R(q, s ) bωj and svj := R(q, s ) bvj , and set the j-th column of sJAD (q, s ) to 
+
+(sωj )⊤ (svj )⊤⊤ .
+
+Finally, we assert element-wise agreement of 
+
+> s
+
+JAD (q, s ) = sJ(q, s ).
+
+b) Jacobian → Jacobian Derivative: Let J(q, s ) denote the inertial- or body-frame Jacobian and ˙J(q, ˙q, s ) the corre-sponding time derivative, which can be written in explicit form for each system [8], [9]. Then we assert that 
+
+˙J(q, ˙q, s ) = AD q (J(q, s )) ˙ q. 
+
+c) Inertia Matrix → Coriolis Force: Let τC = C(q, ˙q) ˙ q
+
+denote the Coriolis force computed using a Coriolis matrix in an arbitrary but valid factorization given in explicit form. We can verify this expression by comparing it to a Coriolis matrix derived via Christoffel symbols [79]: 
+
+τC,i =
+
+> n
+
+X
+
+> j=1
+
+Cij (q, ˙q) ˙ qj
+
+=
+
+> n
+
+X
+
+> j=1
+> n
+
+X
+
+> k=1
+
+cijk ˙qj ˙qk − 12 cjki ˙qj ˙qk, ∀ i ∈ Nn,
+
+with cijk = AD qk (Mij (q)) .
+
+d) Kinetic Energy → Inertia Matrix, Coriolis Force: If 
+
+T (q, ˙q) and M (q) denote explicit expressions for the kinetic energy and inertia matrix, respectively, we need to assert that 
+
+M (q) = AD ˙q2 (T (q, ˙q)) ,
+
+i.e., that M (q) coincides with the second derivative of T with respect to ˙q [5], [80], [81]. Similarly, the Coriolis force, independently of the chosen factorization of the Coriolis matrix, must satisfy 
+
+τC = C(q, ˙q) ˙ q = AD q
+
+ AD ˙q (T (q, ˙q)) .
+
+e) Potential Energy → Potential Forces: Given explicit expressions U(q) and τU (q) for the potential energy and potential generalized force, respectively, the following relation must hold τU (q) = AD q (U(q)) (see, e.g., [5], [17], [79]). 
+
+f) Actuator Coordinates → Actuation Matrix: Let 
+
+φa(q) ∈ Rm denote the actuator coordinates, with corre-sponding actuation matrix A(q) ∈ Rn×m. Work conjugacy requires [39], [46] 
+
+A⊤(q) = AD q (φa(q)) .
+
+For the tendon preset, φa(q) = −ℓ(q), and therefore 
+
+A⊤(q) = − AD q (ℓ(q)) .
+
+4) Verification of Inter-System Coherence: For rod-based models, specialized formulations—such as PCC [2], poly-nomial curvature [3], and (Planar) PCS [9], [34], which neglect certain strains and/or use specific (functional) strain bases—can typically be embedded in more general models like VS [8], [10], [11], enabling systematic coherence tests between different systems. We next outline a step-by-step procedure to verify coher-ence between the Planar PCS and GVS implementations. First, we randomly sample system parameters (e.g., number of segments, active strains, segment lengths, mass density, and reference strain) for the Planar PCS system and use them to construct the corresponding spatial GVS model by selecting constant-strain bases for the circular segments and connecting them via fixed joints. The two models are assigned the same physical reference strain under the planar-to-spatial embedding, including the same axial reference component; for a straight, unelongated backbone, this component equals one. Second, we sample Planar PCS configurations and time derivatives q, ˙q, as well as backbone abscissae s, and lift each planar configuration to a spatial one by setting the out-of-plane generalized-coordinate components to zero (i.e., one bending component, the twist component, and one shear component). Because the reference strains are matched sep-arately, equal lifted configurations then produce equal full strain fields. Third, we evaluate the relevant class functions of both systems at (q, ˙q, s ), including forward kinematics, the Jacobian–velocity product J(q) ˙ q, inertia and Coriolis matrices, potential forces, and kinetic and potential energies. If nec-essary, we lift poses and velocities from SE (2) to SE (3) .Finally, we check that the lifted outputs from the Planar PCS 
+
+model agree with the GVS predictions within a prescribed tolerance that accounts for floating-point errors and small discrepancies introduced by Gaussian quadrature.

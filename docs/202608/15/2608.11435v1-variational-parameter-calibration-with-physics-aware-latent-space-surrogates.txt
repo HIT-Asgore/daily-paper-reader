@@ -1,0 +1,1420 @@
+Title: Variational Parameter Calibration with Physics-Aware Latent-Space Surrogates
+
+URL Source: https://arxiv.org/pdf/2608.11435v1
+
+Published Time: Thu, 13 Aug 2026 00:12:34 GMT
+
+Number of Pages: 46
+
+Markdown Content:
+# Variational Parameter Calibration with Physics-Aware Latent-Space Surrogates 
+
+Qiyao Zhou 1, Xujia Zhu 2, Pierre Joli 1, Yu Cong 1, Sibo Cheng 3,∗ 
+
+> 1
+
+LMEE, UnivEvry, Université Paris-Saclay, Evry, France  
+
+> 2
+
+L2S, Université Paris-Saclay, CNRS, CentraleSupéléc, Gif-sur-Yvette, France  
+
+> 3
+
+CEREA, ENPC, EDF R&D, Institut Polytechnique de Paris, Île-de-France, France  
+
+> ∗
+
+corresponding: sibo.cheng@enpc.fr 
+
+Abstract 
+
+Forward and inverse modeling of parametric dynamical systems requires surrogate models that are not only accurate for state prediction, but also informative for parameter calibra-tion. However, a systematic end-to-end differentiable formulation for coupling deep-learning-based reduced-order surrogates with variational parameter estimation remains underdevel-oped. In this work, we introduce a physics-aware neural-network-based latent-space frame-work for reduced-order forward modeling and variational parameter estimation. The proposed autoencoder-based approach yields a differentiable surrogate that maps physical parameters to predicted flow fields through a latent representation. The observable supervision is used during offline training to encourage the latent variables to retain information correlated with system parameters, while the online inverse problem is solved in the parameter space through the surrogate-induced observation operator. The method is evaluated on two computational-fluid-dynamics benchmarks. The results show that reconstruction accuracy alone is insufficient for inverse modeling, owing to the lack of end-to-end differentiability or physics awareness for variational parameter calibration. Quantitative latent-space analysis further shows that observable supervision improves case-level separability and temporal organization of latent rep-resentations. Experiments with realistic measurement settings, including noisy, low-resolution, randomly masked, and block-wise partial observations, demonstrate the robustness of the pro-posed framework and show that it generally reduces calibration error and variability compared with the standard surrogate models. 
+
+Keywords: Deep learning, Data assimilation, Reduced-order modeling, Parameter calibration, Computational fluid dynamics arXiv:2608.11435v1 [cs.LG] 11 Aug 2026 Main Notations 
+
+X Snapshot matrix 
+
+xt Flattened state vector at time t
+
+CX Empirical covariance matrix of snapshots Ψj j-th POD basis 
+
+q Dimension of latent space 
+
+LX ,q POD projection matrix with q retained modes ˆxt POD coefficient vector at time tkj,t j-th POD coefficient at time t
+
+θ Parameter vector Ωθ Parameter space 
+
+kj (θ) j-th POD coefficient with parameter θ
+
+z Latent vector in CAE 
+
+zr Latent vector in OACAE 
+
+Fe, Fd Encoder and decoder of CAE 
+
+Fre , Frd Encoder and decoder of OACAE 
+
+Ea Observable regression MLP branch 
+
+Eb Parameter-to-latent regressor MLP in OACAE-MLP 
+
+Ec Parameter-to-latent regressor MLP in CAE-MLP 
+
+ϕe, ϕ d, ϕ a, ϕ b, ϕ c Trainable weights of encoders/decoders/regressors 
+
+L1, L2 CAE-MLP training loss functions (reconstruction/latent regression) 
+
+Lr
+
+> 1
+
+, Lr 
+
+> 2
+
+OACAE-MLP training loss functions (reconstruction/latent regression) 
+
+α, β Weighting factors balancing loss terms 
+
+Ne Ensemble size in EnKF 
+
+θb, θa Background and analysis parameter vectors 
+
+B Background error covariance matrix 
+
+R Observation error covariance matrix 
+
+K∗ Kalman gain in EnKF 
+
+HPOD-GPR Observation operator with POD-GPR surrogate 
+
+HCAE-MLP Observation operator with CAE-MLP surrogate 
+
+J3D-Var , J 4D-Var 3D-Var/4D-Var cost functions 21. Introduction 
+
+1.1. Parametric systems 
+
+Many physical and engineering problems can be described by Partial Differential Equations (PDEs) whose solutions depend on a set of parameters, such as material properties, boundary or initial conditions, and geometrical configurations. Such parametric systems provide a flexible and realistic representation of physical processes, allowing researchers and engineers to explore system behavior across a wide range of configurations. At the same time, the resulting solution manifolds are often high-dimensional and may exhibit strong nonlinear variability with respect to the parameters, making their analysis computationally demanding. A solution field of physical quantities, such as temperature, displacement, velocity, or pres-sure, is typically expressed by 
+
+x : T × Ω × P → Rm,
+
+where they depend on time t ∈ T ⊂ R, spatial coordinates s ∈ Ω ⊂ Rd, and system parameters 
+
+p ∈ P ⊂ Rdp . The latter may encode initial or boundary conditions, material properties, or other system characteristics, and the solution field is constrained by the governing PDE. The study of parametric systems is motivated by a wide range of applications. In materials engineering, parametric descriptions of microstructure or elastic coefficients are essential for predicting macroscopic responses under load [1]. In wildfire propagation models, wind condi-tions and vegetation parameters strongly affect the fire front dynamics [2]. In fluid dynamics, different Reynolds numbers or inflow profiles generate distinct vortex shedding and turbulence structures [3, 4]. These examples illustrate the complexity and sensitivity of parametric PDE solutions, motivating the development of efficient modeling and analysis tools. Among parametric PDE systems, Computational Fluid Dynamics (CFD) represents one of the most prominent and challenging application areas, with a wide range of applications in engineering and geophysical sciences. The governing equations of fluid dynamics are the Navier-Stokes equations, which express conservation of mass and momentum. For a Newtonian fluid with time-independent density, and neglecting body forces, a simplified form of these equations can be written as 
+
+∇ · (ρu) = 0 ,∂∂t (ρu) + ∇ · (ρuu ) = −∇ p + ∇ · μ[
+
+∇u + ( ∇u)⊤]
+
+, (1) where ρ denotes the fluid density, u = ( u, v )⊤ the velocity field, p the pressure, and μ the vis-cosity. Under incompressibility and Newtonian assumptions, these equations form the classical foundation of fluid mechanics [5, 6]. Boundary conditions, material properties, and geometrical configurations define a high-dimensional parameter space that strongly shapes the resulting flow dynamics, leading to transitions between laminar and turbulent regimes, vortex shedding, and highly unsteady behavior. The numerical solution of the Navier-Stokes equations relies on high-fidelity discretization techniques such as finite difference, finite volume, finite element, or spectral methods. While these approaches can deliver accurate solutions, they are computation-ally expensive, particularly for complex geometries, long-time integrations, or high-dimensional parameter studies. 
+
+1.2. Reduced order modeling 
+
+Compared with full-order modeling approaches [3] for high-fidelity computational fluid dynamics simulations, reduced-order modeling aims to reduce the computational cost of re-peated simulations while preserving the dominant structures of the underlying dynamics. Most reduced-order models are constructed from a set of high-fidelity solutions, usually referred to as snapshots, and seek a low-dimensional representation of the solution manifold. Projection-based methods constitute a classical class of reduced-order modeling techniques. Proper orthogonal decomposition (POD)[7] and dynamic mode decomposition (DMD)[8, 9] 3are representative examples that construct linear reduced spaces from snapshot data. These methods are efficient, interpretable, and often effective when the dominant flow variability can be captured by a limited number of linear modes. However, their reduced coordinates are mainly optimized according to reconstruction criteria. As a result, they are not necessarily organized with respect to the physical parameters that would typically be inferred in an inverse problem. To enable non-intrusive prediction for new parameter values, projection-based models are often combined with regression techniques, e.g., Gaussian process regression (GPR) and kernel ridge regression (KRR) [10], to learn mappings from the parameter space to reduced coordinates. This would result in hybrid reduced-order surrogates. Typicaly examples include POD-GPR [11] and POD-LSTM [12]. These approaches can provide efficient parameter-to-state prediction without repeatedly solving the full-order model. Nevertheless, when the reduced representation is inherited from a reconstruction-oriented projection, the learned surrogate may still fail to preserve parameter-sensitive directions that are important for calibration. Deep-learning-based reduced-order models provide a nonlinear alternative to projection-based approaches. Convolutional autoencoders, multilayer perceptrons, and recurrent neural-network architectures have been widely used to construct nonlinear latent representations and parametric surrogates for time-dependent physical systems [13, 14, 15]. In particular, autoen-coder (AE)-based models can approximate nonlinear solution manifolds more flexibly than linear reduced bases. However, a standard autoencoder is usually trained only by minimizing the reconstruction error. Consequently, same as projection-based approaches, the latent vari-ables are not explicitly constrained to be correlated with physical parameters, time, or other informations. This can lead to latent representations that are accurate for reconstruction but less informative for parameter identification. Recent developments have explored the incorporation of physical information or observable constraints into latent representations [16, 17, 18]. By embedding physical parameters, or other system information into the training process, physics-aware autoencoder architectures can produce more structured latent spaces. This idea is particularly relevant for inverse modeling, because parameter calibration requires a surrogate that is not only accurate in the physical space, but also informative to the parameters being estimated. This motivates the observable-augmented autoencoder framework introduced in this work. 
+
+1.3. Inverse problem: Parameter calibration using data assimilation 
+
+While reduced-order models are often developed for forward prediction, many practical applications require solving the inverse problem of estimating unknown system parameters from observations of the system dynamics. This parameter-calibration task is essential for improving model fidelity and predictive capability, but it is generally ill-posed because different parameter values may generate similar observed responses [19, 20], especially when the available observations are noisy, sparse, or incomplete. Data assimilation provides a principled framework for addressing this problem by combining prior parameter information with observational data in a statistically consistent manner. Among existing data-assimilation methodologies, sequential filtering approaches, such as the ensemble Kalman filter, and variational formulations (including three- and four-dimensional variational assimilation), have been widely used for parameter estimation while accounting for uncertainties in the background and observations [21, 22, 23, 24, 25, 26]. In surrogate-based inverse modeling, a reduced-order model is embedded into the assimilation procedure as a fast forward or observation operator [27, 28]. This strategy avoids repeated full-order simulations and can substantially reduce the online computational cost of parameter calibration. Existing reduced-order data-assimilation frameworks can be broadly grouped by the surrogate type and the assimilation strategy. Projection-based models, such as POD–Galerkin models, have been coupled with variational assimilation for parameter estimation in fluid and heat-transfer prob-lems [7, 29]. However, their reduced coordinates are usually obtained from projection and recon-struction criteria and are not explicitly organized by the physical information. Regression-based 4non-intrusive surrogates, such as POD-GPR, have also been used with ensemble-based assimi-lation for large-scale flow and pollutant-dispersion problems [11, 30]. Although such surrogates are compatible with ensemble filtering through repeated forward evaluations, their online cost can grow with the ensemble size and observation window, and their reduced representations are not necessarily parameter-identifiable and physics-consistent. Ensemble-based assimilation can rely on repeated surrogate evaluations, whereas variational assimilation requires gradients of the cost function with respect to the control parameters. Therefore, the present framework uses an end-to-end differentiable parameter-to-observation surrogate, enabling efficient optimization of the three- and four-dimensional variational objectives by automatic differentiation. Therefore, two requirements must be considered simultaneously for deep-learning-based sur-rogate data assimilation. First, the surrogate should be end-to-end differentiable with respect to the physical control parameters, allowing efficient gradient-based optimization in variational assimilation. Second, its latent representation should preserve information that is relevant to the parameters being calibrated, rather than being optimized only for field reconstruction. Ex-isting projection-based, regression-based, and standard autoencoder-based reduced-order data-assimilation frameworks do not fully address these two requirements at the same time. This motivates the physics-aware neural-network based latent-space variational framework devel-oped in this work, in which observable supervision is used to organize the latent representation and a differentiable parameter-to-latent-to-prediction-to-observation surrogate is used as the observation operator for parameter calibration. 
+
+1.4. Main contributions 
+
+Motivated by the above limitations, this work develops a physics-aware latent-space frame-work for reduced-order forward modeling and variational parameter calibration. The main contributions of this study are summarized as follows: • We formulate an end-to-end differentiable reduced-order data-assimilation framework for inverse modeling, in which a deep-learning-based surrogate serves as the observation op-erator for three- and four-dimensional variational parameter estimation. • We introduce a physics-aware latent-space surrogate into variational data assimilation by leveraging observable-augmented autoencoding, which improves online calibration accu-racy and reduces variability in the physical control-parameter space. • We validate the proposed framework on CFD benchmarks by assessing its robustness under degraded-observation settings and by conducting systematic sensitivity analyses of the forward-modeling and inverse-calibration settings, in comparison with standard AE-variational DA and POD-GPR-ensemble DA baselines. 
+
+2. Methodology 
+
+2.1. Problem setup 
+
+In this work, we consider parametrized, time-dependent flow systems whose dynamics are represented by high-dimensional state variables evolving on a spatial grid. The primary objec-tive of this work is to construct efficient reduced-order surrogate models capable of approxi-mating the full-order system dynamics and to embed these surrogates into DA frameworks for parameter calibration. Let xt ∈ RNc×Nx×Ny denote the discrete solution fields of the system at time t, where Nc is the number of physical variables (two in this work, corresponding to the horizontal and vertical velocity components) and ( Nx, N y) define the spatial grid dimensions. The datasets considered in this work consist of multiple simulation cases, each corresponding to a distinct configuration of physical parameters and boundary conditions. For each case, a sequence of time-dependent snapshots {xt}nstate −1 
+
+> t=0
+
+is collected together with the associated parameter values and temporal 5indices, where nstate denotes the number of snapshots. Each snapshot can therefore be viewed as a data pair (xt, θ) ,
+
+where θ ∈ Rdθ gathers the system parameters and the temporal index. From these data, we consider three closely related modeling tasks. First, in the forward modeling and reconstruc-tion setting, the surrogate model takes high-dimensional states xt as input and outputs their reconstructed counterparts, with the objective of learning a compact latent representation that preserves the original flow fields. Second, in the forward-prediction setting, the surrogate model aims to approximate the parametric mapping from system parameters to flow states, taking θ
+
+as input and producing the corresponding predicted states xt. Finally, in the inverse problem addressed by DA, the objective is to infer calibrated system parameters θ from observed flow states xt, which may be available at a single time instant or at multiple time instants. In this setting, the forward surrogate models efficiently provide the state predictions required in the assimilation process. 
+
+2.2. Reduced-order modeling approaches 2.2.1. POD-GPR 
+
+Due to the high-dimensional nature of xt, constructing Gaussian process surrogate models directly in the physical space is hindered by the curse of dimensionality , stemming from the non-parametric nature of this method. As a result, it is typically combined with dimensionality reduction techniques, such as POD [11]. Following this idea, we first employ POD to construct a reduced linear subspace from a collection of snapshots. We assemble the snapshot matrix 
+
+X = [
+
+x0, x1, . . . , xnstate −1
+
+> ]
+
+∈ R(Nc×Nx×Ny )×nstate , (2) where each column represents a flattened state vector at a given time step. The empirical covariance matrix is then given by 
+
+CX = 1
+
+nstate − 1 X X T , (3) which admits the eigen-decomposition 
+
+CX = LX DX LT 
+
+> X
+
+, (4) where the columns of LX = [ Ψ 0, . . . , Ψnstate −1 ] ∈ R(Nc×Nx×Ny )×nstate are the POD modes, and 
+
+DX = diag( λ0, . . . , λ nstate −1) contains the eigenvalues in decreasing order. To obtain a reduced subspace of dimension q (q ∈ N+, q ≪ nstate ), we retain the first q POD modes, forming the projection matrix 
+
+LX ,q = [ Ψ 0, . . . , Ψq−1 ] ∈ R(Nc×Nx×Ny )×q.
+
+For a given state vector xt, the reduced latent representation (POD coefficients) is 
+
+zt = LT 
+
+> X,q
+
+xt = [
+
+k0,t , k 1,t , . . . , k q−1,t 
+
+> ]⊤
+
+∈ Rq, (5) where kj,t denotes the j-th POD coefficient at time t and the reconstruction in the original space is 
+
+xrt = LX ,q zt. (6) To enable forward prediction in the reduced space, the reduced coordinates must be approx-imated by an additional model. In this work, the regression task is performed using Gaussian process regression (GPR) applied to the POD coefficients [11]. For completeness, the regression formulation of the POD-GPR surrogate is provided in Appendix A. 62.2.2. OACAE-MLP 
+
+While the POD-GPR framework provides an effective surrogate modeling strategy for reduced-order representations, it relies on the assumption that the system dynamics can be captured by a linear subspace and on the regression of reduced POD coefficients that are not explicitly constrained by physical structures. In complex nonlinear flow regimes, however, these assumptions may become restrictive, leading to limited expressiveness and reduced robustness when extrapolating across parameter ranges or over long temporal horizons. To overcome these limitations, we present a deep learning based reduced-order model that combines Convolutional AutoEncoder (CAE) with Multilayer Perceptron (MLP), further enhanced by the application of Observable-Augmented Convolutional AutoEncoder (OACAE) [18]. A CAE is a neural network architecture commonly employed for nonlinear dimensionality reduction and reconstruction of high-dimensional data. As illustrated in Figure 1, a CAE model typically consists of an encoder Fe that maps the input field to a low-dimensional latent representation, and a decoder Fd that reconstructs the field from the latent variables. Formally, we write 
+
+z = Fe(x; ϕe), ˆx = Fd(z; ϕd), (7) where z ∈ Rq denotes the latent variables and ϕ· denotes the weights of the corresponding neural network. The encoder is composed of successive convolutional layers that extract local spatial features and progressively reduce dimensionality. The resulting feature maps are flat-tened and passed through an MLP to obtain the latent representation. The decoder follows a symmetric architecture based on transposed convolutions to reconstruct the high-dimensional field. By leveraging the locality and translation invariance of convolutional kernels, CAEs are well-suited to capture multiscale flow structures and nonlinear manifolds beyond the represen-tational capability of linear techniques such as POD. Regressor(MLP)    
+
+> Input Output
+> Multi -layer perceptron(MLP)
+> Decoder Encoder Code
+> Convolutional neural network
+> Convolutional neural network
+> flatten
+> reshape
+> Figure 1: Convolutional autoencoder (CAE) for two-channel velocity fields. The module highlighted in light yellow is activated when embedding parameters into the latent space, yielding the Observable-Augmented CAE (OACAE).
+
+A standard CAE is purely data-driven: it learns a latent representation by minimizing only the reconstruction error. As a consequence, the latent variables are not explicitly constrained to be organized with respect to physical parameters or the time index. Nearby parameter config-urations may therefore correspond to weakly correlated latent codes, and different parameter-induced dynamical regimes may partially overlap in the latent space. Such a representation can be sufficient for reconstruction, but it is not necessarily favorable for inverse modeling, where the surrogate must preserve information that is sensitive to the parameters to be calibrated. To address this issue, we augment the CAE by incorporating physical parameters into the training process, thereby obtaining a more informative encoder–decoder architecture and guiding the latent space toward physically consistent structures. The key idea is to supplement the CAE with an additional MLP branch that links the latent variables to measurable physical 7quantities, such as fluid density, viscosity, and time index. This observable-augmented structure is illustrated by the highlighted branch in light yellow in Figure 1. Formally, in the OACAE architecture (notations with superscript r are used to distinguish from the standard CAE), in addition to the usual encoding–decoding relations 
+
+zr = Fre (x; ϕre), ˆxr = Frd (zr; ϕrd), (8) we introduce a regression task Ea from the latent space to the parameter space: ˆθ = Ea(zr; ϕa), (9) where θ denotes the vector of physical observables, and ϕa are the trainable parameters of the observable regression network. The overall training loss combines the field reconstruction error with the regression error of the observables: 
+
+Lr 
+
+> 1
+
+= ∥x − ˆxr∥22 + α ∥θ − ˆθ∥22, (10) where α > 0 balances the contribution of observable supervision against the reconstruction objective.         
+
+> (a) Offline training phase 1 (b) Offline training phase 2
+> (c) Online prediction
+> Figure 2: Workflow of the OACAE-MLP surrogate model. (a) Offline training of the OACAE with an auxiliary MLP branch Eato incorporate physical parameters. (b) Offline training of the parameter-to-latent regressor Eb
+> using the frozen OACAE obtained in phase (a). (c) Online prediction stage, where a new parameter vector θis mapped to the latent space by Eband decoded by the OACAE decoder to produce the corresponding physical field.
+
+The observable-supervision term in Lr 
+
+> 1
+
+encourages the latent variables to retain the infor-mation in the physical fields that is most correlated with the prescribed physical observables, including the system parameters and the time index. More precisely, different combinations of physical parameters guide the autoencoder to learn distinguishable latent representations for different dynamical scenarios. Furthermore, for a fixed set of physical parameters, the addi-tional guidance from the time index encourages the latent variables to evolve in a temporally consistent and smoother manner. This temporal regularity is particularly important for multi-time-step data assimilation, such as 4D-Var, where the optimization relies on the consistency of the predicted states over a sequence of observation times. The resulting latent-space orga-nization is quantitatively examined in Appendix D, where case-level separability and temporal smoothness metrics are reported for both CAE and OACAE. 8Once the OACAE model is available, its encoder Fre (·; ϕre) and decoder Frd (·; ϕrd) are frozen and used as fixed functions. To construct the forward reduced-order model, we introduce an MLP, denoted by Eb, which maps the system parameters to the observable-augmented latent space (see Figure 2b). The predicted latent vector is then decoded by the OACAE decoder to recover the physical field: 
+
+zr, ∗ = Eb(θ; ϕrb ), ˆxr, ∗ = Frd (zr, ∗; ϕrd), (11) where θ ∈ Rdθ denotes the normalized input system parameters, ϕrb is the trainable weights of the regressor, zr, ∗ is the latent prediction, and ˆ xr, ∗ is the final predicted field. The training of Eb is performed in a supervised fashion using pairs {(θi, xi)}Ni=1 , as illustrated in Figure 2b. For each snapshot, the corresponding reference latent code is precomputed via the frozen encoder, zri = Fre (xi; ϕre). The objective loss function for Eb combines a prediction error in the physical space with a regression error in the latent space: 
+
+Lr 
+
+> 2
+
+= ∥x − ˆxr, ∗∥22 + β ∥zr − zr, ∗∥22, (12) where β > 0 balances the contribution of latent supervision against field prediction. During this training stage, the OACAE encoder and decoder remain fixed, so that only the parameters 
+
+ϕrb of the MLP Eb are updated. This workflow provides a non-intrusive parametric ROM that directly maps physical parameters to physical fields via the augmented latent representation, while leveraging the structure learned by the OACAE. In the online stage (see Figure 2c), this allows fast and repeated evaluations: once trained, the model can efficiently generate large numbers of flow-field predictions for arbitrary parameter inputs without resorting to expensive numerical simulations. The OACAE and its observable branch are implemented using a standard convolutional encoder-decoder architecture with MaxPooling layers and fully connected layers, complemented by additional MLP components. The detailed layer-by-layer configurations of the OACAE en-coder/decoder, the observable regression branch MLP ( Ea), and the parameter-to-latent regres-sor MLP ( Eb) are provided in Appendix B. As illustrated in Figure 2, the training procedure of the OACAE-MLP ROM consists of two successive phases. In the first phase (Figure 2a), the parameters of the encoder, decoder, and observable branch ( ϕre, ϕ rd, ϕ ra) are optimized by minimizing the loss Lr 
+
+> 1
+
+defined in Equation (13). In the second phase (Figure 2b), the encoder and decoder are kept frozen, and the parameter-to-latent regressor Eb with parameters ϕrb is trained by minimizing Lr 
+
+> 2
+
+in Equation (14). For clarity, we rewrite the two objective functions below to explicitly highlight their dependence on the trainable parameters: 
+
+Lr
+
+> 1
+
+(ϕra, ϕ re, ϕ rd) = ∥x − F rd (Fre (x; ϕre); ϕrd)∥22 + α ∥θ − E a(Fre (x; ϕre); ϕra)∥22, (13) 
+
+Lr
+
+> 2
+
+(ϕrb ) = ∥x − F rd (Eb(θ; ϕrb ); ϕrd)∥22 + β ∥F re (x; ϕre) − E b(θ; ϕrb )∥22, (14) with the corresponding optimization problems solved by the Adam optimizer: (ϕra, ϕ re, ϕ rd)∗ = arg min   
+
+> (ϕra,ϕ re,ϕ rd)
+
+Lr
+
+> 1
+
+(ϕra, ϕ re, ϕ rd), (15) (ϕrb )∗ = arg min   
+
+> (ϕrb)
+
+Lr
+
+> 2
+
+(ϕrb ). (16) In this study, the weighting coefficients are set to α = 0 .05 and β = 1 based on an empirical assessment of the trained model performance (see Appendix E.1 for a detailed analysis of the choice of these coefficients). In addition, we denote by CAE-MLP the baseline model obtained by replacing the OACAE in the OACAE-MLP framework with a standard CAE, that is, by setting α = 0 and removing the observable regression branch. Accordingly, the CAE-MLP can be regarded as a special case 9of the proposed OACAE-MLP model, and is introduced to assess the impact of physics-aware latent supervision. In this case, the model consists of a standard CAE with an encoder Fe and a decoder Fd together with a parameter-to-latent regressor MLP, denoted by Ec.Formally, the encoder-decoder relations of the standard CAE read 
+
+z = Fe(x; ϕe), ˆx = Fd(z; ϕd), (17) where z is the latent code, and ϕe, ϕ d are the trainable weights of the encoder and decoder. The training loss for the CAE stage is thus given by 
+
+L1(ϕe, ϕ d) = ∥x − F d(Fe(x; ϕe); ϕd)∥22. (18) In the second stage, a parameter-to-latent regressor Ec with weights ϕc is trained to map input parameters θ to the latent space, while the decoder Fd remains frozen. The corresponding loss function is 
+
+L2(ϕc) = ∥x − F d(Ec(θ; ϕc); ϕd)∥22 + β ∥F e(x; ϕe) − E c(θ; ϕc)∥22, (19) with optimization problems (ϕe, ϕ d)∗ = arg min  
+
+> (ϕe,ϕ d)
+
+L1(ϕe, ϕ d), (ϕc)∗ = arg min 
+
+> ϕc
+
+L2(ϕc). (20) 
+
+2.3. Data assimilation frameworks for parameter calibration 
+
+In this section, we present three complementary DA frameworks that leverage the previously introduced ROMs. First, we discuss the use of the Ensemble Kalman Filter (EnKF) combined with the POD-GPR surrogate for parameter estimations. Second, we formulate variational assimilation strategies (3D-Var/4D-Var) combined with CAE-MLP and OACAE-MLP, allowing for optimization strategies of parameter estimates. 
+
+2.3.1. EnKF combined with POD-GPR 
+
+Among the available data assimilation techniques, the EnKF is adopted in combination with the POD-GPR surrogate due to its derivative-free and ensemble-based formulation. In contrast to variational approaches, which require gradients of the reduced-order model with respect to the parameters, the POD-GPR surrogate does not provide analytic derivatives and is therefore not directly compatible with gradient-based optimization methods. The EnKF addresses the calibration problem within a statistical framework by propagating an ensemble of parameter realizations, making it particularly well suited to handle the variability and nonlinearity inherent in POD-GPR predictions. Moreover, the use of ensembles naturally represents uncertainty while maintaining computational efficiency, making EnKF a natural benchmark for parameter calibration with POD-GPR. The Ensemble Kalman Filter (EnKF) is a sequential Monte Carlo method that extends the classical Kalman filter to high-dimensional nonlinear problems. It represents the uncertainty of the control vector by an ensemble of realizations, which are propagated forward by the model and used to compute the Kalman gain in a statistical manner. Given a background ensemble 
+
+Eb = ( θb
+
+> 1
+
+, . . . , θbNe )⊤ ∈ Rd×Ne sampled from a prior distribution N (¯θb, B), where ¯θb denotes the background mean parameter vector (typically chosen as the empirical mean of the training dataset) and B represents the background error covariance matrix characterizing the prior un-certainty in the parameters, estimated from the empirical covariance of the training parameter ensemble, computed as the sample covariance of the parameter anomalies with respect to the ensemble mean. The EnKF proceeds as follows [30]: 
+
+(i) Forecast step. Each ensemble member is directly evaluated through the observation operator H, yielding 
+
+xfi = H(θbi ), i = 1 , . . . , N e. (21) 10 (ii) Analysis step. The forecast ensemble {xfi } is compared with the observations y. The error cross-covariances are estimated from the ensemble as 
+
+BH ⊤ ≈ 1
+
+Ne − 1
+
+> Ne∑
+> i=1
+
+(θbi − ¯θb)(
+
+xfi − xf
+
+> )⊤
+
+, (22) 
+
+HBH ⊤ ≈ 1
+
+Ne − 1
+
+> Ne∑
+> i=1
+> (
+
+xfi − xf
+
+> )(
+
+xfi − xf
+
+> )⊤
+
+. (23) The Kalman gain is then 
+
+K∗ = BH ⊤(
+
+HBH ⊤ + R)−1
+
+, (24) where R denotes the observation error covariance matrix that quantifies measurement uncer-tainties. Finally, each parameter ensemble member is updated according to 
+
+θai = θbi + K∗(
+
+yi − xfi
+
+> )
+
+, i = 1 , . . . , N e, (25) where yi are perturbed observations sampled from N (y, R). The optimal parameter estimate is obtained as the ensemble mean ¯θa = 1
+
+NeNe∑
+
+> i=1
+
+θai . (26) In our framework, the EnKF is applied directly to the system parameters θ. The complete parameter vector must be provided as input to the POD-GPR surrogate, which serves as the observation operator in the data assimilation process. This vector includes both the physical parameters of the system and the time index associated with each snapshot. Accordingly, a single θ corresponds to one snapshot, whereas the combination of fixed physical parameters with a sequence of time indices describes the entire flow evolution. For parameter calibration, however, we restrict the update to the most sensitive physical parameters, denoted by θcontrol ,while the remaining physical parameters and the snapshot time index (e.g., tk) are considered as known, denoted by θfixed  
+
+> tk
+
+. Thus, each parameter vector at time tk can be represented as 
+
+θtk = (
+
+θcontrol , θfixed 
+
+> tk
+> )
+
+. (27) The observation operator H is identified with the POD-GPR surrogate model, denoted HPOD-GPR ,which maps a complete parameter vector θtk to a prediction of the physical field. The cor-responding observation y is taken from the true physical field (e.g., flattened snapshots of high-fidelity simulations). This leads to the following assimilation stages at time tk:1. Prediction step: each ensemble member θcontrol ,b i is combined with the fixed parameters and the time index tk to form 
+
+θtk ,i = (
+
+θcontrol ,b i , θ fixed 
+
+> tk
+> )
+
+, (28) and propagated through the surrogate to obtain the forecast field xfi = HPOD-GPR (θtk ,i ). 2. Analysis step: the discrepancy between the ensemble forecasts xfi and the perturbed observations is used to update the parameter ensemble according to the EnKF equations. 3. Ensemble mean: the calibrated parameter estimate is given by the mean of the analysis ensemble, ¯θcontrol ,a = 1 
+
+> Ne
+> ∑Ne
+> i=1
+
+θcontrol ,a i .This procedure corresponds to a single-time-step EnKF strategy, often applied in the cali-bration of stationary or time-averaged fields, where the update of the control parameters relies 11 on observations at a single time instant. In our study, however, the inclusion of the time in-dex in the parameter vector allows us to extend the assimilation to a multi-time-step EnKF. Consider a sequence of snapshots from one evolution case, 
+
+xt0 , xt1 , xt2 , . . . , xtk , (29) which serve as observations at successive assimilation steps. Starting from a prior control vector, the EnKF update with xt0 yields an analysis control vector, which is then taken as the back-ground for the update with xt1 , and so on. In this way, observations from multiple time steps are successively assimilated, and the final analysis control vector incorporates observational information from the entire sequence of snapshots. 
+
+2.3.2. 3D-Var and 4D-Var combined with CAE-MLP and OACAE-MLP 
+
+A key challenge in variational data assimilation lies in defining the forward and observa-tion operators, which often involve nonlinear and high-dimensional mappings. In particular, integrating deep learning models into DA workflows remains difficult, as most existing software packages do not natively support neural networks within variational schemes. To bypass this limitation, we rely on the recently proposed Python package TorchDA [31], which provides a unified framework for coupling deep learning surrogates with variational DA algorithms. Built on the PyTorch ecosystem, TorchDA streamlines 3D-Var/4D-Var workflows by enabling neural networks to serve directly as forward or observation operators, with automatic differentiation for tangent-linear and adjoint computations, GPU acceleration, and user-friendly configura-tion interfaces. This capability allows us to seamlessly integrate DL-based ROMs, such as the CAE-MLP and OACAE-MLP introduced in Section 3.2, into variational assimilation pipelines. Variational DA seeks to estimate the optimal state or parameter vector θ by minimizing a cost function that balances background information with observational constraints. Here, we focus on parameter calibration using variational DA with DL-based observation operators. In the 3D-Var case, where assimilation is performed at a single time step, the cost function reads 
+
+J3D-Var (θ) = 12
+
+> (
+
+θ − θb)⊤
+
+B−1(
+
+θ − θb)
+
++ 12
+
+> (
+
+y0 − H (θ))⊤
+
+R−1(
+
+y0 − H (θ))
+
+, (30) where θb denotes the background parameter vector, B the background error covariance ma-trix, y0 the observation, H the DL-based observation operator, and R the observation error covariance matrix. The 4D-Var framework extends this principle to a temporal window [ t0, . . . , t K ], by assimi-lating all observations within this interval: 
+
+J4D-Var (θ) = 12
+
+> (
+
+θ − θb)⊤
+
+B−1(
+
+θ − θb)
+
++ 12
+
+> K∑
+> k=0
+> (
+
+ytk − H tk (θ))⊤
+
+R−1(
+
+ytk − H tk (θ))
+
+, (31) where Htk (θ) denotes the surrogate-predicted field at time tk corresponding to the parameter vector θ. Unlike classical 4D-Var formulations, where the control variable evolves in time ac-cording to the governing dynamics, the present 4D-Var treats the target parameter vector θ as a fixed control variable, which is mapped to multiple observation times through distinct obser-vation operators Htk . The minimization of J3D-Var and J4D-Var is carried out iteratively, often using gradient-based optimizers such as Adam or SGD, with gradients obtained by automatic differentiation of the DL-based surrogates enabled by TorchDA. A learning-rate sensitivity sweep is reported in Appendix E.3 to examine the stability of this gradient-based optimization and to identify a suitable range of learning rates. We illustrate the application of the framework using the CAE-MLP model, noting that the procedure for the OACAE-MLP surrogate is entirely analogous. In this setting, the reduced-order surrogate CAE-MLP serves as the observation operator H. As defined in Section 2.3.1, the complete parameter vector is θtk = (
+
+θcontrol , θfixed 
+
+> tk
+> )
+
+, which includes the time-index parameter 12 tk and is used as input to the surrogate. The control variables θcontrol act as the independent variables in the objective cost functions. Accordingly, the 3D-Var and 4D-Var cost functions can be written as 
+
+J3D-Var (θcontrol ) = 12
+
+> (
+
+θcontrol − θcontrol ,b )⊤
+
+B−1(
+
+θcontrol − θcontrol ,b )
+
++
+
+> 12
+> (
+
+xtk − H tk (θcontrol ))⊤
+
+R−1(
+
+xtk − H tk (θcontrol ))
+
+, (32) 
+
+J4D-Var (θcontrol ) = 12
+
+> (
+
+θcontrol − θcontrol ,b )⊤
+
+B−1(
+
+θcontrol − θcontrol ,b )
+
++
+
+> 12
+> K∑
+> k=0
+> (
+
+xtk − H tk (θcontrol ))⊤
+
+R−1(
+
+xtk − H tk (θcontrol ))
+
+, (33) where, for a given control parameter vector θcontrol , the surrogate prediction of the physical field is expressed as 
+
+Htk (θcontrol ) = HCAE-MLP (θcontrol , θfixed  
+
+> tk
+
+) = Fd(Ec(θcontrol , θfixed  
+
+> tk
+
+)) . (34) where Fd denotes the decoder and Ec the parameter-to-latent MLP regressor, as introduced in Sec 2.2.2. The variational assimilation proceeds as follows. First, the background control vector 
+
+θcontrol ,b is defined as the empirical mean of training parameters, and the associated background covariance B is estimated from the training dataset as well. At each observation time tk, the CAE-MLP surrogate predicts the physical field corresponding to the current complete param-eter vector. The discrepancy between the predicted field and the flattened true snapshot xtk
+
+(used here as the observation) is then evaluated in the 3D-Var/4D-Var cost function. Gradi-ents of the objective function with respect to θcontrol are computed via backpropagation through the CAE-MLP network using TorchDA, and the control vector is iteratively updated with a gradient-based optimizer until convergence, yielding the analysis estimate θcontrol ,a . Through this procedure, observational information distributed over multiple time steps can be effec-tively assimilated into the control parameters, while leveraging the differentiable structure of the CAE-MLP surrogate. Since the balance between the background and observation terms depends on the relative scaling of B and R, we also report a covariance-scaling sensitivity study in Appendix E.4. 
+
+3. Numerical Experiments 
+
+We evaluate the presented and proposed ROM-DA frameworks on two representative CFD-Bench problems: the dam-break flow and the lid-driven cavity flow. To emphasize the contri-bution of the proposed physics-aware variational DA-DL-ROM approach, we adopt the EnKF-POD-GPR framework as a baseline, following the methodology introduced in Sec 2.2.1 and Sec 2.3.1, and inspired by the idea from [11, 30]. In addition to the EnKF-POD-GPR baseline, we compare CAE-MLP and OACAE-MLP to isolate the effect of observable supervision. These two models share the same encoder-decoder backbone, latent dimension, parameter-to-latent regression strategy, and variational assimilation setting. The main difference is that OACAE-MLP uses observable supervision during the autoencoder training stage, whereas CAE-MLP relies only on the reconstruction loss. Therefore, the comparison between CAE-MLP and OACAE-MLP serves as a controlled ablation for assessing the effect of observable supervision on latent-space organization, forward prediction, and inverse calibration. To rigorously assess the generalization capability of the surrogate models, data splitting is performed at the case level rather than at the snapshot level. All snapshots associated with a given simulation case are assigned exclusively to either the training or the test set. This strategy prevents information leakage across different parameter realizations and provides a realistic evaluation of model performance on unseen configurations. Both the solution fields and the 13 associated parameter data are normalized using feature-wise min–max scaling to the range [0 , 1]. This normalization ensures consistent scaling across different state variables and parameters, avoids numerical imbalances, and facilitates the convergence of learning algorithms. The same normalization procedure is applied consistently throughout the reduced-order forward modeling and DA inverse modeling stages. Before fixing the final inverse-modeling setting, we performed preliminary multi-parameter assimilation tests in which all available candidate parameters were included as control variables. These tests were used to assess the practical identifiability of each parameter from the available observations. Parameters that remained weakly identifiable, led to unstable assimilation updates, or produced calibrated errors comparable to or larger than the background errors were fixed in the subsequent experiments. This reduced control setting avoids over-parameterizing the inverse problem and enables a clearer assessment of the achievable inverse modeling performance from the available observations. 
+
+3.1. The CFDBench dataset 
+
+To evaluate data-driven reduced-order models and their integration with data assimilation frameworks, we rely on the recently released CFDBench dataset [32]. CFDBench provides a large-scale benchmark for assessing the generalization ability of machine learning surrogates in computational fluid dynamics (CFD). Among the problems included in CFDBench, the two-dimensional dam-break flow and the lid-driven cavity flow are selected as the primary test cases in this study. The operating parameters in CFDBench are systematically varied along three main axes: (i) boundary conditions (e.g., inlet or lid velocity), (ii) fluid properties (density ρ and viscosity μ), and (iii) geometry (e.g., cavity dimensions, tube diameter, barrier height, or cylinder radius). For each flow configuration, cases are organized into subsets corresponding to these parameter variations and their combinations, enabling rigorous evaluation of model extrapolation to unseen operating conditions. 
+
+3.2. Dam-break flow problem 
+
+Dam-break flows constitute a canonical class of gravity-driven free-surface problems and are widely used as simplified models for coastal inundation and nearshore wave dynamics in ocean and coastal engineering. The sudden release of an initially retained water column generates rapidly propagating free-surface waves characterized by strong nonlinearity, sharp gradients, and transient flow structures. Owing to these features, dam-break configurations serve as challenging yet physically meaningful benchmarks for assessing numerical solvers, reduced-order models, and inverse methodologies in regimes relevant to oceanic and coastal modeling. In this work, the dam-break flow is adopted to evaluate the performance of the proposed ROM–DA frameworks under strongly nonlinear dynamics. In CFDBench, the dam flow is parameterized by the height h and width w of the dam obstacle, the inlet velocity uin , the fluid density ρ, and the fluid viscosity μ. By systematically varying these parameters, the dataset spans a wide range of Reynolds numbers (see Table 1). 
+
+> Table 1: Parameter ranges for the dam flow problem in CFDBench.
+
+Category Values Boundary condition uin ∈ { 0.05 , 0.1, . . . , 1} ∪ { 1.02 , 1.04 , . . . , 2} m/s Fluid density ρ ∈ { 0.1, 0.5, 1, 2, 3, . . . , 10 } kg/m 3
+
+Fluid viscosity μ ∈ { 10 −5, 5 × 10 −5, . . . , 5 × 10 −3, 10 −2} Pa ·sBarrier height h ∈ { 0.11 , 0.12 , 0.13 , 0.14 , 0.15 } mBarrier width w ∈ { 0.01 , 0.02 , . . . , 0.08 , 0.09 } mFor each simulation case, the velocity components ( u, v ) are stored at successive time steps on a uniform 64 × 64 grid, yielding a total of 21 ,700 snapshots across 217 evolution cases. Each 14 snapshot is associated with a set of physical parameters and a temporal index, and can be represented as (xt, θ) , xt ∈ R2×64 ×64 , θ ∈ R6,
+
+where xt denotes the velocity field at time t and θ collects the five physical parameters together with the time index. The dataset is organized into three groups of cases: 100 cases varying fluid properties ( ρ, μ ), 50 cases varying the cavity geometry ( h, w ), and 67 cases varying the boundary condition uin .For model evaluation, data splitting is performed at the case level, ensuring that each simulation case is assigned to either the training or the test set. This results in 173 training cases (17 ,300 snapshots) and 44 test cases (4 ,400 snapshots), providing a strict assessment of generalization to unseen parameter configurations. The first row of Figure 3 illustrates representative snapshots of the horizontal and vertical velocity components in the dam-break flow problem. The presence of gravity-driven jets, strong velocity gradients, flow separation around the obstacle, and free-surface-induced recirculation zones leads to highly transient and nonlinear flow structures. These features make the dam-break flow a particularly challenging benchmark for evaluating the reconstruction, prediction, and parameter calibration capabilities of the proposed ROM-DA frameworks. In our numerical experiment, the inlet velocity uin and the barrier height h are identified as the primary calibration parameters, while the remaining parameters are set to their true values. Unless otherwise stated, all reported calibration results correspond to this reduced control setting. 
+
+3.3. Lid-driven cavity flow problem 
+
+The lid-driven cavity flow is a classical benchmark in CFD and provides a controlled setting to investigate both flow reconstruction/prediction and parameter calibration. In contrast to the dam-break flow, which is dominated by strongly nonlinear free-surface dynamics, the cavity flow represents a confined, wall-bounded shear-driven system, thereby offering a complementary test case to assess the generality and robustness of the proposed ROM–DA frameworks. The flow is confined within a square cavity, where the top lid moves with velocity ulid , while the remaining walls are stationary and impose no-slip conditions. In CFDBench, the cavity flow is parameterized by the cavity geometry (length l and width w), the lid velocity ulid , the fluid density ρ, and the fluid viscosity μ. By systematically varying these parameters, the dataset spans a wide range of Reynolds numbers (see Table 2). 
+
+> Table 2: Parameter ranges for the cavity flow problem in CFDBench.
+
+Category Values Boundary condition ulid ∈ { 1, 2, 3, . . . , 50 } m/s Fluid density ρ ∈ { 0.1, 0.5, 1, . . . , 10 } kg/m 3
+
+Fluid viscosity μ ∈ { 10 −5, 5 × 10 −5, 10 −4, . . . , 5 × 10 −3, 10 −2} Pa ·sGeometry l, w ∈ { 0.01 , 0.02 , 0.03 , 0.04 , 0.05 } mFor each simulation case, the velocity components ( u, v ) are stored at successive time steps on a uniform 64 × 64 grid, yielding a total of 12 ,681 snapshots across 158 cases. Each snapshot is associated with a set of physical parameters and a temporal index, and can be represented as (xt, θ) , xt ∈ R2×64 ×64 , θ ∈ R6,
+
+where xt denotes the velocity field at time t and θ collects the five physical parameters together with the time index. The dataset is organized into three groups of cases: 84 cases varying fluid properties ( ρ, μ ), 24 cases varying the cavity geometry ( l, w ), and 50 cases varying the boundary condition ulid .For model evaluation, data splitting is performed at the case level, ensuring that each simulation 15 case is assigned to either the training or the test set. This results in 144 training cases (8 ,036 snapshots) and 14 test cases (4 ,645 snapshots), providing a strict assessment of generalization to unseen parameter configurations. The fifth row of Figure 3 illustrates representative snapshots of the horizontal and vertical velocity components on the cavity domain. The emergence of secondary vortices and increas-ingly complex flow structures at higher Reynolds numbers makes this benchmark particularly suitable for evaluating the reconstruction, prediction, and parameter calibration capabilities of ROM-DA frameworks. In our numerical experiment, the lid velocity ulid and the fluid density ρ are identified as the primary control parameters for calibration, while the remaining parameters are fixed at their true values. Unless otherwise stated, all reported calibration results correspond to this reduced control setting. 
+
+3.4. Reconstruction 
+
+We first evaluate the reconstruction capabilities of the three reduced-order models intro-duced in Section 2.2, namely POD, standard CAE, and OACAE. To provide a quantitative comparison, we evaluate the average reconstruction errors over the entire test dataset. For fairness, the latent dimension is fixed to 32 for all three ROMs. This value is selected as a robust and balanced choice according to the latent-dimension sensitivity study reported in Appendix E.2. The results, summarized in Table 3, are reported in terms of relative ℓ2 error (REL), mean square error (MSE), and structural similarity index (SSIM). These metrics highlight the contrast between the linear POD coefficients and the nonlinear latent manifolds constructed by CAE and OACAE.                                
+
+> Table 3: Average reconstruction metrics of POD, CAE, and OACAE on the test datasets for the cavity flow and dam flow problems.
+> Cavity flow Dam flow Model REL ↓MSE ↓SSIM ↑REL ↓MSE ↓SSIM ↑
+> POD 0.002424 0.000006 0.987987 0.005586 0.000022 0.976817
+> CAE 0.004584 0.000011 0.982691 0.007704 0.000054 0.957641 OACAE 0.008111 0.000031 0.969903 0.009966 0.000069 0.942009
+
+Two main observations can be drawn from Table 3. First, the OACAE exhibits slightly lower reconstruction accuracy than the standard CAE. This behavior is expected, since the OACAE is not entirely trained for reconstruction but also incorporates an additional regression loss to align the latent space with physical parameters. As a result, part of the latent representation is allocated to parameter regression rather than purely minimizing reconstruction error, making the OACAE suboptimal for the reconstruction task alone. Second, unexpectedly, POD achieves the best reconstruction accuracy. This contrasts with existing studies on more complex flows, where CAE models usually outperform linear POD in capturing nonlinear structures. However, the cavity flow and dam flow dataset considered here is relatively less complex, as they are represented on a uniform 64 × 64 grid, which reduces the spatial resolution compared with higher-resolution datasets (e.g., 128 × 128 or 256 × 256). Figure C.14 in Appendix C shows one test sample snapshot of the dam flow problem and cavity flow problem with the original field, the reconstructions from the three ROMs, and their error maps. 
+
+3.5. Prediction 
+
+We now turn to the prediction task, where the goal is to directly infer velocity fields from physical parameters without relying on reference simulations. In this setting, the three ROMs are employed as surrogate models: POD-GPR, CAE-MLP, and OACAE-MLP. 16 To quantitatively evaluate their predictive accuracy, we compute the average errors on the test set, summarized in Table 4.                                
+
+> Table 4: Average prediction metrics of different predictive models on the test dataset for the cavity flow and dam flow problems.
+> Cavity flow Dam flow Model REL ↓MSE ↓SSIM ↑REL ↓MSE ↓SSIM ↑
+> POD-GPR 0.061342 0.002382 0.899857 0.020275 0.000109 0.944738 CAE-MLP 0.014033 0.000079 0.952016 0.012304 0.000038 0.968740
+> OACAE-MLP 0.019615 0.000104 0.941041 0.014075 0.000042 0.952114
+
+The same metrics as in the reconstruction study are reported: relative ℓ2 error (REL), mean square error (MSE), and structural similarity index (SSIM). While both reconstruction and prediction are evaluated on unseen test samples, the prediction task is inherently more difficult, as the models must infer the flow field entirely from physical parameters rather than from a latent encoding of the field itself. Two main conclusions can be drawn from Table 4. First, although POD exhibits strong re-construction capabilities in Section 3.4, its predictive extension (POD-GPR) performs markedly worse than the DL-based surrogates, CAE-MLP and OACAE-MLP, across all evaluation met-rics, including the REL, MSE, and SSIM. This result highlights the superior expressiveness of deep learning ROMs for parameter-to-field prediction tasks and provides clear justification for their applications in more complex flow configurations. A second observation concerns the comparison between CAE-MLP and OACAE-MLP. CAE-MLP achieves superior reconstruction accuracy, as it is solely optimized for field reconstruction. In contrast, OACAE-MLP introduces an additional parameter regression constraint that promotes a more structured and physically informed latent representation. As a result, the performance gap between the two models is substantially reduced in the prediction task, indicating that the physics-aware latent space learned by OACAE-MLP enhances parameter-to-field generalization despite a slight reduction in pure reconstruction accuracy. Figure 3 presents representative test cases from the dam flow and cavity flow datasets. The results indicate that DL-based surrogates not only outperform POD-GPR in terms of average performance but also exhibit robust accuracy on individual samples where POD-GPR fails to produce reliable predictions. 17 -2.06 -1.03 0.00 1.03 2.06 (a) truth u 0.00 0.20 0.40 0.60 0.80 (b) no error -0.91 -0.45 0.00 0.45 0.91 (c) truth v 0.00 0.08 0.17 0.25 0.34 (d) no error -2.06 -1.03 0.00 1.03 2.06 
+
+(e) POD-GPR pre-diction 0.00 0.20 0.40 0.60 0.80 
+
+(f) error-u POD-GPR -0.91 -0.45 0.00 0.45 0.91 
+
+(g) POD-GPR pre-diction 0.00 0.08 0.17 0.25 0.34 
+
+(h) error-v POD-GPR -2.06 -1.03 0.00 1.03 2.06 
+
+(i) CAE-MLP pre-diction 0.00 0.20 0.40 0.60 0.80 
+
+(j) error-u CAE-MLP -0.91 -0.45 0.00 0.45 0.91 
+
+(k) CAE-MLP pre-diction 0.00 0.08 0.17 0.25 0.34 
+
+(l) error-v CAE-MLP -2.06 -1.03 0.00 1.03 2.06 
+
+(m) OACAE-MLP prediction 0.00 0.20 0.40 0.60 0.80 
+
+(n) error-u OACAE-MLP -0.91 -0.45 0.00 0.45 0.91 
+
+(o) OACAE-MLP prediction 0.00 0.08 0.17 0.25 0.34 
+
+(p) error-v OACAE-MLP -15.1 -7.55 0.00 7.55 15.1 
+
+(a) truth u 0.00 1.28 2.56 3.83 5.11 (b) no error -7.70 -3.85 0.00 3.85 7.70 (c) truth v 0.00 0.61 1.22 1.83 2.44 (d) no error -15.1 -7.55 0.00 7.55 15.1 
+
+(e) POD-GPR pre-diction 0.00 1.28 2.56 3.83 5.11 
+
+(f) error u POD-GPR -7.70 -3.85 0.00 3.85 7.70 
+
+(g) POD-GPR pre-diction 0.00 0.61 1.22 1.83 2.44 
+
+(h) error v POD-GPR -15.1 -7.55 0.00 7.55 15.1 
+
+(i) CAE-MLP pre-diction 0.00 1.28 2.56 3.83 5.11 
+
+(j) error u CAE-MLP -7.70 -3.85 0.00 3.85 7.70 
+
+(k) CAE-MLP pre-diction 0.00 0.61 1.22 1.83 2.44 
+
+(l) error v CAE-MLP -15.1 -7.55 0.00 7.55 15.1 
+
+(m) OACAE-MLP prediction 0.00 1.28 2.56 3.83 5.11 
+
+(n) error uOACAE-MLP -7.70 -3.85 0.00 3.85 7.70 
+
+(o) OACAE-MLP prediction 0.00 0.61 1.22 1.83 2.44 
+
+(p) error vOACAE-MLP 
+
+Figure 3: Comparison of prediction results (dam flow and cavity flow) 
+
+18 3.6. Inverse modeling: Parameter calibration 
+
+We finally consider the parameter calibration problem, which aims to estimate key physical parameters from observed flow fields. For the cavity flow, the lid velocity ulid and fluid density 
+
+ρ are treated as control variables, while for the dam-break flow, the barrier height h and inlet velocity uin are considered. All remaining parameters are fixed to their ground-truth values. Parameter calibration is performed using variational DA frameworks (3D-Var and 4D-Var) combined with CAE-MLP and OACAE-MLP surrogates. As a baseline, an Ensemble Kalman Filter (EnKF) coupled with a POD-GPR surrogate is also evaluated. All experiments are conducted on held-out test cases. For each flow configuration, a representative temporal evolution is selected. We first ex-amine single-time-step assimilation strategies, including EnKF with POD-GPR and 3D-Var with CAE-MLP and OACAE-MLP, applied over the entire evolution. We then investigate multi-time-step assimilation strategies, namely 2T-EnKF with POD-GPR and 4D-Var with CAE-MLP and OACAE-MLP, using multiple time windows extracted from the same evolu-tion. Since multi-time-step assimilation increases the number of surrogate evaluations, we fur-ther compare the online runtime of the EnKF-POD-GPR and the AE-MLP 4D-Var frameworks in Appendix F. 
+
+3.6.1. Single-time-step assimilation. 
+
+We first examine the performance of single-time-step assimilation frameworks on one dam flow and cavity flow evolution case. The dam flow evolution case consists of 100 time steps, while the cavity flow evolution case includes 32 time steps. The availability of complete tem-poral evolutions with a sufficient number of time instants allows for a reliable evaluation of single-time-step parameter estimation performance. Table 5 reports the average parameter estimation errors, with the background errors included for comparison. Since all data assim-ilation procedures are initialized from the same prescribed background state, the comparison between analysis and background errors provides a direct measure of the correction capability of each method. The considered approaches include the one-step EnKF (1T-EnKF) coupled with POD-GPR, as well as 3D-Var combined with CAE-MLP and OACAE-MLP surrogates.   
+
+> Table 5: Average ℓ2relative errors of parameters for single-time-step assimilation. Both the analysis results and the background are reported for reference.
+
+Dam flow Cavity flow Method uin h ulid ρ
+
+Background 0.097873 0.632951 0.951456 9.325386 1T-EnKF (POD–GPR) 0.144884 0.298331 0.563508 3.322671 3D-Var (CAE–MLP) 0.054595 0.167084 0.562477 2.096463 
+
+3D-Var (OACAE–MLP) 0.068964 0.095677 0.159565 2.533160 Several observations can be drawn from these results. First, in both flow configurations, the lowest estimation errors are consistently achieved by 3D-Var combined with DL-based ROM frameworks. For the dam flow problem, the inlet velocity uin is most accurately estimated using the 3D-Var-CAE-MLP framework, whereas the barrier height h is better recovered with 3D-Var-OACAE-MLP. In the cavity flow case, the most accurate estimates of the lid velocity ulid 
+
+are obtained with 3D-Var-OACAE-MLP, while the fluid density ρ is more accurately estimated using 3D-Var-CAE-MLP. These results demonstrate the effectiveness of the proposed variational DA-DL-ROM framework for parameter calibration and its advantage over the EnKF-POD-GPR baseline in the same task. Second, although the 3D-Var-OACAE-MLP framework exhibits slightly higher estimation errors for one of the parameters in each configuration (namely uin 
+
+for the dam flow and ρ for the cavity flow), it provides substantially improved estimates for the other parameter ( h and ulid , respectively). Since the objective of the data assimilation procedure 19 is to optimize the control variable vector, lower estimation errors in the analyzed parameter vector directly reflect improved calibration performance. These results suggest that the physics-informed latent representation learned by OACAE can enhance parameter calibration in the proposed variational-DA-DL-ROM framework. To further investigate different inverse modeling performances between the CAE-MLP and OACAE-MLP, beyond the average parameter estimation errors reported in Table 5, it is also essential to assess the impact of parameter calibration in the physical space. In particular, we compare the prediction errors of the flow fields obtained using the true parameters and the cali-brated (analysis) parameters. To this end, we recall that the 3D-Var cost function (32) consists of a prior term and an observation term. In the present setting, the observations correspond to the true physical fields, such that the observation term directly measures the discrepancy between the predicted and true flow fields. Moreover, because the observation term is given a large weight, its contribution dominates the cost function by several orders of magnitude over the prior term. As a consequence, the effectiveness of variational data assimilation can 0 20 40 60 80 100                    
+
+> Time steps
+> 9.0 9.5 10.0 10.5 11.0 11.5 12.0
+> Loss Value (log)
+> Truth Analysis
+> (a) Dam flow — OACAE-MLP 020 40 60 80 100
+> Time steps
+> 8910 11 12 13
+> Loss Value (log)
+> Truth Analysis (b) Dam flow — CAE-MLP 0510 15 20 25 30
+> Time steps
+> 9.5 10.0 10.5 11.0
+> Loss Value (log)
+> Truth Analysis
+> (c) Cavity flow — OACAE-MLP 0510 15 20 25 30
+> Time steps
+> 7.5 8.0 8.5 9.0 9.5 10.0
+> Loss Value (log)
+> Truth Analysis (d) Cavity flow — CAE-MLP
+
+Figure 4: Comparison of 3D-Var observation mismatch in the physical space, evaluated at each time step of the selected evolution case, using the true parameters and the calibrated (analysis) parameters for different surrogate models (OACAE-MLP and CAE-MLP) and flow configurations (dam flow and cavity flow). 
+
+be assessed through the 3D-Var validation loss, defined as the value of the observation term in the 3D-Var cost function, which provides a physically meaningful criterion for comparing different parameter estimates. Since the observation operator is a learned surrogate rather than the full-order model, the surrogate cannot exactly represent all spatial structures of the full-order flow. The inverse optimization may therefore adjust the control parameters to com-pensate for unresolved or distorted information in the reduced-order model. Consequently, the true physical parameters do not necessarily minimize the surrogate-induced observation mismatch. In particular, obtaining a lower validation loss with the analysis parameters than with the true parameters at a given time step serves as a necessary consistency check for the optimization procedure, indicating improved flow predictions within the surrogate-based frame-work. Figure 4 illustrates the temporal evolution of the validation loss in the physical space for both flow configurations, comparing the predictions obtained using the true and calibrated parameters. For the OACAE-MLP framework, the validation loss associated with the analysis parameters is consistently lower than or equal to that obtained with the true parameters at all time steps, indicating robust convergence of the variational assimilation procedure. By con-20 trast, in the CAE-MLP framework, although similar trends are observed at most time steps, several instances exhibit higher validation losses with the analysis parameters, suggesting a lack of convergence at specific time steps and less reliable flow predictions, which can be attributed to a less smooth latent space. Overall, these results further demonstrate the effectiveness and enhanced robustness of the proposed physics-informed variational DA-DL-ROM framework for parameter calibration. 
+
+3.6.2. Multi-time-step assimilation. 
+
+We now examine the performance of multi-time-step assimilation frameworks. To ensure a consistent basis for comparison with the single-time-step experiments, we consider the same evolution cases from the dam flow and cavity flow datasets. Specifically, we design ten compar-ative experiments between the two-time-step EnKF (2T-EnKF) and the 4D-Var strategies. In each experiment, one snapshot selected from xt=0 to xt=9 is used as the first observation, while the final snapshot xt=tend is fixed as the second observation, with tend = 99 for the dam flow evolution and tend = 31 for the cavity flow evolution. The background state for multi-time-step assimilation is the estimated results from the corresponding single-time-step assimilation. This setup ensures that both ensemble-based and variational methods assimilate exactly the same observational information from two time instants. Moreover, since the first assimilation step coincides with that used in the single-time-step experiments, the corresponding results can be directly reused to facilitate a complementary comparison between stationary and non-stationary data assimilation strategies. The resulting distributions of the parameter estimates in the parameter space for both dam and cavity flow cases are illustrated in Figure 5. 0.0 0.2 0.4 0.6 0.8          
+
+> uin
+> 0.50
+> 0.25
+> 0.00 0.25 0.50 0.75 1.00 1.25
+> h
+> 3D-Var (CAE) 4D-Var (CAE) 3D-Var (OACAE) 4D-Var (OACAE) 1T-EnKF 2T-EnKF Background Truth
+> (a) Inverse modeling results in parameter space (Dam flow) 0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6
+> ulid
+> 0.2
+> 0.1
+> 0.0 0.1 0.2 0.3 0.4 0.5 3D-Var (CAE) 4D-Var (CAE) 3D-Var (OACAE) 4D-Var (OACAE) 1T-EnKF 2T-EnKF Background Truth (b) Inverse modeling results in parameter space (Cavity flow)
+
+Figure 5: Distribution of calibrated parameters (ten realizations for each method) for the dam flow and cavity flow problems. Scatter markers indicate the estimated ( uin , h ) and ( ulid , ρ ) parameter pairs obtained using different data assimilation frameworks. The black cross denotes the background state, while the star indicates the ground-truth parameters. Ellipses represent the 2 σ covariance bounds associated with each method. Overall, the variational DA-DL-ROM frameworks yield more concentrated parameter estimates around the target than the baseline approaches. In particular, the 3D-Var-OACAE-MLP and 4D-Var-OACAE-MLP strategies exhibit the tightest distributions around the reference values for both flow configurations. 
+
+The 4D-Var procedure is initialized following the 3D-Var analysis and incorporates addi-tional observational information over multiple time instants. As a result, the corresponding analysis is expected to achieve improved predictive capability in the physical space. To as-sess this expected advantage of 4D-Var over 3D-Var, we compare the 4D-Var validation losses (observation term in the 4D-Var cost function (33)) obtained using the analysis parameters produced by the two methods. 21 t0 + t99 t2 + t99 t4 + t99 t6 + t99 t8 + t99                                             
+
+> Time steps 11.0 11.5 12.0 Loss Value (log)
+> Truth Analysis (4D-Var) Analysis (3D-Var) (a) Dam flow — OACAE-MLP t0+t99 t2+t99 t4+t99 t6+t99 t8+t99
+> Time steps 10 11 12 13 Loss Value (log)
+> Truth Analysis (4D-Var) Analysis (3D-Var) (b) Dam flow — CAE-MLP t0+t31 t2+t31 t4+t31 t6+t31 t8+t31
+> Time steps 10.50 10.75 11.00 11.25 11.50 Loss Value (log)
+> Truth Analysis (4D-Var) Analysis (3D-Var)
+> (c) Cavity flow — OACAE-MLP t0+t31 t2+t31 t4+t31 t6+t31 t8+t31
+> Time steps 910 11 12 Loss Value (log)
+> Truth Analysis (4D-Var) Analysis (3D-Var) (d) Cavity flow — CAE-MLP
+
+Figure 6: Comparison of 4D-Var observation mismatch in the physical space, evaluated at selected 4D-Var assimilation time steps, using the true parameters and the analysis parameters from 4D-Var and 3D-Var methods for different surrogate models (OACAE-MLP and CAE-MLP) and flow configurations (dam flow and cavity flow). 
+
+Figure 6 compares the 4D-Var validation losses obtained using the true parameters and the analysis parameters from 3D-Var and 4D-Var for different surrogate models and flow config-urations. For the OACAE-MLP surrogate, the 4D-Var framework consistently achieves lower or comparable validation losses than 3D-Var for both dam and cavity flows, demonstrating that incorporating temporal consistency effectively improves physical-space predictions when a physics-informed latent representation is employed. By contrast, for the CAE-MLP surrogate, although 4D-Var outperforms 3D-Var in most cases, noticeable degradation is observed for cer-tain test windows, particularly in the cavity flow configuration, indicating reduced robustness. Moreover, in the majority of tests, the validation losses obtained with the 4D-Var analysis pa-rameters are lower than or equal to those obtained with the true parameters, highlighting the strong capability of the proposed inverse modeling framework to achieve physically consistent parameter calibration. While the validation losses reported above evaluate the physical-space consistency at as-similation time steps, the ultimate objective of parameter calibration is to improve long-term prediction of flow dynamics. To this end, we further assess the predictive performance of the calibrated parameters over the entire temporal evolution. Figure 7 reports the mean ℓ2 rela-tive errors with standard deviations computed over all time steps of the evolution for different calibration strategies. For each estimate, the discrepancy of its predicted trajectory with the ref-erence is averaged over all time steps, yielding a single error value per estimate. The long-term predictive performance of the calibrated parameters is evaluated based on two complementary criteria: prediction robustness and prediction accuracy. Robustness is assessed through the uncertainty of the prediction errors, quantified by the standard deviation across different cal-ibration instances, while accuracy is evaluated by comparing the mean prediction error with that obtained using the true parameters. As shown in Figure 7, the variational DA-DL-ROM frameworks, particularly when combined with the OACAE-MLP surrogate, consistently ex-hibit low prediction uncertainty for both dam and cavity flow configurations. Notably, for each flow configuration, the uncertainty associated with the 3D-Var-OACAE-MLP framework is even lower than that of the 4D-Var-CAE-MLP framework, highlighting the strong impact of physics-aware latent representations on stabilizing the assimilation process. In terms of accu-22 racy, the prediction errors obtained using the calibrated parameters are either lower than or comparable to those obtained using true parameters. For the dam flow configuration, the 4D-Var-OACAE-MLP framework achieves lower prediction errors than the reference level, whereas for the cavity flow configuration, the corresponding errors remain close to those obtained with the true parameters. In both cases, the OACAE-based predictions are consistently closer to the reference than their CAE-based counterpart. A quantitative comparison further highlights this difference. For the dam flow, the relative deviations with respect to the true prediction are 2.80% and 2.10% for the OACAE-based framework using 4D-Var and 3D-Var, whereas the corresponding deviations for the CAE-based framework reach 6.77% for 4D-Var and 18.05% for 3D-Var. For the cavity flow, the OACAE-based framework yields relative deviations of 1.79% for 4D-Var and 20.54% for 3D-Var, while the CAE-based framework exhibits substantially larger deviations of 15.38% for 4D-Var and 141.54% for 3D-Var. By contrast, the EnKF-POD-GPR baseline exhibits substantially larger prediction errors and uncertainties, highlighting its limited robustness for long-term prediction, particularly in the cavity flow configuration where the 2T-EnKF strategy leads to increased errors over the entire evolution. Overall, these re-sults demonstrate that the proposed variational DA-DL-ROM framework not only improves parameter estimation but also leads to accurate and robust long-term predictions in physical space. 23 Truth 4D-Var 3D-Var Background Truth 4D-Var 3D-Var Background Truth 2T-EnKF 1T-EnKF Background 0.00 0.02 0.04 0.06 0.08 Mean  L2 Relative Error 
+
+> 0.0143 ±0.0000 0.0139 ±0.0010 0.0146 ±0.0014 0.0343 ±0.0000 0.0133 ±0.0000 0.0142 ±0.0032 0.0157 ±0.0041 0.0345 ±0.0000 0.0433 ±0.0000 0.0444 ±0.0093 0.0447 ±0.0157 0.0484 ±0.0000
+> OACAE-MLP CAE-MLP POD-GPR
+
+(a) Entire evolution prediction error (Dam flow) Truth 4D-Var 3D-Var Background Truth 4D-Var 3D-Var Background Truth 2T-EnKF 1T-EnKF Background 0.00 0.02 0.04 0.06 0.08 0.10 0.12 Mean  L2 Relative Error  
+
+> 0.0112 ±0.0000 0.0114 ±0.0012 0.0135 ±0.0012 0.0349 ±0.0000 0.0065 ±0.0000 0.0075 ±0.0043 0.0157 ±0.0064 0.0854 ±0.0000 0.0157 ±0.0000 0.0844 ±0.0008 0.0655 ±0.0241 0.0840 ±0.0000
+> OACAE-MLP CAE-MLP POD-GPR
+
+(b) Entire evolution prediction error (Cavity flow) 
+
+Figure 7: Mean relative ℓ2 errors in the physical space over the entire temporal evolution using parameters estimated by different data assimilation frameworks. 
+
+To further illustrate the physical impact of parameter calibration, in Figure 8, we visualize representative flow fields obtained using the background parameters, the parameters calibrated by 3D-Var and 4D-Var, and the corresponding true parameter with the OACAE-MLP model. 
+
+3.6.3. Robustness to different evolution cases. 
+
+As discussed in Section 3.6.1, the effectiveness of the proposed physics-informed variational DA-DL-ROM framework for parameter calibration is first demonstrated using all time steps from a fixed evolution case in the test dataset. To further assess the robustness of the proposed framework across different evolution cases, we perform an additional sensitivity analysis on the dam flow test dataset. The dam flow test dataset contains 44 distinct evolution cases, each consisting of 100 time steps, which provides a suitable basis for evaluating case-to-case robustness. For each evolution case, a single snapshot at the same time index (the 50th time step) is selected for assimilation, and the same single-time-step data assimilation procedures are applied without any modification to the data assimilation settings or surrogate models. As a result, each framework produces 44 independent parameter estimates, enabling consistent comparison of robustness across different evolution cases. Figure 9 shows the calibrated parameter values for each case and each framework, together 24 -1.91 -0.95 0.00 0.95 1.91 (a) Background u 0.00 0.22 0.45 0.67 0.90 (b) Background error-u -0.91 -0.46 0.00 0.46 0.91 
+
+(c) Background v 0.00 0.09 0.18 0.27 0.37 (d) Background error-v -1.91 -0.95 0.00 0.95 1.91 
+
+(e) 3D-Var u 0.00 0.22 0.45 0.67 0.90 (f) 3D-Var-error-u -0.91 -0.46 0.00 0.46 0.91 (g) 3D-Var v 0.00 0.09 0.18 0.27 0.37 (h) 3D-Var-error-v -1.91 -0.95 0.00 0.95 1.91 
+
+(i) 4D-Var u 0.00 0.22 0.45 0.67 0.90 (j) 4D-Var-error u -0.91 -0.46 0.00 0.46 0.91 (k) 4D-Var v 0.00 0.09 0.18 0.27 0.37 (l) 4D-Var error v -1.91 -0.95 0.00 0.95 1.91 
+
+(m) True prediction u0.00 0.22 0.45 0.67 0.90 
+
+(n) True prediction error u -0.91 -0.46 0.00 0.46 0.91 
+
+(o) True prediction v0.00 0.09 0.18 0.27 0.37 
+
+(p) True prediction error v -18.6 -9.30 0.00 9.30 18.6 
+
+(q) Background u 0.00 2.15 4.30 6.45 8.60 (r) Background error-u -8.29 -4.14 0.00 4.14 8.29 
+
+(s) Background v 0.00 0.76 1.52 2.28 3.04 (t) Background error-v -18.6 -9.30 0.00 9.30 18.6 
+
+(u) 3D-Var u 0.00 2.15 4.30 6.45 8.60 (v) 3D-Var-error-u -8.29 -4.14 0.00 4.14 8.29 (w) 3D-Var v 0.00 0.76 1.52 2.28 3.04 (x) 3D-Var-error-v -18.6 -9.30 0.00 9.30 18.6 
+
+(y) 4D-Var u 0.00 2.15 4.30 6.45 8.60 (z) 4D-Var-error u -8.29 -4.14 0.00 4.14 8.29 (aa) 4D-Var v 0.00 0.76 1.52 2.28 3.04 (ab) 4D-Var error v -18.6 -9.30 0.00 9.30 18.6 
+
+(ac) True predic-tion u 0.00 2.15 4.30 6.45 8.60 
+
+(ad) True predic-tion error u -8.29 -4.14 0.00 4.14 8.29 
+
+(ae) True predic-tion v 0.00 0.76 1.52 2.28 3.04 
+
+(af) True prediction error v 
+
+Figure 8 
+
+25 with the corresponding ground-truth and background values for reference. Each marker cor-responds to the parameter estimate obtained from an evolution case using single-time-step data assimilation. The horizontal dashed line indicates the background value, while the circle markers denote the ground-truth parameters. Results obtained with different data assimilation frameworks are shown for comparison. The variational DA-DL-ROM approaches yield more concentrated and consistent parameter estimates across cases, whereas larger dispersion is ob-served for the EnKF-POD-GPR baseline, indicating improved case-to-case robustness of the proposed framework. 0 4 8 12 16 20 24 28 32 36 40           
+
+> Test case index
+> 0.0 0.2 0.4 0.6 0.8 1.0 1.2
+> uin
+> Truth Background 3D-Var-OACAE-MLP 3D-Var-CAE-MLP 1T-EnKF-POD-GPR 04812 16 20 24 28 32 36 40
+> Test case index
+> 0.4
+> 0.2
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> h
+> Truth Background 3D-Var-OACAE-MLP 3D-Var-CAE-MLP 1T-EnKF-POD-GPR
+
+Figure 9: Distribution of calibrated parameters across different evolution cases for the dam flow problem. 
+
+Table 6 reports the average parameter estimation errors together with their standard devi-ations over all 44 test cases. 
+
+Table 6: Parameter estimation errors for the dam flow problem using single-time-step data assimilation across 44 evolution cases. The results show that the variational DA-DL-ROM frameworks yield significantly lower estimation errors and reduced parameter-space variability compared with the EnKF-POD-GPR baseline. In particular, the 3D-Var-OACAE-MLP approach achieves the lowest errors and the smallest uncertainty for both parameters, indicating improved robustness of parameter calibration across different evolution cases. 
+
+uin h
+
+Method MSE ↓ STD ↓ MSE ↓ STD ↓
+
+1T-EnKF-POD-GPR 8.70 × 10 −3 9.18 × 10 −2 2.24 × 10 −2 1.49 × 10 −1
+
+3D-Var-CAE-MLP 6.58 × 10 −3 7.86 × 10 −2 2.58 × 10 −3 4.98 × 10 −2
+
+3D-Var-OACAE-MLP 4.66 × 10 −4 2.13 × 10 −2 2.04 × 10 −4 1.40 × 10 −2
+
+While the parameter-space statistics provide a direct measure of calibration accuracy, it is still necessary to examine whether the observed case-to-case robustness is preserved in the 26 physical space. To this end, Figure 10 reports the physical-space prediction errors obtained using the calibrated parameters for each evolution case. For each method, the calibrated parameters are used to generate predictions over the entire temporal evolution of that case. The resulting prediction errors are then computed and averaged over time in the physical space and summarized using their mean and standard deviation across all 44 evolution cases. Truth 3D-Var Background Truth 3D-Var Background Truth EnKF Background 0.00 0.02 0.04 0.06 0.08 0.10 0.12 Mean  L2 Relative Error  
+
+> 0.0141 ±0.0121 0.0135 ±0.0116 0.0557 ±0.0375 0.0123 ±0.0127 0.0132 ±0.0165 0.0653 ±0.0348 0.0252 ±0.0154 0.0419 ±0.0333 0.0551 ±0.0365
+> OACAE-MLP CAE-MLP POD-GPR
+
+Figure 10: Case-to-case physical-space prediction errors (relative ℓ2 error) for the dam flow problem. All data assimilation frameworks reduce both the prediction error and its uncertainty compared with the background. In particular, the variational DA-DL-ROM approaches yield lower average errors and reduced uncertainty than the EnKF-POD-GPR baseline. Moreover, the 3D-Var-OACAE-MLP framework achieves even lower prediction error and reduced uncertainty than that obtained using the true parameters. 
+
+Across the tested evolution cases, consistent trends are observed. In particular, the vari-ational DA–DL–ROM frameworks continue to provide more stable parameter estimates and improved physical-space predictions compared with the EnKF-POD-GPR baseline. Moreover, the OACAE-MLP surrogate exhibits greater robustness than the CAE-MLP surrogate. These results indicate that the main conclusions drawn above are not sensitive to the choice of test case. 
+
+3.7. Robustness under degraded-observation settings 
+
+To evaluate the robustness of the proposed framework for inverse problem under more re-alistic measurement conditions, we consider four degraded-observation scenarios for the dam flow example: noisy observations, low-resolution observations, randomly masked observations, and block-wise partial observations. These scenarios represent cases where the available obser-vations are corrupted, spatially coarsened, or incomplete. For the noisy-observation experiment, additive Gaussian noise is applied to the full-field observation. For each sample, a random noise field ε is generated and rescaled to satisfy 
+
+∥ε∥2
+
+∥y∥2
+
+= η, 
+
+where 
+
+η ∈ { 0, 0.01 , 0.05 , 0.10 , 0.20 }
+
+denotes the prescribed relative noise level. The noisy observation is then defined as 
+
+yη = y + ε. 
+
+For the low-resolution observation experiment, the full-resolution field is downsampled using average pooling over non-overlapping spatial blocks. Given a downsampling factor s, the low-resolution observation is defined as 
+
+y(s) = Ps(y),
+
+27 where Ps denotes the average-pooling operator with kernel size and stride equal to s. We consider 
+
+s ∈ { 1, 2, 4, 8, 16 },
+
+corresponding to observation resolutions 64 × 64 , 32 × 32 , 16 × 16 , 8 × 8, 4 × 4,
+
+respectively. Note that s = 1 corresponds to the original full-field observation. For the randomly masked-observation experiment, binary spatial masks are applied to the full-resolution field. The mask is defined over spatial locations and is shared by both physical channels, so that either both velocity components are observed or both are masked at a given grid point. Let Mρ ∈ { 0, 1}H×W denote a binary spatial mask, where ρ is the masked ratio. The partial observation is written as 
+
+yρ = Mρ(y),
+
+where Mρ extracts the observed entries from y according to the mask. We use 
+
+ρ ∈
+
+> {
+
+0, 18, 38, 58, 78
+
+> }
+
+,
+
+corresponding to observed ratios 100% , 87 .5% , 62 .5% , 37 .5% , 12 .5% .
+
+The random masks are generated with a fixed seed and are nested, so that higher masked ratios remove a superset of the grid points removed at lower masked ratios. For the block-wise partial observation experiment, the full resolution spatial domain is divided into four non-overlapping blocks of equal size using a 2 × 2 partition. At each time snapshot, only one block is retained as the observation, while the remaining three blocks are unobserved. The same block mask is applied to both physical channels. Specifically, we consider 
+
+yb = Bb(y), b ∈ { A, B, C, D },
+
+where Bb extracts the entries of y located in block b. The four blocks correspond to the lower-left, lower-right, upper-left, and upper-right quadrants of the spatial domain, respectively. In addition, the full-field observation is included as a reference case. Therefore, the tested block-observation cases are Full , A, B, C, D. 
+
+Figure 11 shows representative examples of the different observation settings, including clean full-field observations, noisy observations, low-resolution observations, randomly masked observations, and block-wise partial observations. For each degraded-observation setting, the observation operator in the variational cost func-tion is modified consistently with the available observation. More precisely, let H(θ) denote the full-field surrogate prediction obtained from CAE-MLP or OACAE-MLP. For a given ob-servation transformation G, the observation term is evaluated as 
+
+Jo(θ) = 12 (G(y) − G(H(θ))) T R−1 
+
+> G
+
+(G(y) − G(H(θ))) ,
+
+where G is the identity operator for full-field and noisy observations, the average-pooling oper-ator Ps for low-resolution observations, the masking operator Mρ for randomly masked obser-vations, and the block operator Bb for block-wise partial observations. The covariance matrix 
+
+RG is defined in the corresponding observation space, with a dimension consistent with the number of observed entries. 28 Sample 1 Channel 0 Clean truth 10% noisy 20% noisy 8x8 DS 4x4 DS 62.5% masked 87.5% masked Block A Block C     
+
+> Sample 1 Channel 1
+> Sample 2 Channel 0
+> Sample 2 Channel 1
+> -2.84 -1.42 0.00 1.42 2.84 Figure 11: Visualization of different observation settings, including clean full-field observations, noisy observa-tions, low-resolution observations, random masked observations, and partial observations.
+
+Figure 12 reports the resulting parameter-calibration errors under the four degraded-observation scenarios. In most degraded-observation settings, the OACAE-MLP framework achieves lower calibration errors than the CAE-MLP framework. Exceptions are observed in several highly degraded cases, including low-resolution observations at 16 × 16, 8 × 8, and 4 × 4, randomly masked observations with only 12 .5% observed entries, and the block-observation setting D.In these cases, the difference between CAE-MLP and OACAE-MLP becomes less pronounced, which is expected when the available observations contain limited parameter-sensitive infor-mation. More importantly, the OACAE-MLP framework exhibits lower variability across all observation settings, as indicated by the smaller standard deviations. Overall, both CAE-MLP and OACAE-MLP show robustness under degraded-observation settings, demonstrating the stability of the proposed DL-ROM-DA framework itself. Within this robust framework, OACAE-MLP further improves the calibration accuracy and reduces the variability of the in-verse estimates. 
+
+4. Conclusion and Future work 
+
+This work aims to address the challenge of forward prediction and inverse parameter calibra-tion in high-dimensional parametric dynamical systems. This requires a reduced-order surro-gate that not only accurately reconstructs or predicts flow fields but also preserves parameter-relevant information essential for inverse modeling. To this end, we developed an end-to-end differentiable physics-aware latent-space framework that combines observable-augmented autoencoder-based reduced-order modeling with variational data assimilation. The numerical results on the CFDbench benchmark show that reconstruction accuracy alone is not sufficient to determine the quality of a surrogate model for inverse problems. Although POD achieves the best reconstruction accuracy, its reconstruction-optimal projection basis may not preserve the parameter-informative directions needed for inverse calibration. In contrast, the observable-augmented autoencoder slightly sacrifices pure reconstruction accuracy, but provides a latent representation that is better aligned with the physical quantities involved in the inverse problem. More precisely, when integrated into a variational data assimilation framework, the observable-augmented model yields low physical-space prediction errors and reduced variability across calibration instances. These advantages persist under noisy, low-resolution, randomly masked, and block-wise partial observations. 29 0 1 5 10 20 Noise level (%) 0.02 0.05 0.08 0.11 0.14 0.17 Mean Relative L2 Error               
+
+> CAE OACAE (a) Noisy observations 64x64 32x32 16x16 8x8 4x4 Observation resolution
+> 0.04 0.06 0.08 0.10 0.12
+> Mean relative L2 error (b) Low-resolution observations 100.0% 87.5% 62.5% 37.5% 12.5% Observed ratio
+> 0.04 0.06 0.08 0.10 0.12
+> Mean relative L2 error
+> (c) Masked observations Full ABCDObservation block
+> 0.0 0.1 0.2 0.3
+> Mean relative L2 error  CAE OACAE (d) Block observations
+
+Figure 12: Parameter calibration performances under degraded-observation settings. For each setting, inverse modeling performances of CAE-MLP and OACAE-MLP are compared using 3D-Var. The curves report the mean error over multiple observations, and the shaded regions indicate standard deviation. 
+
+Since the present method relies on a deterministic surrogate, the reported parameter errors reflect the combined effects of the potential ill-posedness of the inverse problem, observation uncertainty, and surrogate-model discrepancy. A complete decomposition of surrogate-induced bias and a systematic uncertainty quantification of the calibrated parameters are therefore left for future work [33, 34]. Moreover, since the numerical experiments mainly assess model performance within the available data distribution, reliable extrapolation is generally not guar-anteed. Future work will address these limitations by extending the framework to more realistic experimental data and by developing uncertainty-aware and probabilistic variants of the pro-posed framework [35, 36]. Potential directions include probabilistic manifold learning, Bayesian reduced-order modeling, and ensemble-based data-assimilation strategies. Further applications to higher-Reynolds-number turbulent flows, higher-resolution simulations, structural mechan-ics [14, 37], and fluid-structure interaction problems will also be considered. Finally, quantum neural networks [38, 39, 40] and hybrid quantum–classical learning architectures may be in-vestigated as a longer-term direction for physics-informed reduced-order modeling and inverse problems, although their integration into the present data-assimilation framework would require a dedicated methodological study. 
+
+Data and code availability 
+
+The code scripts used in this paper is available at https://github.com/qiyaozhou963/ rom-nn-da . The numerical experiments are implemented using the CFDbench dataset, avail-able at https://github.com/luo-yining/CFDBench .
+
+Author contributions 
+
+Qiyao Zhou: Methodology, Software, Validation, Formal analysis, Investigation, Writing -Original Draft, Visualization 30 Xujia Zhu: Conceptualization, Methodology, Formal analysis, Investigation, Writing - Re-view and Editing, Visualization Pierre Joli: Resources, Supervision, Formal analysis, Writing - Review and Editing Yu Cong: Resources, Supervision, Writing - Review and Editing Sibo Cheng: Project administration, Methodology, Software, Resources, Supervision, For-mal analysis, Writing - Review and Editing 
+
+Acknowledgement 
+
+Qiyao gratefully acknowledges the UnivEvry, Université Paris-Saclay, for support through a Ph.D. scholarship. Sibo Cheng acknowledges the support of the French Agence Nationale de la Recherche (ANR) under reference ANR-22-CPJ2-0143-01. 
+
+Bibliography 
+
+[1] R. N. Asl, Y. Yamazaki, K. Taghikhani, et al. , “A physics-informed meta-learning frame-work for the continuous solution of parametric pdes on arbitrary geometries,” arXiv preprint arXiv:2504.02459 , 2025. [2] S. Burela, P. Krah, and J. Reiss, “Parametric model order reduction for a wildland fire model via the shifted pod-based deep learning method,” Adv. Comput. Math. , vol. 51, no. 1, p. 9, 2025. [3] S. Fresca, L. Dede’, and A. Manzoni, “A comprehensive deep learning-based approach to reduced order modeling of nonlinear time-dependent parametrized pdes,” J. Sci. Comput. ,vol. 87, no. 2, p. 61, 2021. [4] K. Vlachas, T. Simpson, A. Garland, et al. , “Reduced order modeling conditioned on monitored features for response and error bounds estimation in engineered systems,” Mech. Syst. Signal Process. , vol. 226, p. 112261, 2025. [5] G. K. Batchelor, An Introduction to Fluid Dynamics . Cambridge University Press, 1967. [6] L. D. Landau and E. M. Lifshitz, Fluid Mechanics . Pergamon Press, 1987. [7] C. Dai, D. Yang, C. Zhang, et al. , “Parameter identification of fluid field based on cfd reduced-order model and 3d-var data assimilation,” Ann. Nucl. Energy , vol. 219, p. 111459, 2025. [8] J. H. Tu, “Dynamic mode decomposition: Theory and applications,” 2013. [9] J. Liu, Z. Wang, Q. Li, et al. , “A hybrid data assimilation and dynamic mode decomposition approach for xenon dynamic prediction of nuclear reactor cores,” Nucl. Sci. Eng. , vol. 199, no. 6, pp. 888–906, 2025. [10] W. Wang, C. Gong, X. Jia, et al. , “A kernel ridge regression combining nonlinear roms for accurate flow-field reconstruction with discontinuities,” Aerosp. Sci. Technol. , vol. 166, p. 110549, 2025. [11] E. Lumet, M. C. Rochoux, T. Jaravel, et al. , “Uncertainty-aware surrogate modeling for urban air pollutant dispersion prediction,” Build. Environ. , vol. 267, p. 112287, 2025. 31 [12] A. T. Mohan and D. V. Gaitonde, “A deep learning based approach to reduced or-der modeling for turbulent flow control using lstm neural networks,” arXiv preprint arXiv:1804.09269 , 2018. [13] F. Pichi, B. Moya, and J. S. Hesthaven, “A graph convolutional autoencoder approach to model order reduction for parametrized pdes,” J. Comput. Phys. , vol. 501, p. 112762, 2024. [14] S. Brivio, S. Fresca, and A. Manzoni, “Handling geometrical variability in nonlinear re-duced order modeling through continuous geometry-aware dl-roms,” Comput. Methods Appl. Mech. Eng. , vol. 442, p. 117989, 2025. [15] J. Xu and K. Duraisamy, “Multi-level convolutional autoencoder networks for parametric prediction of spatio-temporal dynamics,” Comput. Methods Appl. Mech. Eng. , vol. 372, p. 113379, 2020. [16] K. Fukami and K. Taira, “Grasping extreme aerodynamics on a low-dimensional manifold,” 
+
+Nat. Commun. , vol. 14, no. 1, p. 6480, 2023. [17] T.-Y. Yang, J. Rosca, K. Narasimhan, et al. , “Learning physics constrained dynamics using autoencoders,” in Advances in Neural Information Processing Systems (S. Koyejo, S. Mohamed, A. Agarwal, D. Belgrave, K. Cho, and A. Oh, eds.), vol. 35, pp. 17157–17172, Curran Associates, Inc., 2022. [18] K. Fukami and K. Taira, “Observable-augmented manifold learning for multi-source tur-bulent flow data,” J. Fluid Mech. , vol. 1010, p. R4, 2025. [19] B. Benaissa, N. A. Hocine, S. Khatir, et al. , “Yuki algorithm and pod-rbf for elastostatic and dynamic crack identification,” J. Comput. Sci. , vol. 55, p. 101451, 2021. [20] N. Amoura, B. Benaissa, M. Al Ali, et al. , “Deep neural network and yuki algorithm for inner damage characterization based on elastic boundary displacement,” in International Conference of Steel and Composite for Engineering Structures , pp. 220–233, Springer, 2022. [21] S. Cheng, C. Quilodrán-Casas, S. Ouala, et al. , “Machine learning with data assimilation and uncertainty quantification for dynamical systems: A review,” IEEE/CAA J. Autom. Sin. , vol. 10, no. 6, pp. 1361–1387, 2023. [22] M. Bocquet, J. Brajard, A. Carrassi, et al. , “Bayesian inference of chaotic dynamics by merging data assimilation, machine learning and expectation-maximization,” Found. Data Sci. , vol. 2, no. 1, p. 55–80, 2020. [23] M. Asch, M. Bocquet, and M. Nodet, Data Assimilation: Methods, Algorithms, and Ap-plications . Philadelphia, PA: Society for Industrial and Applied Mathematics, 2016. [24] A. Carrassi, M. Bocquet, L. Bertino, et al. , “Data assimilation in the geosciences: An overview of methods, issues, and perspectives,” WIREs Clim. Chang. , vol. 9, no. 5, p. e535, 2018. [25] S. Dealbera, S. Raynaud, C. Granero Belinchon, et al. , “The advantages of data assimi-lation in parametric space rather than classic grid space,” EGUsphere , vol. 2025, pp. 1–8, 2025. [26] C. Liu, R. Fu, D. Xiao, et al. , “Enkf data-driven reduced order assimilation system,” Eng. Anal. Bound. Elem. , vol. 139, pp. 46–55, 2022. 32 [27] S. Cheng, J. Chen, C. Anastasiou, P. Angeli, O. K. Matar, Y.-K. Guo, C. C. Pain, and R. Arcucci, “Generalised latent assimilation in heterogeneous reduced spaces with machine learning surrogate models,” Journal of Scientific Computing , vol. 94, no. 1, p. 11, 2023. [28] S. Cheng, Y. Zhuang, L. Kahouadji, C. Liu, J. Chen, O. K. Matar, and R. Arcucci, “Multi-domain encoder–decoder neural networks for latent data assimilation in dynamical systems,” Computer Methods in Applied Mechanics and Engineering , vol. 430, p. 117201, 2024. [29] X. Liu, Z. Wang, H. Ji, et al. , “Application and comparison of several adaptive sampling algorithms in reduced order modeling,” Heliyon , vol. 10, no. 15, 2024. [30] E. Lumet, M. C. Rochoux, T. Jaravel, et al. , “Surrogate-based ensemble data assimilation for reducing uncertainty in large-eddy simulation of microscale pollutant dispersion,” Build. Environ. , vol. 287, p. 113863, 2026. [31] S. Cheng, J. Min, C. Liu, et al. , “Torchda: A python package for performing data assimila-tion with deep learning forward and transformation functions,” Comput. Phys. Commun. ,vol. 306, p. 109359, 2025. [32] Y. Luo, Y. Chen, and Z. Zhang, “Cfdbench: A large-scale benchmark for machine learning methods in fluid dynamics,” arXiv preprint arXiv:2310.05963 , 2023. [33] J. Zhang, Q. Zheng, D. Chen, et al. , “Surrogate-based bayesian inverse modeling of the hydrological system: An adaptive approach considering surrogate approximation error,” 
+
+Water Resour. Res. , vol. 56, Jan. 2020. [34] P. Reiser, J. E. Aguilar, A. Guthke, et al. , “Uncertainty quantification and propagation in surrogate-based bayesian inference,” Stat. and Comput. , vol. 35, Mar. 2025. [35] J. Guo and D. Xiao, “Parametric probabilistic manifold decomposition for nonlinear model reduction,” arXiv preprint arXiv:2601.07278 , 2026. [36] M. Titsias and N. D. Lawrence, “Bayesian gaussian process latent variable model,” in Pro-ceedings of the Thirteenth International Conference on Artificial Intelligence and Statistics 
+
+(Y. W. Teh and M. Titterington, eds.), vol. 9 of Proceedings of Machine Learning Research ,(Chia Laguna Resort, Sardinia, Italy), pp. 844–851, PMLR, 13–15 May 2010. [37] X. Li, H. Bolandi, M. Masmoudi, et al. , “Mechanics-informed autoencoder enables auto-mated detection and localization of unforeseen structural damage,” 2024. [38] Y. Xiao, L. Yang, C. Shu, et al. , “Physics-informed quantum neural network for solving forward and inverse problems of partial differential equations,” Phys. Fluids , vol. 36, no. 9, 2024. [39] H. Li, Y. Lou, and D. Xiao, “Quantum machine learning for efficient reduced order mod-elling of turbulent flows,” 2025. [40] A. Farea, S. Khan, and M. S. Celebi, “Qcpinn: Quantum-classical physics-informed neural networks for solving pdes,” 2025. [41] A. Taflove, Computational electrodynamics the finite-difference time-domain method . 1995. [42] H. K. Versteeg and W. Malalasekera, An Introduction to Computational Fluid Dynamics: The Finite Volume Method . Pearson Education, 2007. [43] O. C. Zienkiewicz, R. L. Taylor, J. Z. Zhu, et al. , The Finite Element Method . 1997. 33 [44] A. Ern and J.-L. Guermond, Theory and practice of finite elements . 2004. [45] J. de Frutos and J. Novo, “A spectral element method for the navier–stokes equations with improved accuracy,” SIAM J. Numer. Anal. , vol. 38, no. 3, pp. 799–819, 2000. [46] Z. Li, B. Dong, and P. Zhang, “State-observation augmented diffusion model for nonlinear assimilation with unknown dynamics,” J. Comput. Phys. , p. 114240, 2025. [47] H. Gao, S. Kaltenbach, and P. Koumoutsakos, “Generative learning of the solution of parametric partial differential equations using guided diffusion models and virtual obser-vations,” Comput. Methods Appl. Mech. Eng. , vol. 435, p. 117654, 2025. [48] S. Deshpande, H. Rappel, M. Hobbs, et al. , “Gaussian process regression+ deep neural network autoencoder for probabilistic surrogate modeling in nonlinear mechanics of solids,” 
+
+Comput. Methods Appl. Mech. Eng. , vol. 437, p. 117790, 2025. [49] C. Quilodrán-Casas, R. Arcucci, L. Mottet, et al. , “Adversarial autoencoders and ad-versarial lstm for improved forecasts of urban air pollution simulations,” arXiv preprint arXiv:2104.06297 , 2021. [50] R. E. Kalman, “A new approach to linear filtering and prediction problems,” 1960. [51] B. R. Hunt, E. J. Kostelich, and I. Szunyogh, “Efficient data assimilation for spatiotemporal chaos: A local ensemble transform kalman filter,” Phys. D: Nonlinear Phenom. , vol. 230, no. 1, pp. 112–126, 2007. Data Assimilation. [52] B. Melinc and Ž. Zaplotnik, “3d-var data assimilation using a variational autoencoder,” 
+
+Q. J. R. Meteorol. Soc. , vol. 150, no. 761, pp. 2273–2295, 2024. [53] S. Cheng, C. Liu, Y. Guo, et al. , “Efficient deep data assimilation with sparse observations and time-varying sensors,” J. Comput. Phys. , vol. 496, p. 112581, 2024. [54] R. Huang, C. Heaney, and M. Van Reeuwijk, “Parameter estimation for land-surface mod-els using machine learning libraries,” 05 2025. [55] S. Cheng, Y. Jin, S. P. Harrison, et al. , “Parameter flexible wildfire prediction using ma-chine learning techniques: Forward and inverse modelling,” Remote Sens. , vol. 14, no. 13, 2022. [56] B. Koc, S. Rubino, T. C. Rebollo, et al. , “Residual data-driven variational multiscale re-duced order models for parameter dependent problems,” arXiv preprint arXiv:2208.00059 ,2022. [57] J. Harrison and E. Yeung, “Estimating varying parameters in dynamical systems: A modu-lar framework using switch detection, optimization, and sparse regression,” arXiv preprint arXiv:2412.16198 , 2025. [58] M. Tomasetto, A. Manzoni, and F. Braghin, “Real-time optimal control of high-dimensional parametrized systems by deep learning-based reduced order models,” Int. J. Numer. Methods Eng. , vol. 127, 01 2026. [59] M. Luo, S. Zhong, J. Wu, et al. , “A hybrid conv-lstm network with skip connections for nonlinear reduced-order modeling of spatiotemporal flow fields,” Ocean Eng. , vol. 347, p. 124033, 2026. [60] M. Luo and J. Wu, “Fractal invariance-constrained deep learning for spatial-temporal prediction of turbulent flows,” Appl. Math. Model. , p. 116754, 2026. 34 [61] N. Franco, A. Manzoni, and P. Zunino, “A deep learning approach to reduced order modelling of parameter dependent partial differential equations,” Math. Comput. , vol. 92, p. 483–524, Nov. 2022. 35 Appendix A. Gaussian process regression of POD coefficients 
+
+Once the POD basis LX ,q is computed and the training snapshots are projected onto the reduced space, the corresponding POD coefficients are obtained for each training parameter in-stance. Collecting these reduced representations over the training set yields the POD coefficient matrix ˆx =
+
+> [
+
+{kj (θ(0) )}qj=1 , . . . , {kj (θ(Ntrain −1) )}qj=1 
+
+> ]
+
+∈ Rq×Ntrain ,
+
+which serves as the regression target for the subsequent surrogate modeling. Following the common assumption that POD coefficients are approximately decorrelated, the regression task is split into q independent scalar problems, one for each mode. We adopt a Gaussian Process Regression (GPR) model for each coefficient kj , with an additive Gaussian noise[11]: 
+
+kj (θ) = fj (θ) + εj , fj ∼ GP (
+
+0, r j
+
+> )
+
+, εj ∼ N (0 , s 2 
+
+> j
+
+), (A.1) where rj is the covariance function defined on Ω 2 
+
+> θ
+
+and s2 
+
+> j
+
+is the noise variance. Given training samples {θ(i), k (i) 
+
+> j
+
+}Ntrain  
+
+> i=1
+
+, the posterior distribution of the predicted POD coefficient k∗ 
+
+> j
+
+(θ∗) at a new parameter θ∗, conditional on the training set {Θtrain , Ktrain j } = {(θ(i), k (i) 
+
+> j
+
+)}Ntrain  
+
+> i=1
+
+, is 
+
+k∗ 
+
+> j
+
+(θ∗) ∣∣∣ {Θtrain , Ktrain j } ∼ N (
+
+μj , σ 2GP (k∗ 
+
+> j
+
+))
+
+, (A.2) with 
+
+μj = rj (θ∗, Θtrain )
+
+> [
+
+rj (Θ train , Θtrain ) + s2 
+
+> j
+
+I
+
+> ]−1
+
+Ktrain j , (A.3a) 
+
+σ2GP (k∗ 
+
+> j
+
+) = rj (θ∗, θ∗) + s2
+
+> j
+
+− rj (θ∗, Θtrain )
+
+> [
+
+rj (Θ train , Θtrain ) + s2 
+
+> j
+
+I
+
+> ]−1
+
+rj (Θ train , θ∗). (A.3b) For regression, we train q independent Gaussian processes using a multi-output wrapper that enables parallel computation. This implementation directly adopts the code architecture proposed in [11]. Each GP employs a radial basis function kernel of the form 
+
+rj (θ, θ′) = ρj exp 
+
+> (
+
+− 12 ∥θ − θ′∥2Λj
+
+> )
+
+,
+
+where Λ j = diag( λ−2 
+
+> j, 1
+
+, . . . , λ −2 
+
+> j,d θ
+
+) contains the characteristic length-scales associated with each parameter dimension, and ρj denotes the maximum allowable covariance. For convenience, we adopt the notation ∥a∥2 
+
+> A
+
+= a⊤A−1a.The GP predictive variance reflects two distinct sources of uncertainty: (i) observation noise in the training data, represented by the term s2 
+
+> j
+
+I, and (ii) regression uncertainty, which increases with the distance between new input parameters θ∗ and the training set Θ train . The set of hyperparameters for each GP is given by 
+
+γj = (
+
+ρj , s j , λ j, 1, . . . , λ j,d θ
+
+> )
+
+∈ Rdθ +2 + ,
+
+and is determined by maximizing the log-marginal likelihood (MLL) with multiple random restarts. Finally, the posterior predictions of the reduced coordinates ˆx∗ =
+
+> [
+
+{k∗ 
+
+> j
+
+(θ∗(0) )}qj=1 , . . . , {k∗ 
+
+> j
+
+(θ∗(Ntest −1) )}qj=1 
+
+> ]
+
+∈ Rq×Ntest ,
+
+are mapped back to the full physical space through the POD basis computed from the training set, thus performing the inverse POD reconstruction to predict the velocity fields corresponding 36 to new parameter configurations in the test dataset. For clarity, the complete offline training and online prediction workflows of POD-GPR surrogate are summarized in Fig A.13. …
+
+> …
+> ……
+> …
+> …
+> Figure A.13
+
+Appendix B. Neural network architectures  
+
+> Table B.8: Neural Network structure of the observable branch (MLP Ea) used in OACAE training (input shape: 32, output shape: 6).
+
+Layer (type) Output shape Activation 
+
+Input (latent) (32) Dense (32 → 32) (32) Tanh Dense (32 → 64) (64) Tanh Dense (64 → 32) (32) Tanh Dense (32 → 6) (6)    
+
+> Table B.9: Neural Network structure of the parameter-to-latent regressor (MLP Eb, input shape: 6, output shape: 32).
+
+Layer (type) Output shape Activation 
+
+Input (parameters) (6) Dense (6 → 50) (50) ReLU Dense (50 → 200) (200) ReLU Dense (200 → 200) (200) ReLU Dense (200 → 50) (50) ReLU Dense (50 → 32) (32) 37 Table B.7: Neural Network structure of the OACAE encoder/decoder (input shape: 2 × 64 × 64, output shape: 2 × 64 × 64). 
+
+Layer (type) Output shape Activation 
+
+Encoder 
+
+Input (2 , 64 , 64) Conv2d (3 × 3) (16 , 64 , 64) Tanh MaxPooling (2 × 2) (16 , 32 , 32) Conv2d (3 × 3) (8 , 32 , 32) Tanh MaxPooling (2 × 2) (8 , 16 , 16) Conv2d (3 × 3) (4 , 16 , 16) Tanh MaxPooling (2 × 2) (4 , 8, 8) Flatten (256) Dense (256 → 256) (256) Tanh Dense (256 → 128) (128) Tanh Dense (128 → 64) (64) Tanh Dense (64 → 32) (32) Tanh Latent (Dense 32 → 32) (32) 
+
+Decoder 
+
+Dense (32 → 32) (32) Tanh Dense (32 → 64) (64) Tanh Dense (64 → 128) (128) Tanh Dense (128 → 256) (256) Tanh Dense (256 → 256) (256) Tanh Reshape (4 , 8, 8) Conv2d (3 × 3) (8 , 8, 8) Tanh ConvTranspose2d (4 × 4) (16 , 16 , 16) Tanh ConvTranspose2d (4 × 4) (32 , 32 , 32) Tanh ConvTranspose2d (4 × 4) (2 , 64 , 64) 38 Appendix C. Reconstruction snapshots -2.31 -1.16 0.00 1.16 2.31 
+
+(a) truth u 0.00 0.18 0.36 0.54 0.71 (b) no error -0.84 -0.42 0.00 0.42 0.84 (c) truth v 0.00 0.08 0.15 0.23 0.30 (d) no error -2.31 -1.16 0.00 1.16 2.31 
+
+(e) POD recon-struction 0.00 0.18 0.36 0.54 0.71 
+
+(f) error u POD -0.84 -0.42 0.00 0.42 0.84 (g) POD recon-struction 0.00 0.08 0.15 0.23 0.30 
+
+(h) error v POD -2.31 -1.16 0.00 1.16 2.31 
+
+(i) CAE-MLP re-construction 0.00 0.18 0.36 0.54 0.71 
+
+(j) error u CAE-MLP -0.84 -0.42 0.00 0.42 0.84 
+
+(k) CAE-MLP re-construction 0.00 0.08 0.15 0.23 0.30 
+
+(l) error v CAE-MLP -2.31 -1.16 0.00 1.16 2.31 
+
+(m) OACAE-MLP reconstruction 0.00 0.18 0.36 0.54 0.71 
+
+(n) error uOACAE-MLP -0.84 -0.42 0.00 0.42 0.84 
+
+(o) OACAE-MLP reconstruction 0.00 0.08 0.15 0.23 0.30 
+
+(p) error vOACAE-MLP -13.1 -6.55 0.00 6.55 13.1 
+
+(q) truth u 0.00 0.77 1.55 2.32 3.09 (r) no error -5.46 -2.73 0.00 2.73 5.46 (s) truth v 0.00 0.35 0.71 1.06 1.42 (t) no error -13.1 -6.55 0.00 6.55 13.1 
+
+(u) POD recon-struction 0.00 0.77 1.55 2.32 3.09 
+
+(v) error u POD -5.46 -2.73 0.00 2.73 5.46 (w) POD recon-struction 0.00 0.35 0.71 1.06 1.42 
+
+(x) error v POD -13.1 -6.55 0.00 6.55 13.1 
+
+(y) CAE-MLP re-construction 0.00 0.77 1.55 2.32 3.09 
+
+(z) error u CAE-MLP -5.46 -2.73 0.00 2.73 5.46 
+
+(aa) CAE-MLP re-construction 0.00 0.35 0.71 1.06 1.42 
+
+(ab) error v CAE-MLP -13.1 -6.55 0.00 6.55 13.1 
+
+(ac) OACAE-MLP reconstruction 0.00 0.77 1.55 2.32 3.09 
+
+(ad) error uOACAE-MLP -5.46 -2.73 0.00 2.73 5.46 
+
+(ae) OACAE-MLP reconstruction 0.00 0.35 0.71 1.06 1.42 
+
+(af) error vOACAE-MLP 
+
+Figure C.14: Dam and Cavity reconstruction 
+
+39 Appendix D. Quantitative analysis of the physics-aware latent space 
+
+The reconstruction and prediction errors reported in Section 3.4 and Section 3.5 evaluate the accuracy of the reduced-order surrogates in the physical space. However, these metrics do not directly indicate whether the learned latent variables are physically informative. In this part, we further analyze the latent representations learned by standard CAE and OACAE. For each parameter case, the corresponding latent codes form a temporal trajectory in the latent space. A latent representation that is favorable for inverse modeling should satisfy two desirable properties. First, latent trajectories associated with different parameter configurations should be distinguishable, so that different physical regimes are not strongly overlapped. Sec-ond, for a fixed parameter configuration, the latent trajectory should evolve smoothly in time, so that the multi-time-step surrogate mapping remains consistent for variational assimilation. Let zi,t ∈ Rd denote the latent code of the t-th snapshot in the i-th parameter case, where 
+
+i = 1 , . . . , N , t = 1 , . . . , T , and d is the latent dimension. For each parameter case, we define the latent centroid and the within-case variance as 
+
+μi = 1
+
+T
+
+> T∑
+> t=1
+
+zi,t , σ2 
+
+> i
+
+= 1
+
+T
+
+> T∑
+> t=1
+
+∥zi,t − μi∥22.
+
+The average within-case variance is then given by 
+
+σ2within = 1
+
+N
+
+> N∑
+> i=1
+
+σ2 
+
+> i
+
+.
+
+This quantity measures the average dispersion of each temporal latent trajectory around its case centroid. To quantify the separation between different parameter cases, we compute the pairwise distance between case centroids, 
+
+dij = ∥μi − μj ∥2, i̸ = j, 
+
+and define the average between-case distance as 
+
+dbetween = 2
+
+N (N − 1) 
+
+> ∑
+> 1≤i<j ≤N
+
+dij .
+
+Since the absolute scale of the latent space may differ between CAE and OACAE, we use the normalized case-separability ratio 
+
+Rsep = dbetween 
+
+> √
+
+σ2within 
+
+.
+
+A larger value of Rsep indicates that different parameter cases are more clearly separated relative to the temporal dispersion within each case. In addition to case-level separability, we quantify the temporal regularity of the latent trajectories. Because the latent coordinates may have different scales, each latent dimension is first standardized over the whole dataset. Denoting the standardized latent code by ˜ zi,t , we define the first-order temporal smoothness indicator 
+
+S(1)  
+
+> i
+
+= 1
+
+T − 1 
+
+> T−1∑
+> t=1
+
+∥˜zi,t +1 − ˜zi,t ∥2,
+
+and the second-order temporal smoothness indicator 
+
+S(2)  
+
+> i
+
+= 1
+
+T − 2 
+
+> T−1∑
+> t=2
+
+∥˜zi,t +1 − 2˜ zi,t + ˜ zi,t −1∥2.
+
+40 The global smoothness indicators are obtained by averaging over all parameter cases: 
+
+S(1) = 1
+
+N
+
+> N
+
+∑
+
+> i=1
+
+S(1)  
+
+> i
+
+, S(2) = 1
+
+N
+
+> N
+
+∑
+
+> i=1
+
+S(2)  
+
+> i
+
+.
+
+Smaller values of S(1) and S(2) indicate smoother temporal evolution in the latent space. Table D.10 reports the latent-space metrics on the training set. Compared with CAE, OACAE yields a smaller within-case variance and a substantially larger normalized separability ratio. In particular, Rsep increases from 1 .501653 for CAE to 3 .474383 for OACAE. The first-and second-order temporal smoothness indicators are also reduced, indicating that the OACAE latent trajectories are more regular in time. 
+
+Table D.10: Comparison of latent representations between CAE and OACAE on the training dataset. 
+
+Model S(1) ↓ S(2) ↓ σ2within dbetween Rsep ↑
+
+CAE 0.322924 ± 0.073712 0.199233 ± 0.066340 6.648507 3.871967 1.501653 OACAE 0.145713 ± 0.033335 0.104804 ± 0.051789 0.703090 2.913287 3.474383 Figure D.15 provides a complementary visualization of the latent manifolds using t-SNE projections. The CAE latent trajectories exhibit stronger overlap and less organized case-level structure, whereas the OACAE latent trajectories are more structured according to parameter-induced dynamical regimes. These visual and quantitative results support the interpretation that observable supervision improves the parameter consistency of the learned latent represen-tation. 15 10 5 0 5 10 15 20 25          
+
+> t-SNE 1 20
+> 15
+> 10
+> 5
+> 0510 15 20
+> t-SNE 2
+> 15
+> 10
+> 5
+> 0510 15
+> (a) CAE 20 15 10 50510 15
+> t-SNE 1
+> 15
+> 10
+> 5
+> 0510 15
+> t-SNE 2
+> 10
+> 5
+> 0510 15
+> t-SNE 3
+> 0.5 0.6 0.7 0.8 0.9 1.0 (b) OACAE
+
+Figure D.15: Visualization of latent manifolds of dam flow evolutions for different boundary conditions (inlet velocity). 
+
+Appendix E. Sensitivity analyses 
+
+Appendix E.1. Sensitivity to training loss weights 
+
+We first examine the sensitivity of the proposed AE-MLP variational DA framework to the training loss weights α and β. We fix β = 1 and vary 
+
+α ∈ { 0, 0.01 , 0.05 , 0.1, 0.2, 0.5},
+
+and fix α = 0 .05 and vary 
+
+β ∈ { 0.5, 1, 2}.
+
+For each setting, we evaluate the autoencoder reconstruction error, the AE-MLP prediction error, and the full-observation 3D-Var inverse-calibration error. 41 0.0 0.1 0.2 0.3 0.4 0.5              
+
+> 0.014 0.015 0.016 0.017 0.018
+> Mean relative L2 error
+> AE reconstruction
+> 0.0 0.1 0.2 0.3 0.4 0.5
+> AE-MLP prediction, = 1
+> 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+> AE-MLP prediction, = 0.05
+
+Figure E.16: Sensitivity analysis of α and β for forward modeling. 0.0 0.1 0.2 0.3 0.4 0.5 
+
+0.0 0.1 0.2 0.3 0.4 
+
+> Mean relative L2 error
+
+3D-Var, = 1 
+
+0.50 0.75 1.00 1.25 1.50 1.75 2.00 
+
+3D-Var, = 0.05 
+
+> CAE mean CAE std Background OACAE mean OACAE std
+
+Figure E.17: Sensitivity analysis of α and β for inverse modeling. 
+
+Appendix E.2. Sensitivity to latent dimension 
+
+We further study the sensitivity of the proposed framework to the latent-space dimension. Both CAE-MLP and OACAE-MLP are evaluated using latent dimensions 
+
+q ∈ { 2, 6, 13 , 32 , 64 }.
+
+For all tested latent dimensions, the weighting parameters are fixed at values of α = 0 .05 and 
+
+β = 1. The comparison includes the autoencoder reconstruction error, the AE-MLP prediction error, and the full-observation 3D-Var inverse-calibration error. 2 6 13 32 64       
+
+> Latent dimension
+> 0.014 0.016 0.018 0.020 0.022
+> Mean relative L2 error
+> AE reconstruction
+> CAE OACAE
+> 2 6 13 32 64
+> Latent dimension
+> 0.016 0.018 0.020 0.022
+> AE-MLP prediction
+> 2 6 13 32 64
+> Latent dimension
+> 0.1 0.2 0.3 0.4
+> Full-observation 3D-Var
+> Background
+
+Figure E.18: Sensitivity analysis of AE latent dimension. 
+
+As shown in Figure E.18, very small latent dimensions, such as q = 2 and q = 6, lead to larger errors because the latent space does not have sufficient capacity to represent the dominant flow structures and the parameter-relevant information. Increasing the latent dimension improves both reconstruction and prediction performance, but the improvement saturates around q = 32. For the inverse 3D-Var calibration task, all tested latent dimensions substantially reduce the parameter error compared with the background estimate. The OACAE-MLP framework shows a clear improvement from q = 2 to q = 13, and then remains stable for q = 32 and q = 64. 42 As a practical heuristic, the POD energy spectrum can be used as a conservative reference for selecting a preliminary latent dimension, since POD provides the optimal linear low-rank approximation of the snapshot data in the mean-square sense. In addition, if the solution manifold is mainly parameterized by peff effective variables, a simple manifold-based heuristic suggests testing latent dimensions around peff and 2 peff + 1[61]. In the present datasets, the effective number of generating variables is approximately peff = 6, which motivates the tested dimensions q = 6 and q = 13, together with larger values q = 32 and q = 64. This argument is used only as a heuristic reference rather than as a strict optimality criterion. The final choice is based on the empirical sensitivity results for reconstruction, prediction, and inverse calibration. 
+
+Appendix E.3. Sensitivity to variational optimization learning rate 
+
+We also investigate the sensitivity of the 3D-Var optimization to the learning rate used in the gradient-based minimization. We performed a learning-rate sweep over 
+
+η ∈ { 0.009 , 0.03 , 0.05 , 0.07 , 0.09 , 0.13 },
+
+for both CAE-MLP and OACAE-MLP under the same assimilation setting. The corresponding objective histories are presented in Figures E.19(a) and E.19(b). For both models, all tested learning rates eventually approach similar objective plateaus for the representative observation, indicating that the converged objective is relatively insensitive to the learning rate within the tested range. However, the convergence speed and transient behavior depend on the optimizer setting. The smallest learning rate gives smooth but slow convergence, whereas larger learning rates accelerate the initial decrease but may introduce stronger transient oscillations or occa-sional overshooting. Figures E.19(c) and E.19(d) further examine convergence at the selected learning rate η = 0 .05 for observations taken at different time instances. Although the initial objective values and final plateaus vary with the observation, the OACAE-MLP trajectories are more tightly clustered, while the CAE-MLP trajectories show a wider spread in final objective values. This suggests more uniform convergence behavior for OACAE-MLP across different observations. The statistical calibration results are summarized in Figure E.20. The mean final objective remains nearly constant for 0 .03 ≤ ηopt ≤ 0.09. Although CAE-MLP can yield a lower mean final objective value, this should not be interpreted as better calibration, because CAE-MLP and OACAE-MLP define different nonlinear mappings and therefore different optimization landscapes. The parameter-recovery results show that OACAE-MLP achieves lower mean rel-ative errors for the calibrated parameters over the tested learning-rate range. It also exhibits smaller standard deviations for most intermediate learning rates. Overall, the interval 0.03 ≤ ηopt ≤ 0.09 provides the best compromise between convergence speed, parameter accuracy, and robustness. 
+
+Appendix E.4. Sensitivity to background and observation covariance scaling 
+
+The variational data-assimilation objective depends on the background covariance matrix 
+
+B and the observation covariance matrix R. These matrices control the relative weights of the background term and the observation term. To assess the sensitivity of the calibration results to this balance, we perform additional experiments by scaling B and R. Let B0 and R0 denote the reference covariance matrices used in the main experiments. We consider scaled covariance matrices of the form 
+
+B = λBB0, R = λRR0,
+
+where λB and λR were varied over the range 
+
+λB, λ R ∈ {
+
+10 −4, 10 −3, 10 −2, 10 −1, 1, 10 , 10 2, 10 3, 10 4}
+
+.
+
+43 0 100 200 300 400 Iteration 10 5
+
+> 3D-Var objective  Learning rate lr=0.009 lr=0.03 lr=0.05 lr=0.07 lr=0.09 lr=0.13
+
+(a) CAE 3dvar history fixing observation varying learning rate 0 50 100 150 200 250 Iteration 10 5 (b) OACAE 3dvar history fixing observation varying learning rate 0 50 100 150 Iteration 10 4
+
+10 5 Frame | lr=0.05 t=25 t=35 t=50 t=65 t=80 t=95 
+
+(c) CAE 3dvar history fixing learning rate varying observations 0 25 50 75 100 Iteration 10 4
+
+10 5 (d) OACAE 3dvar history fixing learning rate varying observa-tions 
+
+Figure E.19: Gradient-based optimization objective histories. 0.05 0.10 Learning rate 40000 
+
+20000 
+
+020000 40000 60000 Mean final loss 
+
+(a) Mean final objective values varying learning rate 0.025 0.050 0.075 0.100 0.125 Learning rate 0.00 0.05 0.10 0.15 0.20 Mean relative L2 error  
+
+> OACAE CAE
+
+(b) Parameter calibration errors varying learning rate 
+
+Figure E.20: Sensitivity of the 3D-Var optimization results to the learning rate. 
+
+44 Figure E.21 reports the calibration performance under different covariance-scaling settings. When B is scaled to be very small, the background term becomes overly dominant, forcing the analysis to remain too close to the background state and leading to larger parameter errors (Figure E.21 left). Conversely, when R is scaled to be very large, the observation term is strongly downweighted, weakening the observational correction and also increasing the parameter error(Figure E.21 right). These results indicate that the proposed framework is stable with respect to reasonable choices of B and R and the conclusions of the main experiments are not tied to a single covariance choice. 10 4 10 3 10 2 10 1 10 0 10 1 10 2 10 3 10 4            
+
+> B
+> 0.05 0.10 0.15 0.20
+> Mean Relative L2 Error
+> 10 410 310 210 110 010 110 210 310 4
+> R
+> CAE OACAE
+
+Figure E.21: Sensitivity of the assimilation results to the scaling of the background covariance matrix B and the observation covariance matrix R. The left panel varies B = λBB0 while fixing R = R0, and the right panel varies R = λRR0 while fixing B = B0.
+
+Appendix F. Computational efficiency 
+
+Finally, we compare the online computational efficiency of the proposed differentiable vari-ational assimilation framework with an ensemble-based POD-GPR assimilation baseline. The purpose of this experiment is to evaluate the cost of solving the inverse problem after the offline surrogate training stage has been completed. Therefore, the reported wall-clock time corresponds to the online calibration stage only. 2 obs 4 obs 6 obs 7 obs 100 obs Number of observation snapshots 10 1
+
+> 10 2
+> 10 3
+> 10 4
+> Runtime (s)
+> EnKF EnKF estimated 4D-Var CAE (lr=0.005) 4D-Var OACAE (lr=0.005)
+
+Figure F.22: Online runtime comparison between the EnKF-POD-GPR baseline and the differentiable 4D-Var frameworks using CAE-MLP and OACAE-MLP surrogates. The dashed EnKF curve denotes the estimated runtime for the 100-snapshot case, and the 4D-Var results are obtained with learning rate 0 .005. 
+
+The POD-GPR ensemble-based strategy requires repeated surrogate evaluations for all en-semble members and for each assimilated time snapshot. In contrast, the AE-MLP variational framework solves the inverse problem by directly optimizing the physical control parameters 45 through automatic differentiation and the optimization can be accelerated on a GPU. Fig-ure F.22 compares the wall-clock time for different numbers of assimilated time snapshots. The results show that the proposed AE-MLP variational framework is substantially more efficient than the ensemble-based POD-GPR baseline. This advantage becomes more pronounced as the number of assimilated snapshots increases. 46
