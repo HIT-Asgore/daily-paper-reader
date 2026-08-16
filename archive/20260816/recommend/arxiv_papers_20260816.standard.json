@@ -1,0 +1,409 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-16T19:52:41.981947+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 7,
+    "quick_skim_target": 12,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2608.11204v1",
+      "source": "arxiv",
+      "title": "Surgical WAM: A World-Action Model for Data-Efficient Surgical Robot Learning",
+      "abstract": "Learning reliable surgical manipulation policies is bottlenecked by the scarcity of action-labeled demonstrations: teleoperated surgical robot (e.g., dVRK) trajectories with synchronized kinematics are costly to collect, while surgical tasks demand precise contact handling, long-horizon reasoning, and bimanual coordination. Endoscopic video is comparatively inexpensive and abundant relative to synchronized video--kinematics trajectories, and a natural way to exploit it is to learn world models of surgical scenes. However, existing surgical world models use video primarily for simulation or policy evaluation, and rarely translate the learned dynamics into closed-loop control. This gap raises our central question: under a fixed budget of action-labeled demonstrations, does action-free video pretraining improve closed-loop surgical manipulation? To answer it, we introduce the Surgical World-Action Model (Surgical WAM), a unified generative model built on Cosmos Policy that jointly predicts future endoscopic observations and executable surgical robot action chunks. Surgical WAM first learns surgical visual dynamics from action-free video and is then fine-tuned on the fixed action-labeled budget; at deployment, it acts as a closed-loop, receding-horizon controller that executes a short prefix of each predicted action chunk and replans from the resulting observation. On a suite of four simulated surgical manipulation tasks, video pretraining improves the average success rate from 63.5% to 77.8%, including an absolute gain of 20 percentage points on PegTransfer, with the largest improvements on contact-rich and bimanual tasks. These results demonstrate that action-free video provides transferable visual dynamics priors for learning surgical robot control with limited action supervision, positioning data-efficient video pretraining as a practical path toward scaling up surgical robot learning.",
+      "authors": [
+        "Wenrui Bao",
+        "Tianyun Jiang",
+        "Zhiben Chen",
+        "Ser-Nam Lim",
+        "Peter D. Peng",
+        "Yuzhang Shang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-08-11T17:59:13+00:00",
+      "link": "https://arxiv.org/pdf/2608.11204v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "world-action model for learning dynamics models in surgical robot control",
+      "llm_evidence_cn": "面向手术机器人控制的世界-动作模型，用于学习动力学模型",
+      "llm_evidence": "面向手术机器人控制的世界-动作模型，用于学习动力学模型",
+      "canonical_evidence": "面向手术机器人控制的世界-动作模型，用于学习动力学模型",
+      "llm_tldr_en": "World-action model that uses endoscopic video to learn surgical scene dynamics and enables closed-loop manipulation policies with limited action-labeled data, improving data efficiency.",
+      "llm_tldr_cn": "手术机器人策略学习常常受限于动作标注数据的稀缺。本文提出世界-动作模型（WAM），利用大量内窥镜视频来学习手术场景的世界模型，并将学习到的动态模型转化为可用的闭环控制策略，从而在固定动作标注预算下实现数据高效的学习。实验结果表明，该方法能有效降低对昂贵动作标注的依赖，为数据匮乏的手术操作学习提供了新途径。",
+      "llm_tldr": "手术机器人策略学习常常受限于动作标注数据的稀缺。本文提出世界-动作模型（WAM），利用大量内窥镜视频来学习手术场景的世界模型，并将学习到的动态模型转化为可用的闭环控制策略，从而在固定动作标注预算下实现数据高效的学习。实验结果表明，该方法能有效降低对昂贵动作标注的依赖，为数据匮乏的手术操作学习提供了新途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.08559v1",
+      "source": "arxiv",
+      "title": "Differentiate the Solver, Not the Equation: Reverse-Sweep Adjoints for Block Implicit Simulation",
+      "abstract": "Differentiable simulation is a key component in learning, control, and inverse problems, where gradients through nonlinear implicit solvers are required. Existing approaches either rely on unrolled automatic differentiation, whose memory grows with solver depth, or on equation-level implicit differentiation, which assembles global Jacobians and solves large sparse adjoint systems, discarding the locality of the forward solver -- and differentiating the converged equation rather than the finite computation that actually ran. We propose solver-level differentiation, which differentiates the executed solver itself. When a solver is composed of block implicit updates, its discrete adjoint is obtained by applying the corresponding adjoint updates in reverse order, yielding a reverse-sweep formulation whose backward pass mirrors the forward solver. From an operator perspective, the forward pass realizes an approximate inverse through ordered local solves, and the backward applies its transpose through reverse local adjoint solves, constructing no global system. We instantiate this idea on Vertex Block Descent, yielding a differentiable solver whose reverse colored Gauss-Seidel sweeps are composed entirely of local $3\\times 3$ adjoint solves. The backward matches automatic differentiation through the identical executed forward to machine precision at every solver depth, where the equation-level adjoint is off by 37% after one sweep; in a controlled same-codebase, same-GPU comparison it is 33x faster and uses 71x less memory than unrolled automatic differentiation; and the same construction is exact on projective dynamics and extended position-based dynamics. We scale differentiable elastodynamics to $10^6$ contact-coupled soft bodies (8M vertices) on one GPU. Overall, this work highlights solver structure as a practical organizing principle for efficient differentiable simulation.",
+      "authors": [
+        "Lei Shu",
+        "Ying Jiang",
+        "Kui Wu",
+        "Yin Yang",
+        "Leonidas Guibas",
+        "Chenfanfu Jiang"
+      ],
+      "primary_category": "cs.GR",
+      "categories": [
+        "cs.GR",
+        "cs.LG",
+        "math.NA"
+      ],
+      "published": "2026-08-09T08:03:02+00:00",
+      "link": "https://arxiv.org/pdf/2608.08559v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Solver-level differentiation of implicit simulations; provides a generally applicable differentiable simulation method for manipulation tasks.",
+      "llm_evidence_cn": "对隐式仿真进行求解器级微分；为操作任务提供普遍适用的可微仿真方法.",
+      "llm_evidence": "对隐式仿真进行求解器级微分；为操作任务提供普遍适用的可微仿真方法.",
+      "canonical_evidence": "对隐式仿真进行求解器级微分；为操作任务提供普遍适用的可微仿真方法.",
+      "llm_tldr_en": "This paper proposes solver-level differentiation for block implicit simulation, reverse-sweeping the executed solver to derive discrete adjoints without global Jacobians, enabling efficient differentiable simulation for learning and control.",
+      "llm_tldr_cn": "现有可微仿真在面临非线性隐式求解器时，要么自动微分的记忆随求解深度增长，要么隐式微分需组装全局雅可比并求解大规模稀疏伴随系统。本文提出求解器级微分，直接对实际执行的分块隐式求解器进行反向扫描，得到离散伴随，从而保留前向求解器的局部性并节省内存。该方法为学习、控制和反问题中的仿真梯度计算提供了高效且准确的方案，可直接用于机械臂操作等可微仿真场景。",
+      "llm_tldr": "现有可微仿真在面临非线性隐式求解器时，要么自动微分的记忆随求解深度增长，要么隐式微分需组装全局雅可比并求解大规模稀疏伴随系统。本文提出求解器级微分，直接对实际执行的分块隐式求解器进行反向扫描，得到离散伴随，从而保留前向求解器的局部性并节省内存。该方法为学习、控制和反问题中的仿真梯度计算提供了高效且准确的方案，可直接用于机械臂操作等可微仿真场景。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.10780v2",
+      "source": "arxiv",
+      "title": "JEPA-WAM: Stage-Level Joint-Embedding Prediction for World-Action Models in Robot Manipulation",
+      "abstract": "Generalist robot policies aim to map multimodal observations and linguistic task instructions to actions across diverse tasks. However, existing methods typically represent the future as a fixed, short video-action chunk. This short-term future captures local scene evolution for action execution, but it does not explicitly describe the stage-level future that specifies how a task should progress from its current stage to the next. We therefore distinguish two complementary futures for robot manipulation: a short-term physical future to capture local scene evolution and a stage-level semantic future to represent task progress. We introduce JEPA-WAM, which augments a Motus-based World Action Model (WAM) with Stage-JEPA, a goal-conditioned Joint-Embedding Predictive Architecture (JEPA) predictor. Given the current observation and task instruction, Stage-JEPA uses a frozen V-JEPA2 encoder to extract the current-state representation and predicts the latent target of the next inferred stage. Across 50 RoboTwin 2.0 tasks in clean and randomized environments, JEPA-WAM achieves 90.25% overall success and reduces the mean number of execution steps in successful rollouts by 5.97% relative to the strongest baseline.",
+      "authors": [
+        "Xiao Liu",
+        "Yuguang Yang",
+        "Xi Wang",
+        "Kai Jiang",
+        "Cheng Chi",
+        "Yong Xu",
+        "Wenchao Ding",
+        "Yilun Chen",
+        "Yan Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-11T10:33:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.10780v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world action model for robot manipulation dynamics prediction",
+      "llm_evidence_cn": "面向机械臂操作的世界动作模型，学习任务阶段的联合嵌入预测",
+      "llm_evidence": "面向机械臂操作的世界动作模型，学习任务阶段的联合嵌入预测",
+      "canonical_evidence": "面向机械臂操作的世界动作模型，学习任务阶段的联合嵌入预测",
+      "llm_tldr_en": "Proposes JEPA-WAM, a world action model for robot manipulation that combines short-term physical future prediction with stage-level joint embedding prediction to capture task progress.",
+      "llm_tldr_cn": "现有通用机器人在操作中通常只预测固定长度的短视频-动作块，无法表达任务阶段的语义进展。本文提出JEPA-WAM，在基于Motus的世界动作模型上加入Stage-JEPA目标描述，同时建模短期物理未来和阶段级语义未来。该方法将任务进度显式建模，有望提升通用机器人策略在长程操作中的泛化与规划能力。",
+      "llm_tldr": "现有通用机器人在操作中通常只预测固定长度的短视频-动作块，无法表达任务阶段的语义进展。本文提出JEPA-WAM，在基于Motus的世界动作模型上加入Stage-JEPA目标描述，同时建模短期物理未来和阶段级语义未来。该方法将任务进度显式建模，有望提升通用机器人策略在长程操作中的泛化与规划能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.09516v1",
+      "source": "arxiv",
+      "title": "HarnessWAM: Bridging Prediction and Deliberation in World Action Models",
+      "abstract": "World Action Models (WAMs) jointly learn environmental dynamics and robot actions, introducing priors over physical evolution into embodied control. However, finite-horizon prediction and action generation are insufficient for complex embodied tasks that require global planning, cross-stage state maintenance, execution verification, and failure recovery. We refer to this mismatch as the prediction-deliberation gap of WAMs. To address this gap, we propose HarnessWAM, an agentic framework for WAMs. HarnessWAM employs a vision-language-model-based Task Manager to maintain an evidence-grounded scene belief and a structured task graph. A capability-conditioned executable-space projection further constrains open-ended semantic plans into sequences of atomic skills that satisfy task dependencies, embodiment-state constraints, and the capability boundary of the underlying WAM. During execution, HarnessWAM operates through an event-driven, dual-timescale feedback loop: a lightweight progress estimator continuously provides high-frequency execution evidence, while the Task Manager deliberates at salient milestones by jointly considering the current observation, task state, and interaction history to determine whether to advance the task, acquire additional observations, revise the plan, or initiate local recovery. This mechanism enables the robot to recover its state after a subtask failure and resume execution without discarding previously acquired scene knowledge. HarnessWAM achieves state-of-the-art full-task and subtask success rates of 59.6% and 69.9% on RoboMemArena, and an SR of 23.7% on RoboCerebra Ideal. These results demonstrate that model-external structured state maintenance and closed-loop agentic decision making can effectively extend the local control capabilities of WAMs into embodied task execution that is plannable, verifiable, and recoverable.",
+      "authors": [
+        "Zhaopeng Gu",
+        "Bingke Zhu",
+        "Tianxi Lin",
+        "Guibo Zhu",
+        "Yingying Chen",
+        "Kai Wang",
+        "Tingyu Yuan",
+        "Chaoyang Zhao",
+        "Zhaowen Li",
+        "Peng Su",
+        "Jinqiao Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-10T12:15:59+00:00",
+      "link": "https://arxiv.org/pdf/2608.09516v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "World Action Models jointly learn dynamics and actions; HarnessWAM adds VLM-based planning, aligning with learning dynamics models for robot control.",
+      "llm_evidence_cn": "世界行动模型联合学习动力学与动作，HarnessWAM引入基于VLM的规划，与学习机器人控制动力学模型相关.",
+      "llm_evidence": "世界行动模型联合学习动力学与动作，HarnessWAM引入基于VLM的规划，与学习机器人控制动力学模型相关.",
+      "canonical_evidence": "世界行动模型联合学习动力学与动作，HarnessWAM引入基于VLM的规划，与学习机器人控制动力学模型相关.",
+      "llm_tldr_en": "HarnessWAM addresses the prediction-deliberation gap in World Action Models by adding a VLM-based Task Manager and executable-space projection, enabling global planning and failure recovery for complex embodied tasks.",
+      "llm_tldr_cn": "世界行动模型虽然能联合学习环境动力学与机器人动作，但其有限时域预测难以支持需要全局规划、状态维护与失败恢复的复杂任务。为此提出HarnessWAM，采用基于视觉语言模型的任务管理器维护场景信念与任务图，并通过能力约束的可执行空间投影将开放式语义计划转化为原子动作序列。该方法弥补了预测与深思之间的鸿沟，提升了世界行动模型在复杂具身控制中的可用性。",
+      "llm_tldr": "世界行动模型虽然能联合学习环境动力学与机器人动作，但其有限时域预测难以支持需要全局规划、状态维护与失败恢复的复杂任务。为此提出HarnessWAM，采用基于视觉语言模型的任务管理器维护场景信念与任务图，并通过能力约束的可执行空间投影将开放式语义计划转化为原子动作序列。该方法弥补了预测与深思之间的鸿沟，提升了世界行动模型在复杂具身控制中的可用性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.11363v1",
+      "source": "arxiv",
+      "title": "Adaptation of Generalist Robot Policies with Minimal Data",
+      "abstract": "A central goal in robot learning is to move beyond task-specific human data collection toward robots that improve through autonomous interaction. Yet fully autonomous learning remains difficult with current policies: sparse rewards and weak zero-shot exploration make it unlikely that a robot will discover successful behavior from scratch. We study minimal-data adaptation, a regime in which a pre-trained robot policy must learn a new task from as little as one demonstration followed by autonomous online interaction. This setting serves as the closest tractable proxy for fully autonomous improvement, allowing us to study whether minimal human guidance can bootstrap autonomous learning and what algorithmic ingredients make it feasible. We build MiDAS, a simple offline-to-online RL recipe that first anchors a pre-trained VLA to the target task with behavior cloning on single/few demonstrations, then improves it through value-based online RL on a residual policy parameterization. Across LIBERO and RoboCasa, MiDAS recovers strong task performance from as little as one demonstration, substantially outperforming baselines and generalizing beyond demonstrated conditions. We further evaluate MiDAS on a bimanual YAM platform. Starting from a fragile low-success policy obtained from a single demonstration, MiDAS improves its robustness and learns new successful behaviors over ~6 hours of online interaction. To the best of our knowledge, this is the first demonstration of reliable robot policy adaptation from a single task demonstration.",
+      "authors": [
+        "Shreyas Kowshik",
+        "Sreyas Venkataraman",
+        "Leo Wang",
+        "Niharika Pant",
+        "Max Simchowitz",
+        "Aviral Kumar"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-08-11T19:15:26+00:00",
+      "link": "https://arxiv.org/pdf/2608.11363v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Adapting robot policies via reinforcement learning with minimal data",
+      "llm_evidence_cn": "用强化学习与少量数据适配机械臂策略",
+      "llm_evidence": "用强化学习与少量数据适配机械臂策略",
+      "canonical_evidence": "用强化学习与少量数据适配机械臂策略",
+      "llm_tldr_en": "Generalist robot policies must adapt to new tasks from minimal demonstrations and online interaction. MiDAS studies minimal-data adaptation, showing one demonstration can bootstrap autonomous learning, offering a tractable proxy for fully autonomous improvement.",
+      "llm_tldr_cn": "通用机器人策略在少量演示后需要通过自主在线交互适配新任务。MiDAS利用一条演示启动自主在线学习，研究最小数据适配的算法要素。实验显示极少量人类引导即可启动自主学习，为机器人自主改进提供可行的简化代理方案。",
+      "llm_tldr": "通用机器人策略在少量演示后需要通过自主在线交互适配新任务。MiDAS利用一条演示启动自主在线学习，研究最小数据适配的算法要素。实验显示极少量人类引导即可启动自主学习，为机器人自主改进提供可行的简化代理方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.09876v1",
+      "source": "arxiv",
+      "title": "Energy-Structured Latent World Models with Neural Time Fields for Physically Constistent Open-World Motion Planning",
+      "abstract": "Physically consistent motion planning remains a fundamental challenge in embodied AI, as generated trajectories must strictly conform to real-world execution dynamics. While latent world models offer a promising approach by predicting these dynamics, existing methods learn unconstrained future representations where absorbed physics remains implicit. Therefore, they fail to form reusable physical knowledge, which compromises reliability in unpredictable open-world navigation. To address this, we propose a novel Energy-Structured Latent World Model (ELWM). Our key idea is to structure the ELWM latent state to explicitly carry energy and momentum, ensuring strictly causal transitions via dissipation and control ports. Trained on multimodal RGB-D and inertial interaction histories, our model guarantees physically consistent predictions. We further implement this for motion planning by constructing Physics-Conditioned Neural Time Fields (PC-NTF), a key technical cornerstone that integrates ELWM into an arrival time field via the Eikonal equation to yield a physically-informed navigation policy. Across held-out scenes, our evaluation reveals significant improvements. Compared to generic latent models, PC-NTF reduces 0.8-s motion-prediction NRMSE from 0.36 to 0.29. Against Active Neural Time Fields, it improves navigation success from 81.3% to 89.7% and SPL from 0.64 to 0.73, while cutting the physical collision rate from 12.1% to 5.8% and the Eikonal residual from 0.083 to 0.031. Beyond these targeted gains, our results demonstrate that embedding explicit physical structures into latent spaces intrinsically bridges the gap between predictive world models and safe, dynamically feasible motion planning.",
+      "authors": [
+        "Yapeng Liu",
+        "Yuanzhao Zhai",
+        "Bo Ding",
+        "Huaimin Wang",
+        "Lin Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-10T17:31:18+00:00",
+      "link": "https://arxiv.org/pdf/2608.09876v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "latent world model with explicit energy and momentum for physically consistent planning",
+      "llm_evidence_cn": "显式能量与动量结构的潜在世界模型，用于物理一致的运动规划",
+      "llm_evidence": "显式能量与动量结构的潜在世界模型，用于物理一致的运动规划",
+      "canonical_evidence": "显式能量与动量结构的潜在世界模型，用于物理一致的运动规划",
+      "llm_tldr_en": "Proposes energy-structured latent world models with neural time fields, explicitly carrying energy and momentum to ensure causal transitions and reusable physics for open-world planning.",
+      "llm_tldr_cn": "开放世界运动规划要求轨迹严格符合真实动力学，现有潜在世界模型学到的物理知识隐含且难以复用。本文提出能量结构潜在世界模型ELWM，在潜在状态中显式携带能量与动量，通过耗散和控制保证严格因果转移。该方法增强了轨迹的物理一致性，提升了开放环境中规划可靠性。",
+      "llm_tldr": "开放世界运动规划要求轨迹严格符合真实动力学，现有潜在世界模型学到的物理知识隐含且难以复用。本文提出能量结构潜在世界模型ELWM，在潜在状态中显式携带能量与动量，通过耗散和控制保证严格因果转移。该方法增强了轨迹的物理一致性，提升了开放环境中规划可靠性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.11605v1",
+      "source": "arxiv",
+      "title": "Foresight Without Seeing: Latent Futures for World Action Models",
+      "abstract": "World Action Models (WAMs) couple future visual prediction with robot action generation, enabling policies to model how the physical world evolves during interaction. Existing WAMs differ in how predictive dynamics are exposed to the action pathway. Explicit-future WAMs provide direct access to predicted scene evolution, but incur substantial inference costs from iterative video denoising. In contrast, direct-policy WAMs efficiently predict actions from the current observation but lack an explicit inference-time interface for exposing predictive dynamics to the Action DiT. To bridge this gap, we propose ForeWAM, a dynamics-conditioned direct-policy WAM that provides predictive context for action generation without decoding future videos. At its core, Future-KV performs a single Video DiT prefill over the current visual latent and stochastic future slots, and reuses the resulting layer-wise key-value states throughout action denoising. We further introduce dynamics registers supervised by a frozen latent action teacher, encouraging the implicit future states to capture interaction-induced transitions such as object motion, contact changes, and task progress. Ground-truth future observations and the teacher are used only during training; deployment requires neither and performs no future video generation. Without embodied robot data pretraining, the standard and accelerated variants of ForeWAM achieve average success rates of 96.7% and 96.9% on LIBERO, respectively. The standard variant further achieves 61.6% success on LIBERO-Plus. These results demonstrate that direct-policy WAMs can retain efficient action prediction while exposing predictive dynamics to the action pathway without explicitly generating future observations.",
+      "authors": [
+        "Jiakai Huang",
+        "Zhongbo Wu",
+        "Zheng Zhang",
+        "Zihan Wang",
+        "Shan You",
+        "Tao Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-12T03:27:43+00:00",
+      "link": "https://arxiv.org/pdf/2608.11605v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Dynamics-conditioned direct-policy world model providing latent future context for action generation",
+      "llm_evidence_cn": "为动作生成提供隐式未来上下文的条件化直接策略世界模型",
+      "llm_evidence": "为动作生成提供隐式未来上下文的条件化直接策略世界模型",
+      "canonical_evidence": "为动作生成提供隐式未来上下文的条件化直接策略世界模型",
+      "llm_tldr_en": "Proposes ForeWAM, a latent-future world action model that provides predictive dynamics context to action generation without decoding videos, balancing efficiency and explicit inference-time predictive interface.",
+      "llm_tldr_cn": "为解决世界动作模型在显式未来预测与高效直接策略之间的折衷问题，本文提出ForeWAM，一种动力学条件化的直接策略世界模型。它在不生成未来视频的情况下，通过未来隐表征为动作生成提供预测上下文，既保持了显式可用的预测接口，又避免了迭代视频去噪的高推断成本，为机器人操作中的模型预测控制提供了更高效的选择。",
+      "llm_tldr": "为解决世界动作模型在显式未来预测与高效直接策略之间的折衷问题，本文提出ForeWAM，一种动力学条件化的直接策略世界模型。它在不生成未来视频的情况下，通过未来隐表征为动作生成提供预测上下文，既保持了显式可用的预测接口，又避免了迭代视频去噪的高推断成本，为机器人操作中的模型预测控制提供了更高效的选择。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.13489v1",
+      "source": "arxiv",
+      "title": "DreamX-Phi 1.0: Action-Conditioned Video World Model for Robotic Manipulation",
+      "abstract": "We present \\textbf{DreamX-Phi 1.0}, an action-conditioned video world model for robotic manipulation that, given an observed frame, a language instruction, and a prescribed action sequence comprising end-effector poses and gripper states, predicts the resulting future observations. Yet realism alone does not guarantee faithfulness: a convincing rollout can still move the wrong arm or lose the manipulated object. To ensure the prediction respects each arm's commanded path, we inject per-arm $\\mathrm{SE}(3)$ transformations into attention via \\textbf{PRoPE-style geometric encoding}, preserving arm identity and rigid-motion structure. Action control alone does not fully constrain scene geometry or the evolution of small manipulated objects. We therefore add a lightweight \\textbf{depth branch} for scene-level geometry and use \\textbf{SAM3 masks} with a frozen \\textbf{V-JEPA teacher} to maintain object consistency throughout grasping. We further distill the multi-step generator into a few-step student via distribution-matching distillation for efficient deployment. At the time of writing, \\model{} achieves first place on Track~1 and second place on Track~2 of the WorldArena~2.0 Challenge. Our model and code will be publicly available.",
+      "authors": [
+        "DreamX Team",
+        "Rui Chen",
+        "Xiangxiang Chu",
+        "Geng Li",
+        "Jifan Li",
+        "Qingfeng Shi",
+        "Datao Tang",
+        "Jing Tang",
+        "Jun Wang",
+        "Pengfei Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-08-13T17:18:09+00:00",
+      "link": "https://arxiv.org/pdf/2608.13489v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Action-conditioned video world model predicting future observations for manipulation",
+      "llm_evidence_cn": "面向操作的行动条件视频世界模型，预测未来观测",
+      "llm_evidence": "面向操作的行动条件视频世界模型，预测未来观测",
+      "canonical_evidence": "面向操作的行动条件视频世界模型，预测未来观测",
+      "llm_tldr_en": "Presents DreamX-Phi, an action-conditioned video world model that predicts future observations for robotic manipulation, using per-arm SE(3) geometric encoding to maintain faithful rigid motion. It supports downstream model-based control.",
+      "llm_tldr_cn": "为解决仿真与真实操作中的视觉预测问题，本文提出行动条件视频世界模型DreamX-Phi，给定观测、语言指令和动作序列即可预测未来观测。通过向注意力注入每只机械臂的SE(3)变换，模型保持刚体结构和物体身份，提高预测一致性，为机械臂操作提供可用的学习式动力学模型，可用于后续规划与控制。",
+      "llm_tldr": "为解决仿真与真实操作中的视觉预测问题，本文提出行动条件视频世界模型DreamX-Phi，给定观测、语言指令和动作序列即可预测未来观测。通过向注意力注入每只机械臂的SE(3)变换，模型保持刚体结构和物体身份，提高预测一致性，为机械臂操作提供可用的学习式动力学模型，可用于后续规划与控制。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.13103v1",
+      "source": "arxiv",
+      "title": "S2-HWM: Sparse Event-Structured Hierarchical World Model for Long-Horizon Surgical Robot Manipulation",
+      "abstract": "Long-horizon surgical robot manipulation is challenging because task rewards are sparse, while meaningful interaction changes occur at irregular intervals. Existing world-model agents typically imagine at primitive-step resolution, leaving variable-duration task progress implicit. Manually specified stages can provide intermediate structure, but their task specific boundaries are difficult to align with state-dependent interaction transitions. We propose S2-HWM, a Sparse Event-Structured Hierarchical World Model that learns sparse event evidence from primitive latent trajectories to coordinate an event-level manager and a primitive-step worker. The event evidence schedules manager goal updates, and each selected latent goal conditions the worker's primitive actions until the next update. The learned event evidence also forms variable-duration segments for an Event Transition Model (ETM), which predicts the next?boundary stochastic state, segment duration, and accumulated segment reward. Chaining these event-level predictions provides a variable-duration continuation beyond the primitive imagination horizon for manager learning, while the worker retains primitive-step actor-critic learning. On a SurRoL-based PegTransfer task, S2-HWM achieves a success rate of 98.7%, outperforming the flat GAS DreamerV3 baseline by 22.7 percentage points.",
+      "authors": [
+        "Shuzhe Zhang",
+        "Xin Zhu",
+        "Yinling Qian",
+        "Qiong Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-08-13T11:29:20+00:00",
+      "link": "https://arxiv.org/pdf/2608.13103v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "sparse event hierarchical world model for long-horizon surgical robot manipulation",
+      "llm_evidence_cn": "用稀疏事件结构层次世界模型处理长程手术操作中的稀疏奖励",
+      "llm_evidence": "用稀疏事件结构层次世界模型处理长程手术操作中的稀疏奖励",
+      "canonical_evidence": "用稀疏事件结构层次世界模型处理长程手术操作中的稀疏奖励",
+      "llm_tldr_en": "Proposes S2-HWM, a hierarchical world model learning sparse event evidence from latent trajectories to schedule an event-level manager and primitive-worker, handling sparse rewards in long-horizon surgery.",
+      "llm_tldr_cn": "长程手术机械臂操作奖励稀疏且交互变化不规则，现有世界模型以原始步长想象，难以表达可变时长的任务进展。本文提出S2-HWM，从原始潜在轨迹学习稀疏事件证据，协调事件级管理器和原始步工作器。事件证据调度管理器目标更新，使层次世界模型适应状态相关的交互转移，提升长程操控表现。",
+      "llm_tldr": "长程手术机械臂操作奖励稀疏且交互变化不规则，现有世界模型以原始步长想象，难以表达可变时长的任务进展。本文提出S2-HWM，从原始潜在轨迹学习稀疏事件证据，协调事件级管理器和原始步工作器。事件证据调度管理器目标更新，使层次世界模型适应状态相关的交互转移，提升长程操控表现。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
