@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-17",
+  "date": "2026-08-17",
+  "generated_at": "2026-08-17T20:05:41",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/17/2608.10780v3-stagewam-joint-embedding-stage-prediction-for-world-action-models-in-robot-manipulation",
+      "section": "deep",
+      "title_en": "StageWAM: Joint-Embedding Stage Prediction for World-Action Models in Robot Manipulation",
+      "authors": "Xiao Liu, Yuguang Yang, Xi Wang, Kai Jiang, Cheng Chi, Yong Xu, Wenchao Ding, Yilun Chen, Yan Wang",
+      "date": "2026-08-11",
+      "pdf": "https://arxiv.org/pdf/2608.10780v3",
+      "score": "9.0",
+      "evidence": "为机器人操作学习世界动作模型（动力学模型）",
+      "tldr": "通用机器人策略常以固定短时视频-动作块描述未来，忽略任务阶段级进展。StageWAM在Motus世界动作模型上引入Stage-JEPA，利用冻结V-JEPA2编码器预测下一阶段潜目标，从而区分并建模短期物理未来与阶段级语义未来。在50个RoboTwin 2.0任务中取得90.25%成功率，并将成功轨迹平均执行步数降低5.97%。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Generalist robot policies aim to map multimodal observations and linguistic task instructions to actions across diverse tasks. However, existing methods typically represent the future as a fixed, short video-action chunk. This short-term future captures local scene evolution for action execution, but it does not explicitly describe the stage-level future that specifies how a task should progress from its current stage to the next. We therefore distinguish two complementary futures for robot manipulation: a short-term physical future to capture local scene evolution and a stage-level semantic future to represent task progress. We introduce StageWAM, which augments a Motus-based World Action Model (WAM) with Stage-JEPA, a goal-conditioned Joint-Embedding Predictive Architecture (JEPA) predictor. Given the current observation and task instruction, Stage-JEPA uses a frozen V-JEPA2 encoder to extract the current-state representation and predicts the latent target of the next inferred stage. Across 50 RoboTwin 2.0 tasks in clean and randomized environments, StageWAM achieves 90.25% overall success and reduces the mean number of execution steps in successful rollouts by 5.97% relative to the strongest baseline.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.13904v1-communication-in-modular-robotic-motor-control-bilateral-controllers-under-realistic-constraints",
+      "section": "deep",
+      "title_en": "Communication in modular robotic motor control: Bilateral controllers under realistic constraints",
+      "authors": "Jingwen Li, Levin Kuhlmann, Jason Friedman, Gideon Kowadlo",
+      "date": "2026-08-14",
+      "pdf": "https://arxiv.org/pdf/2608.13904v1",
+      "score": "8.0",
+      "evidence": "在可微双臂肌肉骨骼仿真中端到端训练",
+      "tldr": "运动控制需同时满足快速精确、抗信号依赖噪声与低能耗，模块化控制器有望优于单体架构。受大脑半球组织启发，本文提出两个GRU模块经可学习延迟通道互联的循环控制器，在可微分双臂肌肉骨骼模拟器中端到端训练。在到达与保持任务中，该模块化架构显著优于容量匹配的单体基线；与无通信的模块化器相比，学习到的半球间通信提升末端精度、降低非零延迟下的能量成本并减少共收缩。这表明生物启发的模块化控制器为噪声与能耗约束下的稳健运动提供实用途径，通信机制能调节精度、稳定性与执行代价的权衡。",
+      "tags": "query:diff-physics",
+      "abstract_en": "Robotic motor control in musculoskeletal systems requires fast, accurate movement and robust postural stabilization under signal-dependent noise (where motor command variance scales with command magnitude) and energetic cost. Modular controllers can distribute these competing demands across interacting submodules, but it remains unclear whether they outperform monolithic architectures under realistic constraints, and how inter-module communication shapes the resulting strategy. Inspired by the bilateral hemispheric organization of the brain, we introduce a recurrent controller of two GRU-based modules connected by a learnable, delayed inter-hemispheric channel, trained end-to-end in a differentiable two-arm musculoskeletal simulator. Across reaching and holding tasks, the modular architecture substantially outperforms a capacity-matched monolithic baseline. Compared to a matched modular controller without communication, learned inter-hemispheric communication reshapes the solution: improved endpoint precision, lower energetic cost in non-zero-delay regimes, and reduced muscle co-contraction. Our findings show that for robotics, biologically inspired modular controllers offer a practical route to robust movement under noise and energetic constraints, with inter-module communication providing a mechanism to tune trade-offs between precision, stability, and actuation cost.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.14125v1-traj-lewm-path-aware-world-model-planning-via-latent-trajectory-cost",
+      "section": "deep",
+      "title_en": "Traj-LeWM: Path-Aware World-Model Planning via Latent Trajectory Cost",
+      "authors": "Xiaodi Huang, Ziyi Ding, Jingtian Wan, Yuchen Liu, Yuan Zhang, Xiao-Ping Zhang, Jiayu Chen, Zhang Zhang, Tao Huang",
+      "date": "2026-08-14",
+      "pdf": "https://arxiv.org/pdf/2608.14125v1",
+      "score": "8.0",
+      "evidence": "基于学习到的潜动态进行世界模型规划与控制",
+      "tldr": "LeWM仅学习局部转移和端点距离，忽视完整轨迹信息，导致规划次优。Traj-LeWM保留原有目标，新增目标条件潜在轨迹成本（LTC），训练时用轨迹偏好监督塑造共享表示，规划时结合端点距离进行路径感知排序。在Push-T、OGBench-Cube、Reacher和Two-Room上分别提升3、14、7、7个百分点。实验表明轨迹级表示塑造与路径感知排名互补，显著增强世界模型规划性能。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "LeWM is a lightweight visual world model that learns latent dynamics end-to-end from pixels and ranks candidate action sequences by the distance between their predicted endpoints and the goal. However, LeWM has two limitations. First, during training, it learns local next-step transitions without evaluating complete trajectories relative to the task goal. Second, during planning, it ranks candidates solely by predicted endpoint distance. Because model predictions may differ from actual execution outcomes, the candidate whose predicted endpoint is closest to the goal may not perform best when executed in the environment. The evolution of the complete predicted trajectory can therefore provide complementary information beyond endpoint distance. To address these limitations, we propose Traj-LeWM, which retains LeWM's local-dynamics objective and endpoint score while introducing a goal-conditioned latent trajectory cost (LTC) that aggregates trajectory-level information as a complementary signal. During training, LTC-based trajectory-preference supervision complements next-step prediction in shaping the shared representation. During planning, LTC is combined with endpoint distance to incorporate intermediate-path information into candidate ranking. With joint endpoint-plus-LTC scoring, Traj-LeWM outperforms LeWM on Push-T, OGBench-Cube, Reacher, and Two-Room by $3$, $14$, $7$, and $7$ percentage points, respectively. Controlled experiments and ablations further verify the complementary roles of trajectory-level representation shaping and path-aware candidate ranking.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.13678v1-hint2-hierarchical-world-models-for-inference-time-temporal-logic-guidance",
+      "section": "quick",
+      "title_en": "hint$^2$: Hierarchical World Models for Inference-Time Temporal Logic Guidance",
+      "authors": "Moritz Zoellner, Anastasios Manganaris, Ahmed H. Qureshi, Rohan Paleja",
+      "date": "2026-08-13",
+      "pdf": "https://arxiv.org/pdf/2608.13678v1",
+      "score": "7.0",
+      "evidence": "利用分层世界模型在推理时引导操作策略满足线性时序逻辑规范",
+      "tldr": "机器人策略执行复杂时序指令仍困难，线性时序逻辑(LTL)可表达非马尔可夫约束，但短视界动作与长视界评估存在鸿沟。hint²用分层世界模型做推理时引导：高层模型预测原子命题转移以推进LTL自动机，低层模型预测状态演化以保障局部安全。在CALVIN上优于现有引导法，成功完成复杂活性与安全约束指令，并用于真实UR5e机械臂。该方法使短视界策略在推理时满足LTL规范。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "A central goal of robot learning is to enable robots to execute rich instructions specified at runtime. Large-scale language-conditioned policies have made substantial progress toward this goal, yet still struggle with temporal structure and safety constraints. Linear Temporal Logic (LTL) provides a powerful language to express complex, non-Markovian instructions. However, guiding learned manipulation policies toward LTL satisfaction remains challenging because modern policies generate short-horizon action chunks and replan in closed loop, while almost all LTL specifications are evaluated over long-horizon trajectories. In this paper, we introduce hint$^2$, a method for guiding short-horizon policies toward satisfying complex LTL specifications at inference time using hierarchical world models. Our key idea is to derive two separate guidance objectives using each world model's abstraction level. A high-level model predicts future action-induced transitions in task-relevant atomic propositions to guide progress through the LTL automaton, while a low-level dynamics model predicts immediate state evolution for accurate local safety guidance. Our results show that hint$^2$ overcomes the limitations of current LTL-guided diffusion methods, outperforms existing inference-time steering methods in CALVIN, and successfully completes instructions with complex liveness and safety constraints more elegantly than language-conditioned alternatives. Finally, we demonstrate that hint$^2$ can handle complex instructions on a real UR5e manipulator.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

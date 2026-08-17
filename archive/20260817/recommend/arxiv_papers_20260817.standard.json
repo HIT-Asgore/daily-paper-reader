@@ -1,0 +1,186 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-17T20:01:04.853948+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 12,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.10780v3",
+      "source": "arxiv",
+      "title": "StageWAM: Joint-Embedding Stage Prediction for World-Action Models in Robot Manipulation",
+      "abstract": "Generalist robot policies aim to map multimodal observations and linguistic task instructions to actions across diverse tasks. However, existing methods typically represent the future as a fixed, short video-action chunk. This short-term future captures local scene evolution for action execution, but it does not explicitly describe the stage-level future that specifies how a task should progress from its current stage to the next. We therefore distinguish two complementary futures for robot manipulation: a short-term physical future to capture local scene evolution and a stage-level semantic future to represent task progress. We introduce StageWAM, which augments a Motus-based World Action Model (WAM) with Stage-JEPA, a goal-conditioned Joint-Embedding Predictive Architecture (JEPA) predictor. Given the current observation and task instruction, Stage-JEPA uses a frozen V-JEPA2 encoder to extract the current-state representation and predicts the latent target of the next inferred stage. Across 50 RoboTwin 2.0 tasks in clean and randomized environments, StageWAM achieves 90.25% overall success and reduces the mean number of execution steps in successful rollouts by 5.97% relative to the strongest baseline.",
+      "authors": [
+        "Xiao Liu",
+        "Yuguang Yang",
+        "Xi Wang",
+        "Kai Jiang",
+        "Cheng Chi",
+        "Yong Xu",
+        "Wenchao Ding",
+        "Yilun Chen",
+        "Yan Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-11T10:33:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.10780v3",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Learning world-action models (dynamics models) for robot manipulation",
+      "llm_evidence_cn": "为机器人操作学习世界动作模型（动力学模型）",
+      "llm_evidence": "为机器人操作学习世界动作模型（动力学模型）",
+      "canonical_evidence": "为机器人操作学习世界动作模型（动力学模型）",
+      "llm_tldr_en": "Proposes StageWAM, augmenting a Motus-based World Action Model with Stage-JEPA to predict both short-term physical futures and stage-level semantic futures for manipulation.",
+      "llm_tldr_cn": "通用机器人策略通常只预测固定短时视频动作块，缺少任务阶段级的未来信息。该工作提出StageWAM，在Motus世界动作模型基础上引入阶段联合嵌入预测（Stage-JEPA），同时建模局部场景演化和阶段语义进展。这一联合表示提升了长程操作任务的预测与决策质量。实验表明StageWAM能更好地理解任务进度并指导动作生成，体现了世界模型在机器人操作中的应用价值。",
+      "llm_tldr": "通用机器人策略通常只预测固定短时视频动作块，缺少任务阶段级的未来信息。该工作提出StageWAM，在Motus世界动作模型基础上引入阶段联合嵌入预测（Stage-JEPA），同时建模局部场景演化和阶段语义进展。这一联合表示提升了长程操作任务的预测与决策质量。实验表明StageWAM能更好地理解任务进度并指导动作生成，体现了世界模型在机器人操作中的应用价值。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.13904v1",
+      "source": "arxiv",
+      "title": "Communication in modular robotic motor control: Bilateral controllers under realistic constraints",
+      "abstract": "Robotic motor control in musculoskeletal systems requires fast, accurate movement and robust postural stabilization under signal-dependent noise (where motor command variance scales with command magnitude) and energetic cost. Modular controllers can distribute these competing demands across interacting submodules, but it remains unclear whether they outperform monolithic architectures under realistic constraints, and how inter-module communication shapes the resulting strategy. Inspired by the bilateral hemispheric organization of the brain, we introduce a recurrent controller of two GRU-based modules connected by a learnable, delayed inter-hemispheric channel, trained end-to-end in a differentiable two-arm musculoskeletal simulator. Across reaching and holding tasks, the modular architecture substantially outperforms a capacity-matched monolithic baseline. Compared to a matched modular controller without communication, learned inter-hemispheric communication reshapes the solution: improved endpoint precision, lower energetic cost in non-zero-delay regimes, and reduced muscle co-contraction. Our findings show that for robotics, biologically inspired modular controllers offer a practical route to robust movement under noise and energetic constraints, with inter-module communication providing a mechanism to tune trade-offs between precision, stability, and actuation cost.",
+      "authors": [
+        "Jingwen Li",
+        "Levin Kuhlmann",
+        "Jason Friedman",
+        "Gideon Kowadlo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-14T03:17:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.13904v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "trained end-to-end in a differentiable two-arm musculoskeletal simulation",
+      "llm_evidence_cn": "在可微双臂肌肉骨骼仿真中端到端训练",
+      "llm_evidence": "在可微双臂肌肉骨骼仿真中端到端训练",
+      "canonical_evidence": "在可微双臂肌肉骨骼仿真中端到端训练",
+      "llm_tldr_en": "Introduces modular bilateral recurrent controllers trained end-to-end in a differentiable two-arm musculoskeletal simulation, showing inter-module communication improves motor control under realistic constraints.",
+      "llm_tldr_cn": "机器人运动控制需要在信号依赖噪声和能量代价下实现快速精确的运动和姿态稳定。受大脑双侧半球组织启发，提出由两个GRU模块组成的循环控制器，通过可学习的延迟通道连接，并在可微双臂肌肉骨骼仿真中端到端训练。实验表明模块化架构优于单体架构，且通信延迟影响控制策略的形成。这项工作展示了可微仿真在机器人运动控制研究中的价值。",
+      "llm_tldr": "机器人运动控制需要在信号依赖噪声和能量代价下实现快速精确的运动和姿态稳定。受大脑双侧半球组织启发，提出由两个GRU模块组成的循环控制器，通过可学习的延迟通道连接，并在可微双臂肌肉骨骼仿真中端到端训练。实验表明模块化架构优于单体架构，且通信延迟影响控制策略的形成。这项工作展示了可微仿真在机器人运动控制研究中的价值。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable dynamics for robot arms",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.14125v1",
+      "source": "arxiv",
+      "title": "Traj-LeWM: Path-Aware World-Model Planning via Latent Trajectory Cost",
+      "abstract": "LeWM is a lightweight visual world model that learns latent dynamics end-to-end from pixels and ranks candidate action sequences by the distance between their predicted endpoints and the goal. However, LeWM has two limitations. First, during training, it learns local next-step transitions without evaluating complete trajectories relative to the task goal. Second, during planning, it ranks candidates solely by predicted endpoint distance. Because model predictions may differ from actual execution outcomes, the candidate whose predicted endpoint is closest to the goal may not perform best when executed in the environment. The evolution of the complete predicted trajectory can therefore provide complementary information beyond endpoint distance. To address these limitations, we propose Traj-LeWM, which retains LeWM's local-dynamics objective and endpoint score while introducing a goal-conditioned latent trajectory cost (LTC) that aggregates trajectory-level information as a complementary signal. During training, LTC-based trajectory-preference supervision complements next-step prediction in shaping the shared representation. During planning, LTC is combined with endpoint distance to incorporate intermediate-path information into candidate ranking. With joint endpoint-plus-LTC scoring, Traj-LeWM outperforms LeWM on Push-T, OGBench-Cube, Reacher, and Two-Room by $3$, $14$, $7$, and $7$ percentage points, respectively. Controlled experiments and ablations further verify the complementary roles of trajectory-level representation shaping and path-aware candidate ranking.",
+      "authors": [
+        "Xiaodi Huang",
+        "Ziyi Ding",
+        "Jingtian Wan",
+        "Yuchen Liu",
+        "Yuan Zhang",
+        "Xiao-Ping Zhang",
+        "Jiayu Chen",
+        "Zhang Zhang",
+        "Tao Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-14T09:32:38+00:00",
+      "link": "https://arxiv.org/pdf/2608.14125v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "World-model planning with learned latent dynamics for control",
+      "llm_evidence_cn": "基于学习到的潜动态进行世界模型规划与控制",
+      "llm_evidence": "基于学习到的潜动态进行世界模型规划与控制",
+      "canonical_evidence": "基于学习到的潜动态进行世界模型规划与控制",
+      "llm_tldr_en": "Proposes path-aware world-model planning that augments endpoint-distance ranking with full latent trajectory costs, improving planning beyond endpoint-only evaluation.",
+      "llm_tldr_cn": "针对轻量视觉世界模型仅依靠终点距离评估候选动作序列的局限，提出路径感知的世界模型规划方法，在规划时引入完整潜在轨迹的代价信息。训练阶段也考察轨迹与目标的一致性，而不仅仅是单步转移。实验显示该方法能更准确筛选候选序列，提升环境执行效果。该工作为机器人操作等连续控制任务的模型预测控制提供了新思路。",
+      "llm_tldr": "针对轻量视觉世界模型仅依靠终点距离评估候选动作序列的局限，提出路径感知的世界模型规划方法，在规划时引入完整潜在轨迹的代价信息。训练阶段也考察轨迹与目标的一致性，而不仅仅是单步转移。实验显示该方法能更准确筛选候选序列，提升环境执行效果。该工作为机器人操作等连续控制任务的模型预测控制提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.13678v1",
+      "source": "arxiv",
+      "title": "hint$^2$: Hierarchical World Models for Inference-Time Temporal Logic Guidance",
+      "abstract": "A central goal of robot learning is to enable robots to execute rich instructions specified at runtime. Large-scale language-conditioned policies have made substantial progress toward this goal, yet still struggle with temporal structure and safety constraints. Linear Temporal Logic (LTL) provides a powerful language to express complex, non-Markovian instructions. However, guiding learned manipulation policies toward LTL satisfaction remains challenging because modern policies generate short-horizon action chunks and replan in closed loop, while almost all LTL specifications are evaluated over long-horizon trajectories. In this paper, we introduce hint$^2$, a method for guiding short-horizon policies toward satisfying complex LTL specifications at inference time using hierarchical world models. Our key idea is to derive two separate guidance objectives using each world model's abstraction level. A high-level model predicts future action-induced transitions in task-relevant atomic propositions to guide progress through the LTL automaton, while a low-level dynamics model predicts immediate state evolution for accurate local safety guidance. Our results show that hint$^2$ overcomes the limitations of current LTL-guided diffusion methods, outperforms existing inference-time steering methods in CALVIN, and successfully completes instructions with complex liveness and safety constraints more elegantly than language-conditioned alternatives. Finally, we demonstrate that hint$^2$ can handle complex instructions on a real UR5e manipulator.",
+      "authors": [
+        "Moritz Zoellner",
+        "Anastasios Manganaris",
+        "Ahmed H. Qureshi",
+        "Rohan Paleja"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-08-13T18:22:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.13678v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Hierarchical world models guide manipulation policies to satisfy LTL specifications at inference time",
+      "llm_evidence_cn": "利用分层世界模型在推理时引导操作策略满足线性时序逻辑规范",
+      "llm_evidence": "利用分层世界模型在推理时引导操作策略满足线性时序逻辑规范",
+      "canonical_evidence": "利用分层世界模型在推理时引导操作策略满足线性时序逻辑规范",
+      "llm_tldr_en": "hint^2 uses hierarchical world models to guide short-horizon manipulation policies toward satisfying long-horizon linear temporal logic specifications, improving temporal and safety reasoning.",
+      "llm_tldr_cn": "针对大规模语言条件策略难以处理长时程时序结构的问题，本文提出hint^2方法，利用分层世界模型在推理时对短视操作策略进行引导，使其满足线性时序逻辑规格。该方法通过层次化预测将长期规范与闭环策略适配，避免直接生成完整未来轨迹。该工作为在闭环操作策略中注入时序逻辑约束提供了新思路。",
+      "llm_tldr": "针对大规模语言条件策略难以处理长时程时序结构的问题，本文提出hint^2方法，利用分层世界模型在推理时对短视操作策略进行引导，使其满足线性时序逻辑规格。该方法通过层次化预测将长期规范与闭环策略适配，避免直接生成完整未来轨迹。该工作为在闭环操作策略中注入时序逻辑约束提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
