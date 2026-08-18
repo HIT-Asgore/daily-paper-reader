@@ -1,0 +1,324 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-18T20:46:29.359364+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 5,
+    "quick_skim_target": 12,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2608.15026v1",
+      "source": "arxiv",
+      "title": "PACE: Phase-Progress-Aware Credit for Long-Horizon Embodied Manipulation",
+      "abstract": "Post-training of vision-language-action (VLA) models typically relies on expert demonstrations and policy interaction trajectories. However, in long-horizon manipulation, a single episode often spans hundreds of control steps and multiple phases, while success or failure is only revealed at episode termination. Policy improvement therefore requires step-level credit signals to distinguish behaviors that advance the task from those that stall or regress. We present PACE, a credit-assignment framework for post-training on long-horizon manipulation, centered on a phase-progress-aware critic. PACE consists of two key modules: (1) the Global-Local Cooperative Value-Correction Critic (GLC-Critic) aggregates visual and motion-difference features within local temporal windows to infer the phase and intra-phase progress of each step, and applies residual correction to a discretized remaining-cost distribution accordingly, enabling step-level credit assignment; (2) Progressive Policy Distillation (PPD) converts credit into positive and negative conditions via task-wise thresholds and trains a credit-conditioned action generation policy: it first protects the pretrained policy with high-credit positive samples, then incorporates all positive and negative credits to learn the quality boundary, and at inference amplifies high-credit behaviors through the difference between conditional outputs. Extensive simulation experiments and diverse real-world robotic-arm experiments demonstrate that PACE consistently achieves significant improvements over the strongest baseline.",
+      "authors": [
+        "Chengye Song",
+        "Jiawei Zhang",
+        "Rui Song",
+        "Shengqi Wang",
+        "Xiangrong Zhang",
+        "Ziyi Wang",
+        "Huanbin Zhou",
+        "Hongzhou Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-15T04:25:16+00:00",
+      "link": "https://arxiv.org/pdf/2608.15026v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses reinforcement learning for long-horizon manipulation via phase-progress-aware credit assignment",
+      "llm_evidence_cn": "通过阶段进展感知的信用分配在长时程操作中使用强化学习",
+      "llm_evidence": "通过阶段进展感知的信用分配在长时程操作中使用强化学习",
+      "canonical_evidence": "通过阶段进展感知的信用分配在长时程操作中使用强化学习",
+      "llm_tldr_en": "PACE introduces a phase-progress-aware critic for credit assignment in post-training VLA models, improving long-horizon manipulation policies through reinforcement learning.",
+      "llm_tldr_cn": "PACE针对长时程操作中VLA模型后训练缺乏逐步信用信号的问题，提出阶段进展感知的评论家框架。该方法通过全局-局部协作价值校正评论家聚合视觉和运动差异特征，为策略改进提供细粒度奖励信号。实验表明PACE能有效提升长时程操作任务的成功率和稳定性，为后续基于强化学习的操作策略优化提供了新思路。",
+      "llm_tldr": "PACE针对长时程操作中VLA模型后训练缺乏逐步信用信号的问题，提出阶段进展感知的评论家框架。该方法通过全局-局部协作价值校正评论家聚合视觉和运动差异特征，为策略改进提供细粒度奖励信号。实验表明PACE能有效提升长时程操作任务的成功率和稳定性，为后续基于强化学习的操作策略优化提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.15707v1",
+      "source": "arxiv",
+      "title": "GAINS: Leveraging Inconsistent Human Intervention Signals in Reinforcement Learning",
+      "abstract": "Correcting robot manipulation policies through human intervention holds great promise for real-world deployment, yet human operators are inherently imperfect in both the actions they provide and the timing of their intervention signals. While the former has been extensively discussed in reinforcement learning (RL), the latter remains underexplored. At high control frequencies, human intervention signals are often delayed and inconsistent across time and state space. In this work, we present GAINS, a framework for leveraging inconsistent human intervention signals in RL. At the core of GAINS, we employ distributional RL with quantile Q-networks to model the return variability induced by sparse task rewards and inconsistent human interventions. Building on this distributional representation, we introduce a pessimistic exploration strategy that promotes safe and sample-efficient learning under human corrections. We evaluate GAINS on four diverse simulated manipulation tasks and two challenging real-world scenarios against state-of-the-art intervention-based methods. GAINS achieves a 22% higher task success rate than RLIF and improves recovery success by up to 43% in failure scenarios. These results highlight the importance of modeling return variability induced by human imperfection for real-world deployment of intervention-based learning.",
+      "authors": [
+        "Xinyi Zhang",
+        "Yinuo Zhao",
+        "Pei Ren",
+        "Lechun Jiang",
+        "Huiqian Jin",
+        "Lei Sun",
+        "Dapeng Wu",
+        "Zhengping Che",
+        "Chi Harold Liu",
+        "Jian Tang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-16T12:19:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.15707v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "reinforcement learning for robot manipulation with human interventions",
+      "llm_evidence_cn": "带人类干预的机器人操作强化学习",
+      "llm_evidence": "带人类干预的机器人操作强化学习",
+      "canonical_evidence": "带人类干预的机器人操作强化学习",
+      "llm_tldr_en": "GAINS uses distributional RL with quantile Q-networks to model return variability from sparse rewards and delayed, inconsistent human intervention signals, improving robot manipulation policy learning from imperfect corrections.",
+      "llm_tldr_cn": "针对机器人操作策略学习中人类干预信号在时间和状态空间上不一致的问题，提出了GAINS框架，利用带有分位数Q网络的分布强化学习来建模稀疏任务奖励和不一致干预导致的回报变异性。该方法在较高控制频率下有效利用了延迟和不一致的干预信号，提升策略学习的效果。实验表明GAINS能够从不完美的人类纠正中学习更鲁棒的操作策略，促进真实世界部署。",
+      "llm_tldr": "针对机器人操作策略学习中人类干预信号在时间和状态空间上不一致的问题，提出了GAINS框架，利用带有分位数Q网络的分布强化学习来建模稀疏任务奖励和不一致干预导致的回报变异性。该方法在较高控制频率下有效利用了延迟和不一致的干预信号，提升策略学习的效果。实验表明GAINS能够从不完美的人类纠正中学习更鲁棒的操作策略，促进真实世界部署。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.15088v1",
+      "source": "arxiv",
+      "title": "Max-Q Selective Imitation for Human-in-the-Loop Online Robot Learning",
+      "abstract": "Human-in-the-loop (HIL) online reinforcement learning for real robots must absorb human interventions quickly while continuing to improve beyond the human prior. We present a training method for this setting based on two components. First, an \\emph{MC Q-chunk} critic regresses chunk-level action values onto Monte Carlo returns from the replay buffer, performing sample-average (behavior) policy evaluation so that intervention trajectories are credited directly rather than diluted by current-policy TD backups. Second, \\emph{max-Q selective imitation} updates the actor by imitating, at each state, the higher-$Q$ action between the current policy action and a buffer sample under a hard winner-take-all rule. This rule automatically switches between learning from interventions and on-policy self-improvement: when the autonomous policy is stronger, targets align with the policy distribution, reducing the policy--target-sample gap that otherwise induces execution-time distribution shift. In practice we score candidates with a standard critic ensemble mean to reduce comparison noise, without softening targets or introducing score-gap thresholds. On a real USB pick-and-insertion task with 20 demonstrations, ACT QChunk-MCBC attains 99\\% success within 30 minutes of HIL training, whereas HIL-SERL requires about 5 hours to converge. In simulation on Peg Insertion and Square, ACT/Flow Q-chunk variants similarly reach $\\ge$96\\% success within roughly half an hour of effective training, outperforming HIL-SERL, EXPO, and E2HiL on the success--time frontier.",
+      "authors": [
+        "Zihang Wang",
+        "Yishan Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-15T07:13:59+00:00",
+      "link": "https://arxiv.org/pdf/2608.15088v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Online RL with human-in-the-loop for real robot manipulation policies",
+      "llm_evidence_cn": "面向真实机器人操控策略的人机协同在线强化学习",
+      "llm_evidence": "面向真实机器人操控策略的人机协同在线强化学习",
+      "canonical_evidence": "面向真实机器人操控策略的人机协同在线强化学习",
+      "llm_tldr_en": "Introduces a training method for human-in-the-loop online RL that uses an MC Q-chunk critic to credit intervention trajectories and max-Q selective imitation to accept the higher-Q action, enabling fast absorption of human corrections and continued improvement.",
+      "llm_tldr_cn": "人机协同在线强化学习需要快速吸收人工干预并继续超越人类先验。本文提出基于MC Q分块评论器的策略评估方法，直接按行为策略对干预轨迹进行蒙特卡洛回报回归；同时采用max-Q选择性模仿，在每个状态下选择当前策略与经验池中Q值更高的动作进行模仿。该机制自动切换于模仿与自主学习之间，提升真实机器人操控学习中对人类纠正的响应速度与最终性能。",
+      "llm_tldr": "人机协同在线强化学习需要快速吸收人工干预并继续超越人类先验。本文提出基于MC Q分块评论器的策略评估方法，直接按行为策略对干预轨迹进行蒙特卡洛回报回归；同时采用max-Q选择性模仿，在每个状态下选择当前策略与经验池中Q值更高的动作进行模仿。该机制自动切换于模仿与自主学习之间，提升真实机器人操控学习中对人类纠正的响应速度与最终性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.09492v1",
+      "source": "arxiv",
+      "title": "Rethink Before You Execute: Adaptive Execution for World Action Models",
+      "abstract": "World Action Models (WAMs) jointly predict future actions and the evolution of the environment. At each inference, a WAM generates a chunk of actions and the robot executes a fixed prefix before replanning. We argue that this fixed execution horizon is poorly matched to execution dynamics: the chunk reliability varies across task stages, so when to replan depends on the result of accumulated execution, not on the step counts. We propose TempoWAM (Timing Execution by Monitoring Progress Online), a lightweight plug-and-play execution scheme for WAMs. A Recurrent Progress Monitor first estimates task progress from the current observation, task instruction, remaining actions, and execution history; and an Adaptive Execution Protocol then evaluates whether the chunk is advancing the task to decide if replanning is needed. To bridge the training-deployment gap, the protocol is calibrated by a task-dependent calibration factor with online adaptation. Experiments on LIBERO, RoboTwin, and real-world tasks show that TempoWAM consistently improves the efficiency-success trade-off of WAM execution. On real robots, it reduces WAM inferences by 26.9% on easy tasks while maintaining success, and improves success by 13.3 points on difficult tasks.",
+      "authors": [
+        "Feng Ye",
+        "Yiming Zhao",
+        "Yong Yu",
+        "Hongxu Zhou",
+        "Yong Pan",
+        "Yuan Xue",
+        "Peng Jia",
+        "Chuanmin Jia"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-10T11:59:42+00:00",
+      "link": "https://arxiv.org/pdf/2608.09492v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "adaptive execution scheme for world action models in model-based control",
+      "llm_evidence_cn": "面向世界行动模型的自适应执行方案，用于基于模型的控制",
+      "llm_evidence": "面向世界行动模型的自适应执行方案，用于基于模型的控制",
+      "canonical_evidence": "面向世界行动模型的自适应执行方案，用于基于模型的控制",
+      "llm_tldr_en": "Presents TempoWAM, a plug-and-play execution scheme for world action models that uses a recurrent progress monitor and adaptive execution protocol to decide when to replan, improving manipulation reliability.",
+      "llm_tldr_cn": "世界行动模型（WAM）在机器人操作中常采用固定执行时域，忽略了不同任务阶段可靠性的变化。本文提出TempoWAM，通过循环进度监测器评估任务进度并采用自适应执行协议决定何时重新规划。该方法即插即用，能有效减少累积误差并提升任务成功率，增强模型基控制方法的实用性。",
+      "llm_tldr": "世界行动模型（WAM）在机器人操作中常采用固定执行时域，忽略了不同任务阶段可靠性的变化。本文提出TempoWAM，通过循环进度监测器评估任务进度并采用自适应执行协议决定何时重新规划。该方法即插即用，能有效减少累积误差并提升任务成功率，增强模型基控制方法的实用性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.15139v1",
+      "source": "arxiv",
+      "title": "StructRL: Structured Action-Space Exploration for Flow-Based VLAs",
+      "abstract": "Flow-based Vision-Language-Action (VLA) models are now widely used for continuous robotic manipulation, and online reinforcement learning (RL) is emerging as a key technique for adapting them to new tasks. Existing RL methods typically inject stochasticity inside the denoising chain, often through isotropic or temporally independent noise. However, effective robot exploration calls for structured noise: temporally smooth and scaled differently across action groups. We show that simply switching the in-chain noise to a structured form does not suffice: noise added at an intermediate flow time can be weakened by the remaining denoising steps before execution, a phenomenon we call \\emph{Structured Noise Dilution}. We propose \\textbf{StructRL}, which avoids dilution by relocating policy stochasticity to the action space via three coupled choices: (i) a deterministic ODE decoder, (ii) structured noise injected directly in the action space, and (iii) last-step replay, where policy-gradient updates avoid assigning likelihoods to intermediate denoising states. This keeps structured exploration tied to the executed action while providing a tractable training signal for the flow decoder. Across three flow-based VLA models on multiple simulated manipulation benchmarks and two real-world tasks, StructRL improves exploration efficiency and OOD performance over prior in-chain baselines, demonstrating the effectiveness of structured action-space exploration for adapting flow-based VLA with RL. \\textbf{Project page:} https://flyfaerss.github.io/structrl/",
+      "authors": [
+        "Jiarui Yang",
+        "Bin Zhu",
+        "Jingjing Chen",
+        "Na Zou",
+        "Yanwei Fu",
+        "Jianggang Zhu",
+        "Yu-Gang Jiang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-15T09:31:29+00:00",
+      "link": "https://arxiv.org/pdf/2608.15139v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL for continuous robotic manipulation with structured exploration in flow-based VLA policies",
+      "llm_evidence_cn": "面向连续机器人操作的动作空间探索强化学习，针对流式VLA策略",
+      "llm_evidence": "面向连续机器人操作的动作空间探索强化学习，针对流式VLA策略",
+      "canonical_evidence": "面向连续机器人操作的动作空间探索强化学习，针对流式VLA策略",
+      "llm_tldr_en": "Proposes StructRL, a structured noise exploration method for online RL adaptation of flow-based VLA policies in continuous robotic manipulation, addressing structured noise dilution by avoiding noise weakening through remaining denoising steps.",
+      "llm_tldr_cn": "流式视觉-语言-动作（VLA）模型常用于连续机器人操控，在线强化学习是使其适应新任务的关键。现有方法在去噪链内注入各向同性或时间独立噪声，但有效探索需要时间平滑且动作组尺度不同的结构化噪声。作者提出StructRL，避免结构化噪声被后续去噪步骤稀释，从而支持更有效的策略探索。该方法为基于流的VLA模型在线强化学习提供了更合适的探索范式。",
+      "llm_tldr": "流式视觉-语言-动作（VLA）模型常用于连续机器人操控，在线强化学习是使其适应新任务的关键。现有方法在去噪链内注入各向同性或时间独立噪声，但有效探索需要时间平滑且动作组尺度不同的结构化噪声。作者提出StructRL，避免结构化噪声被后续去噪步骤稀释，从而支持更有效的策略探索。该方法为基于流的VLA模型在线强化学习提供了更合适的探索范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.16837v1",
+      "source": "arxiv",
+      "title": "HAF: Adapting Generalist VLAs to Humanoid Whole-Body Loco-manipulation via Hierarchical Action Flow and Spectral Latent RL",
+      "abstract": "Humanoid robots hold great promise as general-purpose agents in human-centered environments, yet generalist vision-language-action (VLA) foundation models are not readily applicable to humanoid whole-body loco-manipulation. The high dimensionality and interdependence of humanoid motions make it challenging for conventional single-stage VLA architectures to coordinate locomotion, waist posture, and dual-arm manipulation effectively. Moreover, policies trained through offline behavior cloning can remain suboptimal during real-world deployment. Although online reinforcement learning can refine policies through real-world interaction, directly tuning large VLA backbones demands excessive computation and may introduce safety risks during real-robot exploration. To address these bottlenecks, we introduce HAF (Humanoid Adaptation Framework), a two-part framework consisting of HAF-VLA and HAF-Steer that transfers off-the-shelf generalist VLA foundation models to humanoid whole-body loco-manipulation. HAF-VLA is a hierarchical action-flow generator built on a pretrained flow-matching VLA. It splits full-body action denoising into three sequential stages with stage embeddings and cross-stage KV caches that retain kinematic dependencies, avoiding incoherent whole-body actions from one-shot generation. On top of the frozen HAF-VLA, HAF-Steer is a latent offline-to-online RL pipeline that leverages flow-matching invertibility and DCT-based dimensionality reduction to restrict RL optimization to a compact noise subspace and train a regularized SAC policy. This avoids updating the large VLA backbone and enables efficient real-world policy refinement. Evaluated on seven real-world humanoid loco-manipulation tasks, HAF surpasses vanilla single-stage VLA baselines and improves whole-body coordination and task performance. Project website: https://grange007.github.io/HAF .",
+      "authors": [
+        "Langzhe Gu",
+        "Chengkai Hou",
+        "Meng Li",
+        "Xinhua Wang",
+        "Jiaming Liu",
+        "Xinyuan Lv",
+        "Bowei Zhang",
+        "Shuanghao Bai",
+        "Guangrun Li",
+        "Jingyang He",
+        "Gaole Dai",
+        "Ziluo Ding",
+        "Zhiyuan Xu",
+        "Kuan Cheng",
+        "Jian Tang",
+        "Zhengping Che",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T17:22:33+00:00",
+      "link": "https://arxiv.org/pdf/2608.16837v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Adapts generalist VLAs to humanoid loco-manipulation using hierarchical action flow and online RL; relevant to RL-based manipulation policies",
+      "llm_evidence_cn": "使用层次化动作流和在线RL将通用VLA适配到人形移动操作，与基于RL的操作策略相关",
+      "llm_evidence": "使用层次化动作流和在线RL将通用VLA适配到人形移动操作，与基于RL的操作策略相关",
+      "canonical_evidence": "使用层次化动作流和在线RL将通用VLA适配到人形移动操作，与基于RL的操作策略相关",
+      "llm_tldr_en": "HAF adapts VLA foundation models to humanoid whole-body loco-manipulation via hierarchical action flow and spectral latent RL, enabling efficient online refinement.",
+      "llm_tldr_cn": "人形机器人全身移动操作维度高且耦合性强，通用VLA模型难以直接适用，而离线行为克隆策略在真实部署中可能次优。本文提出HAF方法，通过层次化动作流协调运动与双臂操作，并用谱潜在强化学习在线优化策略，避免直接微调大型VLA骨干的高计算开销。实验表明该方法能有效提升真实部署中的操作性能。",
+      "llm_tldr": "人形机器人全身移动操作维度高且耦合性强，通用VLA模型难以直接适用，而离线行为克隆策略在真实部署中可能次优。本文提出HAF方法，通过层次化动作流协调运动与双臂操作，并用谱潜在强化学习在线优化策略，避免直接微调大型VLA骨干的高计算开销。实验表明该方法能有效提升真实部署中的操作性能。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.15741v1",
+      "source": "arxiv",
+      "title": "Some Modifications to Our End-to-End UAV Planner",
+      "abstract": "The one-stage planner YOPO maps a single depth image and the robot state directly to a set of candidate trajectories, trained by backpropagating through differentiable trajectory costs. This yields dense, geometrically informative supervision, but inherits the pathologies of soft-constrained optimization: the safety cost competes with the smoothness and goal-reaching terms, is non-convex across homotopy classes, and the single-piece polynomial is limited in expressiveness. In this report, we summarize several effective modifications. We adopt a two-piece MINCO parameterization, trading time for smoothness without altering the trajectory's spatial profile. We further lift YOPO's multi-modal prediction to span distinct homotopy classes, treating each motion primitive as a homotopy anchor that confines the trajectory to a feasible basin - without explicit safe-flight-corridor construction or front-end search. For dynamic feasibility, we impose barrier penalties on velocity and acceleration together with a curvature-dependent speed limit whose gradient acts only on the velocity, producing an adaptive-speed behavior that decelerates in cluttered regions or sharp turns. We replace score regression with a ranking loss, preventing small score errors from reordering the candidate set. These yield richer trajectory representations, safer obstacle avoidance, and more direct flight paths.",
+      "authors": [
+        "Junjie Lu",
+        "Bailing Tian"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-16T13:39:46+00:00",
+      "link": "https://arxiv.org/pdf/2608.15741v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "End-to-end UAV planner trained by backpropagating through differentiable trajectory costs, a form of differentiable control in robotics.",
+      "llm_evidence_cn": "通过可微轨迹代价反向传播训练端到端无人机规划器，属于机器人可微控制的一种形式。",
+      "llm_evidence": "通过可微轨迹代价反向传播训练端到端无人机规划器，属于机器人可微控制的一种形式。",
+      "canonical_evidence": "通过可微轨迹代价反向传播训练端到端无人机规划器，属于机器人可微控制的一种形式。",
+      "llm_tldr_en": "The paper presents modifications to the YOPO UAV planner, which is trained end-to-end by backpropagating through differentiable trajectory costs, addressing differentiable control in robotics.",
+      "llm_tldr_cn": "该文针对端到端无人机规划器YOPO进行改进。YOPO将单张深度图与状态直接映射到候选轨迹，并通过可微轨迹代价反向传播训练，但存在软约束优化带来的安全问题。作者采用两段式MINCO参数化、将多模态预测提升到不同同伦类、并将每个运动原语视为同伦类等多项修改。结果显示改进后轨迹的平滑性、安全性与表达能力均有提升，为可微控制与规划提供了实用方案。",
+      "llm_tldr": "该文针对端到端无人机规划器YOPO进行改进。YOPO将单张深度图与状态直接映射到候选轨迹，并通过可微轨迹代价反向传播训练，但存在软约束优化带来的安全问题。作者采用两段式MINCO参数化、将多模态预测提升到不同同伦类、并将每个运动原语视为同伦类等多项修改。结果显示改进后轨迹的平滑性、安全性与表达能力均有提升，为可微控制与规划提供了实用方案。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
