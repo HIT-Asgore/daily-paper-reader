@@ -1,0 +1,654 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-21T20:57:24.171674+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 8,
+    "deep_cap": 7,
+    "deep_selected": 7,
+    "quick_candidates": 8,
+    "quick_skim_target": 12,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2608.17628v1",
+      "source": "arxiv",
+      "title": "Iterative Grasp Pose Refinement: A Deep Reinforcement Learning Approach for 2D Vision",
+      "abstract": "Developing robots capable of understanding and manipulating objects requires compact, interpretable, and generalizable representations. This work proposes a reinforcement learning-based framework for robotic grasp refinement, integrating keypoint-based object representations with a Deep Q-Network (DQN). Using 2D overhead images captured in a simulated environment, a geometric-based algorithm generates initial grasp candidates, which are iteratively refined by the proposed framework, transforming failed grasps into successful ones. Experiments conducted on 300 objects from the Dex-Net dataset using a UR5 manipulator demonstrate the framework's effectiveness, achieving a 100% success rate on objects previously deemed ungraspable by geometrical methods. The framework's sim-to-real transferability is further validated through physical experiments on a Delta parallel robot, where a refined grasp successfully manipulates an object that was previously ungraspable. The findings underscore the effectiveness of reinforcement learning in addressing challenges in robotic grasping, offering a scalable and adaptable solution for contact-rich manipulation tasks.",
+      "authors": [
+        "Amir Arsalan Nematollahi",
+        "Shayan Ahmadi",
+        "Mehdi Tale Masouleh",
+        "Ahmad Kalhor"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG",
+        "eess.IV"
+      ],
+      "published": "2026-08-18T10:44:58+00:00",
+      "link": "https://arxiv.org/pdf/2608.17628v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "deep RL for iterative grasp pose refinement on a UR5 manipulator",
+      "llm_evidence_cn": "基于深度强化学习的机械臂抓取位姿迭代优化",
+      "llm_evidence": "基于深度强化学习的机械臂抓取位姿迭代优化",
+      "canonical_evidence": "基于深度强化学习的机械臂抓取位姿迭代优化",
+      "llm_tldr_en": "Presents a DQN-based framework that iteratively refines grasp candidates from geometric algorithms, improving grasp success on 300 Dex-Net objects in simulation with a UR5 arm.",
+      "llm_tldr_cn": "针对几何算法生成的初始抓取位姿成功率有限的问题，提出基于深度Q网络(DQN)的迭代抓取位姿优化框架，结合关键点物体表示，在仿真环境中利用二维顶视图像逐步修正抓取候选。在Dex-Net的300个物体上使用UR5机械臂进行实验，结果表明该方法能将此前被认为不可抓取的物体全部成功抓取，验证了强化学习用于抓取优化的有效性。该工作为物体操纵中的抓取规划提供了一种学习式改进手段。",
+      "llm_tldr": "针对几何算法生成的初始抓取位姿成功率有限的问题，提出基于深度Q网络(DQN)的迭代抓取位姿优化框架，结合关键点物体表示，在仿真环境中利用二维顶视图像逐步修正抓取候选。在Dex-Net的300个物体上使用UR5机械臂进行实验，结果表明该方法能将此前被认为不可抓取的物体全部成功抓取，验证了强化学习用于抓取优化的有效性。该工作为物体操纵中的抓取规划提供了一种学习式改进手段。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.19182v1",
+      "source": "arxiv",
+      "title": "ADEPT: Accelerating Dexterity via Pre-Training and Post-Training using Reinforcement Learning",
+      "abstract": "We introduce Accelerating Dexterity via Pre-Training (ADEPT), a large-scale reinforcement learning (RL) framework for learning sim-to-real transferable dexterity across high degree-of-freedom (DoF) robot embodiments that can solve long-horizon tasks directly from raw visuo-tactile perception. ADEPT pretrains a dexterous policy on a generic object reposing task, then post-trains downstream policies with this pretrained behavior as a prior. ADEPT enables learning new behaviors that are otherwise difficult to discover from scratch on multi-fingered robots and avoids learning the same set of skills over again for every new downstream task. The pretrained policy zero-shots the reposing phase of downstream tasks, but naïve RL fine-tuning rapidly degrades this capability during transfer. We address this with a stable post-training recipe combining behavior-cloning distillation, critic warm-up, and conservative on-policy updates. To safely exploit the full kinematic dexterity, we introduce a joint-space Geometric Fabric that mediates between the RL policy and the robot. We distill post-trained teachers into perceptive students that zero-shot sim-to-real transfer on two embodiments: a 23 DoF Kuka-Allegro with two RGB cameras, and a 29 DoF Flexiv-Sharpa with two RGB cameras and five vision-based tactile sensors, and can solve long-horizon tasks from challenging initial states with dexterity at human-level speed.",
+      "authors": [
+        "Jayjun Lee",
+        "Jessica Yin",
+        "Asif Rana",
+        "Nicholas Blauch",
+        "Sam Mady",
+        "Mohak Bhardwaj",
+        "Nima Fazeli",
+        "Nathan Ratliff",
+        "Karl Van Wyk",
+        "Ankur Handa"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-19T17:55:06+00:00",
+      "link": "https://arxiv.org/pdf/2608.19182v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "large-scale RL framework for dexterous manipulation with sim-to-real transfer",
+      "llm_evidence_cn": "面向灵巧操作的大规模强化学习框架，支持仿真到现实的迁移",
+      "llm_evidence": "面向灵巧操作的大规模强化学习框架，支持仿真到现实的迁移",
+      "canonical_evidence": "面向灵巧操作的大规模强化学习框架，支持仿真到现实的迁移",
+      "llm_tldr_en": "Introduces ADEPT, a large-scale RL framework that pre-trains dexterous policies on object reposing and post-trains for downstream tasks from raw visuo-tactile perception, improving sim-to-real transfer and avoiding relearning basic skills.",
+      "llm_tldr_cn": "论文提出ADEPT，一个大规模强化学习框架，先在一个通用物体重摆任务上预训练灵巧策略，再以下游任务为目标在后训练中微调。该方法直接从原始视觉-触觉输入学习，避免了多指机器人从头发现困难行为的问题，也无需每个任务重复学习相同技能。实验表明预训练策略可零样本完成下游任务的重摆阶段，显著加速新行为的获取，提升了仿真到现实的迁移能力。",
+      "llm_tldr": "论文提出ADEPT，一个大规模强化学习框架，先在一个通用物体重摆任务上预训练灵巧策略，再以下游任务为目标在后训练中微调。该方法直接从原始视觉-触觉输入学习，避免了多指机器人从头发现困难行为的问题，也无需每个任务重复学习相同技能。实验表明预训练策略可零样本完成下游任务的重摆阶段，显著加速新行为的获取，提升了仿真到现实的迁移能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.19375v1",
+      "source": "arxiv",
+      "title": "Learning the Right Abstraction: Neural Reduced Dynamics for Complex Robot Control",
+      "abstract": "High-fidelity embodied AI simulators provide realistic evaluation of complex robotic systems, but their computational cost limits their direct use for large-scale reinforcement learning campaigns. We advocate the use of less accurate but more expeditious simulations, which might draw on data-driven, e.g., neural dynamics, models. This contribution argues that the practical value of a neural dynamics model for complex robot control lies in learning the \\emph{right abstraction}: a reduced state that preserves the control-relevant physics of the high-fidelity system while enabling high-throughput policy learning. We develop a neural reduced dynamics (NRD) framework that separates the state the model propagates from what can be supplied as an input or recovered analytically, trains policies entirely inside the frozen learned model, and validates them back in the high-fidelity simulator. Two case studies instantiate it across three control tasks: terrain-aware HMMWV trajectory tracking on rigid, bumpy and deformable Continuum Representation Model (CRM) terrain; and goal reaching for a stock tracked vehicle and its front-mounted articulated arm. Every policy transfers back to the high-fidelity simulator. A single policy trained inside the terrain-conditioned dynamics model, and given no terrain input of its own, attains lower median and mean tracking error than both single-terrain specialists on all three terrains, including zero-shot bumpy terrain. Quantitatively, the tracked vehicle reaches 100 of 100 goals and the arm 97 of 100, with zero contacts or joint-limit violations. The NRD models advance roughly four orders of magnitude faster in simulated time than the high-fidelity simulator scenes they replace, making iterative on-policy learning practical and supporting neural reduced dynamics as a bridge between accurate but expensive physics simulation and scalable robot learning.",
+      "authors": [
+        "Harry Zhang",
+        "Dan Negrut"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-19T18:41:27+00:00",
+      "link": "https://arxiv.org/pdf/2608.19375v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "learning neural dynamics models for complex robot control and high-throughput policy learning",
+      "llm_evidence_cn": "学习神经动力学模型以支持复杂机器人控制与高效策略学习",
+      "llm_evidence": "学习神经动力学模型以支持复杂机器人控制与高效策略学习",
+      "canonical_evidence": "学习神经动力学模型以支持复杂机器人控制与高效策略学习",
+      "llm_tldr_en": "Argues for neural dynamics models that learn a reduced control-relevant state to preserve physics while enabling high-throughput policy learning in complex robot control, balancing fidelity and speed.",
+      "llm_tldr_cn": "针对高保真仿真计算成本高、难以直接用于大规模强化学习的问题，提出神经约简动力学(NRD)框架，将模型传播的状态与控制相关的输入分离，学习保留关键物理信息的约简表示，从而支持高吞吐策略学习。该方法在复杂机器人控制中能够在降低仿真成本的同时保持控制性能，为基于模型的机器人控制提供了实用而高效的动力模型抽象。该工作强调学习“正确抽象”对复杂系统控制的重要性。",
+      "llm_tldr": "针对高保真仿真计算成本高、难以直接用于大规模强化学习的问题，提出神经约简动力学(NRD)框架，将模型传播的状态与控制相关的输入分离，学习保留关键物理信息的约简表示，从而支持高吞吐策略学习。该方法在复杂机器人控制中能够在降低仿真成本的同时保持控制性能，为基于模型的机器人控制提供了实用而高效的动力模型抽象。该工作强调学习“正确抽象”对复杂系统控制的重要性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.19661v1",
+      "source": "arxiv",
+      "title": "World-Model-Grounded LLM Planning for AUV and ASV Navigation Near Offshore Wind Farms",
+      "abstract": "Large language models can turn a natural-language mission into a sequence of robot actions, but they do not have a sense of physics: they cannot judge how long a command should run, or whether it will make the robot drift into an obstacle. We proposed the use of a world model to expand the capabilities of Large Language model-based planners. Our method has three components: a physics-grounded neural world model, a three-phase gradient-based trajectory optimizer, and a Model Predictive Controller (MPC)-style closed-loop replanner with a trust-region guard. The language model decides what to do, and the world model decides how long, whether that means driving eight thrusters through 6 DOF or two differential thrusters through 3 DOF. We evaluate two marine vehicle classes operating near offshore wind infrastructure: a 6-DOF Autonomous Underwater Vehicle (AUV) and a 3-DOF differential-drive Autonomous Surface Vehicle (ASV). In five benchmark missions per platform, both vehicles reach every goal with zero predicted collisions, and both transfer to GazeboSim under ocean current, waves, and thruster dynamics, remaining collision-free and cutting GazeboSim goal-distance error versus the ungrounded baseline by 70-82% (ASV) and roughly 93% (AUV), after a residual fine-tuning pass that separately reduces surrogate rollout Root Mean Square Error (RMSE) by 60% (AUV) and 69% (ASV). For the ASV we further demonstrate a Vision language model (VLM)-assisted semantic-mapping pipeline that extracts obstacles and environmental context from satellite imagery, nautical charts, and forecast Application Programming Interface (API) instead of onboard sensors, reaching 96% navigability accuracy as a drop-in replacement for hand-specified obstacle geometry.",
+      "authors": [
+        "Markus Buchholz",
+        "Ignacio Carlucho",
+        "Yvan R. Petillot"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-20T05:56:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.19661v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "physics-grounded neural world model plus gradient-based trajectory optimizer (differentiable model-based control) for robot navigation",
+      "llm_evidence_cn": "物理神经世界模型加梯度轨迹优化器，属于机器人可微模型控制",
+      "llm_evidence": "物理神经世界模型加梯度轨迹优化器，属于机器人可微模型控制",
+      "canonical_evidence": "物理神经世界模型加梯度轨迹优化器，属于机器人可微模型控制",
+      "llm_tldr_en": "A world-model-grounded LLM planner for AUV/ASV navigation uses a physics-based neural world model, a three-phase gradient-based trajectory optimizer, and an MPC-style replanner, giving LLM missions a sense of physics for feasible actions.",
+      "llm_tldr_cn": "论文指出大语言模型规划器缺乏物理常识，无法判断指令应持续多久或是否会漂移撞障。作者提出用物理启发的神经世界模型增强LLM规划，包含三部分：物理支撑的世界模型、三阶段梯度轨迹优化器、带信任域的MPC式闭环重规划。在无人水下/水面艇上验证方法可将自然语言任务转为可行动作，展示可微世界模型在机器人控制中的价值。该工作可迁移至机械臂操作，为可微物理与控制结合提供范例。",
+      "llm_tldr": "论文指出大语言模型规划器缺乏物理常识，无法判断指令应持续多久或是否会漂移撞障。作者提出用物理启发的神经世界模型增强LLM规划，包含三部分：物理支撑的世界模型、三阶段梯度轨迹优化器、带信任域的MPC式闭环重规划。在无人水下/水面艇上验证方法可将自然语言任务转为可行动作，展示可微世界模型在机器人控制中的价值。该工作可迁移至机械臂操作，为可微物理与控制结合提供范例。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.13438v1",
+      "source": "arxiv",
+      "title": "ContactGuard: Pre-Contact Execution Monitoring with Action-Conditioned Latent World Models",
+      "abstract": "Contact-rich manipulation failures are often detected only after the robot has committed to contact. This is especially limiting in wrist-camera setups: close gripper--object views help observe contact, but a poor approach may already push, miss, slip, or disturb the object before conventional detectors react. We introduce \\emph{ContactGuard}, a pre-contact execution monitor for chunked visuomotor policies. Given the policy's planned action chunk, ContactGuard predicts its short-horizon consequence in latent visual space and aborts if the predicted future latent indicates likely failure. Its latent world model is trained from unlabelled robot trajectories to predict compact multi-view visual embeddings under planned actions, avoiding pixel-level video prediction. A lightweight failure probe is then trained from a small labelled set of pre-contact clips. At deployment, ContactGuard anchors prediction before an imminent contact event, rolls the model forward under the policy's own actions, and verifies the predicted post-contact latent. Across real-world contact-rich manipulation tasks, ContactGuard predicts failure more accurately than direct and corrupted-action ablations, and transfers to live robot as a pre-contact abort signal without modifying the underlying policy.",
+      "authors": [
+        "Gehan Zheng",
+        "Matthew Johnson-Roberson",
+        "Weiming Zhi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-08-13T16:25:54+00:00",
+      "link": "https://arxiv.org/pdf/2608.13438v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "latent world model predicting action consequences for contact-rich manipulation",
+      "llm_evidence_cn": "用潜在世界模型预测操作动作后果，用于接触丰富的机械臂操控",
+      "llm_evidence": "用潜在世界模型预测操作动作后果，用于接触丰富的机械臂操控",
+      "canonical_evidence": "用潜在世界模型预测操作动作后果，用于接触丰富的机械臂操控",
+      "llm_tldr_en": "ContactGuard is a pre-contact execution monitor using a latent world model trained on unlabelled robot trajectories to predict short-horizon action consequences and abort before failures occur in contact-rich manipulation.",
+      "llm_tldr_cn": "接触丰富的机械臂操作常在接触后才暴露失败，而传统检测器反应滞后。论文提出ContactGuard，用动作条件下的潜在世界模型预测短时后果，若预示失败则提前中止策略。该模型只需未标注轨迹训练，可对推挤、错位、滑动等失败预警，并为操作安全监控提供基于学习动态模型的新思路。",
+      "llm_tldr": "接触丰富的机械臂操作常在接触后才暴露失败，而传统检测器反应滞后。论文提出ContactGuard，用动作条件下的潜在世界模型预测短时后果，若预示失败则提前中止策略。该模型只需未标注轨迹训练，可对推挤、错位、滑动等失败预警，并为操作安全监控提供基于学习动态模型的新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.18077v1",
+      "source": "arxiv",
+      "title": "Hydra-0: Action Flow for Generalist World Modeling and Control",
+      "abstract": "We introduce Hydra-0, a generalist world model conditioned on action flow, which represents robot actions as pixel motion. This shared visual interface enables generalist world modeling and control by learning action consequences across embodiments, tasks, environments, and video-generation backbones. Our best configuration achieves 90.4% lower robot-motion error and 60.2% lower object-motion error than our action-conditioned baseline, while supporting zero-shot composition and data-efficient adaptation. On the RoboLab benchmark, Hydra-0 achieves a Pearson correlation of r=0.96 between replayed and reference success rates. Finally, we uncover an emergent inverse mode of this interface: a world action model that predicts compatible robot motion from desired object flow transferred from a human demonstration. A trained action head maps the resulting latent features to executable actions without requiring task-specific expert robot demonstrations. Together, these results demonstrate the potential of action flow as a shared control interface connecting heterogeneous training data, open-loop policy evaluation, and robot control.",
+      "authors": [
+        "Hongyu Li",
+        "Bowen Wen",
+        "Xinghao Zhu",
+        "Yixuan Wang",
+        "Yilun Du",
+        "Yunzhu Li",
+        "George Konidaris",
+        "Stan Birchfield",
+        "Soha Pouya",
+        "Chenran Li",
+        "Yan Chang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-18T17:59:30+00:00",
+      "link": "https://arxiv.org/pdf/2608.18077v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "generalist world model predicting action consequences across embodiments for control",
+      "llm_evidence_cn": "跨本体预测动作后果的通用世界模型，用于操作控制",
+      "llm_evidence": "跨本体预测动作后果的通用世界模型，用于操作控制",
+      "canonical_evidence": "跨本体预测动作后果的通用世界模型，用于操作控制",
+      "llm_tldr_en": "Hydra-0 is a generalist world model conditioned on action flow (robot actions as pixel motion), achieving lower motion errors and strong success-rate prediction while enabling zero-shot composition and data-efficient adaptation.",
+      "llm_tldr_cn": "论文提出Hydra-0，将机器人动作表示为像素运动的动作流，作为共享视觉接口训练通用世界模型，从而学习跨本体、任务和环境的动作后果。最佳配置使机器人运动误差降低90.4%、物体运动误差降低60.2%，并在RoboLab基准上使成功率相关度达到0.96。该方法支持零样本组合与数据高效适配，为通用世界建模与控制提供了统一范式。",
+      "llm_tldr": "论文提出Hydra-0，将机器人动作表示为像素运动的动作流，作为共享视觉接口训练通用世界模型，从而学习跨本体、任务和环境的动作后果。最佳配置使机器人运动误差降低90.4%、物体运动误差降低60.2%，并在RoboLab基准上使成功率相关度达到0.96。该方法支持零样本组合与数据高效适配，为通用世界建模与控制提供了统一范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.19574v1",
+      "source": "arxiv",
+      "title": "HiTac-WAM: A Hierarchical Tactile World Action Model for Contact-Rich Robot Manipulation",
+      "abstract": "World action models jointly predict future visual observations and actions, whereas existing tactile-aware variants typically represent future touch as an image or latent stream without modeling the physical dependencies that organize tactile states hierarchically. We present HiTac-WAM, a hierarchical tactile world action model that forecasts a sequence of future tactile states for each candidate action chunk before execution. The forecast factorizes into contact state, a 3D deformation field, and slip risk, organized as a directed hierarchy in which each downstream stage is conditioned on stop-gradient signals from preceding stages. A directed attention mask allows tactile queries to attend to the video-action context of each candidate while preventing video and action queries from attending to tactile tokens. For planning, HiTac-WAM ranks candidate action chunks using tactile forecasts and task-progress estimates. For execution, the selected tactile forecast is retained as a reference; persistent discrepancies between predicted and observed tactile states trigger corrective replanning. HiTac-WAM achieves a mean contact F1 of 0.921; under matched training budgets, the directed hierarchy reduces 3D displacement L2 error by 17.6% relative to the deformation-only predictor and improves slip AUPRC by 60.4% relative to the slip-only predictor. Across chip grasping, blackboard erasing, and USB insertion, selection guided by the hierarchical forecasts increases the average real-robot success rate from 31.1% to 61.1%, while the full system attains 72.2%.",
+      "authors": [
+        "Chao Xue",
+        "Chaofan Zhang",
+        "Wenxuan Ma",
+        "Guocai Yao",
+        "Shaowei Cui",
+        "Shuo Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-20T02:28:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.19574v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "World action model predicting future tactile states for contact-rich manipulation",
+      "llm_evidence_cn": "用于接触丰富操作的分层触觉世界动作模型",
+      "llm_evidence": "用于接触丰富操作的分层触觉世界动作模型",
+      "canonical_evidence": "用于接触丰富操作的分层触觉世界动作模型",
+      "llm_tldr_en": "HiTac-WAM is a hierarchical tactile world action model that forecasts future touch states (contact, deformation, slip) before executing actions, organizing them in a directed hierarchy to improve contact-rich robot manipulation.",
+      "llm_tldr_cn": "接触丰富的机器人操作需要预测未来的触觉状态以选择动作，但现有触觉世界模型缺少触觉状态间的物理依赖建模。本文提出HiTac-WAM，将未来触觉预测分解为接触状态、三维变形场和滑移风险三个层级，并利用有向注意力掩码让触觉查询关注视频动作上下文。实验表明该分层建模能更准确预测触觉演变并提升操作策略表现。这项工作为接触丰富操作中的触觉感知与决策提供了新思路。",
+      "llm_tldr": "接触丰富的机器人操作需要预测未来的触觉状态以选择动作，但现有触觉世界模型缺少触觉状态间的物理依赖建模。本文提出HiTac-WAM，将未来触觉预测分解为接触状态、三维变形场和滑移风险三个层级，并利用有向注意力掩码让触觉查询关注视频动作上下文。实验表明该分层建模能更准确预测触觉演变并提升操作策略表现。这项工作为接触丰富操作中的触觉感知与决策提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.20208v1",
+      "source": "arxiv",
+      "title": "RoMAN-Flow: Taming Autoregressive Normalizing Flows for Offline Reinforcement Learning in Robotic Manipulation",
+      "abstract": "Offline reinforcement learning improves robotic policies using previously collected data without further environment interaction. Yet prevalent diffusion- and flow-matching robot policies lack tractable likelihoods, limiting their use in likelihood-based offline RL post-training. AR-NFs offer both expressive action modeling and exact likelihood evaluation, but their sequential sampling incurs substantial sampling overhead during policy optimization and deployment. We present RoMAN-Flow (Robotic Manipulation with Autoregressive Normalizing Flows), an offline reinforcement learning framework that makes AR-NF policies practical for robotic manipulation by addressing this sampling bottleneck in both stages. During policy optimization, RoMAN-Flow employs a sampling-free, advantage-weighted likelihood objective that assigns higher likelihood to high-advantage actions from the offline dataset without sampling from the autoregressive policy. For efficient deployment, it distills the optimized autoregressive policy into a one-step action generator, enabling low-latency action prediction. Experiments across multiple simulated manipulation benchmarks and real-world robotic platforms demonstrate that RoMAN-Flow achieves competitive policy performance while substantially reducing inference latency. Code is available at https://github.com/konnyaku28/RoMAN-Flow.",
+      "authors": [
+        "Shaoxuan Wang",
+        "Guangting Zheng",
+        "Rui Huang",
+        "Zhipeng Tang",
+        "Sha Zhang",
+        "Jiajun Deng",
+        "Yanyong Zhang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-08-20T16:07:56+00:00",
+      "link": "https://arxiv.org/pdf/2608.20208v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Offline reinforcement learning for robotic manipulation policies with normalizing flows",
+      "llm_evidence_cn": "面向机械臂操作的自回归归一化流离线强化学习策略",
+      "llm_evidence": "面向机械臂操作的自回归归一化流离线强化学习策略",
+      "canonical_evidence": "面向机械臂操作的自回归归一化流离线强化学习策略",
+      "llm_tldr_en": "RoMAN-Flow makes autoregressive normalizing flow policies practical for offline RL in robotic manipulation by addressing sampling bottlenecks during policy optimization and deployment.",
+      "llm_tldr_cn": "针对现有扩散/流匹配策略缺乏可计算似然而难以用于离线RL后训练的问题，提出RoMAN-Flow框架，利用自回归归一化流同时实现强表达动作建模与精确似然计算，并解决其序列采样开销过大的瓶颈。实验表明该方法在机械臂操作任务上能高效进行离线策略优化。该工作为基于似然的离线强化学习在机器人操作中的应用提供了实用方案。",
+      "llm_tldr": "针对现有扩散/流匹配策略缺乏可计算似然而难以用于离线RL后训练的问题，提出RoMAN-Flow框架，利用自回归归一化流同时实现强表达动作建模与精确似然计算，并解决其序列采样开销过大的瓶颈。实验表明该方法在机械臂操作任务上能高效进行离线策略优化。该工作为基于似然的离线强化学习在机器人操作中的应用提供了实用方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "8plus"
+    },
+    {
+      "id": "2608.13678v1",
+      "source": "arxiv",
+      "title": "hint$^2$: Hierarchical World Models for Inference-Time Temporal Logic Guidance",
+      "abstract": "A central goal of robot learning is to enable robots to execute rich instructions specified at runtime. Large-scale language-conditioned policies have made substantial progress toward this goal, yet still struggle with temporal structure and safety constraints. Linear Temporal Logic (LTL) provides a powerful language to express complex, non-Markovian instructions. However, guiding learned manipulation policies toward LTL satisfaction remains challenging because modern policies generate short-horizon action chunks and replan in closed loop, while almost all LTL specifications are evaluated over long-horizon trajectories. In this paper, we introduce hint$^2$, a method for guiding short-horizon policies toward satisfying complex LTL specifications at inference time using hierarchical world models. Our key idea is to derive two separate guidance objectives using each world model's abstraction level. A high-level model predicts future action-induced transitions in task-relevant atomic propositions to guide progress through the LTL automaton, while a low-level dynamics model predicts immediate state evolution for accurate local safety guidance. Our results show that hint$^2$ overcomes the limitations of current LTL-guided diffusion methods, outperforms existing inference-time steering methods in CALVIN, and successfully completes instructions with complex liveness and safety constraints more elegantly than language-conditioned alternatives. Finally, we demonstrate that hint$^2$ can handle complex instructions on a real UR5e manipulator.",
+      "authors": [
+        "Moritz Zoellner",
+        "Anastasios Manganaris",
+        "Ahmed H. Qureshi",
+        "Rohan Paleja"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-08-13T18:22:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.13678v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Hierarchical world models for LTL-guided manipulation policy control",
+      "llm_evidence_cn": "利用层次世界模型对操作策略进行时序逻辑引导",
+      "llm_evidence": "利用层次世界模型对操作策略进行时序逻辑引导",
+      "canonical_evidence": "利用层次世界模型对操作策略进行时序逻辑引导",
+      "llm_tldr_en": "Proposes hierarchical world models for inference-time temporal logic guidance of manipulation policies. Addresses LTL satisfaction over long horizons despite short-horizon action chunks. Relevant to learning dynamics models for robot control.",
+      "llm_tldr_cn": "该论文提出hint^2方法，利用层次化世界模型在推理时引导短视操作策略满足线性时序逻辑（LTL）规范。现有策略生成短时行动块并以闭环重规划，而LTL任务跨越长时轨迹，难以直接满足。hint^2通过分层世界模型提供推断时的引导，帮助策略处理时序结构与安全约束。实验表明该方法能有效提升策略在复杂时序任务上的表现。该方法属于基于模型的控制引导，与学习动力学模型用于机器人控制的需求相关。",
+      "llm_tldr": "该论文提出hint^2方法，利用层次化世界模型在推理时引导短视操作策略满足线性时序逻辑（LTL）规范。现有策略生成短时行动块并以闭环重规划，而LTL任务跨越长时轨迹，难以直接满足。hint^2通过分层世界模型提供推断时的引导，帮助策略处理时序结构与安全约束。实验表明该方法能有效提升策略在复杂时序任务上的表现。该方法属于基于模型的控制引导，与学习动力学模型用于机器人控制的需求相关。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.15680v1",
+      "source": "arxiv",
+      "title": "Robo-Dopamine 2.0: History-Conditioned and OOD-Aware Process Reward Modeling for Robotic Manipulation",
+      "abstract": "Vision-language-action (VLA) models improve robotic manipulation but remain vulnerable to compounding errors, scene changes, and off-trajectory states. Reinforcement learning can refine pretrained VLA policies, yet sparse success signals hinder exploration, while engineered dense rewards are costly and task-specific. Existing learned visual reward models often rely on static before-after observations, causing temporal ambiguity and weak discrimination between robustness-preserving variations and task-invalid failures under out-of-distribution (OOD) execution. We introduce Robo-Dopamine 2.0, a history- and OOD-aware process reward model with a pairwise prediction interface. It combines (1) history-conditioned pairwise rewards that use source-aligned reference panels for synthetic OOD queries and observed rollout history for online queries, while preserving the queried endpoints, and (2) an OOD-aware signed progress space that represents valid progress, robustness, failure, and recovery. A Signed-Hop Curriculum with transition-aware replay learns coarse execution ordering before fine-grained progress calibration. We also construct an OOD trajectory dataset and a five-family benchmark. Reference panels improve mean visual order consistency (VOC) from 0.967 to 0.986 and OOD-robust VOC from 0.906 to 0.958. With the same 400K pairwise-reward budget, Signed-Hop training with 25% replay reaches 0.9872 mean VOC, compared with 0.9858 for a matched-pool shuffled control. In downstream reinforcement learning, the full model achieves 86.8% mean RoboTwin success and 71/80 successful real-world insertions.",
+      "authors": [
+        "Yijie Xu",
+        "Haopeng Jin",
+        "Run Zhou",
+        "Shengbang Liu",
+        "Sixiang Chen",
+        "Hongyang Cheng",
+        "Sicheng Hu",
+        "Peterson Co",
+        "Jinwen Luo",
+        "Huajie Tan",
+        "Shanghang Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-16T11:15:55+00:00",
+      "link": "https://arxiv.org/pdf/2608.15680v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Process reward model for RL refinement of VLA manipulation policies",
+      "llm_evidence_cn": "用于VLA操作策略强化学习精调的过程奖励模型",
+      "llm_evidence": "用于VLA操作策略强化学习精调的过程奖励模型",
+      "canonical_evidence": "用于VLA操作策略强化学习精调的过程奖励模型",
+      "llm_tldr_en": "Introduces Robo-Dopamine 2.0, a history-conditioned and OOD-aware process reward model for refining pretrained VLA policies via RL. Improves reward discrimination under out-of-distribution execution and reduces reliance on sparse success signals in robotic manipulation.",
+      "llm_tldr_cn": "该论文提出Robo-Dopamine 2.0，一种历史条件化且对分布外（OOD）状态敏感的过程奖励模型，用于强化学习精调VLA操作策略。现有奖励模型依赖静态前后观察，在OOD执行时难以区分合理变化与任务失败。该方法引入历史条件化成对预测接口，提供了更细致的密集奖励信号。实验表明其能改善RL精调的鲁棒性。该工作为基于RL的操作策略学习提供了关键奖励建模组件。",
+      "llm_tldr": "该论文提出Robo-Dopamine 2.0，一种历史条件化且对分布外（OOD）状态敏感的过程奖励模型，用于强化学习精调VLA操作策略。现有奖励模型依赖静态前后观察，在OOD执行时难以区分合理变化与任务失败。该方法引入历史条件化成对预测接口，提供了更细致的密集奖励信号。实验表明其能改善RL精调的鲁棒性。该工作为基于RL的操作策略学习提供了关键奖励建模组件。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.17163v1",
+      "source": "arxiv",
+      "title": "Q-Learning With World Models",
+      "abstract": "Off-policy reinforcement learning (RL) has become increasingly sample-efficient, enabling applications such as RL fine-tuning of Vision-Language-Action models into reliable, high-performing policies. World models offer a further lever for sample efficiency, as they predict state changes rather than actions alone, but their success has largely been confined to supervised policy learning. Prior model-based RL methods often optimize the policy or value function directly on imagined rollouts, which is prone to compounding bias and struggles to scale to large, high-dimensional problems such as real-world robotics, a problem that worsens with task horizon and visual complexity. In this work, we instead ask whether we can leverage world models directly on top of standard Q-learning to improve performance, while remaining trained and grounded in the real, online setting. We propose QWM, a framework that leverages world models to perform test-time search over imagined trajectories on top of Q-learning to select high-value actions during both online rollouts and evaluation. Since the policy and value function are trained only on real transitions, QWM avoids compounding model bias while still gaining the sample-efficiency benefits of predictive search. On challenging manipulation benchmarks Robomimic and LIBERO, QWM significantly outperforms strong prior state-of-the-art methods on both sample efficiency and performance.",
+      "authors": [
+        "Perry Dong",
+        "Yueru Jia",
+        "Chelsea Finn",
+        "Dorsa Sadigh"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T22:00:42+00:00",
+      "link": "https://arxiv.org/pdf/2608.17163v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "combines world models with standard Q-learning to improve sample efficiency in model-based RL",
+      "llm_evidence_cn": "将世界模型与标准Q学习结合，提升模型强化学习的样本效率",
+      "llm_evidence": "将世界模型与标准Q学习结合，提升模型强化学习的样本效率",
+      "canonical_evidence": "将世界模型与标准Q学习结合，提升模型强化学习的样本效率",
+      "llm_tldr_en": "Proposes integrating world models directly on top of standard Q-learning to improve sample efficiency, avoiding compounding bias of imagined rollout optimization and scaling better to high-dimensional control.",
+      "llm_tldr_cn": "论文提出在世界模型之上直接运行标准Q学习，以提升离线策略强化学习的样本效率，避免直接在想象轨迹上优化策略或价值函数带来的复合偏差。该方法在保持Q学习稳定性的同时利用世界模型的预测能力，并扩展到大维度、长时域控制问题。实验表明比传统模型强化学习在视觉复杂、任务时域长的场景下表现更好，为现实机器人学习提供了可扩展的模型基强化学习方案。",
+      "llm_tldr": "论文提出在世界模型之上直接运行标准Q学习，以提升离线策略强化学习的样本效率，避免直接在想象轨迹上优化策略或价值函数带来的复合偏差。该方法在保持Q学习稳定性的同时利用世界模型的预测能力，并扩展到大维度、长时域控制问题。实验表明比传统模型强化学习在视觉复杂、任务时域长的场景下表现更好，为现实机器人学习提供了可扩展的模型基强化学习方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.18787v1",
+      "source": "arxiv",
+      "title": "Dream2Reward: Transition-Alignment Reward Models from Positive Demonstrations for Robotic Manipulation",
+      "abstract": "Learning robotic policies requires dense rewards that remain informative when behavior departs from successful demonstrations. Progress-based rewards estimate how far an observation has advanced along a nominal successful trajectory, but may remain high after an incorrect transition. We introduce Dream2Reward, which learns a language-conditioned successful latent transition field from positive demonstrations. Given the visual history up to a transition start, the model predicts the latent displacement associated with successful execution and scores the observed displacement through signed directional and symmetric magnitude agreement. This transition-level comparison penalizes wrong-direction, overshooting, and stagnant motion even when the resulting observation appears to show progress. Dream2Reward requires no failure annotations, progress labels, or synthetic negatives, and produces a dense causal reward. Across mechanism diagnostics and shared-trajectory evaluations, it provides stronger success-failure separation and more informative feedback on low-quality behavior than progress-based alternatives. Across online and offline policy learning, the same frozen reward model reduces reward hacking and supports stronger downstream performance, including in real-robot manipulation. These results show that comparing realized motion with predicted successful change provides an effective way to convert positive demonstrations into dense rewards for robot learning.",
+      "authors": [
+        "Haoyu Zhang",
+        "Zecui Zeng",
+        "Bin Wang",
+        "Lusong Li",
+        "Liang Lin",
+        "Long Cheng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-19T10:44:20+00:00",
+      "link": "https://arxiv.org/pdf/2608.18787v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Reward model from demonstrations for robotic manipulation RL",
+      "llm_evidence_cn": "用于机器人操作强化学习的基于演示的奖励模型",
+      "llm_evidence": "用于机器人操作强化学习的基于演示的奖励模型",
+      "canonical_evidence": "用于机器人操作强化学习的基于演示的奖励模型",
+      "llm_tldr_en": "Dream2Reward learns a language-conditioned latent transition field to provide dense transition-aligned rewards for robotic manipulation, penalizing wrong-direction or stagnant transitions.",
+      "llm_tldr_cn": "针对基于进度的奖励在错误转移后可能仍然高估的问题，提出Dream2Reward，从正向演示中学习语言条件下的成功隐式转移场，通过预测位移与实际位移的方向和幅度一致性来打分，从而惩罚错误方向、过冲和停滞。实验表明该奖励模型能更有效地训练机器人操作策略。该方法为从演示中构造密集奖励提供了新思路。",
+      "llm_tldr": "针对基于进度的奖励在错误转移后可能仍然高估的问题，提出Dream2Reward，从正向演示中学习语言条件下的成功隐式转移场，通过预测位移与实际位移的方向和幅度一致性来打分，从而惩罚错误方向、过冲和停滞。实验表明该奖励模型能更有效地训练机器人操作策略。该方法为从演示中构造密集奖励提供了新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.19891v1",
+      "source": "arxiv",
+      "title": "EXIMO: VLM Guided Exploration of VLA Policies",
+      "abstract": "How to efficiently finetune robot policies to learn new tasks on the fly? State of the art robotic manipulation policies are based on behaviour cloning of large vision-language-action (VLA) models with billions of parameters on huge teleoperation datasets. While this simple approach has enabled significant advances for robotic manipulation, finetuning of VLA policies for learning new tasks still remains an open problem. In particular, collecting teleoperation datasets requires hundreds of hours of expensive human labour and the alternative, reinforcement learning (RL), can be notoriously sample-inefficient especially for long-horizon tasks. In addition, RL with VLAs imposes several challenges due to the model's size and architectural design. In this work, we propose EXIMO, an efficient algorithm for finetuning of VLA policies. EXIMO operates in three stages: explore, imitate, and optimize. During the explore phase, EXIMO equips the VLA with a vision language model (VLM) that acts as a planner. The VLM thinks and breaks down challenging long-horizon problems into shorter ones for the VLA. The VLM, together with the VLA, is used to collect an orchestrated dataset on new tasks. During the imitate phase, the VLA is finetuned with the orchestrated data. Finally, during the optimize stage, we use residual off-policy RL to further finetune the policy. In our experiments, we ablate all three stages of EXIMO and show that it outperforms existing approaches significantly in terms of sample-efficiency and final performance.",
+      "authors": [
+        "Bhavya Sukhija",
+        "Oliver Groth",
+        "Mohit Shridhar",
+        "Tim Hertweck",
+        "Michael Bloesch",
+        "Markus Wulfmeier",
+        "Abbas Abdolmaleki",
+        "Martin Riedmiller"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-20T10:58:45+00:00",
+      "link": "https://arxiv.org/pdf/2608.19891v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "VLM-guided exploration for RL finetuning of VLA manipulation policies",
+      "llm_evidence_cn": "基于VLM引导的探索，用于VLA操作策略的强化学习微调",
+      "llm_evidence": "基于VLM引导的探索，用于VLA操作策略的强化学习微调",
+      "canonical_evidence": "基于VLM引导的探索，用于VLA操作策略的强化学习微调",
+      "llm_tldr_en": "Proposes EXIMO, a VLM-guided exploration method for efficiently finetuning large VLA policies via RL. Targets sample inefficiency and high data collection cost in robotic manipulation, showing faster task learning.",
+      "llm_tldr_cn": "该论文提出EXIMO方法，利用视觉-语言模型引导探索，对大规模VLA操作策略进行强化学习微调。针对遥操作数据采集成本高、RL在长时程任务中样本效率低的问题，EXIMO借助VLM提供语义探索信号，降低无效探索。实验显示该方法能更高效地学习新任务。该工作属于面向机器人操作任务的强化学习方法，与基于RL学习操作策略的需求直接相关。",
+      "llm_tldr": "该论文提出EXIMO方法，利用视觉-语言模型引导探索，对大规模VLA操作策略进行强化学习微调。针对遥操作数据采集成本高、RL在长时程任务中样本效率低的问题，EXIMO借助VLM提供语义探索信号，降低无效探索。实验显示该方法能更高效地学习新任务。该工作属于面向机器人操作任务的强化学习方法，与基于RL学习操作策略的需求直接相关。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.19443v1",
+      "source": "arxiv",
+      "title": "Hybrid Feedback Sampling for Sample-Efficient Model Predictive Control",
+      "abstract": "Thanks to its parallelizability and flexibility, sampling-based Model Predictive Control (MPC) has become widely popular for controlling real-world robotic systems. However, for high-dimensional and open-loop unstable dynamical systems, the required number of samples to improve the control sequence will grow exponentially with the horizon, leading to poor sample efficiency and numerical instability. This paper investigates the instability of shooting methods in sampling-based MPC and shows that the optimal sampling proposal distribution can be realized by sampling with an optimized feedback policy. We refer to this algorithm as Feedback Sampling MPC (FS-MPC). FS-MPC involves a hybrid sampling design which balances local and global search based on the system stability and the available computation budget. Our theoretical analysis shows that our hybrid sampling approach achieves faster convergence than standard MPPI and better optimality than standard feedback sampling. Empirically, in diverse contact-rich control tasks like humanoid loco-manipulation and dexterous manipulation, we show that FS-MPC successfully tackles dynamically unstable tasks where standard sample-based approaches struggle, and strictly outperforms feedback policies alone. Finally, we validate our method on humanoid robot locomotion and manipulation tasks in the real world.",
+      "authors": [
+        "Chaoyi Pan",
+        "Zeji Yi",
+        "John Zhang",
+        "Zachary Manchester",
+        "Guannan Qu",
+        "Guanya Shi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-08-19T20:56:18+00:00",
+      "link": "https://arxiv.org/pdf/2608.19443v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Sampling-based MPC with optimized feedback policy for sample-efficient model-based control",
+      "llm_evidence_cn": "基于反馈策略优化的采样MPC，实现样本高效的基于模型控制",
+      "llm_evidence": "基于反馈策略优化的采样MPC，实现样本高效的基于模型控制",
+      "canonical_evidence": "基于反馈策略优化的采样MPC，实现样本高效的基于模型控制",
+      "llm_tldr_en": "Proposes Feedback Sampling MPC (FS-MPC) that uses an optimized feedback policy as the sampling proposal to address exponential sample growth and instability of shooting methods in sampling-based MPC, improving sample efficiency for real-world robotic control.",
+      "llm_tldr_cn": "该论文针对采样型模型预测控制在处理高维、开环不稳定系统时样本数随控制时域指数增长、数值不稳定等问题，提出了FS-MPC算法。其核心思想是用优化的反馈策略作为采样提议分布，并通过混合采样平衡局部搜索与全局搜索。实验表明FS-MPC能显著提升采样效率并保持控制稳定性。该方法是一种通用的基于模型控制改进，可迁移到机械臂操作控制中。",
+      "llm_tldr": "该论文针对采样型模型预测控制在处理高维、开环不稳定系统时样本数随控制时域指数增长、数值不稳定等问题，提出了FS-MPC算法。其核心思想是用优化的反馈策略作为采样提议分布，并通过混合采样平衡局部搜索与全局搜索。实验表明FS-MPC能显著提升采样效率并保持控制稳定性。该方法是一种通用的基于模型控制改进，可迁移到机械臂操作控制中。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.20114v1",
+      "source": "arxiv",
+      "title": "DECOWAM: Decoupled Whole-Body World-Action Model for Legged Mobile Manipulation",
+      "abstract": "Mobile manipulation requires a robot to predict how locomotion and arm motion jointly alter future observations and control. Existing world-action models, developed largely for fixed-base platforms, do not explicitly distinguish camera ego-motion from base and arm actions. Here we introduce DECOWAM, a whole-body world-action model that separates these factors through dedicated conditional interfaces. DECOWAM freezes an adapted FastWAM backbone and trains residual adapters, an action-equivalent future bottleneck distilled from privileged observations, adversarially separated base and arm latents, and base-velocity conditioning for video prediction. We further introduce ARMDOG, a real-robot dataset that synchronizes video, whole-body state and action, and language. On a fixed replay protocol, DECOWAM improved both future-video and action prediction over FastWAM, reducing action MSE by 21.7% with 25.95M trainable adaptation parameters. Across 79 closed-loop trials per method, it achieved the highest observed whole-body coordination and base-displacement robustness among the compared systems, while task completion remained comparable to the strongest baseline. These results show that embodiment-aware factorization can support parameter-efficient joint visual prediction and whole-body control under moving viewpoints.",
+      "authors": [
+        "Siyuan Ma",
+        "Boshi Zhang",
+        "Yutian Zhang",
+        "Qinglian Wu",
+        "Jiaqi Zhai",
+        "Dong Wei",
+        "Qiaojun Yu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-08-20T14:44:11+00:00",
+      "link": "https://arxiv.org/pdf/2608.20114v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns a whole-body world-action model for mobile manipulation, a learned dynamics model for robot control",
+      "llm_evidence_cn": "学习移动操作的全身体世界-动作模型，属于面向机器人控制的学习动力学模型",
+      "llm_evidence": "学习移动操作的全身体世界-动作模型，属于面向机器人控制的学习动力学模型",
+      "canonical_evidence": "学习移动操作的全身体世界-动作模型，属于面向机器人控制的学习动力学模型",
+      "llm_tldr_en": "Introduces DECOWAM, a whole-body world-action model that decouples ego-motion, base, and arm actions via conditional interfaces, improving video prediction and downstream control on real robot data.",
+      "llm_tldr_cn": "论文提出DECOWAM，一种解耦的全身体世界-动作模型，用于移动机械臂操作。该模型通过条件接口区分相机自运动、底盘动作和手臂动作，并利用特权观测蒸馏出的动作等价未来瓶颈和残差适配器进行视频预测。同时发布了ARMDOG真实机器人数据集，同步视频、全身状态和动作。实验表明该模型能够更准确地预测未来观测，为移动操作提供更好的世界模型基础。",
+      "llm_tldr": "论文提出DECOWAM，一种解耦的全身体世界-动作模型，用于移动机械臂操作。该模型通过条件接口区分相机自运动、底盘动作和手臂动作，并利用特权观测蒸馏出的动作等价未来瓶颈和残差适配器进行视频预测。同时发布了ARMDOG真实机器人数据集，同步视频、全身状态和动作。实验表明该模型能够更准确地预测未来观测，为移动操作提供更好的世界模型基础。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
