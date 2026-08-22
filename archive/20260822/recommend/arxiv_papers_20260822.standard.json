@@ -1,0 +1,131 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-22T20:40:30.863796+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.16885v1",
+      "source": "arxiv",
+      "title": "$τ_0$-VLA: a Hierarchical Robot Foundation Model with World-Model-Guided Test-Time Computation",
+      "abstract": "Long-horizon robot manipulation requires a robot to both execute individual skills reliably and sequence them coherently over extended tasks. Most hierarchical vision-language-action (VLA) models make each such decision with a single forward pass, leaving no mechanism to allocate additional computation to difficult or consequential choices. We introduce $τ_0$-VLA, a hierarchical robot foundation model that formulates high-level subtask generation as a compute-scalable inference problem through world-model-guided test-time computation. At each inference step, the high-level policy uses execution memory to generate a subtask and, when needed, searches over alternatives before committing to its output. A low-level policy then executes the generated subtask across multiple robot embodiments. The policy is trained on 40,115 hours of heterogeneous real-world data with multimodal co-training. Across in-domain and distribution-shifted settings, allocating additional test-time computation substantially improves next-subtask prediction accuracy, and these gains translate into higher closed-loop success on long-horizon robot manipulation tasks.",
+      "authors": [
+        "Xiaowei Cai",
+        "Yunuo Cai",
+        "Bingao Chen",
+        "Jingxiao Chen",
+        "Zhi Chen",
+        "Siyuan Feng",
+        "Tengyu Hou",
+        "Jingshun Huang",
+        "Han Jiang",
+        "Runkun Ju",
+        "Dong Li",
+        "Mingxiang Li",
+        "Shaowei Li",
+        "Xinchen Li",
+        "Yifan Li",
+        "Yi Liu",
+        "Zhongyuan Liu",
+        "Jianlan Luo",
+        "Junwen Miao",
+        "Ruiqi Ni",
+        "Buqing Nie",
+        "Mingjie Pan",
+        "Xinlin Ren",
+        "Jianheng Song",
+        "Jiaxu Wang",
+        "Peiqi Wang",
+        "Sen Wang",
+        "Xiaoyan Wang",
+        "Dafeng Wei",
+        "Dongming Wu",
+        "Pengwei Xie",
+        "Pu Yang",
+        "Hangjian Ye",
+        "Xiangyu Yue",
+        "Jinyu Zhang",
+        "Qinglin Zhang",
+        "Xueyong Zhao",
+        "Pengfei Zhou",
+        "Yue Zhou"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-17T17:59:11+00:00",
+      "link": "https://arxiv.org/pdf/2608.16885v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "world-model-guided test-time computation for hierarchical robot manipulation policy",
+      "llm_evidence_cn": "面向层次化机器人操作策略的世界模型引导测试时计算",
+      "llm_evidence": "面向层次化机器人操作策略的世界模型引导测试时计算",
+      "canonical_evidence": "面向层次化机器人操作策略的世界模型引导测试时计算",
+      "llm_tldr_en": "τ0-VLA is a hierarchical robot foundation model that uses world-model-guided test-time computation to allocate extra computation to difficult subtask decisions, improving long-horizon manipulation.",
+      "llm_tldr_cn": "长程机器人操作既需要可靠执行单个技能，也需要对困难决策分配更多计算。本文提出τ0-VLA层次化机器人基础模型，将高层子任务生成构造成可扩展计算的推理问题，通过世界模型引导的测试时计算搜索备选方案，再由低层策略执行。该机制突破了单次前向传播无法分配额外计算的限制，为长程操作提供了更稳健的决策方式。",
+      "llm_tldr": "长程机器人操作既需要可靠执行单个技能，也需要对困难决策分配更多计算。本文提出τ0-VLA层次化机器人基础模型，将高层子任务生成构造成可扩展计算的推理问题，通过世界模型引导的测试时计算搜索备选方案，再由低层策略执行。该机制突破了单次前向传播无法分配额外计算的限制，为长程操作提供了更稳健的决策方式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.17496v1",
+      "source": "arxiv",
+      "title": "Calibrated Predictive Safety for Heterogeneous Robots: An Action-Conditioned JEPA Framework with Model-Based Safety Shields",
+      "abstract": "Vision-language-action policies generalize broadly but provide no execution-time guarantees; classical model-based planners respect kinematic and geometric constraints but generalize poorly. We study whether an action-conditioned Joint-Embedding Predictive Architecture (JEPA) world model can predict, before execution, both task progress and physical risk for candidate action chunks, and whether coupling these predictions to an embodiment-specific model-based safety shield yields a deployable pipeline for heterogeneous robots.   We propose a receding-horizon decision pipeline: (1) a proposer produces K candidate action chunks; (2) an action-conditioned JEPA rolls each candidate forward in a frozen-encoder latent space conditioned on an embodiment embedding; (3) calibrated risk and progress heads score each rollout and report uncertainty; (4) a deterministic per-embodiment safety shield filters inadmissible candidates; (5) a fallback ladder handles empty-admissible-set cases. The learned ranking only reorders admissible candidates; enforcement guarantees come from the deterministic shield and fallback ladder.   We evaluate with a pre-registered protocol in simulation (LIBERO-Long). In 600-episode configurations the full framework improved success over a shield-only baseline and reduced collision false negatives at matched recall. Deployment-efficiency measurements on target on-robot and edge accelerators are included. Real-robot experiments and an offline reranking significance test remain future work; see the paper for disclosures.",
+      "authors": [
+        "Kaiming Zhong",
+        "Tianhua Liu",
+        "Yue Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-18T08:24:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.17496v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "action-conditioned JEPA world model predicts task progress and risk for model-based robot safety",
+      "llm_evidence_cn": "动作条件JEPA世界模型预测任务进度与风险，用于模型驱动的机器人安全控制",
+      "llm_evidence": "动作条件JEPA世界模型预测任务进度与风险，用于模型驱动的机器人安全控制",
+      "canonical_evidence": "动作条件JEPA世界模型预测任务进度与风险，用于模型驱动的机器人安全控制",
+      "llm_tldr_en": "A JEPA world model predicts task progress and physical risk for candidate action chunks, combined with a model-based safety shield to give executable-time safety for heterogeneous robots.",
+      "llm_tldr_cn": "视觉-语言-动作策略泛化能力强但缺乏执行时安全保障，经典模型规划器则泛化有限。本文提出动作条件JEPA世界模型，在执行前预测候选动作块的任务进度与物理风险，并配合具体本体的模型安全护盾。该流水线采用滚动时域决策，由提议器生成K个候选动作块，JEPA在冻结编码空间中滚动评估，为异构机器人提供可部署的安全控制。",
+      "llm_tldr": "视觉-语言-动作策略泛化能力强但缺乏执行时安全保障，经典模型规划器则泛化有限。本文提出动作条件JEPA世界模型，在执行前预测候选动作块的任务进度与物理风险，并配合具体本体的模型安全护盾。该流水线采用滚动时域决策，由提议器生成K个候选动作块，JEPA在冻结编码空间中滚动评估，为异构机器人提供可部署的安全控制。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
