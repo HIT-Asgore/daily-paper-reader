@@ -1,0 +1,273 @@
+Title: Video2DoorTraversal: Push Door Traversal via Simulated Door Twins
+
+URL Source: https://arxiv.org/pdf/2608.20251v1
+
+Published Time: Fri, 21 Aug 2026 01:09:29 GMT
+
+Number of Pages: 8
+
+Markdown Content:
+# Video2DoorTraversal: Push Door Traversal via Simulated Door Twins 
+
+Xincheng Tang 1, Yiji Chen 1, Youhan Xie 1, Wanyu Li 1, Zhengjie Shu 1,Lai Jiang 1, Wenkang Hu 1, Yitong Li 1, Jinchuang Zhang 3, Xibin Song 2, and Ruigang Yang 1,3†
+
+Abstract — Door opening and traversal is a long-horizon loco-manipulation task that requires precise handle in-teraction and coordinated base-arm control. We present Video2DoorTraversal, a single-video real-to-sim-to-real frame-work for wheel-legged mobile manipulators. Given one RGB video of a real door, DoorTwin reconstructs an instance-aligned, articulated, and simulation-ready door twin with realistic geom-etry and appearance. A simulation-in-the-loop agent converts the recovered articulation into a parameterized skill program and iteratively refines failed rollouts to generate physically executable demonstrations. These demonstrations are used to train ArticuACT, a dual-depth policy that predicts coordinated base, arm, and gripper commands using robot-centric cam-era conditioning and interaction-aware supervision. With all perception and policy inference running onboard, the system achieves a 96 .57% average success rate across five real doors and an 80 .95% zero-shot success rate on structurally similar unseen doors, while completing the full approach, opening, and traversal sequence in approximately 13 s on average. Project Page: https://video2doortraversal.github.io/. 
+
+I. I NTRODUCTION 
+
+Autonomous door opening and traversal is essential for mobile robots operating in human-centered environments. Unlike isolated handle manipulation or door pushing, alegged or wheel-legged manipulator must approach the door, unlock the handle, coordinate its base and arm while the panel moves, and pass through a narrow doorway without collision. The task is therefore a long-horizon, contact-rich loco-manipulation problem that tightly couples mobility and manipulation [1], [2], [3], [4]. Existing methods solve only parts of this problem. Door-Gym [5], UniDoorManip [6], and ArticuBot [7] learn articulated-object manipulation from large-scale simulation, but mainly focus on opening rather than doorway traversal. Adaptive mobile manipulation [8] and DoorBot [3] improve real-world robustness through online adaptation or haptic feedback, while legged and humanoid systems achieve com-plete traversal through reinforcement learning or teacher– student training [1], [2], [4]. However, these approaches typi-cally rely on preconstructed or procedurally generated doors, manually specified task structure, extensive reward design, or additional real-world adaptation, rather than constructing a task-specific simulator from the observed door. Real-to-sim-to-real methods reduce robot data collection by transferring task information from human videos or real       
+
+> 1Shanghai Jiao Tong University. E-mail: {tangxincheng, ryang2 }@sjtu.edu.cn
+> 2Shandong University.
+> 3NeoWa Robotics.
+> †Corresponding author.
+> Fig. 1. From a single RGB video, Video2DoorTraversal enables real-world wheel-legged door opening and traversal.
+
+observations into simulation. HUMAN2SIM2ROBOT [9], X-SIM [10], and Video2Sim2Real [11] use human demonstra-tions or object motion to guide embodiment-specific policy learning, but mainly target fixed-base rigid-object manip-ulation and require additional scene or object scans. De-moGen [12] generates synthetic visuomotor demonstrations, while SIMPACT [13] constructs a simulator from a single RGB observation for test-time action refinement. Neverthe-less, establishing a practical real-to-sim-to-real pipeline for complete door traversal remains nontrivial. The central chal-lenge is to bridge instance-specific articulation and closed-loop execution: the reconstructed door must be metrically and kinematically accurate enough to support contact-rich simulation, while the learned behavior must remain robust to perception and dynamics discrepancies during real-world deployment. We therefore formulate door traversal as an articulation-conditioned policy-learning problem, in which the recovered door twin provides a common task representa-tion for scene reconstruction, expert generation, and policy execution. To address this challenge, we present 
+
+Video2DoorTraversal , a single-video real-to-sim-to-real framework for wheel-legged door traversal. DoorTwin 
+
+reconstructs an instance-aligned, articulated, and simulation-ready door twin from a single RGB video. A simulation-in-the-loop agent then converts the recovered articulation into a parameterized traversal program and iteratively refines it through rollout diagnosis and simulator verification, producing executable demonstrations without human arXiv:2608.20251v1 [cs.RO] 20 Aug 2026 TABLE I SYSTEM -LEVEL COMPARISON WITH REPRESENTATIVE REAL -TO -SIM -TO -REAL MANIPULATION AND DOOR -TRAVERSAL METHODS .                                                     
+
+> Method Real-to-Sim Input Mobile Robot Articulated Manipulation Agentic Expert Sim-to-Real Perception Input Door Traversal
+> Human2Sim2Robot ✓Human RGB video + scans ✗✗✗✓6D object pose ✗
+> X-SIM ✓Human RGB video + scans ✗✗✗✓RGB ✗
+> SIMPACT ✓Single RGB image ✗✗✓✓Initial RGB ✗
+> UniDoorManip ✗✓✓✗✓Point cloud ✗
+> Teacher-student ✗✓✓✗✓Given handle position ✓
+> Ours ✓Single RGB video ✓✓✓✓Depth ✓
+
+teleoperation. Finally, ArticuACT learns coordinated base and arm control from onboard dual-view depth observations, using robot-centric Pl¨ ucker conditioning and interaction-state supervision to improve geometric grounding and contact-aware execution. Unlike approaches that rely on human-motion retargeting, online adaptation, or externally provided door poses, our framework derives the task from a single RGB video and executes the complete opening-to-traversal behavior using onboard perception. The main contributions of this work are as follows: 1) We introduce a single-video real-to-sim-to-real pipeline with DoorTwin , which reconstructs an instance-aligned, articulated, and simulation-ready door twin from one RGB video. 2) We propose a simulation-in-the-loop agentic expert trajectory generation method and ArticuACT , a dual-depth policy for closed-loop base–arm coordina-tion with robot-centric geometric conditioning and interaction-aware supervision. 3) We extensively validate the complete system in sim-ulation and on real robots, achieving 96 .57% average success across five real doors, and 80 .95% zero-shot success across structurally similar unseen doors, with an average execution time of approximately 13 s .II. R ELATED WORK 
+
+A. Door Opening and Traversal 
+
+Door manipulation has been studied through simula-tion, online adaptation, and whole-body control. Door-Gym [5], UniDoorManip [6], and ArticuBot [7] learn door or articulated-object opening from large-scale simulation, but mainly assume preconstructed assets and do not address complete doorway traversal. Real-world systems improve robustness through online adaptation or haptic feedback [8], [3], while legged and humanoid platforms achieve full traver-sal using reinforcement learning or teacher–student train-ing [1], [2], [4]. These methods typically rely on procedu-rally generated doors, external geometric inputs, task-specific rewards, or additional real-world adaptation. In contrast, our method targets the complete opening-to-traversal task and learns closed-loop base–arm coordination from onboard depth, without external geometric inputs or per-door real-world adaptation. 
+
+B. Real-to-Sim-to-Real Robot Learning 
+
+Real-to-sim-to-real methods transfer task information from human videos or real observations into simu-lation. HUMAN2SIM2ROBOT [9], X-SIM [10], and Video2Sim2Real [11] use object motion or human demon-strations to train embodiment-specific policies, but mainly target fixed-base manipulation and require additional scene or object scans. DemoGen [12] generates synthetic visuomotor demonstrations, while SIMPACT [13], RoboSnap [14], and V-Dreamer [15] use reconstructed or generated simulations for planning, data generation, or evaluation. Most of these methods treat the manipulated objects as rigid bodies or recover generic scene geometry, without using articulated kinematics as an explicit task representation. Moreover, simulation is typically used for only one stage of the pipeline, rather than jointly supporting instance-specific reconstruc-tion, executable demonstration generation, and closed-loop mobile deployment. As summarized in Table I, prior work has separately in-vestigated real-to-sim-to-real manipulation, articulated door opening, and legged door traversal. In contrast, our frame-work uses door articulation as a common task representation, connecting a digital twin reconstructed from a single RGB video with simulator-verified expert generation and onboard depth-based policy execution for complete doorway traversal. III. METHOD As illustrated in Fig. 2, our framework transforms a single RGB video of a real door into a deployable quadruped loco-manipulation policy through three stages. First, DoorTwin 
+
+reconstructs a metrically aligned, articulated, and simulation-ready door asset. Second, a simulation-in-the-loop agent synthesizes and iteratively refines parameterized skill pro-grams, from which successful domain-randomized expert trajectories are collected. Finally, ArticuACT learns whole-body door traversal from depth observations, using robot-centric Pl¨ ucker conditioning and auxiliary interaction-state supervision. During deployment, the policy relies only on onboard depth observations and proprioceptive states, with-out privileged information. 
+
+A. DoorTwin: One-shot Sim-Ready Door Generation 
+
+Given a single RGB video of a real door, DoorTwin generates a metrically aligned, articulated, and simulation-ready door twin that preserves the geometry and appearance of the observed instance. We first recover metric scene ge-ometry and camera motion from the video, and then use the recovered geometry to ground articulated asset generation. The output contains an articulated door assembly, collision STAGE 1: DoorTwin STAGE 2: Agentic Expert Trajectory Generation STAGE 3: ArticuACT Policy Single RGB Video Video Geometry Grounding DAGE Geometry Constraint  
+
+> Sim-ready Articulated DoorTwin SAM3 Segmentation
+
+ACT          
+
+> Command Chunk Interaction Chunk
+> Front Depth Front Ray Map Wrist Ray Map Wrist Depth
+> Handle Rotate Progress Contact Door Open Progress
+> Base Velocity Base Yaw Arm and Gripper Joints
+> CNN MLP CNN CNN CNN
+> BaseMoveTo() Close_Gripper()
+> Push_Door() Pass() Rotate_Handle()
+> Parameterized Skill Program
+> EE_Approach()
+> Data Collection (Randomization)
+> Position Depth Proprio Door Friction
+> Reference View Render & Critic Articulation-aware Generation
+> ✓
+> Visual Evaluation / Feedback
+> Texture/Material Refinement
+> Agents
+> URDF Construction
+> WHRelative Position Simulation-in-the-Loop
+> 1Execute Program in Simulator
+> 2Diagnose Failure
+> 4Collect Trajectories Revisement & Refinement 3
+> Agents
+> Real-World Deployment Metric Depth Camera Extrinsics
+
+Fig. 2. Overview of Video2DoorTraversal. Given a single RGB video, DoorTwin reconstructs a metrically grounded, articulated, and simulation-ready door asset through geometric grounding, articulation-aware generation, reference-view critique, and appearance refinement. A simulation-in-the-loop agent then instantiates and refines a parameterized skill program to collect randomized expert trajectories. Finally, ArticuACT combines dual-view depth observations with robot-centric Pl¨ ucker ray maps to predict coordinated base, arm, and gripper commands for real-world door opening and traversal. 
+
+geometry, and textured visual meshes that can be directly imported into the physics simulator. DoorTwin builds upon Articraft [16], which generates articulated assets by iteratively writing and validating object-construction programs. Although Articraft can produce se-mantically plausible and kinematically valid assets, con-ditioning it directly on RGB appearance does not ensure instance-level consistency. In particular, absolute metric scale cannot be reliably inferred from RGB appearance alone, the relative placement of small components may be inaccurate, and large differences in part scale, such as those between a door panel and a handle, can lead to poor geometry. Moreover, procedural materials are often substantially sim-pler than the observed appearance. DoorTwin addresses these limitations through video geometry grounding, articulation-aware program generation, reference view rendering and critique, and appearance transfer. 
+
+Video Geometry Grounding: We first process the input video using DAGE [17], which estimates metrically scaled geometry and camera poses from uncalibrated RGB video. This provides a metric depth for each frame together with the corresponding camera extrinsics. For doors containing glass or reflective regions, where the DAGE depth prediction can become unreliable, we further refine the estimated depth using LingBot-Depth [18]. We then apply SAM 3 [19] to every video frame to segment the complete door assembly. The masked metric geometry from each frame is transformed into a common reference frame using the estimated camera poses: 
+
+xi,u = Tipi,u , u ∈ Mi, (1) where pi,u denotes the metric 3D point associated with pixel 
+
+u in frame i, Ti transforms the camera coordinate system to the common door frame, and Mi is the corresponding door mask. Aggregating the masked geometry across frames produces a metrically scaled multi-view point cloud of the complete door. We establish a global coordinate frame from the ag-gregated door point cloud. Principal component analysis provides three dominant directions. The shortest direction approximately corresponds to the door surface normal, while the remaining two in-plane directions define the door width and height. Compared with a single view, aggregating obser-vations across the video provides more complete geometric evidence and enables more stable estimation of the global door dimensions. We use a VLM to select the most proper frame with the complete door mask as the reference frame. This frame is then used as the visual input to Articraft and for subsequent rendering and critique. On the selected reference frame, we additionally segment the door panel and handle to recover their local geometry. Let cp and ch denote the centers of the corresponding 3D bounding boxes, and let Rp denote the panel coordinate frame. The panel-relative handle location is represented as 
+
+∆ph = R⊤ 
+
+> p
+
+(ch − cp) . (2) The aggregated door dimensions and panel-relative handle location form the primary geometric constraints supplied to the asset-generation agent. 
+
+Articulation-Aware Program Generation: The recov-ered constraints are converted into a structured specification for the Articraft agent. The specification defines the metric dimensions of the complete door, the panel-relative handle location, and the required articulation. In particular, the frame remains fixed, the door panel is connected to the frame through a revolute joint, and the handle is attached to the panel at the grounded location. Asset generation is performed in a coarse-to-fine manner. The agent first constructs the global door assembly under the metric constraints and subsequently refines the smaller handle component and its attachment. This ordering reduces errors caused by the substantial scale difference between the panel and the handle. We retain the native procedural validators of Articraft to check program execution, disconnected or floating compo-nents, mesh interpenetration, and invalid joint definitions. These inherited checks ensure that the generated program is structurally valid and physically loadable, but they do not determine whether the resulting asset resembles the specific door shown in the input video. 
+
+Reference View Rendering and Critique: The procedu-ral checks inherited from Articraft ensure structural validity but do not guarantee instance-level similarity. We therefore introduce a reference view rendering and critique loop. The camera intrinsics of the reference frame are estimated from the recovered scene geometry, camera pose, and their 2D– 3D correspondences. The generated asset is rendered from the camera viewpoint of the selected reference frame and compared with its masked RGB image. A visual critic evaluates the global silhouette, handle type, hinge side, relative proportions, and handle placement. When a mismatch is detected, structured feedback is returned to the generation agent, which updates the construction program while keeping the video-derived metric constraints fixed. This process is repeated until the asset passes both procedural validation and the reference view similarity check. 
+
+Delighting and Appearance Transfer: After the articu-lated geometry has been finalized, we transfer the appear-ance of the observed door without modifying its validated geometry or joints. Since the selected RGB frame contains illumination and shadows from the capture environment, we use a GPT-based image editing procedure to remove these lighting effects and obtain a cleaner appearance reference. The finalized untextured door model and the processed reference image are then provided to Tripo 3D [20] to synthesize the texture and material maps. The resulting DoorTwin is therefore grounded by metric video geometry, validated as an executable articulated asset, explicitly matched to the observed instance through reference view critique, and visually aligned with the real door for sim-to-real policy training and evaluation. 
+
+B. Agentic Expert Trajectory Generation 
+
+Given a reconstructed door twin ΘD , we generate expert demonstrations using a simulation-in-the-loop agent. Rather than synthesizing low-level controller code, the agent instan-tiates an interpretable, parameterized skill program 
+
+ΠD = {(σj , η j )}Mj=1 , σj ∈ S , η j ∈ H j , (3) where S contains BASE MOVE TO, EE A PPROACH ,CLOSE GRIPPER , R OTATE HANDLE , P USH DOOR , P ASS ,and R ELEASE AND RETRACT . Each ηj specifies a compact set of task-level parameters, including the approach distance, grasp offset, handle rotation, contact bias, base velocity, and phase duration. Interaction targets are represented in a handle-local approach–lateral–vertical frame, while the hinge orientation determines the valid pushing direction. The program is executed in parallel Isaac Gym environ-ments at 50 Hz :
+
+xt+1 = Sim ( xt, a t; Θ D , ΘR) . (4) Each rollout records task-progress signals, including handle rotation, door angle, unlocking state, and body passage, together with feasibility signals. Upon failure, the agent receives a structured diagnostic summary and selected multi-view keyframes, attributes the failure to its most likely cause, and proposes bounded modifications to ηj . A local simulator search subsequently evaluates neighboring candidates, and accepts only parameterizations satisfying the task, collision, and kinematic constraints. This generate–execute–diagnose– refine loop continues until a successful rollout is obtained or the search budget is exhausted. Only successful rollouts are retained as demonstrations: 
+
+τ =
+
+n
+
+Dft , D wt , s t, a ⋆t , ϕ t, z t
+
+oTt=1 
+
+, (5) where a⋆t is the expert action, ϕt denotes the active skill phase, and zt contains simulator-only annotations used for trajectory filtering and evaluation. The trajectories are recorded at 25 Hz for policy learning. 
+
+Data Collection: After validating an expert program, we replay it under randomized robot, scene, and sensor config-urations to collect diverse demonstrations while preserving the nominal geometry of the reconstructed door twin. We randomize the initial base and door poses, hinge and handle friction and damping, door-opening resistance, and camera extrinsics. Simulated and real depth maps are clipped to 
+
+[0 .2, 1.5] m; during training, they are further augmented with distance-dependent Gaussian noise, edge corruption, blockwise holes, pixel dropout, salt-and-pepper noise, and Gaussian blur. The front camera captures global context for door approach and free-space estimation, while the wrist camera provides local handle geometry under self-occlusion. Only rollouts that remain successful under these perturba-tions are retained for robust sim-to-real policy learning. 
+
+C. ArticuACT Policy 
+
+We build our imitation learning policy, termed Artic-uACT , upon the Action Chunking Transformer (ACT) [21]. At time step t, the policy takes the front-view depth image 
+
+Dft , wrist-view depth image Dwt , and the 9-D robot state st,and predicts an action chunk of length H = 100 :
+
+ˆAt = πθ
+
+
+
+Dft , D wt , st
+
+
+
+∈ RH×9. (6) Each action consists of the base forward velocity, base yaw velocity, six arm joint commands, and one gripper command. Compared with the original ACT, ArticuACT introduces robot-centric Pl¨ ucker conditioning and future interaction-state prediction. Robot-Centric Pl ¨ ucker Conditioning: Following Jiang et al. [22], who explicitly condition visuomotor policies on camera geometry using pixel-aligned Pl¨ ucker ray maps, we adapt this representation to our dual-depth mobile-manipulation setting. In particular, we express the rays from both the front and wrist cameras in a shared robot-base coor-dinate frame, providing the policy with an explicit geometric correspondence between image pixels and the action frame. For each image pixel (u, v ), we construct a Pl¨ ucker ray using the camera intrinsic matrix K and the camera pose 
+
+(Rbc , tbc ) with respect to the robot base frame: 
+
+db = Rbc 
+
+K−1[u, v, 1] ⊤
+
+∥K−1[u, v, 1] ⊤∥2
+
+, mb = tbc × db. (7) The resulting per-pixel Pl¨ ucker representation is 
+
+r(u, v ) = [ db, mb] ∈ R6. (8) Separate Pl¨ ucker maps are constructed for the front and wrist cameras using their respective intrinsics and extrin-sics. Following the late-fusion design for pretrained visual encoders [22], each map is processed by a lightweight con-volutional encoder and concatenated with the corresponding ResNet-18 depth feature before projection to the Transformer dimension. This conditioning provides explicit pixel-aligned camera geometry in the robot base frame and reduces spatial ambiguity under camera-viewpoint. 
+
+Future Interaction-State Prediction: In addition to robot actions, each future decoder token predicts a three-dimensional interaction state: 
+
+ˆzt+h = ˆct+h, ˆphandle  
+
+> t+h
+
+, ˆpdoor 
+
+> t+h
+
+ , (9) where the three components represent stable handle contact, handle-rotation progress, and door-opening progress, respec-tively. ArticuACT therefore predicts an H × 9 action chunk together with a temporally aligned H × 3 interaction chunk. The interaction predictions are used only as auxiliary supervision. They are not fed back into the action decoder and do not modify the 9-D robot control interface. Instead, the auxiliary task encourages the shared decoder features to encode contact and task-progress information. The complete training objective is 
+
+L = Lact +βLKL +λcLcontact +λhLhandle +λdLdoor , (10) where Lact is a masked ℓ1 action loss, Lcontact is a binary cross-entropy loss, and the handle and door progress terms use Smooth ℓ1 losses. Interaction losses are backpropagated via shared decoder and policy backbone, with interaction labels required only in training. IV. EXPERIMENTS 
+
+A. Experimental Setup 
+
+For door asset generation, we capture a single RGB video of each target door using a smartphone camera. The hardware robot platform consists of a Unitree A2-W wheel-legged base equipped with a Unitree Z1 arm. Two Intel RealSense D435 cameras provide onboard perception: one is mounted on the      
+
+> Fig. 3. Qualitative comparison of articulated door assets. Reference Critic 1 Critic 2 Critic 3
+> Fig. 4. Reference-view rendering and critic refinement iterations.
+
+robot head for global scene observation, while the other is mounted near the gripper for close-range interaction sensing. The onboard computer of the A2-W executes the low-level base controller. An additional NVIDIA Jetson Orin NX processes the visual observations, performs policy inference, and control the arm. 
+
+B. Asset Generation 
+
+We primarily evaluate whether the geometry of the gen-erated door is consistent with that in the input image, including the global metric dimensions of the door and the panel-relative placement of the handle. We assess DoorTwin against three representative articulated-asset generation base-lines: Articraft [16], Articulate-Anything [23], and PhysX-Omni [24]. For a controlled comparison, DoorTwin, Arti-craft, and Articulate-Anything are evaluated using GPT-5.5, while PhysX-Omni retains its original fine-tuned Qwen2.5-VL model [25]. We conduct the asset-generation evaluation on 20 real-world door instances. We evaluate asset quality using both geometry and RGB metrics. For geometry, we introduce the Scale Score (SS), which measures metric accuracy as 
+
+SS = 100 max 
+
+
+
+0, 1 − ew + eh + ep
+
+3
+
+
+
+, (11) where ew, eh, and ep are the normalized errors of door width, door height, and handle position, respectively. Masked IoU (mIoU) measures the overlap between the rendered asset mask and the reference door mask. For appearance, RGB PSNR, SSIM, and LPIPS are computed within the reference foreground mask. We additionally report a VLM TABLE II COMPARISON OF GEOMETRY AND APPEARANCE QUALITY .                                   
+
+> Method Geometry Appearance VLM Score ↑
+> SS ↑mIoU ↑PSNR ↑SSIM ↑LPIPS ↓
+> PhysX-Omni 65.75 0.635 17.51 0.726 0.484 11.54 Articraft 89.03 0.880 16.64 0.702 0.470 28.75 Articulate Anything 86.62 0.831 16.03 0.667 0.565 11.59
+> DoorTwin (Ours) 94.95 0.972 18.53 0.692 0.408 56.74
+
+Score, where a vision-language model evaluates the overall instance-level consistency between the generated asset and the reference image. 
+
+Asset Generation Results As shown in Table II and Fig. 3, DoorTwin achieves the best overall performance, with the highest Scale Score, mIoU, PSNR, and VLM Score, as well as the lowest LPIPS. PhysX-Omni occasion-ally misidentifies doors as other articulated objects, leading to substantial errors in global geometry and part layout. Articulate-Anything generally retrieves plausible door assets, but often exhibits mismatched panel proportions and handle placement. Articraft produces structurally valid articulated assets, yet still shows noticeable errors in metric scale, local components, and appearance. The slightly lower SSIM is likely due to local appearance differences between the rendered and reference images, to which SSIM is sensi-tive. Overall, these results demonstrate that DoorTwin better preserves both the metric geometry and instance-specific characteristics of the observed door. 
+
+Effect of the Reference-View Critic As illustrated in Fig. 4, the reference-view critic progressively improves the instance-level consistency of the generated asset. In the first refinement iteration, the critic recovers missing components, including the door marking and handle. The second and third iterations further correct their size, local geometry, and placement to better match the reference image. This iterative process complements procedural validation, which ensures structural validity and simulation readiness but cannot guar-antee visual similarity to the observed door instance. 
+
+C. Simulation Results 
+
+Baselines: We compare our method with the following baselines: 1) Replay , which open-loop replays one gen-erated trajectory by directly setting the recorded actions as control targets; 2) Object-Aware (OA) Replay [9], which uses SAM 3 [19] to segment the door handle and FoundationPose [26] to estimate its 6-DoF pose, and then warps the reference trajectory according to the relative transformation between the nominal and estimated handle poses; 3) DoorGym [5], for which we adapt its state-based PPO implementation as a reinforcement-learning baseline. Following its original setting, a floating gripper is initialized near the handle and trained using privileged simulator states; 4) UniDoorManip [6], which uses third-person point-cloud observations and a hierarchical policy for door manipulation; 5) Vanilla ACT [21], implemented with the original action-chunking architecture and our dual-depth observation and action interfaces; 6) Diffusion Policy (DP) [27], a widely                        
+
+> TABLE III SIMULATION RESULTS ON THE DOOR -T RAVERSAL TASK .
+> Method Door Opening Success ↑Traversal Success ↑
+> Replay 14.06% 14.06% OA Replay 53.13% 53.13% DoorGym 12.50% 12.50% UniDoorManip 74.22% 50.78% Vanilla ACT 67.58% 64.84% Diffusion Policy (DP) 64.45% 64.45% DP3 68.36% 66.41%
+> Ours 98.44% 97.27%
+
+used visuomotor policy that models action sequences through conditional denoising diffusion; 7) DP3 [28], which encodes point-cloud observations and predicts a sequence of delta end-effector transformations. 
+
+Implementation details: For each door instance, we collect 200 successful demonstrations for policy training. We evaluate all methods on 20 door instances using 256 trials with independently sampled random seeds. The evaluation uses the same randomization ranges as training. All learning-based policies predict high-level commands at 25 Hz. 
+
+Evaluation Metrics: We report the door-opening success rate and the full-traversal success rate. A trial is considered a successful door opening only if the handle rotation first reaches the predefined unlocking threshold and the door angle subsequently exceeds 80 ◦ within the 20 s time limit. Full traversal additionally requires the robot base to move at least 1 m beyond the doorway; therefore, traversal success is counted only after successful door opening. A timeout or any collision between the robot base and the door before unlocking is considered a failure. 
+
+Results: As shown in Table III, our method achieves the highest success rates for both door opening and traversal. OA Replay substantially improves over direct trajectory replay, but remains sensitive to handle-pose estimation errors; even a small localization error can shift the entire transferred tra-jectory and lead to inaccurate grasping. DoorGym performs poorly because the long-horizon task involves a large multi-stage exploration space, while designing balanced rewards for grasping, unlocking, pushing, and traversal is difficult. UniDoorManip achieves reasonable door-opening perfor-mance but degrades significantly during traversal, which may be related to its third-person point-cloud observation being less effective for the precise base–arm coordination required after opening the door. Among imitation-learning baselines, our method consistently outperforms vanilla ACT, Diffusion Policy, and DP3, demonstrating the effectiveness of the proposed geometry- and interaction-aware policy design. 
+
+D. Ablation Study 
+
+Policy Components and Command-Space Ablation: 
+
+We evaluate the contributions of Pl¨ ucker conditioning and interaction-state prediction under both end-effector and joint-command action spaces. Specifically, we compare vanilla ACT, ACT with either individual module, and the complete ArticuACT policy. Vanilla ACT Vanilla ACT + Plücker Vanilla ACT + Interaction Ours            
+
+> Method
+> 020 40 60 80 100
+> Traversal Success Rate (%)
+> 64.84% 71.88% 70.70% 82.42% 71.09% 90.62% 94.92% 97.27%
+> EE Command Joint Command 050 100 150 200 300
+> Number of Demonstrations
+> 020 40 60 80 100
+> Traversal Success Rate (%)
+> 0% 59.38% 81.25% 84.38% 97.27% 97.66%
+
+Fig. 5. Left: ablation study of the proposed policy components and command spaces. Right: scaling performance of our method. TABLE IV ABLATION STUDY OF THE AGENTIC TRAJECTORY GENERATION .
+
+Method Success Rate ↑ Avg. Agent Loops ↓
+
+Rule-based 74.38% 0Ours w/o Simulation Rollout 48.13% 0Ours w/ VLM Fix–Log 85.00% 2.8 
+
+Ours Full 85.63% 2.5 
+
+As shown in Fig. 5, both proposed modules consistently improve traversal performance over vanilla ACT, while their combination achieves the best results in both command spaces. Compared with vanilla ACT, the complete model improves the traversal success rate by 17 .58% with end-effector commands and 26 .18% with joint commands. It further outperforms the strongest single-module variant by 
+
+2.35% under joint-command control, demonstrating that robot-centric geometric conditioning and interaction-aware auxiliary supervision provide complementary benefits. More-over, joint-command policies consistently outperform their end-effector-command counterparts, suggesting that direct joint prediction is better aligned with the low-level controller and enables more reliable execution during precise and contact-rich door traversal. 
+
+Agentic Trajectory Generation Ablation: We evaluate the agentic trajectory generation framework against three variants. The rule-based baseline adapts a fixed reference trajectory by translating the entire trajectory according to the displacement between the nominal and detected handle cen-ters, while keeping its motion pattern unchanged. We further compare our method without simulator rollout feedback and a variant that uses rollout logs for VLM-based refinement. As shown in Table IV, removing simulator feedback causes a substantial performance drop, showing that geo-metric alignment or VLM reasoning alone cannot reliably produce physically executable trajectories. The full method improves the success rate by 11 .25% over the rule-based baseline and by 37 .50% over the no-rollout variant. It also achieves the highest success rate with fewer refinement loops than log-based repair, demonstrating that simulator verification and iterative agent refinement jointly enable more reliable and efficient expert trajectory generation. 
+
+Data Scaling Analysis: As shown in Fig. 5, traversal success consistently improves with more demonstrations, rising from 59 .38% with 50 trajectories to 97 .27% with 200. The largest gain occurs within the first 100 demonstrations, while additional data continues to improve policy robustness. 
+
+Fig. 6. Snapshots of real-world experiments with interaction state. TABLE V REAL -W ORLD RESULTS ACROSS FIVE DOORS .                              
+
+> Method Door 1 Door 2 Door 3 Door 4 Door 5 Average Success Rate
+> Replay 6/35 5/35 5/35 8/35 8/35 18.29% OA Replay 10/35 12/35 9/35 15/35 18/35 36.58% Vanilla ACT 25/35 20/35 23/35 25/35 22/35 65.71%
+> Ours 35/35 32/35 35/35 33/35 34/35 96.57%
+
+E. Real-World Results 
+
+As shown in Table V, our method achieves consistent success across all five door instances and substantially out-performs the replay-based baselines and vanilla ACT. The results demonstrate that the proposed framework generalizes reliably across different door geometries while maintaining stable performance throughout the complete opening and traversal process. As illustrated in Fig. 6, the predicted interaction states are temporally aligned with the physical task progression. The contact signal activates during handle engagement, fol-lowed by handle-rotation and door-opening progress, while the forward base velocity increases smoothly as the robot transitions toward traversal. This alignment indicates that ArticuACT captures meaningful interaction phases during real-world execution. 
+
+Execution Efficiency: Our mobile manipulator completes the full approach, opening, and traversal sequence in only approximately 13 s on average, achieving an execution speed comparable to related systems. This efficiency results from the coordinated prediction of base and arm commands, allowing the robot to manipulate and traverse the door continuously without relying on slow stage transitions. 
+
+Zero-Shot Cross-Door Generalization: Although our framework follows a single-video real-to-sim-to-real setting, we further evaluate whether a policy trained on one re-constructed door can transfer directly to structurally sim-ilar unseen doors without additional training or trajectory generation. Across three unseen doors, the policy succeeds in 25/35, 31/35, and 29/35 trials, respectively, yielding an average zero-shot success rate of 80.95%. These results demonstrate that the learned policy exhibits meaningful zero-shot generalization across similar door structures. V. C ONCLUSION 
+
+We presented Video2DoorTraversal , a single-video real-to-sim-to-real framework for wheel-legged door opening and traversal. From one RGB video, DoorTwin reconstructs an instance-aligned, articulated, and simulation-ready door twin. A simulation-in-the-loop agent then generates physically executable traversal demonstrations, which are used to train 
+
+ArticuACT for base-arm coordination from onboard depth observations. Extensive experiments validate the complete pipeline, achieving 96 .57% average success across five real doors. The learned policy further achieves 80 .95% zero-shot success on structurally similar unseen doors. Future work will extend the framework to pull doors, additional handle mechanisms, and more diverse door geometries. REFERENCES [1] M. Zhang, Y. Ma, T. Miki, and M. Hutter, “Learning to open and traverse doors with a legged manipulator,” in 8th Conference on Robot Learning , 2024. [2] J.-P. Sleiman, M. Mittal, and M. Hutter, “Guided reinforcement learn-ing for robust multi-contact loco-manipulation,” in 8th Conference on Robot Learning , 2024. [3] Z. Wang, Y. Mo, S. Jin, and W. Yuan, “DoorBot: Closed-loop task planning and manipulation for door opening in the wild with haptic feedback,” arXiv preprint arXiv:2504.09358 , 2025. [4] H. Xue, T. He, Z. Wang, Q. Ben, W. Xiao, Z. Luo, X. Da, F. Castaneda, G. Shi, S. Sastry, L. Fan, and Y. Zhu, “Opening the sim-to-real door for humanoid pixel-to-action policy transfer,” arXiv preprint arXiv:2512.01061 , 2025. [5] Y. Urakami, A. Hodgkinson, C. Carlin, R. Leu, L. Rigazio, and P. Abbeel, “DoorGym: A scalable door opening environment and baseline agent,” arXiv preprint arXiv:1908.01887 , 2019. [6] Y. Li, X. Zhang, R. Wu, Z. Zhang, Y. Geng, H. Dong, and Z. He, “UniDoorManip: Learning universal door manipulation policy over large-scale and diverse door manipulation environments,” arXiv preprint arXiv:2403.02604 , 2024. [7] Y. Wang, Z. Wang, M. Nakura, P. Bhowal, C.-L. Kuo, Y.-T. Chen, Z. Erickson, and D. Held, “ArticuBot: Learning universal articulated object manipulation policy via large scale simulation,” arXiv preprint arXiv:2503.03045 , 2025. [8] H. Xiong, R. Mendonca, K. Shaw, and D. Pathak, “Adaptive mobile manipulation for articulated objects in the open world,” arXiv preprint arXiv:2401.14403 , 2024. [9] T. G. W. Lum, O. Y. Lee, C. K. Liu, and J. Bohg, “Crossing the human-robot embodiment gap with sim-to-real RL using one human demonstration,” in 9th Conference on Robot Learning , 2025. [10] P. Dan, K. Kedia, A. Chao, E. W. Duan, M. A. Pace, W.-C. Ma, and S. Choudhury, “X-SIM: Cross-embodiment learning via real-to-sim-to-real,” in 9th Conference on Robot Learning , 2025. [11] Y. Han, J. Qiu, L. Bai, Z. Xiao, Z. Zeng, Y. Liu, Z. Yang, S. Jain, W. Ma, J. Fu, Y. Zheng, M. Natarajan, M. Z. Irshad, K. Shaw, M. Gombolay, Z. Kira, and H. Ravichandar, “Video2Sim2Real: Full-stack autonomous dexterous skill acquisition from a single human video,” arXiv preprint arXiv:2606.08828 , 2026. [12] Z. Xue, S. Deng, Z. Chen, Y. Wang, Z. Yuan, and H. Xu, “DemoGen: Synthetic demonstration generation for data-efficient visuomotor pol-icy learning,” in Robotics: Science and Systems , 2025. [13] H. Liu, S. Yao, H. Chen, J. Gao, J. Mao, J.-B. Huang, and Y. Du, “SIMPACT: Simulation-enabled action planning using vision-language models,” arXiv preprint arXiv:2512.05955 , 2026. [14] S. Zhang, J. Yi, W. Zhong, Z. Zhou, Y. Zhu, H. Wang, X. Xu, W. Zhang, and C. Shen, “ROBOSNAP: One-shot real-to-sim scene generation for generalizable robot learning and evaluation,” arXiv preprint arXiv:2607.06699 , 2026. [15] S. He, Z. Chen, H. Ding, D. Shao, J. Shi, C. Li, J. Huo, and Y. Gao, “V-Dreamer: Automating robotic simulation and trajectory synthesis via video generation priors,” arXiv preprint arXiv:2603.18811 , 2026. [16] M. Zhou, R. Li, X. Lyu, Z. Song, Z. Huang, C. Zheng, C. Rupprecht, A. Vedaldi, and S. Wu, “Articraft: An agentic system for scalable articulated 3d asset generation,” arXiv preprint arXiv:2605.15187 ,2026. [17] T. D. Ngo, J. Huang, S. W. Oh, K. Blackburn-Matzen, E. Kaloger-akis, C. Gan, and J.-Y. Lee, “DAGE: Dual-stream architecture for efficient and fine-grained geometry estimation,” in Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition ,2026. [18] B. Tan, C. Sun, X. Qin, H. Adai, Z. Fu, T. Zhou, H. Zhang, Y. Xu, X. Zhu, Y. Shen et al. , “Masked depth modeling for spatial perception,” arXiv preprint arXiv:2601.17895 , 2026. [19] N. Carion, L. Gustafson, Y.-T. Hu, S. Debnath, R. Hu, D. Suris, C. Ryali, K. V. Alwala, H. Khedr, A. Huang et al. , “SAM 3: Segment anything with concepts,” arXiv preprint arXiv:2511.16719 , 2025. [20] Tripo AI, “Tripo 3D: Ai 3d model generator from text and images,” https://www.tripo3d.ai/, online; accessed July 24, 2026. [21] T. Z. Zhao, V. Kumar, S. Levine, and C. Finn, “Learning fine-grained bimanual manipulation with low-cost hardware,” in Robotics: Science and Systems , 2023. [22] T. Jiang, J. Ji, X. Tan, J. Fang, A. Bhattad, V. Guizilini, and M. R. Walter, “Do you know where your camera is? view-invariant policy learning with camera conditioning,” arXiv preprint arXiv:2510.02268 ,2025. [23] L. Le, J. Xie, W. Liang, H.-J. Wang, Y. Yang, Y. J. Ma, K. Vedder, A. Krishna, D. Jayaraman, and E. Eaton, “Articulate-Anything: Auto-matic modeling of articulated objects via a vision-language foundation model,” in International Conference on Learning Representations ,2025. [24] Z. Cao, Y. Liu, H. Li, R. Yao, F. Hong, Z. Chen, L. Pan, and Z. Liu, “PhysX-Omni: Unified simulation-ready physical 3d gener-ation for rigid, deformable, and articulated objects,” arXiv preprint arXiv:2605.21572 , 2026. [25] S. Bai, K. Chen, X. Liu, J. Wang, W. Ge, S. Song, K. Dang, P. Wang, S. Wang, J. Tang et al. , “Qwen2.5-VL technical report,” arXiv preprint arXiv:2502.13923 , 2025. [26] B. Wen, W. Yang, J. Kautz, and S. Birchfield, “FoundationPose: Unified 6d pose estimation and tracking of novel objects,” in Proceed-ings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , 2024, pp. 17 868–17 879. [27] C. Chi, S. Feng, Y. Du, Z. Xu, E. Cousineau, B. Burchfiel, and S. Song, “Diffusion policy: Visuomotor policy learning via action diffusion,” in 
+
+Robotics: Science and Systems , 2023. [28] Y. Ze, G. Zhang, K. Zhang, C. Hu, M. Wang, and H. Xu, “3d diffusion policy: Generalizable visuomotor policy learning via simple 3d representations,” in Robotics: Science and Systems , 2024.

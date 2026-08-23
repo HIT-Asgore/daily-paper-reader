@@ -1,0 +1,167 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-23T19:28:02.152931+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.18552v1",
+      "source": "arxiv",
+      "title": "Real-Time Control-Constrained DDP for Underactuated Balancing of Legged Robots",
+      "abstract": "This paper presents a real-time control-constrained Differential Dynamic Programming (DDP) framework for underactuated legged robots. To address the limitation of classical DDP in handling control constraints, we propose an Accelerated Projected Gradient (APG)-based control-constrained DDP (ABC-DDP), which efficiently computes constrained solutions and identifies active sets without repeated Karush-Kuhn-Tucker (KKT) inversions. A virtual constraint is introduced to integrate control constraints within a feasibility-driven multiple-shooting framework, enabling stable optimization even from dynamically infeasible initializations. The proposed method supports real-time model predictive control (MPC) with short horizons under strong underactuation. Simulation results demonstrate static two-leg standing under external disturbances, along with diverse dynamic motions including slow catwalk, upright walking, and high-speed running within a unified MPC framework. To the best of our knowledge, this is the first demonstration of static two-leg standing of a quadruped robot achieved using real-time finite-horizon MPC.",
+      "authors": [
+        "SeongWon Nam",
+        "Hyunyong Lee",
+        "Hansol Kang",
+        "Jiman Park",
+        "Yeongwoo Son",
+        "Bumsu Yi",
+        "Jaeyoung Oh",
+        "Hyouk Ryeol Choi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "math.OC"
+      ],
+      "published": "2026-08-19T05:21:27+00:00",
+      "link": "https://arxiv.org/pdf/2608.18552v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "real-time control-constrained DDP for robot control",
+      "llm_evidence_cn": "面向机器人实时控制的带约束微分动态规划",
+      "llm_evidence": "面向机器人实时控制的带约束微分动态规划",
+      "canonical_evidence": "面向机器人实时控制的带约束微分动态规划",
+      "llm_tldr_en": "ABC-DDP is a real-time control-constrained DDP for underactuated legged robots using accelerated projected gradients and virtual constraints, enabling stable optimization and real-time MPC.",
+      "llm_tldr_cn": "经典DDP难以处理控制约束，在强欠驱动与动态不可行初值下也容易不稳定。本文提出基于加速投影梯度的控制约束DDP（ABC-DDP），通过识别有效约束集和引入虚拟约束，将控制约束整合进可行性驱动的多射击框架。在欠驱动腿式机器人上，该方法实现了短时域实时模型预测控制，并能在强欠驱动条件下稳定求解，为实时带约束机器人控制提供了高效DDP扩展。",
+      "llm_tldr": "经典DDP难以处理控制约束，在强欠驱动与动态不可行初值下也容易不稳定。本文提出基于加速投影梯度的控制约束DDP（ABC-DDP），通过识别有效约束集和引入虚拟约束，将控制约束整合进可行性驱动的多射击框架。在欠驱动腿式机器人上，该方法实现了短时域实时模型预测控制，并能在强欠驱动条件下稳定求解，为实时带约束机器人控制提供了高效DDP扩展。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable control in robotics",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.18234v1",
+      "source": "arxiv",
+      "title": "GigaBrain-WBC-0.5: A Behavior World Model for Robust Whole-Body Control with Environment Interaction",
+      "abstract": "Whole-body motion tracking policies turn a humanoid into a robust control interface: the teleoperator---or an upstream model---only supplies a coarse movement intent, while the low-level policy keeps the robot balanced and physically feasible. Existing trackers deliver this interface only on flat ground: trained in empty scenes, they never learn how contact with terrain and objects reshapes their dynamics, and they attempt to teach the policy to balance under any command by continually enlarging the reference-motion corpus, which stops working once feasible behaviors become environment-dependent. We present GigaBrain-WBC-0.5, the first Behavior World Model (BWM) for humanoid whole-body control. Rather than a purely reactive tracker, we train a causal Transformer to jointly predict its next action, next state, and the distribution over its next latent behavior command, so the network that acts also models how the environment shapes what it can do next. An automatic terrain-annotation pipeline recovers full 3D contact geometry from retargeted motion, enabling terrain annotation at the scale of existing motion datasets. The predicted distribution is reused at deployment to detect implausible commands online and retract them onto learned behaviors, so the robot attempts tasks in a \"best-effort\" manner. The result is a unified policy that takes real-time command, interacts with environment, and stays robust to implausible commands, falls, and disturbances. GigaBrain-WBC-0.5 achieves the highest success rate across all four regimes among three large-scale tracker baselines: 81.3% on terrain interaction (4.3x the strongest baseline), 83.1% under implausible commands, and 99.3% fall recovery (16.8x the strongest baseline). Hardware trials show robust interaction under missing supports and disturbances; the Unitree G1 checkpoint transfers to the Maker L01 robot with simple fine-tuning.",
+      "authors": [
+        "Ziyang Cheng",
+        "Tianshu Tang",
+        "Jinxin Lan",
+        "Xinze Chen",
+        "Yuhan Gong",
+        "Zhichao Liu",
+        "Changzhong Wu",
+        "Yahao Mao",
+        "Zongyan Deng",
+        "Mingxuan Ma",
+        "Huasen Xi",
+        "Yilong Liu",
+        "Yutong Wu",
+        "Xiaofeng Wang",
+        "Yang Wang",
+        "Yun Ye",
+        "Guan Huang",
+        "Xiaojie Jin",
+        "Zheng Zhu",
+        "Jiwen Lu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-18T18:21:36+00:00",
+      "link": "https://arxiv.org/pdf/2608.18234v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Behavior World Model for learning robot dynamics and whole-body control",
+      "llm_evidence_cn": "行为世界模型用于学习机器人动力学与全身控制",
+      "llm_evidence": "行为世界模型用于学习机器人动力学与全身控制",
+      "canonical_evidence": "行为世界模型用于学习机器人动力学与全身控制",
+      "llm_tldr_en": "Introduces the first Behavior World Model for humanoid whole-body control, explicitly learning how contact with terrain and objects reshapes dynamics, enabling robust control in environment interaction beyond flat ground.",
+      "llm_tldr_cn": "现有全身跟踪策略只在平坦地面训练，未学习接触如何影响动力学，导致环境相关行为难以泛化。本文提出首个面向人形全身控制的行为世界模型（BWM），显式建模环境交互带来的动力学变化，使控制策略在接触场景下保持鲁棒与物理可行性。该方法为复杂环境中的全身控制提供了全新思路，并有望迁移到机械臂等操作任务。",
+      "llm_tldr": "现有全身跟踪策略只在平坦地面训练，未学习接触如何影响动力学，导致环境相关行为难以泛化。本文提出首个面向人形全身控制的行为世界模型（BWM），显式建模环境交互带来的动力学变化，使控制策略在接触场景下保持鲁棒与物理可行性。该方法为复杂环境中的全身控制提供了全新思路，并有望迁移到机械臂等操作任务。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.20251v1",
+      "source": "arxiv",
+      "title": "Video2DoorTraversal: Push Door Traversal via Simulated Door Twins",
+      "abstract": "Door opening and traversal is a long-horizon loco-manipulation task that requires precise handle interaction and coordinated base-arm control. We present Video2DoorTraversal, a single-video real-to-sim-to-real framework for wheel-legged mobile manipulators. Given one RGB video of a real door, DoorTwin reconstructs an instance-aligned, articulated, and simulation-ready door twin with realistic geometry and appearance. A simulation-in-the-loop agent converts the recovered articulation into a parameterized skill program and iteratively refines failed rollouts to generate physically executable demonstrations. These demonstrations are used to train ArticuACT, a dual-depth policy that predicts coordinated base, arm, and gripper commands using robot-centric camera conditioning and interaction-aware supervision. With all perception and policy inference running onboard, the system achieves a 96.57% average success rate across five real doors and an 80.95% zero-shot success rate on structurally similar unseen doors, while completing the full approach, opening, and traversal sequence in approximately 13s on average. Project Page: https://video2doortraversal.github.io/.",
+      "authors": [
+        "Xincheng Tang",
+        "Yiji Chen",
+        "Youhan Xie",
+        "Wanyu Li",
+        "Zhengjie Shu",
+        "Lai Jiang",
+        "Wenkang Hu",
+        "Yitong Li",
+        "Jinchuang Zhang",
+        "Xibin Song",
+        "Ruigang Yang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-20T16:46:57+00:00",
+      "link": "https://arxiv.org/pdf/2608.20251v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "model-based simulation-in-the-loop for push door traversal on mobile manipulators",
+      "llm_evidence_cn": "面向移动操作器的基于模型的仿真在环推门穿越方法",
+      "llm_evidence": "面向移动操作器的基于模型的仿真在环推门穿越方法",
+      "canonical_evidence": "面向移动操作器的基于模型的仿真在环推门穿越方法",
+      "llm_tldr_en": "Real-to-sim-to-real for mobile manipulators: reconstruct a door twin from one RGB video, refine skills in simulation, train dual-depth policy for coordinated door traversal.",
+      "llm_tldr_cn": "针对推门穿越这类长时程移动操作任务，本文提出Video2DoorTraversal框架，利用单段RGB视频重建实例对齐的门孪生，并通过仿真内迭代细化失败轨迹生成可执行示范，训练出双深度策略以协同控制基座、机械臂和夹爪。该方法降低了真实演示采集成本，为机器人门穿越等操作提供了高效的仿真到现实迁移方案。",
+      "llm_tldr": "针对推门穿越这类长时程移动操作任务，本文提出Video2DoorTraversal框架，利用单段RGB视频重建实例对齐的门孪生，并通过仿真内迭代细化失败轨迹生成可执行示范，训练出双深度策略以协同控制基座、机械臂和夹爪。该方法降低了真实演示采集成本，为机器人门穿越等操作提供了高效的仿真到现实迁移方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

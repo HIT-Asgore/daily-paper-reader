@@ -6,29 +6,30 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-22
-- 运行时间：2026-08-22 20:41:47 UTC
+- 最新运行日期：2026-08-23
+- 运行时间：2026-08-23 19:29:58 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：3
 - 精读区：0
-- 速读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日速读2篇机器人领域论文，均获6.0分，聚焦基础模型与安全预测。  
-值得关注：τ0-VLA用世界模型指导测试时计算提升层级控制，另一篇提出动作条件JEPA框架为异构机器人加装安全防护。  
-下一步可从两篇中选一精读，以掌握具体实现与验证细节。
-- 详情：[/202608/22/README](/202608/22/README)
+今日速读3篇腿式机器人相关论文，聚焦实时平衡控制与门穿越操作。最值得关注的是两篇7.0分工作：控制约束DDP算法提升欠驱动平衡，以及利用仿真孪生实现推门穿越。建议普通读者优先了解这两项控制方法，后续可关注其实际部署效果。
+- 详情：[/202608/23/README](/202608/23/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [$τ_0$-VLA: a Hierarchical Robot Foundation Model with World-Model-Guided Test-Time Computation](/202608/22/2608.16885v1-0-vla-a-hierarchical-robot-foundation-model-with-world-model-guided-test-time-computation)  
+1. [Real-Time Control-Constrained DDP for Underactuated Balancing of Legged Robots](/202608/23/2608.18552v1-real-time-control-constrained-ddp-for-underactuated-balancing-of-legged-robots)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：面向机器人实时控制的带约束微分动态规划
+2. [Video2DoorTraversal: Push Door Traversal via Simulated Door Twins](/202608/23/2608.20251v1-video2doortraversal-push-door-traversal-via-simulated-door-twins)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：面向移动操作器的基于模型的仿真在环推门穿越方法
+3. [GigaBrain-WBC-0.5: A Behavior World Model for Robust Whole-Body Control with Environment Interaction](/202608/23/2608.18234v1-gigabrain-wbc-05-a-behavior-world-model-for-robust-whole-body-control-with-environment-interaction)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向层次化机器人操作策略的世界模型引导测试时计算
-2. [Calibrated Predictive Safety for Heterogeneous Robots: An Action-Conditioned JEPA Framework with Model-Based Safety Shields](/202608/22/2608.17496v1-calibrated-predictive-safety-for-heterogeneous-robots-an-action-conditioned-jepa-framework-with-model-based-safety-shields)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：动作条件JEPA世界模型预测任务进度与风险，用于模型驱动的机器人安全控制
+   evidence：行为世界模型用于学习机器人动力学与全身控制
 
 
 <div class="dpr-home-promo-card">

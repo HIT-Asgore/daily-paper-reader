@@ -1,0 +1,54 @@
+{
+  "label": "2026-08-23",
+  "date": "2026-08-23",
+  "generated_at": "2026-08-23T19:30:02",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202608/23/2608.18552v1-real-time-control-constrained-ddp-for-underactuated-balancing-of-legged-robots",
+      "section": "quick",
+      "title_en": "Real-Time Control-Constrained DDP for Underactuated Balancing of Legged Robots",
+      "authors": "SeongWon Nam, Hyunyong Lee, Hansol Kang, Jiman Park, Yeongwoo Son, Bumsu Yi, Jaeyoung Oh, Hyouk Ryeol Choi",
+      "date": "2026-08-19",
+      "pdf": "https://arxiv.org/pdf/2608.18552v1",
+      "score": "7.0",
+      "evidence": "面向机器人实时控制的带约束微分动态规划",
+      "tldr": "针对欠驱动腿式机器人实时控制中经典差分动态规划难以处理控制约束的问题，提出基于加速投影梯度的控制约束DDP（ABC-DDP），通过虚拟约束将控制约束融入可行性驱动的多射击框架，实现短视距实时模型预测控制。仿真验证了静态双腿站立与慢速猫步、直立行走、高速奔跑等统一MPC下的多样化动力学运动，首次实现四足机器人静态双腿站立的实时有限时域MPC。",
+      "tags": "query:diff-physics",
+      "abstract_en": "This paper presents a real-time control-constrained Differential Dynamic Programming (DDP) framework for underactuated legged robots. To address the limitation of classical DDP in handling control constraints, we propose an Accelerated Projected Gradient (APG)-based control-constrained DDP (ABC-DDP), which efficiently computes constrained solutions and identifies active sets without repeated Karush-Kuhn-Tucker (KKT) inversions. A virtual constraint is introduced to integrate control constraints within a feasibility-driven multiple-shooting framework, enabling stable optimization even from dynamically infeasible initializations. The proposed method supports real-time model predictive control (MPC) with short horizons under strong underactuation. Simulation results demonstrate static two-leg standing under external disturbances, along with diverse dynamic motions including slow catwalk, upright walking, and high-speed running within a unified MPC framework. To the best of our knowledge, this is the first demonstration of static two-leg standing of a quadruped robot achieved using real-time finite-horizon MPC.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/23/2608.20251v1-video2doortraversal-push-door-traversal-via-simulated-door-twins",
+      "section": "quick",
+      "title_en": "Video2DoorTraversal: Push Door Traversal via Simulated Door Twins",
+      "authors": "Xincheng Tang, Yiji Chen, Youhan Xie, Wanyu Li, Zhengjie Shu, Lai Jiang, Wenkang Hu, Yitong Li, Jinchuang Zhang, Xibin Song, Ruigang Yang",
+      "date": "2026-08-20",
+      "pdf": "https://arxiv.org/pdf/2608.20251v1",
+      "score": "7.0",
+      "evidence": "面向移动操作器的基于模型的仿真在环推门穿越方法",
+      "tldr": "开门与穿越是长时间尺度的移动操作任务。本文提出Video2DoorTraversal，基于单段真实视频的real-to-sim-to-real框架，利用DoorTwin重建实例对齐、可articulated的仿真门孪生体；仿真循环代理将恢复的运动副转化为参数化技能程序，并通过迭代优化失败轨迹生成可执行演示，用于训练双深度策略ArticuACT。系统在板载感知与推理下，于五扇真实门平均成功率96.57%，对未见门零样本成功率达80.95%，全程约13秒。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Door opening and traversal is a long-horizon loco-manipulation task that requires precise handle interaction and coordinated base-arm control. We present Video2DoorTraversal, a single-video real-to-sim-to-real framework for wheel-legged mobile manipulators. Given one RGB video of a real door, DoorTwin reconstructs an instance-aligned, articulated, and simulation-ready door twin with realistic geometry and appearance. A simulation-in-the-loop agent converts the recovered articulation into a parameterized skill program and iteratively refines failed rollouts to generate physically executable demonstrations. These demonstrations are used to train ArticuACT, a dual-depth policy that predicts coordinated base, arm, and gripper commands using robot-centric camera conditioning and interaction-aware supervision. With all perception and policy inference running onboard, the system achieves a 96.57% average success rate across five real doors and an 80.95% zero-shot success rate on structurally similar unseen doors, while completing the full approach, opening, and traversal sequence in approximately 13s on average. Project Page: https://video2doortraversal.github.io/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/23/2608.18234v1-gigabrain-wbc-05-a-behavior-world-model-for-robust-whole-body-control-with-environment-interaction",
+      "section": "quick",
+      "title_en": "GigaBrain-WBC-0.5: A Behavior World Model for Robust Whole-Body Control with Environment Interaction",
+      "authors": "Ziyang Cheng, Tianshu Tang, Jinxin Lan, Xinze Chen, Yuhan Gong, Zhichao Liu, Changzhong Wu, Yahao Mao, Zongyan Deng, Mingxuan Ma, Huasen Xi, Yilong Liu, Yutong Wu, Xiaofeng Wang, Yang Wang, Yun Ye, Guan Huang, Xiaojie Jin, Zheng Zhu, Jiwen Lu",
+      "date": "2026-08-18",
+      "pdf": "https://arxiv.org/pdf/2608.18234v1",
+      "score": "6.0",
+      "evidence": "行为世界模型用于学习机器人动力学与全身控制",
+      "tldr": "现有全身跟踪策略仅在平地训练，无法应对地形与物体交互，且不断扩充参考动作库在环境相关任务上失效。为此提出GigaBrain-WBC-0.5行为世界模型，用因果Transformer联合预测动作、状态和潜在命令分布，并以自动地形标注恢复接触几何，部署时在线识别并纠正不可信命令。在四项测试中均获最高成功率，如地形交互81.3%、跌倒恢复99.3%，大幅领先基线。该工作首次将世界模型用于人形全身控制，支持实时交互和硬件迁移。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Whole-body motion tracking policies turn a humanoid into a robust control interface: the teleoperator---or an upstream model---only supplies a coarse movement intent, while the low-level policy keeps the robot balanced and physically feasible. Existing trackers deliver this interface only on flat ground: trained in empty scenes, they never learn how contact with terrain and objects reshapes their dynamics, and they attempt to teach the policy to balance under any command by continually enlarging the reference-motion corpus, which stops working once feasible behaviors become environment-dependent. We present GigaBrain-WBC-0.5, the first Behavior World Model (BWM) for humanoid whole-body control. Rather than a purely reactive tracker, we train a causal Transformer to jointly predict its next action, next state, and the distribution over its next latent behavior command, so the network that acts also models how the environment shapes what it can do next. An automatic terrain-annotation pipeline recovers full 3D contact geometry from retargeted motion, enabling terrain annotation at the scale of existing motion datasets. The predicted distribution is reused at deployment to detect implausible commands online and retract them onto learned behaviors, so the robot attempts tasks in a \"best-effort\" manner. The result is a unified policy that takes real-time command, interacts with environment, and stays robust to implausible commands, falls, and disturbances. GigaBrain-WBC-0.5 achieves the highest success rate across all four regimes among three large-scale tracker baselines: 81.3% on terrain interaction (4.3x the strongest baseline), 83.1% under implausible commands, and 99.3% fall recovery (16.8x the strongest baseline). Hardware trials show robust interaction under missing supports and disturbances; the Unitree G1 checkpoint transfers to the Maker L01 robot with simple fine-tuning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
