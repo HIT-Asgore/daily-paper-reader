@@ -6,42 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-24
-- 运行时间：2026-08-24 19:23:06 UTC
+- 最新运行日期：2026-08-25
+- 运行时间：2026-08-25 21:00:52 UTC
 - 运行状态：成功
-- 本次总论文数：6
+- 本次总论文数：5
 - 精读区：3
-- 速读区：3
+- 速读区：2
 
 ### 今日简报（AI）
-今日精读6篇论文，重点聚焦世界模型在机器人连续控制与操作中的泛化能力。
-
-最值得关注的是《Graph-Operator World Models》以9.0分领跑，提出图算子世界模型实现形态参数泛化；《Stable Multi-Step Rollouts》则用不确定性引导的混合动力学提升长时程预测稳定性。
-
-建议优先精读这两篇高分析，速读的三篇可作为机器人操作与规划方向的延伸参考。
-- 详情：[/202608/24/README](/202608/24/README)
+今日精选5篇具身智能与机器人学习论文，重点关注机器人操作与全身运动控制。最值得精读的是两篇8.0分工作：基于未来隐状态推断动作的机械臂操控，以及用世界模型驱动的全身移动操作。下一步建议读者优先看世界模型方法，它更贴近真实机器人部署。
+- 详情：[/202608/25/README](/202608/25/README)
 
 ### 精读区论文标签
-1. [Graph-Operator World Models for Morphology-Parameter Generalization in Continuous Control](/202608/24/2608.20936v1-graph-operator-world-models-for-morphology-parameter-generalization-in-continuous-control)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：学习用于连续机器人控制并具有形态泛化能力的动态世界模型
-2. [Stable Multi-Step Rollouts via Uncertainty-Guided Hybrid Dynamics](/202608/24/2608.16431v1-stable-multi-step-rollouts-via-uncertainty-guided-hybrid-dynamics)  
+1. [Inferring Action from Future Latent State for Robotic Manipulation](/202608/25/2608.22067v1-inferring-action-from-future-latent-state-for-robotic-manipulation)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：通过学习动力学模型实现稳定多步展开的模型强化学习
-3. [Beyond Imitation: Self-Improving Robot Policies via Off-Policy Q-Planning](/202608/24/2608.21204v1-beyond-imitation-self-improving-robot-policies-via-off-policy-q-planning)  
+   evidence：学习世界模型，从预测的未来潜在状态推断机器人动作
+2. [DreamMimic: Learning Visuomotor Whole-Body Loco-Manipulation via World Model](/202608/25/2608.22278v1-dreammimic-learning-visuomotor-whole-body-loco-manipulation-via-world-model)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：利用离策略强化学习微调实现机器人操作策略的自我改进
+   evidence：用世界模型学习预测性潜在动力学以支持视觉运动全身操作
+3. [Enhancing Sim2Real Transfer for Torque-Controlled Robots through Real2Sim Dynamics Estimation and Reinforcement Learning](/202608/25/2608.22629v1-enhancing-sim2real-transfer-for-torque-controlled-robots-through-real2sim-dynamics-estimation-and-reinforcement-learning)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：基于强化学习的机械臂力矩控制并通过真实到仿真动力学标定提升迁移
 
 ### 速读区论文标签
-1. [FetchMan: Learning Visual Humanoid Loco-Manipulation Policies from Simulated Experiences](/202608/24/2608.17027v1-fetchman-learning-visual-humanoid-loco-manipulation-policies-from-simulated-experiences)  
+1. [CIDER: Continual Interactive Distillation for Embodied Reinforcement Learning](/202608/25/2608.21899v1-cider-continual-interactive-distillation-for-embodied-reinforcement-learning)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：从仿真经验用强化学习学习可视化人形移动操作策略
-2. [Reinforced Planning with Latent World Models](/202608/24/2608.18669v1-reinforced-planning-with-latent-world-models)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于潜在世界模型的强化规划，用于模型基控制
-3. [DECOWAM: Decoupled Whole-Body World-Action Model for Legged Mobile Manipulation](/202608/24/2608.20114v2-decowam-decoupled-whole-body-world-action-model-for-legged-mobile-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：学习移动操作的全身世界-行动模型，预测未来观测与控制，属于学习动力学模型用于机器人控制
+   evidence：面向具身操作策略的持续强化学习框架
+2. [Reward-Free Continual Adaptation for Resilient Space Robots](/202608/25/2608.23452v1-reward-free-continual-adaptation-for-resilient-space-robots)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：基于潜空间世界模型的模型强化学习实现机器人无奖励适应
 
 
 <div class="dpr-home-promo-card">

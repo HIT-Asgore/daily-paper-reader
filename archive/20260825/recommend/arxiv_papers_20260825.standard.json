@@ -1,0 +1,231 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-25T20:57:57.605821+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2608.22067v1",
+      "source": "arxiv",
+      "title": "Inferring Action from Future Latent State for Robotic Manipulation",
+      "abstract": "World-Action Models (WAMs) build robot control on video-generation backbones, which jointly predict dense future visual trajectories and robot actions. We argue that video generation is an unnecessary intermediate objective for world-action modeling. For robotic manipulation, the goal of a world model is not to reproduce how the world looks at every intermediate moment, but to predict the state that the world will reach after an action is executed. The intermediate frames only describe the visual transition between physical states, which consumes substantial model capacity and computation, but do not directly specify the physical outcome that the robot action is intended to produce. In this paper, we propose DELE-w0.5, which infers robot actions from predicted future states without relying on video generation. Concretely, DELE-w0.5 infers the action sequence from its corresponding compact future latent state. The future latent state captures the action-relevant physical outcome of robot interaction and serves as an explicit bridge between world modeling and action generation. The core design principle of DELE-w0.5 is to model how the physical world changes under robot actions, rather than how its visual appearance evolves frame by frame. This formulation removes the high-dimensional visual redundancy introduced by dense video representations, and it therefore enables cheaper training and low-latency inference. Across 480 real-robot trials on four long-horizon manipulation tasks, our DELE-w0.5 achieves the best performance among all compared policies, attaining 62.5 overall full-task success and 81.3 macro ordered-stage progress, outperforming the strongest baseline by 47.5 and 30.7 percentage points, respectively.",
+      "authors": [
+        "Fenghao Lei",
+        "Zhixiong Huang",
+        "Long Yang",
+        "Jiabao Chen",
+        "Jie Cheng",
+        "Peilin Huang",
+        "Han Fu",
+        "Zhuo Li",
+        "Xiaoxue Ren"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-08-22T18:17:36+00:00",
+      "link": "https://arxiv.org/pdf/2608.22067v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "learns a world model to infer actions from predicted future latent state for robotic manipulation",
+      "llm_evidence_cn": "学习世界模型，从预测的未来潜在状态推断机器人动作",
+      "llm_evidence": "学习世界模型，从预测的未来潜在状态推断机器人动作",
+      "canonical_evidence": "学习世界模型，从预测的未来潜在状态推断机器人动作",
+      "llm_tldr_en": "Proposes DELE-w0.5 to infer robot actions directly from the predicted future latent state instead of generating dense video, improving efficiency and focus on physical outcomes in manipulation world modeling.",
+      "llm_tldr_cn": "现有世界-动作模型依赖视频生成来预测未来视觉轨迹，这一中间目标消耗大量计算且不直接对应物理结果。本文指出，对于机器人操作，世界模型应预测动作执行后的状态而非每一帧画面。为此提出DELE-w0.5，直接从预测的未来潜在状态推断机器人动作，跳过了密集视频重建。实验表明该方法在保持操作性能的同时显著减少了计算开销，并为基于模型的机器人控制提供了更简洁、目标导向的世界模型设计思路。",
+      "llm_tldr": "现有世界-动作模型依赖视频生成来预测未来视觉轨迹，这一中间目标消耗大量计算且不直接对应物理结果。本文指出，对于机器人操作，世界模型应预测动作执行后的状态而非每一帧画面。为此提出DELE-w0.5，直接从预测的未来潜在状态推断机器人动作，跳过了密集视频重建。实验表明该方法在保持操作性能的同时显著减少了计算开销，并为基于模型的机器人控制提供了更简洁、目标导向的世界模型设计思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.22278v1",
+      "source": "arxiv",
+      "title": "DreamMimic: Learning Visuomotor Whole-Body Loco-Manipulation via World Model",
+      "abstract": "Vision-based whole-body loco-manipulation on humanoid robots is challenging due to partial observability, contact-rich dynamics, and the difficulty of learning long-horizon behaviors from high-dimensional visual inputs. We present \\href{https://github.com/DreamMimic/DreamMimic}{DreamMimic}, a framework that distills privileged teacher policies into vision-based humanoid controllers via world-model-assisted distillation. Instead of using a Dreamer-style RSSM for planning, we repurpose it to learn predictive latent dynamics that serve as both a representation space and an action-conditioned multi-step supervision signal, while exposing compact predictive features to the student policy to reduce long-term drift. Beyond standard reconstruction objectives for proprioceptive and visual observations, we add auxiliary prediction heads for privileged state, contact, object state, and reward estimation. These heads provide additional supervision related to agent--object interaction and task progress, encouraging the latent representation to retain signals that are useful for contact-rich loco-manipulation. We further introduce Performance-Conditioned Guidance (PCG), a reward-driven adaptive distillation schedule that computes performance scores for both teacher and student to dynamically balance guidance and exploration. PCG prevents both premature teacher annealing and excessive teacher interference in challenging visual settings. Experiments on OMOMO and BEHAVE show improved tracking-based loco-manipulation performance over strong vision-based baselines, without exposing online privileged interaction states to the student at deployment. Qualitative simulations further examine morphology and simulator changes. These results suggest that world models can provide a useful mechanism for stabilizing visual policy distillation in contact-rich humanoid behaviors.",
+      "authors": [
+        "Jie Yin",
+        "Xingyu Lai"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-23T08:08:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.22278v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "world model with predictive latent dynamics for visuomotor loco-manipulation",
+      "llm_evidence_cn": "用世界模型学习预测性潜在动力学以支持视觉运动全身操作",
+      "llm_evidence": "用世界模型学习预测性潜在动力学以支持视觉运动全身操作",
+      "canonical_evidence": "用世界模型学习预测性潜在动力学以支持视觉运动全身操作",
+      "llm_tldr_en": "DreamMimic distills privileged teacher policies into vision-based humanoid controllers via world-model-assisted distillation, repurposing RSSM for predictive latent dynamics and multi-step supervision.",
+      "llm_tldr_cn": "视觉驱动的人形机器人全身移动操作面临部分可观测、接触丰富动力学和长期行为学习等挑战。DreamMimic 提出世界模型辅助蒸馏框架，将特权教师策略转化为视觉学生策略。它不把 Dreamer 式 RSSM 用于规划，而是用它学习预测性潜在动力学，同时作为表征空间和动作条件的多步监督信号。实验证明该方法能有效应对长期漂移并完成复杂移动操作任务，展示了模型基方法在全身操作中的应用潜力。",
+      "llm_tldr": "视觉驱动的人形机器人全身移动操作面临部分可观测、接触丰富动力学和长期行为学习等挑战。DreamMimic 提出世界模型辅助蒸馏框架，将特权教师策略转化为视觉学生策略。它不把 Dreamer 式 RSSM 用于规划，而是用它学习预测性潜在动力学，同时作为表征空间和动作条件的多步监督信号。实验证明该方法能有效应对长期漂移并完成复杂移动操作任务，展示了模型基方法在全身操作中的应用潜力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.22629v1",
+      "source": "arxiv",
+      "title": "Enhancing Sim2Real Transfer for Torque-Controlled Robots through Real2Sim Dynamics Estimation and Reinforcement Learning",
+      "abstract": "Transferring reinforcement learning policies from simulation to Real-World robots remains a major challenge, particularly when dealing with low-level torque control, where even small modelling inaccuracies can lead to unstable or unsafe behaviours. In this work, we propose a Real2Sim2Real pipeline that improves Sim2Real transfer for torque-controlled robotic arms by combining trajectory matching, parameter optimization via genetic algorithms, and domain randomization. Using the 7-DOF Franka Emika Panda robot, we first identify friction, inertia, and gravity compensation parameters by minimizing the error between real and simulated joint trajectories. These calibrated dynamics are then used to train a TQC-based reinforcement learning agent in simulation. The trained policy is evaluated in both Gazebo and MuJoCo environments, and finally deployed on the real robot. Our results demonstrate a significant improvement in tracking accuracy and policy robustness after parameter tuning, with smooth policy transfer from simulation to the Real-World across multiple target-reaching tasks. This work highlights the effectiveness of accurate physical modelling in enabling stable and generalizable torque-based reinforcement learning policies.",
+      "authors": [
+        "Davide Bargellini",
+        "Alex Pasquali",
+        "Andrea Govoni",
+        "Riccardo Zanella",
+        "Gianluca Palli"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-08-23T22:25:33+00:00",
+      "link": "https://arxiv.org/pdf/2608.22629v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Reinforcement learning for torque-controlled robotic arms with real2sim dynamics calibration",
+      "llm_evidence_cn": "基于强化学习的机械臂力矩控制并通过真实到仿真动力学标定提升迁移",
+      "llm_evidence": "基于强化学习的机械臂力矩控制并通过真实到仿真动力学标定提升迁移",
+      "canonical_evidence": "基于强化学习的机械臂力矩控制并通过真实到仿真动力学标定提升迁移",
+      "llm_tldr_en": "A Real2Sim2Real pipeline improves sim2real transfer for torque-controlled robotic arms by calibrating friction, inertia, and gravity via trajectory matching and genetic algorithm, then training RL policies with domain randomization. Experiments on Franka Panda show stable transfer.",
+      "llm_tldr_cn": "针对力矩控制机械臂仿真到真实迁移中的模型误差问题，提出Real2Sim2Real流程。先用轨迹匹配和遗传算法估计摩擦、惯性和重力补偿参数，标定动力学；再结合域随机化训练强化学习策略。在Franka Emika Panda上的实验表明，该方法能学习出稳定且可迁移到真实机器人的力矩控制策略。相关工作为低层力矩控制的sim2real提供了系统性的动力学标定与训练方案。",
+      "llm_tldr": "针对力矩控制机械臂仿真到真实迁移中的模型误差问题，提出Real2Sim2Real流程。先用轨迹匹配和遗传算法估计摩擦、惯性和重力补偿参数，标定动力学；再结合域随机化训练强化学习策略。在Franka Emika Panda上的实验表明，该方法能学习出稳定且可迁移到真实机器人的力矩控制策略。相关工作为低层力矩控制的sim2real提供了系统性的动力学标定与训练方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.21899v1",
+      "source": "arxiv",
+      "title": "CIDER: Continual Interactive Distillation for Embodied Reinforcement Learning",
+      "abstract": "Human-in-the-loop real-world reinforcement learning enables rapid acquisition of effective robotic manipulation policies for individual tasks, often within tens of minutes. Yet it remains unclear how to extend this paradigm to continual learning, where a single policy must acquire new skills without losing previously learned behaviors. Existing real-world continual learning methods do not explicitly constrain prior behaviors, leading to severe catastrophic forgetting. We introduce Continual Interactive Distillation for Embodied Reinforcement Learning (CIDER), a continual reinforcement learning framework that freezes the accumulated historical policy as a teacher before learning each new task and interleaves task learning with distillation-based retention. We further introduce gradient routing to separate the gradients used for acquiring new tasks from those used for preserving prior behaviors. We evaluate our method with a single shared actor on six real-world household and industrial manipulation tasks. Interactive Distillation maintains high measured success on previously learned tasks across our six-task real-robot sequence while acquiring each new task in 10 to 20 minutes, whereas every baseline forgets at least one previous task. Additional ablations reveal the key design choices that govern the tradeoff between stability and plasticity in real-world continual reinforcement learning.",
+      "authors": [
+        "Houlin Li",
+        "Minghui Xu",
+        "Guo Xu",
+        "Xuan Du",
+        "Xiaohan Yan",
+        "Chun Wang",
+        "Yuxiang Yan",
+        "Shukai Yang",
+        "Yongcheng Liu",
+        "Wei Shan",
+        "Maoqing Yao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-22T10:21:26+00:00",
+      "link": "https://arxiv.org/pdf/2608.21899v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "continual reinforcement learning framework for embodied manipulation policies",
+      "llm_evidence_cn": "面向具身操作策略的持续强化学习框架",
+      "llm_evidence": "面向具身操作策略的持续强化学习框架",
+      "canonical_evidence": "面向具身操作策略的持续强化学习框架",
+      "llm_tldr_en": "CIDER is a continual RL framework that freezes historical policy as a teacher and interleaves task learning with distillation, mitigating catastrophic forgetting in real-world embodied manipulation.",
+      "llm_tldr_cn": "真实世界强化学习可以在几十分钟内获得单个操作任务的有效策略，但持续学习时容易遗忘旧技能。CIDER提出一种持续强化学习框架：在每次学习新任务前，将累积的历史策略冻结为教师模型，并在学习过程中穿插基于蒸馏的知识保持。实验结果显示，该方法在多个连续操作任务上显著减轻了灾难性遗忘，使得单一策略能够持续获得新技能而不牺牲旧技能，为具身智能体的终身学习提供了可行方案。",
+      "llm_tldr": "真实世界强化学习可以在几十分钟内获得单个操作任务的有效策略，但持续学习时容易遗忘旧技能。CIDER提出一种持续强化学习框架：在每次学习新任务前，将累积的历史策略冻结为教师模型，并在学习过程中穿插基于蒸馏的知识保持。实验结果显示，该方法在多个连续操作任务上显著减轻了灾难性遗忘，使得单一策略能够持续获得新技能而不牺牲旧技能，为具身智能体的终身学习提供了可行方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.23452v1",
+      "source": "arxiv",
+      "title": "Reward-Free Continual Adaptation for Resilient Space Robots",
+      "abstract": "Space robots operate in extreme environments where hardware degradation can critically compromise traditional control strategies. While continual reinforcement learning offers a promising mechanism for online adaptation, it inherently requires access to a reward signal during deployment. However, precise reward computation in space is often infeasible due to the lack of external tracking systems and the overall complexity of the environment. To address the challenge of unobservable rewards, we introduce a reward-free continual learning framework that leverages latent-state world models. By pre-training a model-based agent across diverse simulations, the world model learns a robust predictor of the reward structure within its latent space. Upon deployment to an environment with severe hardware degradation, we freeze the observation encoder and reward predictor to update only the transition dynamics of the world model through unsupervised rollouts. By training the policy entirely on imagined trajectories generated by this updated world model, the agent adapts to altered dynamics without receiving new rewards. We demonstrate our approach across simulated planetary traversal, orbital navigation, and precision assembly tasks subjected to severe morphological failures.",
+      "authors": [
+        "Andrej Orsula",
+        "Miguel Olivares-Mendez",
+        "Carol Martinez"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-24T16:23:36+00:00",
+      "link": "https://arxiv.org/pdf/2608.23452v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Model-based RL with latent world models for reward-free adaptation in robots",
+      "llm_evidence_cn": "基于潜空间世界模型的模型强化学习实现机器人无奖励适应",
+      "llm_evidence": "基于潜空间世界模型的模型强化学习实现机器人无奖励适应",
+      "canonical_evidence": "基于潜空间世界模型的模型强化学习实现机器人无奖励适应",
+      "llm_tldr_en": "This work introduces a reward-free continual learning framework using latent-state world models. A model-based agent pretrained across simulations learns a robust reward predictor, enabling adaptation on space robots without external reward signals during deployment.",
+      "llm_tldr_cn": "针对空间机器人在部署时难以获得精确奖励信号的问题，提出一种无奖励持续学习框架。利用潜状态世界模型，通过在多种仿真中预训练模型基agent来预测奖励结构；部署后根据世界模型状态进行适应，无需外部奖励。该方法提升了机器人在退化硬件条件下的适应能力与鲁棒性。为无奖励环境下的机器人自适应提供了一种基于模型的强化学习途径。",
+      "llm_tldr": "针对空间机器人在部署时难以获得精确奖励信号的问题，提出一种无奖励持续学习框架。利用潜状态世界模型，通过在多种仿真中预训练模型基agent来预测奖励结构；部署后根据世界模型状态进行适应，无需外部奖励。该方法提升了机器人在退化硬件条件下的适应能力与鲁棒性。为无奖励环境下的机器人自适应提供了一种基于模型的强化学习途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
