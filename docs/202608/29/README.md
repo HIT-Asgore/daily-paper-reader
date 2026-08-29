@@ -1,22 +1,21 @@
 # 日报 · 2026-08-29
 
-- 生成时间：2026-08-29 03:25:45 UTC
+- 生成时间：2026-08-29 21:34:57 UTC
 - 当次推荐总数：5
-- 精读区：0
-- 速读区：5
+- 精读区：1
+- 速读区：4
 
 ## 今日简报（AI）
-今日共读5篇论文，全部为速读，未做精读。最值得关注的是《Risk-Sensitive Reinforcement Learning with Smoothed Quantile Objectives》与《Riemann-1.0: An Embodied World Action Model for Physical AI》，均获7分。建议优先浏览这两篇摘要，理解风险敏感RL与具身世界行动模型的当前进展。
+今日聚焦世界动作模型与机器人学习，精读1篇高分论文并速读3篇相关研究。最值得关注的是《Making Latent Evolution Explicit》提出算子结构转换，以8.0分成为理解世界动作模型进化的关键。建议普通读者从这篇入手，再对照WAM蒸馏与物理滤波两篇，把握提升泛化的三条路径。
 
 ## 精读区
-- 本次无精读推荐。
+1. [Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models](/202608/29/2608.27259v1-making-latent-evolution-explicit-operator-structured-transitions-for-world-action-models) （8.0/10）
 
 ## 速读区
-1. [Risk-Sensitive Reinforcement Learning with Smoothed Quantile Objectives](/202608/29/2608.22227v1-risk-sensitive-reinforcement-learning-with-smoothed-quantile-objectives) （7.0/10）
-2. [Riemann-1.0: An Embodied World Action Model for Physical AI](/202608/29/2608.27033v1-riemann-10-an-embodied-world-action-model-for-physical-ai) （7.0/10）
-3. [WAM-OPD: On-Policy Distillation for World Action Models](/202608/29/2608.22364v1-wam-opd-on-policy-distillation-for-world-action-models) （6.0/10）
-4. [Guided Riemannian Optimization (GuRO): Bridging Model Predictive Control and Decision Transformers](/202608/29/2608.23204v1-guided-riemannian-optimization-guro-bridging-model-predictive-control-and-decision-transformers) （6.0/10）
-5. [Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization](/202608/29/2608.26103v2-zero-wam-in-context-world-action-modeling-from-human-videos-for-open-ended-task-generalization) （6.0/10）
+1. [WAM-OPD: On-Policy Distillation for World Action Models](/202608/29/2608.22364v1-wam-opd-on-policy-distillation-for-world-action-models) （6.0/10）
+2. [Physics Filtering Favors the Generalization of Robot Learning](/202608/29/2608.22701v1-physics-filtering-favors-the-generalization-of-robot-learning) （6.0/10）
+3. [Guided Riemannian Optimization (GuRO): Bridging Model Predictive Control and Decision Transformers](/202608/29/2608.23204v1-guided-riemannian-optimization-guro-bridging-model-predictive-control-and-decision-transformers) （6.0/10）
+4. [TrAct: Bridging Robot Control and Visual Prediction with Visual Tracks](/202608/29/2608.24101v1-tract-bridging-robot-control-and-visual-prediction-with-visual-tracks) （6.0/10）
 
 ---
 使用键盘方向键可在日报/论文之间快速切换。

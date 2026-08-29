@@ -1,56 +1,58 @@
 {
   "mode": "standard",
-  "generated_at": "2026-08-29T03:21:34.789303+00:00",
+  "generated_at": "2026-08-29T21:31:26.822667+00:00",
   "stats": {
     "mode": "standard",
     "tag_count": 2,
-    "deep_divecandidates": 0,
+    "deep_divecandidates": 1,
     "deep_cap": 7,
-    "deep_selected": 0,
-    "quick_candidates": 5,
+    "deep_selected": 1,
+    "quick_candidates": 4,
     "quick_skim_target": 12,
-    "quick_selected": 5
+    "quick_selected": 4
   },
-  "deep_dive": [],
-  "quick_skim": [
+  "deep_dive": [
     {
-      "id": "2608.22227v1",
+      "id": "2608.27259v1",
       "source": "arxiv",
-      "title": "Risk-Sensitive Reinforcement Learning with Smoothed Quantile Objectives",
-      "abstract": "Reinforcement Learning (RL) has achieved tremendous success in recent years. However, the classical foundations of RL do not account for the risk sensitivity of the objective function, which is critical in various fields, including healthcare, finance, etc. A popular approach to incorporate risk sensitivity is to optimize a specific quantile of the cumulative reward distribution. However, exact quantile objectives are non-smooth and can change abruptly under small perturbations of the return distribution, making them difficult to optimize reliably when the transition model must be learned from data. Motivated by this instability, we develop UCB-BQRL, a model-based optimistic learning algorithm that maintains confidence sets for the transition kernel and plans using a lower-buffered quantile criterion. The buffered criterion smooths the exact quantile objective by averaging nearby lower quantiles, thereby improving stability under transition-estimation error. To compute the buffered-quantile policy at each episode, we introduce EVI-BQ, an exact dynamic-programming procedure. We establish a high-probability regret bound for UCB-BQRL, which up to logarithmic factors scales as $\\mathcal{O}(\\mathrm{e}^{τ/ρ_τ}+H^2\\sqrt{SAT})$, where $ρ_τ$ is denoted as the root-level left-plateau threshold, which is a problem-dependent constant. Further, we establish an information-theoretic lower bound of $Ω(H/ρ_τ\\sqrt{AT})$ for the regret of any algorithm dealing with a quantile objective function. Finally, we prove that the exact point-quantile evaluation and exact lower-buffered quantile evaluation are PP-hard under polynomial-time Turing reductions, even for a fixed policy in a two-state, one-action finite-horizon MDP.",
+      "title": "Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models",
+      "abstract": "World Action Models (WAMs) augment robot policies by predicting how task-relevant scene states may evolve under interaction. Recent WAMs increasingly perform such prediction in latent representation spaces, avoiding full appearance-level generation while preserving control-relevant information. Yet latent transitions are commonly realized with Transformer-based predictors whose inductive structure is centered on token interaction rather than temporal evolution. We study transition realization as an architectural choice distinct from predictive representation and prediction-policy coupling. We introduce the Latent Evolution Operator Network (LEON), which models latent evolution in a learned observable space through context-modulated operator-based propagation and additive forcing. Grounded in the controlled Koopman generator view of evolution, LEON organizes context-dependent transition variation around a shared evolution-operator structure while retaining a complementary path for additive change. Controlled dynamical systems verify the resulting evolution-specific inductive bias and the complementary roles of operator propagation and forcing. Across two WAM formulations that integrate latent prediction into the policy differently, LEON improves closed-loop performance and robustness while remaining effective under full transition replacement. These results establish transition realization as a consequential architectural choice in latent WAMs.",
       "authors": [
-        "Mohammad Alipour-Vaezi",
-        "Huaiyang Zhong",
-        "Sajad Khodadadian"
+        "Xiaoxiao Lu",
+        "Yunlong Dong",
+        "Jiahao Shi",
+        "Ye Yuan"
       ],
       "primary_category": "cs.LG",
       "categories": [
-        "cs.LG",
-        "math.OC"
+        "cs.LG"
       ],
-      "published": "2026-08-23T05:41:32+00:00",
-      "link": "https://arxiv.org/pdf/2608.22227v1",
+      "published": "2026-08-27T15:43:44+00:00",
+      "link": "https://arxiv.org/pdf/2608.27259v1",
       "tags": [
+        "keyword:diff-physics",
         "keyword:mbrl-manip",
+        "query:diff-physics",
         "query:mbrl-manip"
       ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "model-based optimistic RL with transition kernel confidence sets",
-      "llm_evidence_cn": "基于模型的乐观强化学习，含转移核置信集",
-      "llm_evidence": "基于模型的乐观强化学习，含转移核置信集",
-      "canonical_evidence": "基于模型的乐观强化学习，含转移核置信集",
-      "llm_tldr_en": "UCB-BQRL is a model-based risk-sensitive RL algorithm using smoothed quantile objectives and confidence sets for the transition kernel, enabling stable optimization with learned models.",
-      "llm_tldr_cn": "经典强化学习目标未考虑风险敏感性，而精确分位数目标非光滑，在小扰动下会突变，导致在需学习转移模型时难以优化。论文提出UCB-BQRL，一种模型基乐观学习算法，为转移核维护置信集，并优化平滑分位数目标以提升稳定性。该方法在风险敏感目标下给出理论保证与乐观探索策略，可迁移至机器人控制等需要风险感知与样本效率的模型基强化学习场景。",
-      "llm_tldr": "经典强化学习目标未考虑风险敏感性，而精确分位数目标非光滑，在小扰动下会突变，导致在需学习转移模型时难以优化。论文提出UCB-BQRL，一种模型基乐观学习算法，为转移核维护置信集，并优化平滑分位数目标以提升稳定性。该方法在风险敏感目标下给出理论保证与乐观探索策略，可迁移至机器人控制等需要风险感知与样本效率的模型基强化学习场景。",
+      "llm_score": 8.0,
+      "llm_evidence_en": "operator-structured latent dynamics for world action models in robot manipulation",
+      "llm_evidence_cn": "面向机器人操作世界模型学习的算子结构潜在动力学",
+      "llm_evidence": "面向机器人操作世界模型学习的算子结构潜在动力学",
+      "canonical_evidence": "面向机器人操作世界模型学习的算子结构潜在动力学",
+      "llm_tldr_en": "LEON models latent evolution in learned observable spaces with context-modulated operators, providing explicit temporal dynamics for World Action Models and improving task-relevant state prediction for robot policies.",
+      "llm_tldr_cn": "现有世界动作模型使用Transformer在潜在空间中预测状态演化，但该结构侧重词元交互而非时间演化。本文提出潜在演化算子网络LEON，在可学习可观测空间中通过上下文调制的算子显式建模潜在状态的时间转移。相对Transformer预测器，LEON提供了更清晰的时序归纳偏置，能更准确地预测与任务相关的场景状态演化。该工作为机器人策略中的动态建模提供了面向操作任务的算子结构化转移方案。",
+      "llm_tldr": "现有世界动作模型使用Transformer在潜在空间中预测状态演化，但该结构侧重词元交互而非时间演化。本文提出潜在演化算子网络LEON，在可学习可观测空间中通过上下文调制的算子显式建模潜在状态的时间转移。相对Transformer预测器，LEON提供了更清晰的时序归纳偏置，能更准确地预测与任务相关的场景状态演化。该工作为机器人策略中的动态建模提供了面向操作任务的算子结构化转移方案。",
       "llm_tags": [
         "query:mbrl-manip"
       ],
       "matched_query_tag": "query:mbrl-manip",
       "matched_query_text": "learning dynamics models for robot control",
       "matched_requirement_id": "req-13",
-      "selection_source": "fresh_fetch",
-      "quick_tier": "7"
-    },
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
     {
       "id": "2608.22364v1",
       "source": "arxiv",
@@ -76,13 +78,13 @@
         "query:mbrl-manip"
       ],
       "llm_score": 6.0,
-      "llm_evidence_en": "world action models for robot action generation and dynamics prediction",
-      "llm_evidence_cn": "面向机器人动作生成与动态预测的世界动作模型",
-      "llm_evidence": "面向机器人动作生成与动态预测的世界动作模型",
-      "canonical_evidence": "面向机器人动作生成与动态预测的世界动作模型",
-      "llm_tldr_en": "WAM-OPD repairs world action models via on-policy distillation: a student acts, a frozen teacher labels histories with video/action targets, and the action branch is trained under its own video plan, restoring capabilities without RL.",
-      "llm_tldr_cn": "针对世界动作模型在蒸馏中丢失任务能力的问题，WAM-OPD提出一种部署一致的在线蒸馏方法：让学生模型在实际环境中交互，再由冻结的教师模型为这些历史经验标注连贯的视频和动作目标，从而在不依赖稀疏奖励强化学习的情况下修复学生模型的能力。实验表明该方法能有效改善学生模型在部署分布下的表现，为世界模型的高效压缩与部署提供了一种实用方案。",
-      "llm_tldr": "针对世界动作模型在蒸馏中丢失任务能力的问题，WAM-OPD提出一种部署一致的在线蒸馏方法：让学生模型在实际环境中交互，再由冻结的教师模型为这些历史经验标注连贯的视频和动作目标，从而在不依赖稀疏奖励强化学习的情况下修复学生模型的能力。实验表明该方法能有效改善学生模型在部署分布下的表现，为世界模型的高效压缩与部署提供了一种实用方案。",
+      "llm_evidence_en": "World action models couple visual future prediction with robot action generation; on-policy distillation without RL",
+      "llm_evidence_cn": "世界动作模型用于机器人动作生成，提出同策略蒸馏方法来修复学生模型",
+      "llm_evidence": "世界动作模型用于机器人动作生成，提出同策略蒸馏方法来修复学生模型",
+      "canonical_evidence": "世界动作模型用于机器人动作生成，提出同策略蒸馏方法来修复学生模型",
+      "llm_tldr_en": "Introduces WAM-OPD, a deployment-consistent on-policy distillation recipe for video-first world action models, where a frozen teacher labels student histories and the student trains under its own generated video plans, improving capabilities without sparse-reward RL.",
+      "llm_tldr_cn": "世界动作模型将视觉未来预测与机器人动作生成结合，但加速的学生模型可能在蒸馏中丢失任务能力。该工作提出WAM-OPD，让学生模型在环境中自生成历史分布，由冻结的教师模型标注一致的视频与动作目标，并在自身生成的视频计划下训练动作分支。实验结果验证了同策略蒸馏能有效修复学生模型且无需稀疏奖励强化学习，显著提升部署时的任务性能。",
+      "llm_tldr": "世界动作模型将视觉未来预测与机器人动作生成结合，但加速的学生模型可能在蒸馏中丢失任务能力。该工作提出WAM-OPD，让学生模型在环境中自生成历史分布，由冻结的教师模型标注一致的视频与动作目标，并在自身生成的视频计划下训练动作分支。实验结果验证了同策略蒸馏能有效修复学生模型且无需稀疏奖励强化学习，显著提升部署时的任务性能。",
       "llm_tags": [
         "query:mbrl-manip"
       ],
@@ -93,48 +95,43 @@
       "quick_tier": "6"
     },
     {
-      "id": "2608.27033v1",
+      "id": "2608.22701v1",
       "source": "arxiv",
-      "title": "Riemann-1.0: An Embodied World Action Model for Physical AI",
-      "abstract": "We introduce Riemann-1.0, a fully causal autoregressive World Action Model for embodied intelligence. Riemann-1.0 jointly models multi-view visual observations, robot states, and embodiment-specific actions within a unified causal autoregressive sequence, representing robot actions and world evolution as causal state transitions. Unlike existing WAMs based on joint generation, video-first prediction, or decoupled modeling paradigms, Riemann-1.0 unifies online robot policy execution and action-conditioned world simulation within a single model, enabling it to function as both an executable robot policy and a multi-embodiment visual world simulator. To scale embodied experience across heterogeneous data sources, we further develop a progressive embodied pretraining framework that unifies learning from egocentric human videos, handheld-gripper demonstrations, and heterogeneous robot trajectories under a shared World Action Modeling objective. Built upon 200K+ hours of interaction data, Riemann-1.0 progressively transfers large-scale embodied experience into executable robot manipulation capabilities. Riemann-1.0 achieves state-of-the-art performance across both simulation benchmarks and real-world manipulation tasks. It achieves success rates of 94.3% on RoboTwin2.0, 99.0% on LIBERO, and 62.6% on the long-horizon compositional benchmark RoboCasa-365, outperforming the previous best method by 8.4% On long-horizon real-world manipulation tasks, Riemann-1.0 achieves a Success Rate (SR) of 85.0% and a Progress Success Rate (PSR) of 94.4%, exceeding the strongest open-source baseline by 15% in SR. These results demonstrate that unified World Action Modeling together with progressive embodied pretraining effectively transforms large-scale embodied experience into generalizable robot manipulation capabilities.",
+      "title": "Physics Filtering Favors the Generalization of Robot Learning",
+      "abstract": "Living organisms exhibit extraordinary adaptability to unseen environments through their intrinsic physical structures and lifelong feedback-driven learning. Endowing robots with comparable generalization is critical for reliable operation in the real world. While recent approaches attempt to improve generalization by scaling training data, such strategies remain impractical for robotics, where collecting real-world demonstrations at the scale of large language models is prohibitively costly and slow. Contrary to this reliance on massive datasets, we show that robots can generalize effectively under dynamics uncertainties even with limited training data by leveraging a feedback mechanism, namely PhyFilter, that corrects learning outputs with physics-filtered learning residuals. PhyFilter operates as a lightweight, model-agnostic module whose parameters can be automatically optimized through an auto-learning algorithm, eliminating manual tuning and enabling seamless integration with diverse robot policies. We validate PhyFilter across four representative robotic systems, demonstrating that it enables quadruped robots to generalize to unseen terrains, payload variations, and speed ranges; drones to flight under unseen wind disturbances; aerial manipulators to achieve centimeter-level in-air capture despite wind and mass uncertainties; and acceleration differentiators to remain robust with distribution shift. These results show that physics-filtered feedback can serve as a powerful alternative to massive data scaling.",
       "authors": [
-        "Haofeng Sun",
-        "Jiangbo Pei",
-        "Fei Kang",
-        "Zexiang Liu",
-        "Yaokun Li",
-        "Boyi Jiang",
-        "Hua Xue",
-        "Cindy Zhou",
-        "Wei Li",
-        "Yichen Wei",
-        "Mengyin An",
-        "Fanliang Zhao",
-        "Biao Jiang",
-        "Zile Wang",
-        "Yang Liu",
-        "Yangguang Li"
+        "Jindou Jia",
+        "Shixuan Han",
+        "Meng Wang",
+        "Gen Li",
+        "Zihan Yang",
+        "Sicheng Zhou",
+        "Kexin Guo",
+        "Jianfei Yang",
+        "Xiang Yu",
+        "Wei Wang",
+        "Lei Guo"
       ],
       "primary_category": "cs.RO",
       "categories": [
         "cs.RO"
       ],
-      "published": "2026-08-27T12:21:26+00:00",
-      "link": "https://arxiv.org/pdf/2608.27033v1",
+      "published": "2026-08-24T01:44:22+00:00",
+      "link": "https://arxiv.org/pdf/2608.22701v1",
       "tags": [
         "keyword:diff-physics",
         "keyword:mbrl-manip",
         "query:diff-physics",
         "query:mbrl-manip"
       ],
-      "llm_score": 7.0,
-      "llm_evidence_en": "Causal autoregressive world action model jointly modeling observations, states and actions for embodied control",
-      "llm_evidence_cn": "因果自回归世界动作模型，联合建模观测、状态与动作以支持具身控制",
-      "llm_evidence": "因果自回归世界动作模型，联合建模观测、状态与动作以支持具身控制",
-      "canonical_evidence": "因果自回归世界动作模型，联合建模观测、状态与动作以支持具身控制",
-      "llm_tldr_en": "Riemann-1.0 is a fully causal autoregressive world action model that unifies policy execution and world simulation, representing actions and world evolution as causal state transitions for embodied intelligence.",
-      "llm_tldr_cn": "针对物理AI需要统一策略执行与世界预测的问题，该文提出Riemann-1.0，用完全因果的自回归序列联合建模多视角视觉、机器人与动作，将动作执行和世界演化统一为状态转移。该模型既可作为策略运行，也可作为多具身视觉世界模拟器，并通过渐进式具身预训练扩展经验。这种统一范式提升了具身智能体对复杂环境的适应能力，为模型驱动的机器人控制提供了新思路。",
-      "llm_tldr": "针对物理AI需要统一策略执行与世界预测的问题，该文提出Riemann-1.0，用完全因果的自回归序列联合建模多视角视觉、机器人与动作，将动作执行和世界演化统一为状态转移。该模型既可作为策略运行，也可作为多具身视觉世界模拟器，并通过渐进式具身预训练扩展经验。这种统一范式提升了具身智能体对复杂环境的适应能力，为模型驱动的机器人控制提供了新思路。",
+      "llm_score": 6.0,
+      "llm_evidence_en": "physics-informed feedback correction of learned robot dynamics",
+      "llm_evidence_cn": "用物理滤波校正学习输出的机器人动力学反馈机制",
+      "llm_evidence": "用物理滤波校正学习输出的机器人动力学反馈机制",
+      "canonical_evidence": "用物理滤波校正学习输出的机器人动力学反馈机制",
+      "llm_tldr_en": "PhyFilter corrects learning outputs with physics-filtered feedback, enabling robots to generalize under dynamics uncertainties with limited data, contrary to scaling datasets for robot learning.",
+      "llm_tldr_cn": "针对机器人学习依赖大规模真实演示数据的问题，本文提出PhyFilter反馈机制，利用物理滤波对学习输出进行校正，使机器人在动力学不确定下仍能有效泛化。实验表明，在有限训练数据下该方法可显著提升对未见过环境的适应性，说明物理滤波有助于策略泛化。该工作为小数据机器人学习提供了物理与学习结合的新范式。",
+      "llm_tldr": "针对机器人学习依赖大规模真实演示数据的问题，本文提出PhyFilter反馈机制，利用物理滤波对学习输出进行校正，使机器人在动力学不确定下仍能有效泛化。实验表明，在有限训练数据下该方法可显著提升对未见过环境的适应性，说明物理滤波有助于策略泛化。该工作为小数据机器人学习提供了物理与学习结合的新范式。",
       "llm_tags": [
         "query:mbrl-manip"
       ],
@@ -142,7 +139,7 @@
       "matched_query_text": "learning dynamics models for robot control",
       "matched_requirement_id": "req-13",
       "selection_source": "fresh_fetch",
-      "quick_tier": "7"
+      "quick_tier": "6"
     },
     {
       "id": "2608.23204v1",
@@ -167,13 +164,13 @@
         "query:mbrl-manip"
       ],
       "llm_score": 6.0,
-      "llm_evidence_en": "bridges MPC and decision transformers for model-based control, applicable to robot arm control",
-      "llm_evidence_cn": "连接模型预测控制与决策Transformer，可迁移用于机械臂的模型基控制",
-      "llm_evidence": "连接模型预测控制与决策Transformer，可迁移用于机械臂的模型基控制",
-      "canonical_evidence": "连接模型预测控制与决策Transformer，可迁移用于机械臂的模型基控制",
-      "llm_tldr_en": "GuRO proposes a guided Riemannian optimization method to train decision transformers that unify MPC and RL, addressing non-convex training objectives for high-dimensional nonlinear control.",
-      "llm_tldr_cn": "针对融合模型预测控制（MPC）与强化学习（RL）的决策Transformer训练中存在高度非凸损失曲面、优化困难的问题，提出GuRO引导黎曼优化方法。该方法利用MPC的引导信息在黎曼流形上迭代优化策略参数，兼顾样本效率与长期预测准确性。在高维非线性系统控制实验中，GuRO提升了训练稳定性和决策性能，为机械臂等机器人系统的模型基控制提供了可迁移的优化框架。",
-      "llm_tldr": "针对融合模型预测控制（MPC）与强化学习（RL）的决策Transformer训练中存在高度非凸损失曲面、优化困难的问题，提出GuRO引导黎曼优化方法。该方法利用MPC的引导信息在黎曼流形上迭代优化策略参数，兼顾样本效率与长期预测准确性。在高维非线性系统控制实验中，GuRO提升了训练稳定性和决策性能，为机械臂等机器人系统的模型基控制提供了可迁移的优化框架。",
+      "llm_evidence_en": "bridges MPC and decision transformers via guided Riemannian optimization, offering model-based control that can transfer to robot arm manipulation",
+      "llm_evidence_cn": "通过引导黎曼优化将模型预测控制与决策Transformer统一，属于可迁移至机械臂控制的模型方法",
+      "llm_evidence": "通过引导黎曼优化将模型预测控制与决策Transformer统一，属于可迁移至机械臂控制的模型方法",
+      "canonical_evidence": "通过引导黎曼优化将模型预测控制与决策Transformer统一，属于可迁移至机械臂控制的模型方法",
+      "llm_tldr_en": "GuRO proposes guided Riemannian optimization to train decision transformers with MPC-style model-based priors, reducing sample complexity in control.",
+      "llm_tldr_cn": "针对模型预测控制面对不准确模型时性能退化、无模型强化学习样本效率低的问题，本文提出GuRO，将MPC的模型先验引入决策Transformer的训练，通过引导黎曼优化缓解非凸损失景观带来的优化困难。该方法在高维非线性控制任务中提升了训练稳定性与决策性能，为机械臂等机器人系统提供了模型与学习结合的新思路。",
+      "llm_tldr": "针对模型预测控制面对不准确模型时性能退化、无模型强化学习样本效率低的问题，本文提出GuRO，将MPC的模型先验引入决策Transformer的训练，通过引导黎曼优化缓解非凸损失景观带来的优化困难。该方法在高维非线性控制任务中提升了训练稳定性与决策性能，为机械臂等机器人系统提供了模型与学习结合的新思路。",
       "llm_tags": [
         "query:mbrl-manip"
       ],
@@ -184,31 +181,25 @@
       "quick_tier": "6"
     },
     {
-      "id": "2608.26103v2",
+      "id": "2608.24101v1",
       "source": "arxiv",
-      "title": "Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization",
-      "abstract": "Zero-shot cross-task generalization, where a policy must execute manipulation tasks never seen during training, remains a central challenge in robot learning. In large language models, a novel task can be performed simply by specifying it in the context, without any parameter update. This form of in-context learning (ICL) turns generalization into a problem of task specification. To achieve cross-task generalization, we bring this paradigm to robotic manipulation, and argue that the natural task specification for manipulation is a human video: unlike language, it provides rich visual cues about the intended task evolution. We present Zero-WAM, a causal video-action model that executes unseen tasks by following in-context human video guidance. To address the scarcity of task-rich paired human-robot data, we propose an automatic pipeline that converts task-sampled robot trajectories into semantically matched human videos, yielding HumanGen, a dataset of 74.2K human-robot ICL pairs across 8.6K tasks. For model training, we further introduce an in-context future chunk prediction (IFP) objective that suppresses shortcuts learned from seen tasks and forces the policy to draw task information from the video prompt. On seven unseen tasks in RoboTwin 2.0 simulation, Zero-WAM achieves a 47.0% average success rate, an absolute improvement of 29.5 percentage points over the strongest video-action baseline. In real-world evaluations, it follows human video guidance to generalize to unseen task configurations involving multi-object scenes, long-horizon manipulation, and fine-grained insertion.",
+      "title": "TrAct: Bridging Robot Control and Visual Prediction with Visual Tracks",
+      "abstract": "Robot actions are inherently embodiment-specific and only weakly aligned with image-space visual changes, limiting their effectiveness as conditioning signals for robot world models. In contrast, visual tracks provide an embodiment-agnostic representation of how task-relevant points move through a scene, offering dense image-space guidance for accurate and spatially precise future video prediction. Building on this observation, we propose TrAct, a world-model-based robot decision-making framework that uses visual tracks as an intermediate interface between control and prediction. TrAct consists of three components: a Vision-Language-Action-and-Track model (VLAT) that jointly predicts candidate actions and corresponding visual tracks from the current observation and language instruction; a track-conditioned world model (TWM) that predicts future visual outcomes conditioned on the proposed tracks; and a vision-language reward model (VLAC) that scores the predicted outcomes. At inference time, VLAT generates candidate action-track pairs, TWM rolls out their visual consequences, and VLAC selects the track whose predicted outcome best satisfies the instruction; the action paired with the selected track is then executed by the robot. Experiments on the proposed LIBERO-INTEGRAL benchmark and real-world Franka manipulation show that TrAct improves success rates from 27% to 55% in simulation and from 49% to 76% on real-world tasks compared with the strong VLA baseline $π_{0.5}$. Furthermore, TWM consistently improves video prediction quality over the action-conditioned world model (AWM). These results demonstrate that visual tracks provide an effective shared interface between robot control and visual prediction, enabling more accurate world modeling and stronger robot generalization.",
       "authors": [
-        "Jiaming Zhou",
-        "Qihang Zhang",
-        "Gangwei Xu",
-        "Cunxin Fan",
-        "Yujie Zhao",
-        "Ruilin Wang",
-        "Yiming Luo",
-        "Shuai Yang",
-        "Xing Zhu",
-        "Yujun Shen",
-        "Junwei Liang",
-        "Yinghao Xu"
+        "Zhi Cao",
+        "Howard Ji",
+        "Kevin Zhang",
+        "Kuangzhi Ge",
+        "Li Fei-Fei",
+        "Jiajun Wu",
+        "Huang Huang"
       ],
       "primary_category": "cs.RO",
       "categories": [
-        "cs.RO",
-        "cs.CV"
+        "cs.RO"
       ],
-      "published": "2026-08-26T17:59:34+00:00",
-      "link": "https://arxiv.org/pdf/2608.26103v2",
+      "published": "2026-08-25T06:00:01+00:00",
+      "link": "https://arxiv.org/pdf/2608.24101v1",
       "tags": [
         "keyword:diff-physics",
         "keyword:mbrl-manip",
@@ -216,13 +207,13 @@
         "query:mbrl-manip"
       ],
       "llm_score": 6.0,
-      "llm_evidence_en": "Causal video-action world model that uses in-context human videos to execute unseen manipulation tasks",
-      "llm_evidence_cn": "使用上下文人类视频的因果视频动作世界模型，执行未见过的操作任务",
-      "llm_evidence": "使用上下文人类视频的因果视频动作世界模型，执行未见过的操作任务",
-      "canonical_evidence": "使用上下文人类视频的因果视频动作世界模型，执行未见过的操作任务",
-      "llm_tldr_en": "Zero-WAM brings in-context learning to robotic manipulation by using human videos as task specifications, enabling a causal video-action model to execute unseen tasks without parameter updates.",
-      "llm_tldr_cn": "跨任务泛化是机器人学习的核心难题。该文受大语言模型上下文学习启发，提出Zero-WAM，将人类视频作为任务规范，使因果视频动作模型无需参数更新即可执行未见任务。通过利用视频丰富的视觉线索，模型能理解任务演化并生成相应动作。实验证明该方法在开放式操作任务上具备强大的零样本泛化能力，为机器人任务指定提供新途径。",
-      "llm_tldr": "跨任务泛化是机器人学习的核心难题。该文受大语言模型上下文学习启发，提出Zero-WAM，将人类视频作为任务规范，使因果视频动作模型无需参数更新即可执行未见任务。通过利用视频丰富的视觉线索，模型能理解任务演化并生成相应动作。实验证明该方法在开放式操作任务上具备强大的零样本泛化能力，为机器人任务指定提供新途径。",
+      "llm_evidence_en": "world-model-based robot decision-making using visual tracks as control-prediction interface",
+      "llm_evidence_cn": "基于世界模型的机器人决策框架，以视觉轨迹作为控制与预测的桥梁",
+      "llm_evidence": "基于世界模型的机器人决策框架，以视觉轨迹作为控制与预测的桥梁",
+      "canonical_evidence": "基于世界模型的机器人决策框架，以视觉轨迹作为控制与预测的桥梁",
+      "llm_tldr_en": "Proposes TrAct, a world-model-based decision-making framework using visual tracks as an intermediate control-prediction interface, with a vision-language-action-and-track model.",
+      "llm_tldr_cn": "针对机器人动作与图像空间视觉变化弱对齐的问题，提出TrAct框架，用视觉轨迹作为控制与预测之间的中介。引入视觉-语言-动作-轨迹模型VLAT，联合预测候选动作和对应视觉轨迹，为未来视频预测提供稠密图像空间引导。该框架使世界模型能够更准确地生成空间上精确的未来预测，并改善机器人决策。属于模型化机器人控制方法，可用于机械臂等操作任务。",
+      "llm_tldr": "针对机器人动作与图像空间视觉变化弱对齐的问题，提出TrAct框架，用视觉轨迹作为控制与预测之间的中介。引入视觉-语言-动作-轨迹模型VLAT，联合预测候选动作和对应视觉轨迹，为未来视频预测提供稠密图像空间引导。该框架使世界模型能够更准确地生成空间上精确的未来预测，并改善机器人决策。属于模型化机器人控制方法，可用于机械臂等操作任务。",
       "llm_tags": [
         "query:mbrl-manip"
       ],

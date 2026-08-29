@@ -7,35 +7,34 @@
 
 ## 每次日报
 - 最新运行日期：2026-08-29
-- 运行时间：2026-08-29 03:25:45 UTC
+- 运行时间：2026-08-29 21:34:57 UTC
 - 运行状态：成功
 - 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 精读区：1
+- 速读区：4
 
 ### 今日简报（AI）
-今日筛选5篇论文，全部为速读，暂无精读。最值得关注的是风险敏感强化学习（7.0分）与具身世界动作模型（7.0分）两个方向。建议普通读者优先浏览这两篇，后续可深入探索其方法对比。
+今日共读5篇论文，聚焦世界动作模型与机器人学习前沿，其中1篇精读、3篇速读。最值得关注的是8.0分精读《Making Latent Evolution Explicit》，它提出操作符结构化的转移机制，显著强化世界动作模型的显式演化与预测能力。下一步建议优先精读该文，同时可延伸关注物理过滤对机器人泛化的影响，夯实模型底层假设。
 - 详情：[/202608/29/README](/202608/29/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models](/202608/29/2608.27259v1-making-latent-evolution-explicit-operator-structured-transitions-for-world-action-models)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：面向机器人操作世界模型学习的算子结构潜在动力学
 
 ### 速读区论文标签
-1. [Risk-Sensitive Reinforcement Learning with Smoothed Quantile Objectives](/202608/29/2608.22227v1-risk-sensitive-reinforcement-learning-with-smoothed-quantile-objectives)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于模型的乐观强化学习，含转移核置信集
-2. [Riemann-1.0: An Embodied World Action Model for Physical AI](/202608/29/2608.27033v1-riemann-10-an-embodied-world-action-model-for-physical-ai)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：因果自回归世界动作模型，联合建模观测、状态与动作以支持具身控制
-3. [WAM-OPD: On-Policy Distillation for World Action Models](/202608/29/2608.22364v1-wam-opd-on-policy-distillation-for-world-action-models)  
+1. [WAM-OPD: On-Policy Distillation for World Action Models](/202608/29/2608.22364v1-wam-opd-on-policy-distillation-for-world-action-models)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向机器人动作生成与动态预测的世界动作模型
-4. [Guided Riemannian Optimization (GuRO): Bridging Model Predictive Control and Decision Transformers](/202608/29/2608.23204v1-guided-riemannian-optimization-guro-bridging-model-predictive-control-and-decision-transformers)  
+   evidence：世界动作模型用于机器人动作生成，提出同策略蒸馏方法来修复学生模型
+2. [Physics Filtering Favors the Generalization of Robot Learning](/202608/29/2608.22701v1-physics-filtering-favors-the-generalization-of-robot-learning)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：连接模型预测控制与决策Transformer，可迁移用于机械臂的模型基控制
-5. [Zero-WAM: In-Context World-Action Modeling from Human Videos for Open-Ended Task Generalization](/202608/29/2608.26103v2-zero-wam-in-context-world-action-modeling-from-human-videos-for-open-ended-task-generalization)  
+   evidence：用物理滤波校正学习输出的机器人动力学反馈机制
+3. [Guided Riemannian Optimization (GuRO): Bridging Model Predictive Control and Decision Transformers](/202608/29/2608.23204v1-guided-riemannian-optimization-guro-bridging-model-predictive-control-and-decision-transformers)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：使用上下文人类视频的因果视频动作世界模型，执行未见过的操作任务
+   evidence：通过引导黎曼优化将模型预测控制与决策Transformer统一，属于可迁移至机械臂控制的模型方法
+4. [TrAct: Bridging Robot Control and Visual Prediction with Visual Tracks](/202608/29/2608.24101v1-tract-bridging-robot-control-and-visual-prediction-with-visual-tracks)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：基于世界模型的机器人决策框架，以视觉轨迹作为控制与预测的桥梁
 
 
 <div class="dpr-home-promo-card">
