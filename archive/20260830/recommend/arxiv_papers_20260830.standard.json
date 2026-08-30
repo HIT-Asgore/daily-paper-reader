@@ -1,0 +1,186 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-30T22:56:54.148575+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.25171v1",
+      "source": "arxiv",
+      "title": "Control-Oriented Learning for Dynamic Tracking and Stability Analysis of Soft Pneumatic Actuators",
+      "abstract": "Soft pneumatic actuators offer inherent compliance and safe interaction but remain difficult to model and control because of their highly nonlinear, distributed dynamics. We present a control-oriented data-driven modeling and control framework that decomposes actuator behavior into a nonlinear static equilibrium model and a linear residual dynamics model identified using Extended Dynamic Mode Decomposition with control (EDMDc). This representation enables feedforward compensation, task-space feedback control, and local closed-loop stability analysis through an augmented linear model. Experiments achieve approximately 1 mm root mean square error (RMSE) during low-speed (approximately 10 mm/s) trajectory tracking and below 10 mm RMSE at higher speeds (approximately 100 mm/s). The framework further achieves stable tracking of highly dynamic user-generated references with peak accelerations exceeding 25 m/s^2 while simultaneously performing real-time obstacle avoidance. Finally, the proposed stability analysis is experimentally validated by accurately predicting stable, marginal, and unstable operating regimes. These results demonstrate that structured, control-oriented learning provides an accurate and practical framework for soft actuator control.",
+      "authors": [
+        "Nithin S. Kumar",
+        "Eric J. Barth"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-25T21:39:02+00:00",
+      "link": "https://arxiv.org/pdf/2608.25171v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "EDMDc dynamics model for robot actuator control",
+      "llm_evidence_cn": "基于EDMDc的执行器动力学模型用于机器人控制",
+      "llm_evidence": "基于EDMDc的执行器动力学模型用于机器人控制",
+      "canonical_evidence": "基于EDMDc的执行器动力学模型用于机器人控制",
+      "llm_tldr_en": "A control-oriented data-driven framework decomposes soft pneumatic actuator dynamics into static equilibrium plus EDMDc linear residual model, enabling feedforward control and local stability analysis with ~1 mm tracking RMSE.",
+      "llm_tldr_cn": "软体气动执行器具有高度非线性和分布动力学，难以精确建模和控制。作者提出控制导向的数据驱动框架，将行为分解为非线性静态平衡模型和由扩展动态模态分解（EDMDc）识别的线性残差动力学模型。该表示支持前馈补偿、任务空间反馈控制以及基于增广线性模型的局部闭环稳定性分析。低速轨迹跟踪实验达到约1毫米均方根误差。这为软体机器人的控制导向建模提供了有效方案。",
+      "llm_tldr": "软体气动执行器具有高度非线性和分布动力学，难以精确建模和控制。作者提出控制导向的数据驱动框架，将行为分解为非线性静态平衡模型和由扩展动态模态分解（EDMDc）识别的线性残差动力学模型。该表示支持前馈补偿、任务空间反馈控制以及基于增广线性模型的局部闭环稳定性分析。低速轨迹跟踪实验达到约1毫米均方根误差。这为软体机器人的控制导向建模提供了有效方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.27033v1",
+      "source": "arxiv",
+      "title": "Riemann-1.0: An Embodied World Action Model for Physical AI",
+      "abstract": "We introduce Riemann-1.0, a fully causal autoregressive World Action Model for embodied intelligence. Riemann-1.0 jointly models multi-view visual observations, robot states, and embodiment-specific actions within a unified causal autoregressive sequence, representing robot actions and world evolution as causal state transitions. Unlike existing WAMs based on joint generation, video-first prediction, or decoupled modeling paradigms, Riemann-1.0 unifies online robot policy execution and action-conditioned world simulation within a single model, enabling it to function as both an executable robot policy and a multi-embodiment visual world simulator. To scale embodied experience across heterogeneous data sources, we further develop a progressive embodied pretraining framework that unifies learning from egocentric human videos, handheld-gripper demonstrations, and heterogeneous robot trajectories under a shared World Action Modeling objective. Built upon 200K+ hours of interaction data, Riemann-1.0 progressively transfers large-scale embodied experience into executable robot manipulation capabilities. Riemann-1.0 achieves state-of-the-art performance across both simulation benchmarks and real-world manipulation tasks. It achieves success rates of 94.3% on RoboTwin2.0, 99.0% on LIBERO, and 62.6% on the long-horizon compositional benchmark RoboCasa-365, outperforming the previous best method by 8.4% On long-horizon real-world manipulation tasks, Riemann-1.0 achieves a Success Rate (SR) of 85.0% and a Progress Success Rate (PSR) of 94.4%, exceeding the strongest open-source baseline by 15% in SR. These results demonstrate that unified World Action Modeling together with progressive embodied pretraining effectively transforms large-scale embodied experience into generalizable robot manipulation capabilities.",
+      "authors": [
+        "Haofeng Sun",
+        "Jiangbo Pei",
+        "Fei Kang",
+        "Zexiang Liu",
+        "Yaokun Li",
+        "Boyi Jiang",
+        "Hua Xue",
+        "Cindy Zhou",
+        "Wei Li",
+        "Yichen Wei",
+        "Mengyin An",
+        "Fanliang Zhao",
+        "Biao Jiang",
+        "Zile Wang",
+        "Yang Liu",
+        "Yangguang Li"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-27T12:21:26+00:00",
+      "link": "https://arxiv.org/pdf/2608.27033v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unified world action model for embodied control and simulation",
+      "llm_evidence_cn": "统一世界动作模型用于具身控制与仿真",
+      "llm_evidence": "统一世界动作模型用于具身控制与仿真",
+      "canonical_evidence": "统一世界动作模型用于具身控制与仿真",
+      "llm_tldr_en": "Riemann-1.0 unifies online policy execution and action-conditioned world simulation in a causal autoregressive sequence, serving as both executable robot policy and multi-embodiment visual world simulator.",
+      "llm_tldr_cn": "现有世界动作模型通常采用联合生成、视频优先或解耦建模，难以统一策略执行与世界模拟。Riemann-1.0将多视角视觉观测、机器人状态与动作表示为统一的因果自回归序列，把动作和世界演化建模为因果状态转移。该模型既能充当可执行机器人策略，也能作为多具身形态的视觉世界模拟器。通过渐进式具身预训练，它为世界模型的规模化训练提供了新范式。",
+      "llm_tldr": "现有世界动作模型通常采用联合生成、视频优先或解耦建模，难以统一策略执行与世界模拟。Riemann-1.0将多视角视觉观测、机器人状态与动作表示为统一的因果自回归序列，把动作和世界演化建模为因果状态转移。该模型既能充当可执行机器人策略，也能作为多具身形态的视觉世界模拟器。通过渐进式具身预训练，它为世界模型的规模化训练提供了新范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.26190v1",
+      "source": "arxiv",
+      "title": "Predicting Consequences and Reinforcing Navigation Policies with Latent World Models",
+      "abstract": "World models enable agents to reason about future outcomes and learn policies from their knowledge of state transition, but existing approaches primarily focus on reconstructing future observations or features, which introduces unnecessary complexity and limits their effectiveness for decision making. In this work, we propose a compatibility prediction Latent World Model (LWM) for robot navigation that predicts action-conditioned latent feature compatibility rather than reconstructing observations. Our key insight is that spatial proximity correlates with latent feature similarity, enabling action consequences to be evaluated directly in latent space. To support counterfactual training, our model leverages action sequences sampled across trajectories and learns to predict which sequences lead closer to the goal. Furthermore, we demonstrate how the learned world model can supervise policy learning from unlabeled video data and further improve policies through reinforcement learning entirely within the world model. This imagination-driven framework eliminates the need for action annotations and additional environment interaction. Extensive experiments on multiple real-world robot navigation datasets show that our approach significantly outperforms prior world model and imitation learning methods in prediction accuracy, policy learning, and real-world navigation performance. The code, pretrained models, and additional materials are available at https://wzm206.github.io/latent-world-model-nav.",
+      "authors": [
+        "Zengmao Wang",
+        "Wei Gao",
+        "Shuhan Shen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-23T11:58:42+00:00",
+      "link": "https://arxiv.org/pdf/2608.26190v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Learns latent world model for action consequence prediction and policy reinforcement; navigation, not manipulation.",
+      "llm_evidence_cn": "学习动作条件潜在世界模型用于预测后果和强化策略，用于导航而非机械臂操作",
+      "llm_evidence": "学习动作条件潜在世界模型用于预测后果和强化策略，用于导航而非机械臂操作",
+      "canonical_evidence": "学习动作条件潜在世界模型用于预测后果和强化策略，用于导航而非机械臂操作",
+      "llm_tldr_en": "This work proposes a compatibility-prediction latent world model for navigation, predicting action-conditioned latent feature compatibility instead of reconstructing observations, and uses it to reinforce policies.",
+      "llm_tldr_cn": "现有世界模型多聚焦于重建未来观测或特征，对决策支持有限。本文提出用于机器人导航的兼容性预测潜在世界模型LWM，直接预测动作条件下的潜在特征兼容性，利用空间邻近性对应潜在相似性的洞察评估动作后果，并支持反事实训练。该模型避免了观测重建的复杂性，在导航策略学习与强化上更直接高效。虽然面向导航，其潜在世界模型思想对机械臂等机器人控制中的动力学建模有借鉴意义。",
+      "llm_tldr": "现有世界模型多聚焦于重建未来观测或特征，对决策支持有限。本文提出用于机器人导航的兼容性预测潜在世界模型LWM，直接预测动作条件下的潜在特征兼容性，利用空间邻近性对应潜在相似性的洞察评估动作后果，并支持反事实训练。该模型避免了观测重建的复杂性，在导航策略学习与强化上更直接高效。虽然面向导航，其潜在世界模型思想对机械臂等机器人控制中的动力学建模有借鉴意义。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.26273v1",
+      "source": "arxiv",
+      "title": "Constraint-Aware Physics-Informed Neural Networks for Static Shape Estimation of Co-Manipulative Continuum Robots",
+      "abstract": "Static shape estimation of co-manipulative continuum robots (CCRs) is challenging because the continuum arms and manipulated flexible object form a closed chain that must satisfy both static equilibrium and geometric loop-closure constraints. This paper presents a constraint-aware physics-informed neural network (PINN) for static shape estimation of a tendon-driven CCR modeled using the geometric variable strain formulation. The proposed method incorporates a projected static equilibrium residual and a configuration-level geometric residual to enforce the governing mechanics and closed-chain geometry. In simulation, the PINN is compared with a purely data-driven artificial neural network (ANN) under limited and noisy training data. With 140 samples and 50% label noise, the PINN reduces the relative configuration error, equilibrium residual, and closed-chain residual by 67.88%, 67.35%, and 88.06%, respectively. Using the full dataset, the PINN achieves 0.1597% relative configuration error with an inference time of 0.1773 ms, compared with 17.97 s for an iterative nonlinear solver. Experimental fine-tuning reduces the marker RMSE from 2.657 mm to 0.497 mm and increases R2 from -0.788 to 0.937. These results demonstrate accurate, physically consistent, and computationally efficient static shape estimation of closed-chain CCRs.",
+      "authors": [
+        "Rana Danesh",
+        "Pari Qarehdaghi",
+        "Farrokh Janabi-Sharifi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-08-26T18:00:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.26273v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "physics-informed neural network for co-manipulative shape estimation",
+      "llm_evidence_cn": "用于共操作形状估计的物理信息神经网络",
+      "llm_evidence": "用于共操作形状估计的物理信息神经网络",
+      "canonical_evidence": "用于共操作形状估计的物理信息神经网络",
+      "llm_tldr_en": "A constraint-aware PINN for static shape estimation of co-manipulative continuum robots enforces static equilibrium and loop-closure constraints, outperforming data-driven ANN with less data in simulation.",
+      "llm_tldr_cn": "共操作连续体机器人与柔性物体构成闭链，其静态形状估计需同时满足力学平衡与几何闭环，纯数据驱动方法难以保证。作者提出约束感知的物理信息神经网络，在几何可变应变模型中嵌入投影静力平衡残差和配置级几何残差。仿真表明，相比纯数据驱动神经网络，该方法能用更少数据获得更准确的形状估计。这为柔顺共操作场景提供了可微分的物理一致建模思路。",
+      "llm_tldr": "共操作连续体机器人与柔性物体构成闭链，其静态形状估计需同时满足力学平衡与几何闭环，纯数据驱动方法难以保证。作者提出约束感知的物理信息神经网络，在几何可变应变模型中嵌入投影静力平衡残差和配置级几何残差。仿真表明，相比纯数据驱动神经网络，该方法能用更少数据获得更准确的形状估计。这为柔顺共操作场景提供了可微分的物理一致建模思路。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

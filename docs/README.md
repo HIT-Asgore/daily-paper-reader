@@ -6,35 +6,33 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-29
-- 运行时间：2026-08-29 21:34:57 UTC
+- 最新运行日期：2026-08-30
+- 运行时间：2026-08-30 22:58:43 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：1
+- 本次总论文数：4
+- 精读区：0
 - 速读区：4
 
 ### 今日简报（AI）
-今日共读5篇论文，聚焦世界动作模型与机器人学习前沿，其中1篇精读、3篇速读。最值得关注的是8.0分精读《Making Latent Evolution Explicit》，它提出操作符结构化的转移机制，显著强化世界动作模型的显式演化与预测能力。下一步建议优先精读该文，同时可延伸关注物理过滤对机器人泛化的影响，夯实模型底层假设。
-- 详情：[/202608/29/README](/202608/29/README)
+今日共速读4篇论文，无精读；聚焦软体气动执行器控制、潜世界模型导航与连续体机器人形状估计。其中软体执行器动态跟踪与连续体机器人约束感知形状估计两篇尤为值得关注，均显示模型与物理约束融合的潜力。建议读者优先浏览这两篇，后续可深入挖掘控制导向学习与物理信息网络的结合点。
+- 详情：[/202608/30/README](/202608/30/README)
 
 ### 精读区论文标签
-1. [Making Latent Evolution Explicit: Operator-Structured Transitions for World Action Models](/202608/29/2608.27259v1-making-latent-evolution-explicit-operator-structured-transitions-for-world-action-models)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：面向机器人操作世界模型学习的算子结构潜在动力学
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [WAM-OPD: On-Policy Distillation for World Action Models](/202608/29/2608.22364v1-wam-opd-on-policy-distillation-for-world-action-models)  
+1. [Control-Oriented Learning for Dynamic Tracking and Stability Analysis of Soft Pneumatic Actuators](/202608/30/2608.25171v1-control-oriented-learning-for-dynamic-tracking-and-stability-analysis-of-soft-pneumatic-actuators)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：基于EDMDc的执行器动力学模型用于机器人控制
+2. [Predicting Consequences and Reinforcing Navigation Policies with Latent World Models](/202608/30/2608.26190v1-predicting-consequences-and-reinforcing-navigation-policies-with-latent-world-models)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：学习动作条件潜在世界模型用于预测后果和强化策略，用于导航而非机械臂操作
+3. [Constraint-Aware Physics-Informed Neural Networks for Static Shape Estimation of Co-Manipulative Continuum Robots](/202608/30/2608.26273v1-constraint-aware-physics-informed-neural-networks-for-static-shape-estimation-of-co-manipulative-continuum-robots)  
+   标签：评分：7.0/10、query:diff-physics
+   evidence：用于共操作形状估计的物理信息神经网络
+4. [Riemann-1.0: An Embodied World Action Model for Physical AI](/202608/30/2608.27033v1-riemann-10-an-embodied-world-action-model-for-physical-ai)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：世界动作模型用于机器人动作生成，提出同策略蒸馏方法来修复学生模型
-2. [Physics Filtering Favors the Generalization of Robot Learning](/202608/29/2608.22701v1-physics-filtering-favors-the-generalization-of-robot-learning)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：用物理滤波校正学习输出的机器人动力学反馈机制
-3. [Guided Riemannian Optimization (GuRO): Bridging Model Predictive Control and Decision Transformers](/202608/29/2608.23204v1-guided-riemannian-optimization-guro-bridging-model-predictive-control-and-decision-transformers)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：通过引导黎曼优化将模型预测控制与决策Transformer统一，属于可迁移至机械臂控制的模型方法
-4. [TrAct: Bridging Robot Control and Visual Prediction with Visual Tracks](/202608/29/2608.24101v1-tract-bridging-robot-control-and-visual-prediction-with-visual-tracks)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于世界模型的机器人决策框架，以视觉轨迹作为控制与预测的桥梁
+   evidence：统一世界动作模型用于具身控制与仿真
 
 
 <div class="dpr-home-promo-card">

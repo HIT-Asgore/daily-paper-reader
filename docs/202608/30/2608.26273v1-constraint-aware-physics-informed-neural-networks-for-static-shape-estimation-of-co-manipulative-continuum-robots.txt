@@ -1,0 +1,688 @@
+Title: Constraint-Aware Physics-Informed Neural Networks for Static Shape Estimation of Co-Manipulative Continuum Robots
+
+URL Source: https://arxiv.org/pdf/2608.26273v1
+
+Published Time: Fri, 28 Aug 2026 00:06:36 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+> 1
+
+# Constraint-Aware Physics-Informed Neural Networks for Static Shape Estimation of Co-Manipulative Continuum Robots 
+
+Rana Danesh, Pari Qarehdaghi, and Farrokh Janabi-Sharifi 
+
+Abstract —Static shape estimation of co-manipulative con-tinuum robots (CCRs) is challenging because the continuum arms and manipulated flexible object form a closed chain that must satisfy both static equilibrium and geometric loop-closure constraints. This paper presents a constraint-aware physics-informed neural network (PINN) for static shape estimation of a tendon-driven CCR modeled using the geometric variable strain formulation. The proposed method incorporates a projected static equilibrium residual and a configuration-level geometric residual to enforce the governing mechanics and closed-chain geometry. In simulation, the PINN is compared with a purely data-driven artificial neural network (ANN) under limited and noisy training data. With 140 samples and 50% label noise, the PINN reduces the relative configuration error, equilibrium residual, and closed-chain residual by 67.88%, 67.35%, and 88.06%, respectively. Using the full dataset, the PINN achieves 0.1597% relative configuration error with an inference time of 0.1773 ms, compared with 17.97 s for an iterative nonlinear solver. Experimental fine-tuning reduces the marker RMSE from 2.657 mm to 0.497 mm and increases R2 from -0.788 to 0.937. These results demonstrate accurate, physically consistent, and computationally efficient static shape estimation of closed-chain CCRs. 
+
+Index Terms —Physics-informed neural networks, continuum robots, co-manipulative continuum robots, closed-chain systems, geometric variable strain, static shape estimation. 
+
+I. I NTRODUCTION 
+
+Continuum robots (CRs) achieve complex motions through the continuous deformation of compliant backbones, enabling them to navigate confined and geometrically complex envi-ronments in which conventional rigid link manipulators may have limited accessibility [1]–[3]. However, this compliance can limit stiffness, payload capacity, and positioning accuracy during manipulation. Collaborative configurations involving multiple CRs can provide additional structural support and enable manipulation tasks that may exceed the capabilities of an individual robot [4]–[7]. Co-manipulative continuum robots (CCRs) represent one form of collaborative configuration in which multiple CRs are mechanically coupled through a shared manipulated object [8]–[10]. The manipulated object and the continuum arms together form a closed-chain mechanism. Consequently, the feasible configurations of the individual arms are not inde-pendent but must satisfy the geometric constraints imposed at their connection points. The coupling also generates internal reaction forces and moments that maintain the closed-chain constraints. These characteristics make static modeling of CCRs substantially more challenging than that of an individual open-chain CR [11], [12]. Model-based formulations can capture the distributed defor-mation and coupled behavior of CCRs. Among them, Cosserat rod models provide a geometrically exact representation of bending, torsion, shear, and axial deformation [13]–[15]. The geometric variable strain (GVS) formulation provides a finite-dimensional representation of Cosserat rod mechanics by expanding the continuous strain fields over selected basis func-tions [16]–[18]. Using this formulation, the continuum arms and manipulated object can be described through a unified set of generalized coordinates. However, determining the static configuration for a prescribed tendon input requires solving a constrained nonlinear equilibrium problem. Repeating this solution for new inputs can be computationally expensive, lim-iting its use in applications requiring rapid model evaluations, such as real-time prediction, optimization, and control [19]. To reduce this computational burden, data-driven surrogate models can learn mappings from actuation variables to robot configurations using simulation generated data or experimental measurements of the robot state, such as position, orientation, or shape obtained from optical markers, electromagnetic track-ers, flex sensors, or fiber Bragg grating sensors [20]. Once trained, an artificial neural network (ANN) can evaluate this mapping much faster than an iterative nonlinear solver. How-ever, purely data-driven models do not inherently enforce the governing mechanics and may therefore produce predictions that violate static equilibrium or closed-chain constraints, par-ticularly for unseen inputs or noisy training data. In addition, collecting a large and representative experimental dataset for CCRs can be costly and time-consuming [19]–[21]. Physics-informed neural networks (PINNs) provide a means of combining data-driven learning with governing physical principles by incorporating equations and constraints into the learning objective [21]–[23]. In this way, data guide the learned input–output mapping, while physics-based residuals penalize mechanically inconsistent predictions, reducing de-pendence on data and improving physical consistency [24]. Physics-informed learning has been investigated for several CR problems, including static model approximation, inverse kinematics, shape reconstruction, deformation modeling, and model predictive control [19], [25]–[29]. However, existing studies have mainly considered individual CRs and have not addressed the simultaneous equilibrium and geometric constraints arising from the closed-chain coupling of multiple continuum arms and a shared flexible object. In this paper, we develop a constraint-aware PINN for static shape estimation of closed-chain CCRs. The proposed formulation incorporates both static equilibrium and geometric loop-closure constraints into the learning process, enabling the network to predict physically consistent equilibrium configu-arXiv:2608.26273v1 [cs.RO] 26 Aug 2026 2Base frame   
+
+> CR1 CR2
+> Flexible object
+> X
+> X+h
+> Gravity
+> Backbone
+> Spatial
+> frame
+> gr
+> Closed-loop joints
+> x
+> y
+> z
+> Fig. 1. Tendon-driven CCR coupled through a flexible object, showing the backbone coordinates and reference frames [12].
+
+rations from tendon actuation inputs. The main contributions of this work are:  
+
+> •
+
+Unlike existing physics-informed learning approaches that primarily consider individual continuum or soft robots [19], [25]–[29], we develop a constraint-aware PINN for static shape estimation of closed-chain CCRs. The proposed formulation simultaneously enforces static equilibrium in the constraint-consistent subspace and geometric loop closure through a configuration-level con-straint residual.  
+
+> •
+
+A numerical assessment of the proposed PINN against a purely data-driven ANN under limited and noisy training data, as well as against an iterative nonlinear static solver, evaluating prediction accuracy, physical consistency, ro-bustness, and computational efficiency.  
+
+> •
+
+A simulation to experiment transfer framework in which the PINN is pretrained using simulation data and subse-quently fine-tuned using measured tendon displacements and marker positions from the physical CCR platform. II. S TATIC GEOMETRIC VARIABLE STRAIN MODELING 
+
+Fig. 1 illustrates the tendon-driven CCR considered in this study. The system consists of two CRs mechanically coupled through a flexible object, forming a closed kinematic chain. The governing equations presented in this section follow the GVS formulation developed in [16], [17], [30], [31] and are specialized to the static closed-chain CCR considered here. Accordingly, only equilibrium configurations are considered, with the generalized velocities and accelerations set to zero; thus, inertial and damping terms are excluded from the gov-erning model. 
+
+A. GVS Kinematics 
+
+A deformable rod is parameterized by the material coor-dinate X ∈ [0 , L ]. As illustrated in Fig. 1, a local frame is attached to each cross section along the rod. The pose of this local frame with respect to the reference frame is represented by 
+
+g(X) = 
+
+R(X) p(X)
+
+0T 1
+
+
+
+∈ SE (3) , (1) 
+
+where SE (3) denotes the special Euclidean group, p(X) ∈ R3
+
+denotes the position of the cross-section origin, and R(X) ∈
+
+SO (3) describes its orientation, with SO (3) denoting the special orthogonal group. The spatial evolution of the pose is governed by 
+
+g′(X) = g(X)bξ(X), (2) 
+
+where (·)′ denotes differentiation with respect to X, c(·) : R6 →
+
+se (3) is the standard hat operator, with se (3) denoting the Lie algebra of the special Euclidean group SE (3) , and ξ(X) = 
+
+κT(X) γT(X)T ∈ R6 is the strain twist. The vectors κ ∈ R3
+
+and γ ∈ R3 contain the angular and linear strain components, respectively, accounting for bending, torsion, shear, and axial deformation. In the GVS formulation, the continuous strain field is approximated using a finite set of spatial basis functions: 
+
+ξ(X) = Bξ(X)q + ξ∗(X), (3) 
+
+where Bξ(X) ∈ R6×n is the strain basis matrix, q ∈ Rn is the vector of generalized GVS coordinates, n is the total number of generalized degrees of freedom, and ξ∗(X) denotes the strain field of the reference configuration. The nonlinear pose field is reconstructed from (2). As illustrated in Fig. 1, for a spatial interval of length h, the transformation is evaluated through the exponential map as 
+
+g(X + h) = g(X) exp 
+
+ bΩ(X, h )
+
+
+
+, (4) 
+
+where Ω denotes the Magnus increment. Using the fourth-order Zanna collocation scheme with two-stage Gauss quadra-ture gives Ω(X, h ) = h 
+
+> 2
+
+(ξ1 + ξ2) + √3h2 
+
+> 12
+
+ad ξ1 ξ2, where 
+
+ξ1 = ξ
+
+
+
+X + h 
+
+> 2
+
+− √3h
+
+> 6
+
+
+
+, ξ2 = ξ
+
+
+
+X + h 
+
+> 2
+
++ √3h
+
+> 6
+
+
+
+. where ad ξ
+
+denotes the Lie-algebra adjoint operator associated with the strain twist ξ. This spatial integration procedure is used to reconstruct the configuration of the continuum arms and the flexible object from the generalized coordinates. The geometric Jacobian is required to evaluate the general-ized gravitational loads and closed-chain constraints. For the GVS parameterization, it is given by 
+
+J(q, X ) = Ad g−1(X)
+
+Z X
+
+> 0
+
+Ad g(s) Bξ(s) ds, (5) 
+
+where Ad g ∈ R6×6 denotes the adjoint representation of 
+
+SE (3) .
+
+B. Static Equilibrium 
+
+At static equilibrium, the internal elastic wrench is related to the strain deviation from the reference configuration through a linear elastic constitutive law, 
+
+F e(X) = K(X) [ ξ(X) − ξ∗(X)] , (6) 
+
+where K(X) ∈ R6×6 is the cross sectional stiffness matrix. For an isotropic rod, K = diag ( GJ x, EJ y , EJ z , EA, GA, GA ) ,
+
+where E and G denote Young’s and shear moduli, A is the cross section area, and Jx, Jy , and Jz are the corresponding second moments of area. 3
+
+Substituting the strain parameterization (3) into (6), the generalized stiffness matrix of the ith deformable body is obtained as 
+
+Ki =
+
+Z Li
+
+> 0
+
+BT
+
+> ξ,i
+
+(X)Ki(X)Bξ,i (X) dX ∈ Rni×ni , i ∈ { 1, 2, 3},
+
+(7) 
+
+where ni is the number of generalized coordinates associated with the ith deformable body. The individual stiffness matrices are assembled into the global generalized stiffness matrix, denoted by K ∈ Rn×n, where each body contributes its corresponding stiffness block. The resulting generalized elastic force is expressed as Qe = Kq ∈ Rn, where Qe denotes the generalized elastic force. The generalized tendon actuation force is expressed as 
+
+τ a = Bq (q)u, (8) 
+
+where u ∈ Rna is the vector of tendon actuation inputs and 
+
+Bq (q) is the configuration-dependent generalized actuation matrix. Each column of Bq represents the generalized force associated with a unit input from the corresponding tendon. The matrix incorporates the tendon routing geometry and its variation with the robot configuration and is evaluated from the current GVS configuration [16]. The gravitational loading is described by the gravity twist 
+
+G ∈ R6, expressed in the spatial frame. The transformation 
+
+gr ∈ SE (3) , shown in Fig. 1, relates the spatial frame to the base frame. Using the geometric Jacobian, the distributed gravitational loading is mapped to the generalized coordinates, resulting in the generalized gravitational force 
+
+Fg (q) = 
+
+Z
+
+JT(q, X )M(X) Ad −1  
+
+> grg(q,X )
+
+G dX, Fg ∈ Rn, (9) 
+
+where M(X) is the screw inertia density matrix. Assuming that no external wrench acts on the system other than gravity, the generalized static equilibrium prior to incorporating the closed-chain constraints is given by 
+
+Kq = Bq u + Fg . (10) 
+
+C. Closed-Chain Geometric Constraints and Jacobian 
+
+The continuum arms and the flexible object are mechan-ically coupled to form a closed kinematic chain, which in-troduces geometric constraints on their configurations. As described in [31], the ith closed-loop connection relates two bodies, denoted by Ai and Bi. Let gAi and gBi represent the configurations of the corresponding body frames. The actual connection frames are generally located at fixed offsets from these body frames. These offsets are described by the constant transformations gAi and gBi . Therefore, the config-urations of the two connection frames are gcAi = gAi gAi and 
+
+gcBi = gBi gBi . The relative transformation between the two connection frames is then 
+
+gAiBi =  gcAi
+
+−1 gcBi . (11) 
+
+This relative transformation describes the difference in posi-tion and orientation between the two sides of the closed-loop connection and is used to define the geometric closure error. Geometric closure requires the constrained components of this relative transformation to be zero. The matrix Bp,i ∈
+
+R6×mi contains the wrench directions constrained by the ith closed-loop connection, where mi is the number of constrained directions associated with that connection. The corresponding configuration-level closure error is defined as 
+
+ei(q) = BT 
+
+> p,i
+
+Log ∨  g−1 
+
+> AiBi
+
+(q) ∈ Rmi . (12) 
+
+Here, Log ∨(·) maps the relative transformation in SE (3) to its six-dimensional twist representation. For Nc closed-loop connections, the individual closure errors are combined into the global geometric constraint vector 
+
+e(q) = eT 
+
+> 1
+
+(q) eT 
+
+> 2
+
+(q) · · · eT 
+
+> Nc
+
+(q)T ∈ Rnc , (13) 
+
+where nc is the total number of scalar geometric constraints. The constraint Jacobian describes the differential relation-ship imposed by the closed-chain connections. For each con-nection, the body Jacobians JAi and JBi are first transformed to their respective joint frames as JcAi = Ad g−1
+
+> Ai
+
+JAi and JcBi =Ad g−1
+
+> Bi
+
+JBi . To compare the two Jacobians consistently, JcAi is further expressed in the frame of the opposite side through 
+
+eJAi = Ad g−1
+
+> AiBi
+
+JcAi . The constraint Jacobian associated with the ith connection is then 
+
+Ai(q) = BT
+
+> p,i
+
+eJAi − JcBi
+
+
+
+∈ Rmi×n. (14) 
+
+The individual blocks are stacked to form the global constraint Jacobian A(q) ∈ Rnc×n. Its null space defines the tangent di-rections that are compatible with the closed-chain constraints. The geometric constraint vector e(q) and the constraint Ja-cobian A(q) have distinct roles. The vector e(q) represents the configuration-level closed-chain error, whereas A(q) defines the differential constraint directions and is used to account for the unknown closed-chain reaction forces in the static equilibrium equations. 
+
+D. Constraint-Consistent Static Equilibrium 
+
+The closed-chain connections generate internal reaction forces and moments that maintain the geometric constraints. These reactions are represented by the Lagrange multiplier vector λ ∈ Rnc [31]. The constrained static equilibrium is expressed as 
+
+Bq (q)u + Fg (q) − Kq + AT(q)λ = 0. (15) 
+
+The unknown reaction forces need not be determined explic-itly. Instead, the equilibrium equation is projected onto the null space of the constraint Jacobian [32]. Assuming that A(q) has full row rank, the corresponding orthogonal projector is 
+
+P(q) = I − AT(q)
+
+h
+
+A(q)AT(q)
+
+i−1
+
+A(q). (16) 
+
+The projector satisfies P(q)AT(q) = 0, so the unknown con-straint reactions do not contribute to the projected equilibrium. The corresponding physics residual is defined as 
+
+Ephys (q, u) = P(q) [ Bq (q)u + Fg (q) − Kq ] . (17) 4
+
+This residual enforces static equilibrium in the constraint-consistent directions but does not independently enforce ge-ometric loop closure. Therefore, it is combined with the configuration constraint vector e(q) to form the complete static residual 
+
+E(q, u) = 
+
+Ephys (q, u)
+
+e(q)
+
+
+
+. (18) 
+
+For a prescribed tendon input u, the corresponding static configuration q∗ satisfies 
+
+E(q∗, u) = 0. (19) 
+
+III. P HYSICS -I NFORMED STATIC SHAPE ESTIMATION 
+
+Solving (19) with an iterative nonlinear solver for each tendon tension input can be computationally demanding. The proposed PINN therefore learns the mapping from the ten-don tension vector u to the corresponding equilibrium GVS coordinates q.The tendon tensions are normalized to the range [−1, 1] 
+
+using the minimum and maximum values of the training data. For the kth tendon tension, 
+
+euk = 2 uk − uk, min 
+
+uk, max − uk, min 
+
+− 1, (20) 
+
+where uk, min and uk, max are the corresponding minimum and maximum training values. The normalized tendon tension vector is denoted by eu ∈ R4.The generalized coordinates are standardized using the mean and standard deviation of the training data as 
+
+eqk = qk − μq,k 
+
+σq,k 
+
+, (21) 
+
+where μq,k and σq,k are the corresponding training set mean and standard deviation. The PINN mapping is then expressed as 
+
+beq = Nθ (eu) , (22) 
+
+where Nθ denotes the neural network with trainable parame-ters θ. The predicted standardized coordinates are transformed back to the physical GVS coordinates bq, from which the strain field and the corresponding CCR backbone configurations are reconstructed using the GVS kinematic model. The PINN is implemented as a fully connected feedforward neural network with four hidden layers of 128 neurons each and hyperbolic tangent activation functions. A linear output layer maps the normalized tendon inputs to the 16 standardized GVS coordinates. Since the governing formulation is static, no temporal or spatial derivatives of the network output are required. Instead, the predicted coordinates bq are passed through the differen-tiable GVS model to evaluate the projected equilibrium and closed-chain residuals. The gradient used for training is 
+
+∇θ L = λdata ∇θ Ldata + λphys ∇θ Lphys + λcon ∇θ Lcon . (23) 
+
+These gradients are computed using automatic differentia-tion and backpropagated through both the neural network and the differentiable GVS operations, including the forward kinematics, tendon actuation, constraint Jacobian, projected equilibrium residual, and geometric constraint residual. The resulting parameter gradients are used by the Adam optimizer to update θ.The PINN is trained using Nd labeled samples (eu(j), eq(j)).For each normalized tendon tension input eu(j), the network predicts beq(j)
+
+= Nθ (eu(j)). The supervised loss measures the difference between the predicted and reference generalized coordinates in the standardized space as 
+
+Ldata = 1
+
+Ndn
+
+> Nd
+
+X
+
+> j=1
+
+beq(j)
+
+− eq(j)
+
+> 22
+
+. (24) 
+
+To evaluate the physical constraints, the predicted generalized coordinates and tendon tensions are transformed back to their physical values and evaluated using the constrained static model developed in the previous section. Using the Nd training samples, the static equilibrium loss is defined as 
+
+Lphys = 1
+
+Ndn
+
+> Nd
+
+X
+
+> j=1
+
+Ephys 
+
+bq(j), u(j) 22
+
+, (25) 
+
+where Ephys is the projected static equilibrium residual defined in (17). Geometric consistency of the closed chain is imposed through the configuration-level constraint residual e(q). The corresponding constraint loss is 
+
+Lcon = 1
+
+NdncNdX
+
+> j=1
+
+e
+
+bq(j) 22
+
+, (26) 
+
+where nc is the number of geometric constraint components. The complete training objective combines the supervised data, static equilibrium, and closed-chain constraint losses as 
+
+L = λdata Ldata + λphys Lphys + λcon Lcon , (27) 
+
+where λdata , λphys , and λcon scale the contributions of the individual loss terms. The supervised loss is evaluated using standardized GVS coordinates and is therefore dimensionless, whereas the equilibrium and geometric constraint losses are evaluated in their physical spaces and consequently have different numerical scales and physical units. To prevent any single term from dominating the optimization, the loss weights are selected based on the relative gradient magnitudes of the individual terms, thereby balancing their contributions to the network parameter updates. IV. S IMULATION RESULTS 
+
+The simulation study evaluates the proposed PINN in two stages. First, its prediction accuracy and physical consistency are compared with those of a data driven ANN under different training set sizes and levels of training label noise. Second, a PINN trained using the full simulation dataset is compared with an iterative nonlinear static solver in terms of prediction accuracy and computation time. 5
+
+A. Dataset Generation and Training Setup 
+
+The simulation dataset was generated using the constrained static GVS model implemented in MATLAB. For the GVS dis-cretization, each CR was modeled as a single soft link with one division, with linear bending basis functions in two orthogonal directions, resulting in 4 generalized coordinates per CR. The flexible object was represented by 2 deformation coordinates associated with bending in two orthogonal directions, together with 6 spatial motion coordinates. Consequently, the complete CCR model has n = 4+4+2+6 = 16 generalized coordinates,   
+
+> q∈R16
+
+.The four tendon actuation inputs were independently varied from −5 to 5 N in increments of 1 N . Each actuation input represents the differential action of an antagonistic tendon pair. In the experimental setup, the corresponding motor can rotate in either the clockwise (CW) or counterclockwise (CCW) di-rection, such that one tendon of the pair is tensioned depending on the direction of rotation. Accordingly, the sign of the input specifies which tendon is actuated and does not imply a phys-ically negative or compressive tendon tension. This sampling resulted in 11 4 = 14 641 input combinations. For each tendon actuation vector u ∈ R4, the corresponding equilibrium GVS coordinates were obtained by solving (19) using MATLAB 
+
+fsolve with the Levenberg–Marquardt algorithm. Multiple initial guesses were used to improve convergence, and asolution was retained only when the solver converged and both the static equilibrium and geometric constraint residual norms were below 10 −5.To investigate data efficiency, training sets containing 28 ,
+
+> 70
+
+, and 140 configurations were considered. For each case, the same training samples were used for the ANN and PINN, while the remaining configurations were kept noise free for evaluation. Robustness to inaccurate training labels was evaluated using 
+
+> 0%
+
+, 25% , and 50% Gaussian noise. Noise was applied only to the GVS coordinates used as training labels; the tendon tension inputs and evaluation data remained unchanged. For the kth generalized coordinate, the noisy training label was generated as 
+
+q(j) 
+
+> k,η
+
+= q(j) 
+
+> k
+
++ ε(j) 
+
+> k
+
+, ε(j) 
+
+> k
+
+∼ N  0, η 2σ2
+
+> qk
+
+ , (28) where σqk is the standard deviation of the kth generalized coordinate in the corresponding clean training set and η ∈{0, 0.25 , 0.50 } denotes the imposed noise level. For a fair comparison, the ANN and PINN use the same network architecture, initialization, and optimization settings. Each network contains four hidden layers with 128 neurons per layer and hyperbolic tangent activation functions, followed by a linear output layer. The network maps four tendon tension inputs to sixteen GVS coordinates and contains 52 240 
+
+trainable parameters. Both models are trained for 500 epochs using the Adam optimizer with a learning rate of 10 −3. The ANN is trained only with the supervised data loss, whereas the PINN additionally incorporates the projected static equilibrium and closed chain geometric constraint losses.                                      
+
+> TABLE I PINN I MPROVEMENT RELATIVE TO ANN
+> NdNoise Rel. ℓ2Red. (%) ∥Ephys ∥2Red. (%) ∥e∥2Red. (%)
+> 28 0% 4.94 3.14 45.73 25% 41.59 36.21 76.16 50% 45.26 38.34 78.31 70 0% 8.66 7.01 11.40 25% 61.58 59.85 87.10 50% 62.04 59.23 84.23 140 0% 9.14 12.71 49.59 25% 65.81 65.01 87.26 50% 67.88 67.35 88.06
+
+The PINN loss weights were selected by balancing the gradient magnitudes of the individual loss terms at network initialization. Specifically, let          
+
+> gi=∥∇ θLi∥2,i∈ { data ,phys ,con },(29)
+
+where the gradient is evaluated with respect to all trainable network parameters using the labeled training set. Taking the supervised term as the reference, λdata = 1 , the remaining weights are determined as       
+
+> λphys =gdata
+> gphys
+> ,λcon =gdata
+> gcon
+> .(30)
+
+At initialization, the corresponding gradient norms were    
+
+> gdata = 3 .5530 ×10 −1
+
+, gphys = 1 .2252 × 10 −4, and gcon =1.4852 × 10 −4, yielding λphys ≈ 2899 .8 and λcon ≈ 2392 .3.These values were rounded to       
+
+> λdata = 1 ,λphys = 3000 ,λcon = 2500 .(31)
+
+B. PINN and ANN Comparison 
+
+Table I summarizes the improvement of the PINN relative to the ANN for training sets of 28 , 70 , and 140 samples under different levels of training label noise. The reported values denote the percentage reductions in relative configuration error, projected equilibrium residual, and closed chain residual. For noise free labels, the ANN and PINN provide similar prediction accuracy, with only modest reductions in relative er-ror obtained by the PINN. As the training label noise increases, however, the advantage of the PINN becomes substantially more pronounced. At 50% noise, the relative error reduction increases from 45 .26% with 28 training samples to 67 .88% with  
+
+> 140
+
+samples. Figure 2 shows the corresponding absolute performance. Increasing the training set size generally reduces the prediction error of both models, while the PINN remains considerably more robust to corrupted labels. For example, at 50% noise, the PINN relative error decreases from 2.38% with 28 samples to 1.04% with 140 samples, whereas the ANN maintains substantially larger errors. The physical consistency measures show the same trend. Under noisy training conditions, the PINN consistently pro-duces lower projected equilibrium and closed chain residuals than the ANN. With 140 samples and 50% noise, these 6(a) Relative configuration error                                             
+
+> 0.68 2.72 4.35 0.30 1.86 4.03 0.15 1.15 3.23 0.65 1.59 2.38 0.28 0.71 1.53 0.14 0.39 1.04
+> 0% 25% 50% 0% 25% 50% 0% 25% 50% 012345
+> Relative  `2 error (%)
+> Nd= 28 Nd= 70 Nd= 140
+> ANN PINN
+> (b) Projected equilibrium residual
+> 1.72 6.39 9.98 0.66 4.40 9.35 0.36 2.92 7.72 1.66 4.08 6.15 0.61 1.77 3.81 0.32 1.02 2.52
+> 0% 25% 50% 0% 25% 50% 0% 25% 50% 0246810
+> Mean  kEphys k2 (#10 !3)
+> Nd= 28 Nd= 70 Nd= 140
+> (c) Closed-chain residual
+> 0.25 3.72 6.80 0.13 2.56 6.23 0.10 1.54 4.70 0.13 0.89 1.47 0.12 0.33 0.98 0.05 0.20 0.56
+> 0% 25% 50% 0% 25% 50% 0% 25% 50% 0246
+> Mean  kek2 (#10 !2)
+> Nd= 28 Nd= 70 Nd= 140
+
+Fig. 2. ANN and PINN performance for different training set sizes and training label noise levels: (a) relative configuration error, (b) mean projected equilibrium residual, and (c) mean closed chain residual. 
+
+residuals are reduced by 67 .35% and 88 .06% , respectively. These results indicate that the physics based loss terms act as regularizers, improving robustness to noisy supervision while promoting mechanically consistent predictions. 
+
+C. PINN and Nonlinear Static Solver Comparison 
+
+The computational performance of the full data PINN was compared with an iterative nonlinear static solver using 30 
+
+configurations selected from the held out test set, including interior, high input norm, and boundary cases. Both methods were evaluated using the same tendon inputs and reference GVS configurations. The comparison was performed in Python on the CPU. The nonlinear equilibrium equations were solved using the Levenberg–Marquardt algorithm with a three point finite dif-ference Jacobian, stopping tolerances of 10 −12 , and a max-imum of 20 000 function evaluations. A solution was ac-cepted only when the solver converged and both the complete static residual and closed chain residual were below 10 −5.To improve convergence, the previous accepted equilibrium configuration was used as the primary initial guess, with additional initial guesses considered when necessary. For the PINN, each input was evaluated after 100 warm up runs and timed over 500 repeated forward evaluations. As shown in Table II, the nonlinear solver provides the more accurate equilibrium solution, with a relative ℓ2 error of 
+
+0.0053% compared with 0.1597% for the PINN, and produces substantially smaller physical residuals. In contrast, the PINN requires only 0.1773 ms per prediction, compared with 17 .97 s 
+
+TABLE II PINN AND NONLINEAR SOLVER BENCHMARK                       
+
+> Method Rel. ℓ2Error (%) ∥Ephys ∥2∥e∥2Median Time (ms)
+> Direct PINN 0.1597 4.456 ×10 −41.437 ×10 −30.1773
+> Nonlinear solver 0.0053 5.326 ×10 −84.325 ×10 −717974.2
+
+for the nonlinear solver. For the implementation considered here, this corresponds to approximately 1.01 × 10 5 times lower median computation time while maintaining a relative configuration error below 0.16% .V. E XPERIMENTAL RESULTS 
+
+The experimental study evaluates the proposed framework on the physical CCR system. The trained simulation PINN is first tested directly on experimental data to quantify the simulation-to-real discrepancy. It is then fine-tuned using ex-perimental data while retaining physics based constraints and evaluated on an independent test set. 
+
+A. Experimental Setup 
+
+Figure 3 shows the mechanical structure of the tendon-driven CCR platform. Each CR consists of a 0.4 m long spring steel backbone with a diameter of 1.8 mm , Young’s modulus E = 207 GPa , and Poisson’s ratio ν = 0 .3. The material density of the steel backbone is ρ = 7800 kg /m3.To account for the combined mass of the markers, glue, and spacer disks, an effective density of ρeff = 39317 kg /m3 is used in the model, computed as ρeff = mtotal /(AL ). Four Kevlar tendons pass through equally spaced spacer disks at a radial distance of rt = 1 .8 mm . The tendons are separated by 90 ◦ and arranged as two orthogonal pairs, allowing spatial bending of each arm. The rigid base plates supporting the two arms are separated by 629 mm . The manipulated flexible object is a 
+
+0.22 m long Nitinol rod with a diameter of 1.6 mm , density 
+
+ρ = 6450 kg /m3, Young’s modulus E = 50 GPa , and Poisson’s ratio ν = 0 .3. It is rigidly connected to the distal ends of the two CRs, thereby completing the closed-chain structure. The tendons are driven by Dynamixel AX-12A servo motors (Robotis, Seoul, Korea) through serial communication. The three-dimensional configuration of the CCR is measured using a Tracker 3.0 Vicon motion-capture system (Bilston, UK). As shown in Fig. 3, three reflective markers are attached to the base plate and used as reference markers to define the global coordinate frame. In addition, the positions of eight markers distributed along the CCR are recorded, with four markers placed on CR1, denoted as CR1 M1 to CR1 M4, and four markers placed on CR2, denoted as CR2 M1 to CR2 M4. Each marker position is represented by its Cartesian coordinates, providing a spatial representation of the deformed CCR configuration. 
+
+B. Static Experimental Data Collection 
+
+The experimental dataset was collected under static condi-tions to remain consistent with the equilibrium formulation in Section II. The commanded tendon actuation inputs were var-ied within [−5, 5] N . For each actuation input, the constrained 7Flexible Object   
+
+> Tendons
+> Disc
+> Steel Backbone
+> Base plate
+> Rigid joints
+> x
+> z
+> CR1 CR2
+> CR1-M1
+> CR1-M2
+> CR1-M3
+> CR1-M4
+> CR2-M1
+> CR2-M2
+> CR2-M3
+> CR2-M4
+> Fig. 3. Experimental platform of the two-arm tendon-driven CCR, showing the continuum arms, flexible manipulated object, tendon actuation system, and reflective markers used for configuration measurement.
+
+static GVS model was first solved to obtain the corresponding equilibrium configuration. The tendon lengths associated with this configuration were then computed from the tendon rout-ing geometry along the deformed backbone using the same GVS discretization and numerical quadrature employed in the model. The tendon displacements were defined relative to the tendon lengths at the zero-input equilibrium configuration. These displacements were then converted to the corresponding motor angular displacements using the known effective wind-ing radius of the actuator shaft, and finally mapped to servo encoder increments and transmitted to the motors. After the commanded positions were reached, the CCR was allowed to settle before measurement. Since the gener-alized GVS coordinates q cannot be measured directly on the physical platform, the three-dimensional positions of the eight Vicon markers were used to represent the experimental CCR configuration. The marker positions and tendon displacements were recorded for each test, resulting in 817 valid static configurations. For data processing, the measured marker positions were expressed relative to the zero-input configuration. Each exper-imental sample is therefore represented as 
+
+
+
+u(j), ∆ℓ(j), ∆p(j)exp 
+
+
+
+, (32) 
+
+where u(j) denotes the commanded actuation input, ∆ℓ(j) is the corresponding tendon displacement relative to the zero-input configuration, and ∆p(j)exp contains the measured three-dimensional displacements of the eight Vicon markers relative to their zero-input positions. 
+
+C. Simulation Pretraining for Experimental Transfer 
+
+The PINN is formulated using quantities available from the physical actuation and measurement systems. In contrast to the simulation study in Section IV, which considers the mapping from the actuation inputs, u, to the generalized coordinates, q, the experimental implementation uses the ten-don displacements, ∆ℓ, as the network input. The network contains a shared nonlinear feature representation followed by two output branches. The primary branch predicts the displacements of the eight Vicon markers, ∆bp ∈ R24 , while the second branch predicts the GVS generalized coordinates, 
+
+bq ∈ R16 . The generalized coordinates serve as an auxiliary physical state through which the GVS forward kinematics, tendon length relation, projected static equilibrium, and closed chain geometric constraints are incorporated into the learning process. The network was pretrained using 1331 configurations gen-erated by the static MATLAB model, including 931 training, 
+
+199 validation, and 201 test configurations. It consists of four shared hidden layers with 128 neurons per layer and hyperbolic tangent activation functions. The shared representation is fol-lowed by marker position and generalized coordinate output branches of dimensions 24 and 16 , respectively, resulting in 
+
+55 208 trainable parameters. Simulation pretraining consisted of an initial supervised stage followed by physics informed optimization. In the super-vised stage, the network was trained using the marker position and generalized coordinate losses, 
+
+Lsup = wpLp + wq Lq , (33) 
+
+where Lp and Lq denote the marker position and generalized coordinate losses, respectively. The corresponding weights were set to wp = 1 and wq = 0 .2.Following the supervised stage, the loss weights were calibrated once based on the relative gradient magnitudes of the individual loss terms and then kept fixed during physics informed training. The complete objective was 
+
+Lpre = wpLp + wq Lq + wfk Lfk + wℓLℓ + weq Lphys + wcon Lcon ,
+
+(34) 
+
+with wp = 1, wq = 7.608 × 10 −2, wfk = 7.109 × 10 −2,
+
+wℓ = 3 .733 ×10 −1, weq = 5 .998 ×10 −1, and wcon = 2 .028 ×10 −3.Here, Lfk enforces consistency between the predicted marker positions and the GVS forward kinematics, Lℓ enforces tendon length consistency, Lphys represents the projected static equi-librium loss, and Lcon represents the closed chain geometric constraint loss. On the simulation test set, the pretrained network achieved a marker RMSE of 0.164 mm and a position coefficient of determination of R2 = 0 .9987 . The resulting network was subsequently used to initialize the experimental fine tuning. 
+
+D. Experimental Fine Tuning 
+
+The 817 experimental configurations were divided into 
+
+571 training, 122 validation, and 124 test samples. Repeated measurements corresponding to the same actuation input were assigned to the same partition to prevent information leakage. The test set was excluded from fine tuning and model selec-tion. The tendon displacement inputs and marker displacement targets were standardized using the normalization statistics obtained from the simulation training set, ensuring the same scaling used during simulation pretraining. Because the GVS generalized coordinates cannot be mea-sured directly in the experiment, no experimental labels are available for q. A frozen copy of the simulation pretrained PINN was therefore used as a reference model to provide auxiliary generalized coordinate predictions. For each stan-dardized experimental input, the reference prediction is eq(j)ref =8
+
+N q
+
+> θsim
+
+ f∆ℓ(j)
+
+, where θsim denotes the parameters of the simulation pretrained PINN. The generalized coordinate con-sistency loss is defined as Lq, ref = 116 Nb
+
+PNb 
+
+> j=1
+
+beq(j)
+
+− eq(j)ref 
+
+> 22
+
+,
+
+where Nb denotes the mini batch size. The experimental marker displacement loss is evaluated in standardized space as Lp, exp = 124 Nb
+
+PNb 
+
+> j=1
+
+∆bep(j)
+
+− ∆ep(j)exp 
+
+> 22
+
+. During fine tun-ing, the calibrated loss weights obtained from simulation pretraining were retained. The contribution of the physics terms was reduced using αphys = 0 .05 to allow adaptation to the experimental measurements while retaining the physical constraints. For mini batches in which the physics terms were evaluated, the training objective was 
+
+LFT = wpLp, exp + wq Lq, ref 
+
++ αphys (wfk Lfk + wℓLℓ + weq Lphys + wcon Lcon ) . (35) 
+
+The weights wp, wq , wfk , wℓ, weq , and wcon are the fixed values obtained during simulation pretraining. The reduced physics contribution allows the network to adapt to the measured marker configurations while preserving consistency with the GVS forward kinematics, tendon displacements, static equi-librium, and closed chain constraints. Fine tuning was performed using AdamW with a mini batch size of 64 , weight decay of 10 −6, and gradient norm clipping at 
+
+2. The physics terms were evaluated for two samples in one out of every three mini batches. For the remaining mini batches, training used only the experimental marker displacement loss and generalized coordinate consistency loss. The model was first fine tuned for 100 epochs using a learning rate of 5 × 10 −5. Training was then continued for up to 50 additional epochs with a reduced learning rate of 
+
+10 −5. Model selection was based exclusively on the validation marker RMSE. The selected model was obtained at epoch 149 ,with a validation marker RMSE of 0.4921 mm .
+
+E. Experimental Evaluation and Results 
+
+The experimental performance was evaluated on the 124 test configurations that were excluded from fine tuning and model selection. The simulation pretrained PINN and the final fine tuned model were evaluated on the same test set. For test sample j and marker m, the Euclidean marker error is defined as ej,m = ∥bpj,m − pj,m ∥2 , where bpj,m and pj,m 
+
+denote the predicted and measured three dimensional marker positions, respectively. The overall marker RMSE is calculated as RMSE m =
+
+q 18Nt
+
+PNt
+
+> j=1
+
+P8 
+
+> m=1
+
+e2
+
+> j,m
+
+, where Nt denotes the number of test configurations. The mean and maximum marker errors, coefficient of determination R2, and percentage of marker predictions within 1 mm of the Vicon measurements are also reported. Table III summarizes the prediction performance on the held out experimental test set before and after fine tuning. The marker RMSE decreases from 2.657 mm to 0.497 mm , corre-sponding to an 81 .3% reduction, while the mean marker error decreases from 1.981 mm to 0.382 mm . The maximum marker error is reduced from 9.244 mm to 2.282 mm . Moreover, R2
+
+increases from −0.788 to 0.937 , and the percentage of marker 
+
+TABLE III EXPERIMENTAL PERFORMANCE BEFORE AND AFTER FINE TUNING 
+
+Model RMSE Mean Error Max. Error R2 ≤ 1 mm (mm) (mm) (mm) (%) 
+
+Before fine tuning 2.657 1.981 9.244 -0.788 37.30 After fine tuning 0.497 0.382 2.282 0.937 94.96 CR1-M1 CR1-M2 CR1-M3 CR1-M4 CR2-M1 CR2-M2 CR2-M3 CR2-M4 012345 
+
+> Marker RMSE (mm)
+> Before fine tuning After fine tuning
+
+Fig. 4. Marker specific RMSE before and after fine tuning at the four measured locations on each continuum robot. -10 -5 0 5 10       
+
+> Measured displacement (mm)
+> -10 -5 0510
+> Predicted displacement (mm)
+> (a) Before fine tuning, R 2= -0.788
+> -10 -5 0510
+> Measured displacement (mm)
+> -10 -5 0510
+> Predicted displacement (mm)
+> (b) After fine tuning, R 2= 0.937
+
+Fig. 5. Measured versus predicted marker displacements on the held out experimental test set (a) before and (b) after fine tuning. The dashed line represents ideal agreement between the measured and predicted values. 
+
+predictions within 1 mm of the measured positions increases from 37 .30% to 94 .96% .Figure 4 shows the marker specific RMSE along the two CRs. Fine tuning reduces the prediction error at all eight mea-sured locations. After fine tuning, the largest marker RMSE is 0.827 mm , observed at CR1 M4, with all remaining marker errors below this value. This indicates that the improvement is distributed across the measured CCR configuration rather than being limited to particular marker locations. Figure 5 further compares the measured and predicted marker displacements. Before fine tuning, the predictions show substantial deviations from the ideal agreement line. After fine tuning, the predicted displacements closely follow the measured values over the experimental range, consistent with the increase in R2 from −0.788 to 0.937 . These results demonstrate that experimental fine tuning substantially reduces the discrepancy between the simulation pretrained model and the physical CCR while retaining the physics informed for-mulation. 9
+
+VI. C ONCLUSION 
+
+This paper presented a constraint-aware PINN for static shape estimation of closed-chain CCRs. The proposed formu-lation incorporates the GVS static model through a projected equilibrium residual that eliminates the unknown closed-chain reaction forces, together with a geometric residual that en-forces loop closure. Simulation results showed that the physics informed formulation improves robustness to limited and noisy training data while producing more mechanically consistent predictions than a purely data driven ANN. The learned static mapping also provides a substantial computational advantage over iterative nonlinear equilibrium solution while maintain-ing high prediction accuracy. Experimental validation further showed that fine tuning the simulation pretrained network using measured marker data effectively reduces the simulation to real discrepancy and improves agreement with the physical CCR. Future work will extend the proposed framework to dynamic modeling and time varying tendon inputs, where inertial and damping effects must be included in the physics informed formulation. Further investigation will also consider online adaptation to model uncertainty and changing robot properties, integration of the learned model into closed loop control and optimization, and extension to CCR systems with different geometries, actuation arrangements, and manipulated objects. REFERENCES [1] J. Burgner-Kahrs, D. C. Rucker, and H. Choset, “Continuum robots for medical applications: A survey,” IEEE Transactions on Robotics , vol. 31, no. 6, pp. 1261–1280, Dec. 2015. [2] R. J. Webster, III and B. A. Jones, “Design and kinematic modeling of constant curvature continuum robots: A review,” The International Journal of Robotics Research , vol. 29, no. 13, pp. 1661–1683, 2010. [3] R. Danesh, F. Janabi-Sharifi, and F. Aghili, “Hybrid visual servoing of tendon-driven continuum robots,” Journal of Mechanisms and Robotics ,pp. 1–24, 07 2026. [4] A. Lotfavar, S. Hasanzadeh, and F. Janabi-Sharifi, “Cooperative con-tinuum robots: Concept, modeling, and workspace analysis,” IEEE Robotics and Automation Letters , vol. 3, no. 1, pp. 426–433, Jan. 2018. [5] A. Jalali and F. Janabi-Sharifi, “Dynamic modeling of tendon-driven co-manipulative continuum robots,” IEEE Robotics and Automation Letters ,vol. 7, no. 2, pp. 1643–1650, Apr. 2022. [6] X. Li, Q. Tang, G. Yin, G. Zheng, J. Burgner-Kahrs, C. Stefanini, and K. Wu, “Collaborative continuum robots: A survey,” 2026, preprint. [7] R. Danesh, F. Janabi-Sharifi, and F. Aghili, “Active stiffness control of a supportive continuum robot,” arXiv preprint arXiv:2608.03677 , 2026. [8] M. T. Chikhaoui, J. Granna, J. Starke, and J. Burgner-Kahrs, “Toward motion coordination control and design optimization for dual-arm con-centric tube continuum robots,” IEEE Robotics and Automation Letters ,vol. 3, no. 3, pp. 1793–1800, Jul. 2018. [9] A. Jalali and F. Janabi-Sharifi, “Dynamic manipulation and stiffness modulation of cooperative continuum robots: Theory and experiment,” 
+
+Journal of Mechanisms and Robotics , vol. 16, no. 12, p. 121001, Dec. 2024. [10] S. Lilge, K. Nuelle, J. A. Childs, K. Wen, D. C. Rucker, and J. Burgner-Kahrs, “Parallel-continuum robots: A survey,” IEEE Transactions on Robotics , vol. 40, pp. 3252–3270, 2024. [11] S. Lilge and J. Burgner-Kahrs, “Kinetostatic modeling of tendon-driven parallel continuum robots,” IEEE Transactions on Robotics , vol. 39, no. 2, pp. 1563–1579, Apr. 2023. [12] R. Danesh, F. Janabi-Sharifi, and F. Aghili, “Real-time projected adap-tive control for closed-chain co-manipulative continuum robots,” 2026, preprint. [13] F. Janabi-Sharifi, A. Jalali, and I. D. Walker, “Cosserat rod-based dynamic modeling of tendon-driven continuum robots: A tutorial,” IEEE Access , vol. 9, pp. 68 703–68 719, 2021. [14] C. Armanini, F. Boyer, A. T. Mathew, C. Duriez, and F. Renda, “Soft robots modeling: A structured overview,” IEEE Transactions on Robotics , vol. 39, no. 3, pp. 1728–1748, 2023. [15] R. Danesh and F. Janabi-Sharifi, “Backstepping control of tendon-driven continuum robots in large deflections using the cosserat rod model,” 
+
+Mechanism and Machine Theory , vol. 208, p. 105953, 2025. [16] F. Renda, C. Armanini, V. Lebastard, F. Candelier, and F. Boyer, “A geometric variable-strain approach for static modeling of soft manipula-tors with tendon and fluidic actuation,” IEEE Robotics and Automation Letters , vol. 5, no. 3, pp. 4006–4013, Jul. 2020. [17] F. Boyer, V. Lebastard, F. Candelier, and F. Renda, “Dynamics of continuum and soft robots: A strain parameterization based approach,” 
+
+IEEE Transactions on Robotics , vol. 37, no. 3, pp. 847–863, Jun. 2021. [18] A. T. Mathew, I. B. Hmida, C. Armanini, F. Boyer, and F. Renda, “SoRoSim: A MATLAB toolbox for hybrid rigid–soft robots based on the geometric variable-strain approach,” IEEE Robotics & Automation Magazine , vol. 30, no. 3, pp. 106–122, Sep. 2023. [19] M. Bensch, T.-D. Job, T.-L. Habich, T. Seel, and M. Schappler, “Physics-informed neural networks for continuum robots: Towards fast approximation of static cosserat rod theory,” in Proceedings of the IEEE International Conference on Robotics and Automation (ICRA) , 2024, pp. 17 293–17 299. [20] Z. Chen, F. Renda, A. L. Gall, L. Mocellin, M. Bernabei, T. Dangel, G. Ciuti, M. Cianchetti, and C. Stefanini, “Data-driven methods applied to soft robot modeling and control: A review,” IEEE Transactions on Automation Science and Engineering , vol. 22, pp. 2241–2256, 2025. [21] G. E. Karniadakis, I. G. Kevrekidis, L. Lu, P. Perdikaris, S. Wang, and L. Yang, “Physics-informed machine learning,” Nature Reviews Physics ,vol. 3, no. 6, pp. 422–440, 2021. [22] M. Raissi, P. Perdikaris, and G. E. Karniadakis, “Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations,” 
+
+Journal of Computational Physics , vol. 378, pp. 686–707, 2019. [23] S. Cuomo, V. S. D. Cola, F. Giampaolo, G. Rozza, M. Raissi, and F. Piccialli, “Scientific machine learning through physics-informed neu-ral networks: Where we are and what’s next,” Journal of Scientific Computing , vol. 92, no. 3, p. 88, 2022. [24] J. Liu, P. Borja, and C. D. Santina, “Physics-informed neural networks to model and control robots: A theoretical and experimental investigation,” 
+
+Advanced Intelligent Systems , vol. 6, no. 5, p. 2300385, 2024. [25] R. Lin, S. He, M. Xu, K. Fu, X. Wu, X. Sun, Q. Zhang, S. Yu, and X. Zhang, “Accelerating inverse kinematic solutions for a cable-driven soft robotic manipulator via physics-informed neural network,” in Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 2025, pp. 7305–7312. [26] N. Feizi, F. C. Pedrosa, R. V. Patel, and J. Jayender, “Few-shot physics-informed neural network for shape reconstruction of concentric-tube robots,” 2026, preprint. [27] X. Wang, J. J. Dabrowski, J. Pinskier, L. Liow, V. Viswanathan, R. Scalzo, and D. Howard, “PINN-Ray: A physics-informed neural network to model soft robotic fin ray fingers,” in Proceedings of the IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , 2024, pp. 247–254. [28] J. Licher, M. Bartholdt, H. Krauss, T.-L. Habich, T. Seel, and M. Schap-pler, “Adaptive model-predictive control of a soft continuum robot using a physics-informed neural network based on cosserat rod theory,” 2025, version 2, revised January 2026. [29] T.-L. Habich, A. Mohammad, S. F. G. Ehlers, M. Bensch, T. Seel, and M. Schappler, “Generalizable and fast surrogates: Model predictive con-trol of articulated soft robots using physics-informed neural networks,” 
+
+IEEE Transactions on Robotics , vol. 42, pp. 619–636, 2026. [30] F. Renda, F. Boyer, J. Dias, and L. Seneviratne, “Discrete cosserat ap-proach for multisection soft manipulator dynamics,” IEEE Transactions on Robotics , vol. 34, no. 6, pp. 1518–1533, 2018. [31] C. Armanini, I. Hussain, M. Z. Iqbal, D. Gan, D. Prattichizzo, and F. Renda, “Discrete cosserat approach for closed-chain soft robots: Application to the fin-ray finger,” IEEE Transactions on Robotics ,vol. 37, no. 6, pp. 2083–2098, 2021. [32] F. Aghili, “Projection-based control of parallel mechanisms,” Journal of Computational and Nonlinear Dynamics , vol. 6, no. 3, p. 031009, 02 2011.
