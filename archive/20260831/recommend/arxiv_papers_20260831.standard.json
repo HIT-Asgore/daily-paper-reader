@@ -1,0 +1,177 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-31T23:28:22.532731+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 3,
+    "deep_cap": 7,
+    "deep_selected": 3,
+    "quick_candidates": 1,
+    "quick_skim_target": 12,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2608.27079v2",
+      "source": "arxiv",
+      "title": "GRAFT: Grounded and Efficient Online Reinforcement Adaptation for Fine-Grained Robot Manipulation",
+      "abstract": "Pretrained vision-language-action (VLA) policies provide strong priors for robot manipulation, yet adapting them online to fine-grained biomedical tasks remains challenging. Task success often hinges on subtle, view-dependent visual cues, while task-level rewards provide little guidance about which regions matter, making it difficult to learn task-relevant visual grounding from limited real-robot interaction. Online adaptation is further constrained by the computational cost of VLA inference and replay-based updates. We introduce GRAFT (Grounded Reinforcement Adaptation for Fast Task Learning), a framework for efficient online VLA adaptation through grounded perception. GRAFT uses region-level supervision to learn view-specific visual anchors that focus perception on task-relevant local cues without requiring region proposals at deployment. It further combines single-step action generation with cached visual-language prefix reuse to accelerate online learning. Across four biomedical manipulation tasks, GRAFT improves success rates by 32.5 percentage points under matched adaptation budgets, while reducing the computational overhead of online policy updates.",
+      "authors": [
+        "Yibo Qiu",
+        "Haoliang Ye",
+        "Shu'ang Sun",
+        "Zan Huang",
+        "Ronald X Xu",
+        "Mingzhai Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-27T13:04:51+00:00",
+      "link": "https://arxiv.org/pdf/2608.27079v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Online reinforcement learning adaptation for fine-grained robot manipulation",
+      "llm_evidence_cn": "面向精细机器人操作的在线强化学习自适应",
+      "llm_evidence": "面向精细机器人操作的在线强化学习自适应",
+      "canonical_evidence": "面向精细机器人操作的在线强化学习自适应",
+      "llm_tldr_en": "Adapting VLA policies to fine-grained manipulation via online RL is hard due to subtle cues and limited interaction. GRAFT uses region-level supervision to ground relevant features for efficient online adaptation. Experiments show fast task learning and higher manipulation accuracy.",
+      "llm_tldr_cn": "预训练的视觉-语言-动作（VLA）策略为机器人操作提供先验，但在线适配到精细生物医学任务时，任务级奖励难以指出关键视觉区域，且真实交互和推理成本受限。GRAFT通过区域级监督学习视图相关的任务特征，并设计高效的在线强化自适应框架，在有限真实交互下快速完成适配。实验表明其在精细操作任务中能快速学习、提高操作精度。该方法为VLA策略的在线强化微调提供了一种可落地方案。",
+      "llm_tldr": "预训练的视觉-语言-动作（VLA）策略为机器人操作提供先验，但在线适配到精细生物医学任务时，任务级奖励难以指出关键视觉区域，且真实交互和推理成本受限。GRAFT通过区域级监督学习视图相关的任务特征，并设计高效的在线强化自适应框架，在有限真实交互下快速完成适配。实验表明其在精细操作任务中能快速学习、提高操作精度。该方法为VLA策略的在线强化微调提供了一种可落地方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.28140v1",
+      "source": "arxiv",
+      "title": "Contact-Guided Exploration for Non-Prehensile Locomanipulation with Multi-Critic RL",
+      "abstract": "Non-prehensile manipulation offers versatile skills for moving and rearranging heavy or bulky objects, particularly when combined with a mobile manipulation platform. However, both model-based and model-free approaches struggle with the complex hybrid dynamics and the sparsity of the contact in these tasks. To address these challenges, we propose a contact-guided exploration strategy implemented within a Multi-Critic Reinforcement Learning (RL) framework. A dedicated exploration critic is trained with a dense contact-seeking reward that guides the end-effector toward meaningful contact points; its influence is progressively decayed to recover a task-optimal policy. We obtain candidate interaction points from a general-purpose grasping algorithm, enabling the exploration mechanism to generalise across various object geometries. We evaluate the approach on multiple tasks, including box pushing, chair transportation, and a dishwasher opening task. Finally, we validate the chair transportation policy through extensive experiments on a quadrupedal mobile manipulator, demonstrating deployable non-prehensile manipulation in the real world.",
+      "authors": [
+        "Simone Tolomei",
+        "Mayank Mittal",
+        "Franco Angelini",
+        "Manolo Garabini",
+        "Paolo Salaris",
+        "Marco Hutter"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-28T10:00:43+00:00",
+      "link": "https://arxiv.org/pdf/2608.28140v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses multi-critic RL for non-prehensile locomanipulation, a robotic manipulation task",
+      "llm_evidence_cn": "使用多评论家强化学习进行非抓取式移动操作，属于机械臂操作任务",
+      "llm_evidence": "使用多评论家强化学习进行非抓取式移动操作，属于机械臂操作任务",
+      "canonical_evidence": "使用多评论家强化学习进行非抓取式移动操作，属于机械臂操作任务",
+      "llm_tldr_en": "This paper proposes a contact-guided exploration strategy implemented within a multi-critic RL framework for non-prehensile locomanipulation, improving contact seeking and task policies in complex hybrid dynamics.",
+      "llm_tldr_cn": "本文针对非抓取式移动操作任务中接触稀疏和混合动力学带来的困难，提出一种接触引导的探索策略，并基于多评论家强化学习框架进行训练。该方法使用专门的探索评论家，以密集接触奖励引导末端执行器接触关键点，并逐步衰减其影响以获得任务最优策略。实验表明该方法能够有效应对复杂接触动力学，为非抓取操作提供了一种高效的强化学习解决方案，并拓展了机械臂在移动平台上的操作能力。",
+      "llm_tldr": "本文针对非抓取式移动操作任务中接触稀疏和混合动力学带来的困难，提出一种接触引导的探索策略，并基于多评论家强化学习框架进行训练。该方法使用专门的探索评论家，以密集接触奖励引导末端执行器接触关键点，并逐步衰减其影响以获得任务最优策略。实验表明该方法能够有效应对复杂接触动力学，为非抓取操作提供了一种高效的强化学习解决方案，并拓展了机械臂在移动平台上的操作能力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.28570v1",
+      "source": "arxiv",
+      "title": "ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos",
+      "abstract": "Identifying the underlying dynamics and 3D geometry of deformable linear objects (DLOs), such as cables, ropes, and hoses, is essential for accurate robotic manipulation, but remains challenging due to their high-dimensional configuration spaces and diverse behaviors arising from varying material properties. Existing methods often rely on multi-stage pipelines and auxiliary depth inputs, which are prone to errors under dynamic interactions, while their high-dimensional state representations make model-based control computationally expensive. In this paper, we introduce ChainSplat, a physics-inspired framework that jointly learns the 3D geometry, appearance, kinematics, and dynamics of DLOs solely from multi-view RGB videos. ChainSplat represents a DLO as an open-chain structure of rigid links connected by revolute joints, yielding an analytic, screw-theoretic model with a compact state representation parameterized by joint configurations. By integrating this formulation with Gaussian splatting, ChainSplat jointly recovers DLO dynamics, kinematics-aware 3D geometry, and appearance, while enabling high-fidelity RGB rendering from arbitrary states. Through real-world experiments, we demonstrate that ChainSplat achieves state-of-the-art performance in dynamics predictions, 3D geometry reconstruction, and RGB rendering across dynamic interactions. ChainSplat further enables real-time state and force estimation, as well as accurate model-based trajectory optimization, highlighting its practical utility for real-world robotic manipulation of DLOs. Accompanying source code and video are available at: https://chainsplat.github.io.",
+      "authors": [
+        "Seungyeon Kim",
+        "Noémie Jaquier"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-28T17:46:38+00:00",
+      "link": "https://arxiv.org/pdf/2608.28570v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Learns deformable linear object dynamics from multi-view videos for robotic manipulation",
+      "llm_evidence_cn": "从多视角视频学习可变形线性物体动力学以用于机器人操作",
+      "llm_evidence": "从多视角视频学习可变形线性物体动力学以用于机器人操作",
+      "canonical_evidence": "从多视角视频学习可变形线性物体动力学以用于机器人操作",
+      "llm_tldr_en": "ChainSplat jointly learns 3D geometry, appearance, kinematics, and dynamics of deformable linear objects from multi-view RGB videos using a physics-inspired screw-theoretic model, enabling efficient model-based control.",
+      "llm_tldr_cn": "本文针对可变形线性物体动力学的识别难题，提出ChainSplat框架，从多视角RGB视频中联合学习其三维几何、外观、运动学与动力学，避免多阶段流程和深度输入的依赖。该模型采用物理启发的螺旋理论表示，降低状态维度并提高计算效率。实验表明该方法在动态交互下优于现有方法，并为基于模型的控制提供高效支撑，对机器人操作缆线、绳索等物体具有重要意义。",
+      "llm_tldr": "本文针对可变形线性物体动力学的识别难题，提出ChainSplat框架，从多视角RGB视频中联合学习其三维几何、外观、运动学与动力学，避免多阶段流程和深度输入的依赖。该模型采用物理启发的螺旋理论表示，降低状态维度并提高计算效率。实验表明该方法在动态交互下优于现有方法，并为基于模型的控制提供高效支撑，对机器人操作缆线、绳索等物体具有重要意义。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.27186v1",
+      "source": "arxiv",
+      "title": "Task-space model-based control of pneumatic soft actuators",
+      "abstract": "Soft actuators enable dexterous and compliant interaction, but closed-loop task-space control remains challenging due to strong nonlinearities, distributed deformation, and uncertainty in their dynamics. This paper presents a real-time dynamic-model-based task-space feedback and estimation framework based on a non-minimal coordinate discrete elastic rod model formulated in absolute coordinates with holonomic constraints. The resulting structure preserves distributed mechanics while maintaining computational efficiency through sparse system matrices, enabling real-time control with up to 10 discretized rods. A quasi-static feedforward inverse model is combined with a task-space PI controller and a dynamic observer that fuses measurement residuals as virtual forces, enabling full-state estimation from sparse sensing. The approach is experimentally validated on three planar pneumatic soft actuators with varying geometries. Across five tasks, including drawing the digits 0-9 across the workspace (3-18 mm/s tip speed), tracking periodic motion (up to 37 cm/s), cross-platform generalization, reduced sensing conditions, and real-time user-defined references, our method achieves 1.5-2.3 mm root mean square error (RMSE) for precision motions and 5.5-12.4 mm RMSE at 1-2 Hz. Results demonstrate that structured, non-minimal dynamic models can enable real-time, high-precision, moderate-bandwidth task-space control of planar soft pneumatic actuators in free space.",
+      "authors": [
+        "Nithin S. Kumar",
+        "Joshua Gaston",
+        "D. Caleb Rucker",
+        "Eric J. Barth"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-27T14:32:07+00:00",
+      "link": "https://arxiv.org/pdf/2608.27186v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "real-time dynamic-model-based task-space control for soft actuators",
+      "llm_evidence_cn": "基于动态模型的实时任务空间控制，适用于软体执行器",
+      "llm_evidence": "基于动态模型的实时任务空间控制，适用于软体执行器",
+      "canonical_evidence": "基于动态模型的实时任务空间控制，适用于软体执行器",
+      "llm_tldr_en": "This paper presents a real-time dynamic-model-based task-space feedback and estimation framework for soft pneumatic actuators using a discrete elastic rod model, combining feedforward inverse model with task-space PI control and dynamic observer.",
+      "llm_tldr_cn": "软体执行器的闭环任务空间控制因非线性与分布变形而困难。本文提出基于非最小坐标离散弹性杆模型的实时动态建模与任务空间反馈估计框架，结合准静态前馈逆模型、任务空间PI控制器和动态观测器。该框架在保持分布式力学建模的同时，通过稀疏矩阵实现高效计算，支持多达10个离散杆的实时控制。实验验证了其在软体执行器控制中的有效性与计算效率。",
+      "llm_tldr": "软体执行器的闭环任务空间控制因非线性与分布变形而困难。本文提出基于非最小坐标离散弹性杆模型的实时动态建模与任务空间反馈估计框架，结合准静态前馈逆模型、任务空间PI控制器和动态观测器。该框架在保持分布式力学建模的同时，通过稀疏矩阵实现高效计算，支持多达10个离散杆的实时控制。实验验证了其在软体执行器控制中的有效性与计算效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

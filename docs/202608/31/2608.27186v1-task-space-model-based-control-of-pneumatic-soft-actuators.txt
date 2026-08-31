@@ -1,0 +1,399 @@
+Title: Task-space model-based control of pneumatic soft actuators
+
+URL Source: https://arxiv.org/pdf/2608.27186v1
+
+Published Time: Fri, 28 Aug 2026 01:10:33 GMT
+
+Number of Pages: 11
+
+Markdown Content:
+> 1
+
+# Task-space model-based control of pneumatic soft actuators 
+
+Nithin S. Kumar 1, Joshua Gaston 2, D. Caleb Rucker 2, Eric J. Barth 1
+
+Abstract —Soft actuators enable dexterous and compliant in-teraction, but closed-loop task-space control remains challeng-ing due to strong nonlinearities, distributed deformation, and uncertainty in their dynamics. This paper presents a real-time dynamic-model-based task-space feedback and estimation frame-work based on a non-minimal coordinate discrete elastic rod model formulated in absolute coordinates with holonomic con-straints. The resulting structure preserves distributed mechanics while maintaining computational efficiency through sparse sys-tem matrices, enabling real-time control with up to 10 discretized rods. A quasi-static feedforward inverse model is combined with a task-space PI controller and a dynamic observer that fuses measurement residuals as virtual forces, enabling full-state estimation from sparse sensing. The approach is experimentally validated on three planar pneumatic soft actuators with varying geometries. Across five tasks—including drawing the digits 0-9 across the workspace (3–18 mm/s tip speed), tracking periodic motion (up to 37 cm/s), cross-platform generalization, reduced sensing conditions, and real-time user-defined references—our method achieves 1.5–2.3 mm root mean square error (RMSE) for precision motions and 5.5–12.4 mm RMSE at 1–2 Hz. Results demonstrate that structured, non-minimal dynamic models can enable real-time, high-precision, moderate-bandwidth task-space control of planar soft pneumatic actuators in free space. 
+
+Index Terms —dynamic model-based control, underactuated continuum robots. 
+
+I. I NTRODUCTION 
+
+Soft continuum actuators offer advantages such as dexterity, passive compliance, and safe interaction for manipulation, medical procedures, and operation in confined environments [1]–[3]. Soft pneumatic actuators (e.g., Pneunets [4]) are particularly attractive because of their low cost, simple fab-rication, and ability to conform to complex surroundings [5]– [7]. Achieving dynamic task-space performance with these systems, however, remains challenging: they are underactu-ated, highly deformable, and effectively infinite-dimensional. Therefore, controllers must compensate for model uncertainty, nonlinear distributed elasticity, and pneumatic bandwidth limi-tations while remaining computationally efficient for real-time implementation. Early continuum-robot controllers often used kinematic end-effector regulation with Jacobian-based inverse kinematics and classical P/PD/PID feedback [8]–[11]. While effective for quasi-static motion, these approaches generally require conser-vative gains and do not explicitly incorporate full manipulator inertia, limiting achievable bandwidth.              
+
+> 1Department of Mechanical Engineering, Vanderbilt University, Nashville, Tennessee 37235. Email: nithin.s.kumar@vanderbilt.edu
+> 2Department of Mechanical, Aerospace, and Biomedical Engineering, The University of Tennessee, Knoxville, TN 37996 This work has been submitted to the IEEE for possible publication. Copyright may be transferred without notice, after which this version may no longer be accessible.
+> Fig. 1. (a) The three planar soft pneumatic actuators used in this study consist of four chambers each. Tasks 1, 2, 4, and 5 are conducted with P1; Task 3 evaluates generalization using P2 and P3. P1 and P3 have the same constant cross-section and differ only in length, while the wall thickness of P2 decreases from base to tip as shown in a CAD cross-sectional view (b). Two chambers of the same side of each actuator are pressurized to 35 psi (241 kPa) resulting in bending for (c) P1, (d) P2, and (e) P3.
+
+Dynamic controllers typically use a model-based reduced-order approach [12]–[14], often augmented with learning components [15]–[17]. These reduced-order models are of-ten minimal-coordinate, relative-geometry models and assume piecewise-constant curvature (PCC) [18]–[20], which dis-cretizes the actuator into segments with finite constant curves. While PCC models are effective for quasi-static conditions and negligible external loading, they are unable to capture higher-order vibrations, curvature variations, and distributed dynamic effects unless discretized finely. However, their dense inertia matrices and cubic scaling in computation time [21], [22] make this intractable for real-time operation beyond a few segments (e.g., three to five segments in [12], [14], [23], [24]). Learning-based controllers can improve performance but introduce training overhead, lack generalizability, and offer limited stability guarantees [17], [25]. An alternative modeling direction is to adopt discrete elastic rod formulations that preserve distributed mechanics without imposing curvature shape assumptions. However, such models are typically expressed in minimal or reduced coordinates and are often viewed as impractical for real-time control due to the presence of algebraic constraints and increased state dimension (e.g., [26]). In contrast, we demonstrate that a non-minimal, constraint-based discrete rod formulation can be implemented efficiently and remains computationally tractable for real-time task-space control at higher spatial resolutions. In particular, we apply this modeling framework to control the tip position of a planar pneumatic soft actuator (denoted arXiv:2608.27186v1 [cs.RO] 27 Aug 2026 2
+
+P1 in Fig. 1a). The model builds on prior discrete rod and constrained Lagrangian formulations [27], [28] and provides several advantages:  
+
+> •
+
+Computational efficiency with high spatial resolution: 
+
+The resulting equations exhibit a sparse, block tri-diagonal structure [21], [29], enabling real-time control with up to 10 discretized rod elements without forming dense inertia matrices.  
+
+> •
+
+Direct incorporation of constraints and interactions: 
+
+Holonomic and non-holonomic constraints, as well as task-space interaction forces, are embedded directly within the constrained dynamics framework [30].  
+
+> •
+
+Observer-compatible structure: The formulation supports a force-based dynamic observer [29] that reconstructs full-state estimates from sparse sensing (e.g., tip-only measurements). The proposed control architecture combines a quasi-static model-based feedforward term with a task-space PI controller and an online dynamic observer. To evaluate performance and versatility, we validate the approach across five representative tasks: 1) Precision trajectory tracking (3-18 mm/s), 2) High-speed periodic motion (37 cm/s, 4.7 m/s 2), 3) Generalization to actuators with differing geometries (P2 and P3 in Fig. 1a), 4) Trajectory tracking with intermediate-point sensing only, 5) Real-time user-defined reference tracking. These tasks were selected to evaluate complementary capabil-ities needed for practical free-space soft-actuator deployment: precision, bandwidth, cross-platform model generalization, reduced-sensing operation, and online adaptability. To our knowledge, this is the first experimental demonstration of real-time task-space control using a dynamic constrained-rod observer and model-based feedback architecture for planar soft pneumatic continuum actuators across this range of tasks within a single model-based control and estimation framework implemented on physical hardware. Furthermore, this work demonstrates that structured, non-minimal coordinate dynamic models can support real-time planar free-space task-space control at resolutions previously considered computationally impractical. II. M ETHODS 
+
+A. Constrained Dynamic Model 
+
+The backbone of the soft continuum actuator is discretized as a chain of N rigid rods with rotational elasticity and damping as shown in Fig. 2. A non-minimal (maximal) set of generalized coordinates is used to describe the configuration: 
+
+q = [ x1, y 1, θ 1, ..., x N , y N , θ N ]T , (1) where ( xi, y i) and θi denote the absolute center-of-mass posi-tion and orientation of rod i, respectively. Adjacent rods are connected through holonomic constraints enforcing geometric continuity, and the base of rod 1 is pinned to the origin. These constraints are written as ϕH (q) = 0 , with Jacobian A = ∂ϕ H 
+
+> ∂q
+
+.(x1,y1) (xN-1,yN-1) xy θ1
+
+# θN-1 
+
+# τb,i Fy,hc Fx,hc 
+
+# τext 
+
+# τk,i 
+
+> . . .
+
+. . .    
+
+> Fig. 2. The planar discretized soft actuator model is overlaid with the physical actuator (P2). The actuator backbone is represented by Nrigid rods with rotational spring–damper elements generating elastic ( τk) and damping ( τb)torques. Adjacent rods are connected through holonomic constraint forces (Fx,hc , F y,hc ). Pneumatic actuation is modeled as generalized torques ( τext )applied at selected rod indices.
+
+Using a constrained Lagrangian formulation, the equations of motion are: 
+
+ddt ∂L ∂ ˙q − ∂L ∂q = QN C + AT (q)λH , (2) 
+
+ϕH (q) = 0 , (3) where λH are Lagrange multipliers associated with the holo-nomic constraints. To mitigate numerical drift during integra-tion, Baumgarte stabilization [31] is applied by differentiating the constraints to the acceleration level and imposing second-order constraint dynamics. The resulting index-1 differential-algebraic system is: 
+
+M AT
+
+A 0
+
+  ¨q
+
+−λH
+
+
+
+=
+
+ Q
+
+− ˙A ˙q − 2ζB ωB A ˙q − ω2 
+
+> B
+
+ϕH
+
+
+
+, (4) where M is the diagonal inertia matrix, ζB and ωB regulate constraint stabilization dynamics, and Q collects all internal and external generalized forces. Internal viscoelastic torques ( τk, τ b in Fig. 2) arise from relative angular displacements and velocities between adjacent rods and are modeled as linear rotational springs and dampers, yielding block-tridiagonal stiffness and damping contributions in Q. Pneumatic actuation is modeled as equivalent external generalized torques ( τext in Fig. 2) applied at discrete rod indices. The resulting constrained system preserves a sparse, block-structured form that enables efficient linear solves at each integration step. A complete derivation of the constrained Lagrangian formulation, including non-holonomic extensions, is provided in [30]. 
+
+B. Parameter Estimation 
+
+The discrete rod model is parameterized by rod mass ( mi), length ( Li), and the rotational stiffness ( ki) and damping ( bi)3                  
+
+> TABLE I MODEL PARAMETERS
+> Parameter P1 P2 P3 Mass [g] 125.0 144.5 92.2 Length [mm] 253 253 193
+> ki[mNm/rad] 75.1 24.8-66.4 99.8
+> bi[mNm/rad/s] 0.167 0.205-0.767 0.132
+
+constants. Geometric and mass properties ( mi, L i) were ob-tained by direct measurement. The rotational stiffness parame-ter ( ki) was identified by pressurizing individual chambers and performing a least-squares fit to the measured static deflec-tions, following a procedure similar to [20]. By construction, the inertia matrix is diagonal, M = diag (mi, m i, miL2 
+
+> i
+> 12
+
+) ∈
+
+R3N ×3N , where each rod is modeled as a uniform slender body. The stiffness matrix K is block tridiagonal, where each internal rotational DOF contributes a term of the form 
+
+−ki(2 θi − θi−1 − θi+1 ).The damping constant ( bi) was estimated from the measured free oscillation of the actuator tip using logarithmic decrement to obtain the dominant modal damping ratio ζ. A Rayleigh damping model was assumed, B = αM + βK , with (α, β )
+
+selected to bound the damping ratios within a narrow range around the measured ζ, similar to [32], [33]. This prevents excessive damping of higher-frequency modes, which would otherwise introduce numerical stiffness and prohibit fixed-step integration at practical time steps (e.g., ∆t = 10 −3 s). The resulting damping model preserves the observed decay characteristics while maintaining computational efficiency. Model parameters for the three soft actuators are given in Table I. Pressurization of a chamber induces opposing bending moments at its boundaries, which are reduced to net torques applied at the proximal, distal, and mid-chamber rod indices. These torques enter the model through the generalized force vector Q as in [30]. 
+
+C. Controller Architecture 
+
+The overall control structure is shown in Fig. 3. A quasi-static model-based feedforward term is combined with a task-space PI controller and a dynamic observer to generate the input vector u = [u1, u 2]T ∈ R2×1. Here, u represents differential actuation commands applied to opposing chamber pairs of the Pneunet. In particular, u1 actuates the rear pair of chambers: a positive value corresponds to pressurizing one chamber while the opposing chamber remains unpressurized, whereas a negative value reverses this assignment. The second input u2 acts similarly on the top chamber pair. 
+
+1) Quasi-Static Feedforward Control: For a desired tip reference pref ∈ R2×1, the feedforward input uF F is obtained by solving the static inverse problem pmodel (u) = pref . This is formulated as a nonlinear least-squares problem minimizing the task-space residual, r(u) = pmodel (u) − pref , where 
+
+pmodel ∈ R2×1 is the model tip position. A Gauss–Newton iteration is used, based on the local input–output sensitivity, 
+
+S(θ), given by: 
+
+S(θ) = ∂p model 
+
+∂u = J(θ)K−1 
+
+> θ
+
+Tθ ∈ R2×2, (5) where Tθ ∈ RN ×2 maps actuator inputs to generalized model torques ( Tθ (i, j ) = ±1 if input j results in a counterclock-wise/clockwise torque on rod i and is 0 otherwise). The reduced rotational stiffness matrix Kθ ∈ RN ×N is constructed from the corresponding rotational elements of the full stiffness matrix K ∈ R3N ×3N and includes elastic coupling between adjacent rods. Each column of the Jacobian J(θ) = ∂p model  
+
+> ∂θ
+
+∈
+
+R2×N is given by Ji =
+
+−Li sin θi
+
+Li cos θi
+
+
+
+. Equation (5) was derived as follows: we considered the minimal set of coordinates 
+
+θ = [ θ1, ..., θ N ]T and noted that for small perturbations about equilibrium δθ = K−1 
+
+> θ
+
+Tθ δu and δp model = Jθ δθ which leads to δp model = S(θ)δu . The update term at iteration k is: 
+
+∆uF F,k =
+
+
+
+−S−1r(uk), if S is well-conditioned, 
+
+−(ST S + ϵI )−1ST r(uk), otherwise, (6) where we abbreviate S = S(θk) for compactness, ϵ is the regularization parameter (1 e−8), and S( θk) is considered ill-conditioned if its reciprocal condition number is <1e−10 .The regularized form maintains robustness near kinematic or actuation singularities. The input is updated as: 
+
+uF F,k +1 = uF F,k + αu∆uF F,k , (7) where the step size αu ∈ (0 , 1] is selected via backtracking to ensure monotonic reduction of || r(uk)|| 22. This procedure is applied pointwise along the reference trajectory pref (t) to generate the feedforward input sequence uF F (t).Because this inverse problem is solved pointwise using the static equilibrium map, uF F should be interpreted as a quasi-static feedforward term rather than an inverse-dynamics input and does not explicitly compensate inertial terms such as M ¨q.Dynamic tracking errors are addressed by the observer and task-space PI feedback described below. 
+
+2) Dynamic observer: Tip and base positions are mea-sured via optical tracking and transformed into the task-space frame. These measurements are incorporated into a dynamic observer that integrates Eq. (4) with initial conditions set to the unactuated equilibrium configuration and parameters from Table I. We use a discretization of N = 10 rods, which was found to provide a practical balance between modeling fidelity and real-time computational efficiency. Coarser dis-cretizations reduce computation time but underrepresent dis-tributed curvature variation, particularly for P2. We therefore selected a resolution higher than typical 3–5 segment PCC dynamic implementations, while still allowing the N = 10 
+
+observer/controller loop to run in real time at 1 kHz. State correction is achieved by injecting measurement resid-uals as generalized forces through the vector Q. Specifically, this virtual tip force is applied at the distal rod to steer the states of the observer toward the configuration of the physical actuator. This force, Qobs ∈ R2×1 enters as an external input to the ¨xN , ¨yN dynamics (available to us from the non-minimal coordinate formulation) and is given by: 
+
+Qobs = Ko(pdata − pmodel ) + Bo( ˙ pdata − ˙pmodel ). (8) 4
+
+Here pdata and pmodel are the measured and model tip positions and Ko, B o ∈ R2×2 are the observer gain matrices. In all experiments, we used Ko = diag([100 , 100]) and 
+
+Bo = 0 . The gain Ko was tuned empirically by increasing it until the observer tip converged rapidly to the measured tip without excessive oscillation or noise amplification; this proportional correction was sufficient to obtain low observer error, so derivative correction was not used. Pneumatic actuation dynamics were modeled as a first-order response (50 ms time constant) with approximately 50 ms pure delay and incorporated into the observer forward dynamics. Pressure characterization supports this approximation (Supple-mentary Section S1, Fig. S1). While this model does not fully capture the asymmetry between chamber pressurization and exhaust, the mismatch is treated as model error corrected by task-space feedback. 
+
+3) Task-space PI control: Feedback is implemented in task space by mapping a desired task-space effort ( fdes ) to actuator inputs via the sensitivity matrix S(θ), which is computed online from the dynamic observer states. The desired effort combines proportional–integral feedback with a velocity feed-forward term: 
+
+fdes = KP e + KI
+
+Z
+
+edt + KF F ˙pref , (9) 
+
+e = pref − pdata , (10) where KP , K I , K F F ∈ R2×2 and e ∈ R2×1. The velocity feedforward term was empirically found to be useful for dy-namic trajectory following tasks (Task 2). The corresponding feedback correction is obtained through a regularized least-squares solution via S(θ):
+
+uF B = ( S(θ)T S(θ) + ϵI )−1S(θ)T fdes , (11) which ensures numerical robustness near singular configura-tions. The total control input is: 
+
+u = uF F + uF B . (12) This input is saturated and linearly mapped to pressure set-points, which are regulated by low-level PI loops at each proportional spool valve. Note that only the feedback compo-nent is computed from the dynamic observer; the feedforward component remains a pointwise quasi-static inverse and does not perform inverse-dynamics compensation. 
+
+D. Stability and Passivity Analysis 
+
+The constrained rod model has a natural passive mechan-ical structure. For the nominal system, omitting Baumgarte stabilization terms, Eq. (4) may be written as: 
+
+M ¨q + B ˙q + Kq = T u + STN Qobs + A(q)T λH , (13) where T ∈ R3N ×2 is the zero-padded extension of Tθ and 
+
+SN ∈ R2×3N selects the translational coordinates of the distal rod such that pN = SN q. Define the total mechanical energy: 
+
+H(q, ˙q) = 12 ˙qT M ˙q + 12 qT Kq. (14) Taking the time derivative and substituting Eq. (13): 
+
+˙H = − ˙qT B ˙q + ( T T ˙q)T u + ˙ pTN Qobs + λTH A(q) ˙ q. (15) Pressure Scaling             
+
+> u
+> Ref. Pressure
+> Valve Control
+> Delay, Filter
+> Model-Based Dynamic Observer
+> Optical Tracking System
+> Ref. Trajectory
+> Pressure Sensors
+> Spool Valve Bank
+> Mixed I/O
+> Measured Pressure
+> Pneumatic Input
+> Optical Markers
+> Soft Actuator
+> PTFE Sheet
+> +Sat.
+> Feedforward Controller
+> uFF
+> Task-Space Controller
+> uFB
+> Fig. 3. The system block diagram is shown here. The reference trajectory is processed by a quasi-static inverse (feedforward) module to generate uF F .A dynamic observer integrates the constrained rod model and incorporates measurement residuals as virtual generalized forces to estimate the system state. The estimated state is used within the task-space PI control block to compute a feedback correction uF B via the local sensitivity mapping. The total input u=uF F +uF B is applied through proportional valves with low-level pressure regulation.
+
+Since admissible velocities satisfy A(q) ˙ q = 0, holonomic constraint forces do no work. Therefore, 
+
+˙H = − ˙qT B ˙q + ( T T ˙q)T u + ˙ pTN Qobs . (16) Since B ⪰ 0, the discrete rod model is passive from the input-output pairs u 7 → T T ˙q and Qobs 7 → ˙pN . In the unforced case, u = 0 and Qobs = 0 , the energy derivative reduces to 
+
+˙H = − ˙qT B ˙q ≤ 0, so the nominal model is Lyapunov stable and dissipative. More generally, integrating Eq. (16) gives: 
+
+H(t) ≤ H(0) + 
+
+Z t
+
+> 0
+
+(T T ˙q)T udτ +
+
+Z t
+
+> 0
+
+˙pTN Qobs dτ. (17) Thus, bounded supplied mechanical work from pneumatic actuation and observer force injection yields bounded stored mechanical energy. This analysis establishes passivity and dissipativity of the nominal constrained mechanical model used by the observer and controller, demonstrating that the underlying mechanical dynamics are not energy-generating. It does not constitute a stability proof of the complete imple-mented closed-loop system, which includes the observer, PI controller, pneumatic delays, pressure saturation, measurement noise, and numerical implementation. 
+
+E. Experimental Platform 1) Soft Actuator: The experimental platform consists of three planar pneumatic soft actuators (P1–P3) shown in Fig. 1. P1 is used for the majority of the experiments, while P2 and P3 are used to evaluate generalizability of our approach. Each actuator follows the Pneunet architecture [4], in which pressurization induces asymmetric expansion in compliant regions, producing planar bending. The actuator body contains four independent internal chambers, allowing bidirectional curvature control through differential pressurization. All soft actuators were fabricated using a Bambu Lab X1C 3D printer with TPU (Polymaker PolyFlex TPU 90A). Actuator P1 was designed with a uniform wall thickness of 1.5 mm and 14 5                
+
+> Fig. 4. The temporal (a) and task-space (b) response of the soft actuator to four step inputs that draw a diamond in task-space. In (a), four controllers are used. The response of the feedforward (FF) and FF+PI are then shown in task-space (b). Black Xs represent each commanded step starting at the top and moving clockwise. TABLE II STEP RESPONSE AVERAGE ERROR CHARACTERIZATION
+> Controller RMSE [mm] SSE [mm] ISE [mm 2s] FF 30.5 15.7 3309 FF+P 23.8 11.3 2007 FF+I 19.1 1.0 1131 FF+PI 14.4 1.0 625
+
+triangular segments per chamber, resulting in a total length of 253 mm. P2 shares the same overall geometry as P1 but features a spatially varying wall thickness, decreasing from 3 mm at the base to 1.1 mm at the tip. P3 is identical to P1 except that it contains 10 triangular segments per chamber, resulting in a reduced total length of 193 mm. All three actuators have a height of 27.5 mm. 
+
+2) Hardware setup: Each of the four hollow chambers in each actuator is independently actuated using a custom pneu-matic control box developed in our research group (Fig. 3). The chambers are connected via 4 mm ID, 6 mm OD pneu-matic tubing (McMaster-Carr 50315K69) using barbed fittings (McMaster-Carr 5463K628). The soft actuator operates over a PTFE sheet (McMaster-Carr 9266K21) to reduce friction during operation and is secured to a mechanical breadboard using a custom 3D-printed fixture. The control box contains four 5-port/3-way proportional spool valves (Festo MPYE-5-M5-010-B), each equipped with an inline pressure sensor (Festo SDE5-D10-NF-T14-V-M8). The system is interfaced through a mixed I/O data acquisition card (Humusoft MF634) to a desktop control computer (AMD Ryzen 7 5700G 3.80 GHz) running Matlab 2024b Simulink Desktop Real-Time. This configuration enables independent closed-loop pressure control of each chamber. Each chamber pressure was regulated using a low-level PI loop that converted pressure error into the corresponding proportional valve com-mand. Pressure saturation was applied to enforce the actuator operating range and prevent self-collision. Actuator motion is measured using an OptiTrack Prime 13 optical tracking system, with Cartesian position data streamed at 100 Hz. The controller, the numerical integration of Eq. (4) using Matlab’s ode4 fixed step solver for the dynamic observer, pressure sensing, and spool valve command generation, are executed at 1 kHz. The mean computation time per step (as   
+
+> Fig. 5. Task 1: The actuator tip is commanded to draw each of the 10 digits in 10 sec (a). The corresponding RMSE values are shown in the top left for each digit. The x and y errors ( ex, e y) for all 10 plots are shown (b) and are always within 5 mm.
+
+calculated by Simulink Profiler) was found to be 0.97 ms. III. E XPERIMENTAL RESULTS 
+
+We begin by characterizing the step response of the soft actuator P1 under four control strategies: feedforward only (FF), FF with proportional (FF+P), FF with integral (FF+I), and FF+PI feedback. This was performed to demonstrate the relative importance of each component of the controller architecture. The actuator tip was commanded to a sequence of four task-space step inputs at 3 s intervals, forming a diamond-shaped trajectory (Fig. 4). Since conventional step response metrics (e.g., rise time, overshoot) are not uniformly applicable across all responses, performance is evaluated using the integral squared error (ISE): ISE (t) = 
+
+Z t
+
+> 0
+
+e(τ )2dτ, (18) which penalizes large transient deviations. We also report the average RMSE and steady-state error (SSE), calculated as the mean absolute error over the final 10 % of each step interval. The results, summarized in Table II, show that integral feed-back (FF+I) was particularly important for reducing steady-state error, while the combination of proportional and integral feedback (FF+PI) provided the best overall transient and steady-state performance. FF+PI control was therefore used in all subsequent experiments, and its performance is evaluated across five representative tasks:  
+
+> •
+
+Task 1: Precise tracking of slow trajectories (3–18 mm/s),  
+
+> •
+
+Task 2: High-speed and high-frequency tracking (19 cm/s, 1 Hz),  
+
+> •
+
+Task 3: Cross-platform generalization to actuators P2 and P3 (Fig. 1a),  
+
+> •
+
+Task 4: Tip tracking using only intermediate backbone sensing,  
+
+> •
+
+Task 5: Real-time user-defined trajectory tracking. 
+
+Task 1: Precise Tracking of Slow Trajectories 
+
+Two experiments were conducted to evaluate precise low-speed tip tracking of P1. In the first experiment, the actuator 6x [mm]              
+
+> -50 -40 -30 -20 -10 0
+> y [mm]
+> 125 130 135 140 145 150
+> 1.9 mm Reference Tip position Time [s]
+> 510 15 20 25 30
+> Error [mm]
+> -3 -2 -1 0123
+> ex
+> ey
+> [a] [b]
+> Fig. 6. Task 1: The actuator tip draws the letters “VU” spanning 25 mm in height and 55 mm in width in 25 sec. This task was accomplished with errors less than 4 mm with an RMSE of 1.9 mm (b).
+
+tip was commanded to draw each of the ten digits over 10 s per digit. The reference trajectories consisted of a 60 mm × 30 mm ellipse for “0”, a 30 mm vertical line for “1”, and 30 mm × 30 mm square-bounded paths for “2–9”. Due to variations in path length, reference speeds ranged from 3–18 mm/s. The task-space references and tip trajectories are shown in Fig. 5a, with the corresponding RMSE values indicated in each subplot. The reference trajectory starts from the unactuated equilibrium position and transitions to the beginning of each digit in 2 s. The error plots in Fig. 5b show that the tracking error remains below 5 mm along each axis throughout the drawing task for all digits. The second experiment involves writing the letter “VU” over 25 s (Fig. 6). The reference trajectory for this task ranges from x=-50 to 5 mm and from y=125 to 150 mm, spanning a 125 mm trajectory. The reference speed was held constant at 5 mm/s. The tracking error remained below 4 mm throughout the motion, with an RMSE of 1.9 mm. This task required substantial curvature variation, including motion toward the unactuated equilibrium configuration (y=0), further illustrating precision throughout task-space. 
+
+Task 2: High-speed tracking 
+
+We next evaluate tracking performance under higher-speed and higher-frequency trajectories. Two reference motions were considered: a 60 mm diameter circular trajectory and a 60 mm vertical line trajectory at 1 Hz. In both cases, the actuator transitions from the unactuated configuration to the oscillatory reference by t = 2 s, followed by 7 s of periodic tracking. Figure 7 presents results for the 60 mm, 1 Hz circular trajectory, corresponding to a peak tip speed of 18.8 cm/s and peak acceleration of 1.18 m/s 2. In Fig. 7(a), the top and bottom plots show the x and y positions of the actuator tip position (data), observer, and reference. The task-space trajectory in Fig. 7(b) demonstrates close agreement between the reference and measured motion over the final cycles. The zoomed view in Fig. 7(c) highlights the close alignment between the observer and measured tip positions. Figure 8 further compares the physical actuator and dynamic observer configurations at four time points within a cycle, illustrating consistency between the 10-link observer backbone and the actuator shape. Figure 9 presents the 60 mm, 1 Hz vertical line trajectory. While tracking remains stable, larger deviations are observed compared to circular motion, particularly in the transverse              
+
+> Fig. 7. Task 2: The actuator is commanded to follow a 60 mm 1 Hz circle. The actual tip position, observer tip position, and reference for x and y are shown (a). The task-space trajectory for the last 4 cycles is shown (b). The observer tip closely tracks the actual tip position - a zoomed view of the y-position from t = 8.1-8.4 s is shown in (c).
+> Fig. 8. Task 2: Four snapshots of the actuator during one cycle of the 1 Hz circle-following task are shown (spaced 0.3 sec apart). Top row images are extracted from aphone camera and bottom row images depict the configuration of the observer during each instance.
+
+direction. Enforcing linear task-space motion requires coor-dinated curvature variation that is more challenging for the bending-dominated actuator. A summary of performance across Tasks 1 and 2 is provided in Table III. Here, the characteristic length refers to the nominal size of the reference trajectory (e.g., length, diameter). We also include a horizontal line following task at different frequencies. For slow trajectories (Task 1), millimeter-scale accuracy is achieved at tip speeds around 10 mm/s. For dynamic trajectories (Task 2), stable tracking is maintained up to approximately 19 cm/s with RMSE on the order of 7–12 mm, demonstrating moderate-bandwidth task-space control                                  
+
+> Fig. 9. Task 2: The actuator is commanded to follow a 60 mm 1 Hz vertical line. The actual tip position, observer tip position, and reference for x and y are shown (a). The task-space trajectory for the last 4 cycles is shown (b). 7
+> TABLE III SUMMARY OF TASKS 1AND 2. Task Task Characteristic Characteristic RMSE [mm] No. Length [mm] Time 1Digits 30 10 s 1.5-2.3 1VU 50 25 s 1.9 2Vertical line 60 0.25 Hz 7.4 1 Hz 8.8 2Horizontal line 60 0.25 Hz 9.2 1 Hz 12.4 2Circle 60 1 Hz 7.4
+> Fig. 10. Task 3: The variable-curvature Pneunet (P2) is commanded to repeat Tasks 1 and 2. In (a), “VU” is drawn in 25 s with an RMSE of 3.7 mm. The corresponding error plot is shown in (b). In (c), a 60 mm, 1 Hz circle is tracked with an RMSE of 9.1 mm.
+
+without instability or excessive phase lag. 
+
+Task 3: Generalization to Varying Actuator Geometries 
+
+To evaluate generalizability, one test each from Tasks 1 and 2 was repeated using two additional actuators, P2 and P3 (Fig. 1(a)). Only model parameters were updated for each actuator (Table I) with no structural modifications to the observer or controller. Figure 10 summarizes the results for P2. Despite the spatially varying wall thickness and resulting nonuniform curvature distribution, the controller achieves an RMSE of 3.7 mm for the “VU” task and 9.1 mm for the 60 mm, 1 Hz circular trajectory, with no appreciable phase lag. Figure 11 presents results for P3, which differs from P1 primarily in overall length. To accommodate its reduced workspace, reference trajectories were vertically shifted with-out changing their size. The controller achieves RMSE values of 2.6 mm for the “VU” task and 5.5 mm for the 1 Hz circular trajectory. Encouraged by this performance, we further evaluated bandwidth limits using P3. A 60 mm, 2 Hz circular trajectory (37 cm/s peak speed, 4.7 m/s 2 peak acceleration) was successfully tracked (Fig. 12). While tracking remained 
+
+> Fig. 11. Task 3: The shorter Pneunet (P3) repeats Tasks 1 and 2. In (a), “VU” is drawn in 25 s with an RMSE of 2.6 mm. The corresponding error plot is shown in (b). In (c), a 60 mm, 1 Hz circle is tracked with an RMSE of 5.5 mm. Due to the reduced workspace, trajectories are vertically shifted.
+> Fig. 12. Task 3: The short Pneunet (P3) is able to track a 60 mm 2 Hz circle. The x and y tip positions along with the respective phase lags are shown (a). The task-space trajectory for the last 4 cycles and RMSE for the entire 6 sec run are shown (b).
+
+stable, increased phase lag ( 27 ◦ in the x-direction) and larger error (11.4 mm RMSE) were observed, reflecting the band-width limitations of the closed-loop architecture at higher frequency. These limitations arise from the combined effects of pneumatic delay, actuator compliance, finite feedback band-width, observer/model mismatch, and the quasi-static feedfor-ward term. A supplementary frequency sweep (Supplementary Section S2) quantifies this trend: the mean corrective feedback contribution increased from 12 % of the total commanded input at 0.1 Hz to 32 % at 2 Hz. 
+
+Task 4: Reduced Sensing 
+
+We next consider the case where direct tip measurements are unavailable and only an intermediate backbone position is accessible. To remain consistent with the observer discretiza-tion ( N = 10 ), we assume optical tracking is available only near rod 6 (with rod 1 at the base and rod 10 at the tip). Four sensing configurations are evaluated: 1) Open-loop (FF only), 8          
+
+> Fig. 13. Task 4: Performance under four sensing conditions — open-loop (FF), rod 6 only, rod 10 only (tip sensing), and rods 6 and 10 combined. The three reference trajectories are (a) sweep, (b) 60 mm, 0.25 Hz circle, and (c) 60 mm, 0.25 Hz vertical line. Each condition is repeated five times, and the distribution of normalized tip RMSE is shown in (d). Average absolute RMSE values for each trajectory and sensing configuration are also reported. Reference t = 5.8 s t = 11.3 s t = 19.8 s t = 24.7 s
+> Time [s] 510 15 20 25 30 Tip position [mm] -100 0100 200 Tip position, x Tip position, y Reference, x Reference, y [a] [b]
+> Fig. 14. Task 5: Real-time tracking of an arbitrary user-defined reference generated by an optical marker attached to a handheld rod is demonstrated. Representative snapshots during the 30 s trial are shown in (a). The corre-sponding projected reference and actuator tip trajectories in x and y are shown in (b).
+
+2) Rod 6 only, 3) Rod 10 only (nominal sensing), 4) Rods 6 and 10 combined. The open-loop condition corresponds to feedforward control without feedback. The observer framework allows real-time fusion of position (and velocity) data from any selected rods; in the final configuration, positional data from both rods 6 and 10 are incorporated simultaneously. Each sensing condition was tested on three reference trajectories: 1) Sweep, 2) 60 mm, 0.25 Hz circle, 3) 60 mm, 0.25 Hz vertical line. Each trajectory was repeated five times per sensing configura-tion. Figures 13(a–c) show representative task-space trajecto-ries (reference and all four sensing configurations): (a) sweep, (b) circle, and (c) vertical line. Figure 13(d) summarizes the distribution of tip RMSE values. For each trajectory (x-axis), the distribution of tip position RMSE is shown for five runs per sensing condition. RMSE values are normalized by the maximum RMSE across all 20 trials per trajectory (four sensing conditions × five runs). The average absolute RMSE per trajectory is also shown. Incorporating intermediate backbone sensing significantly improves performance relative to open-loop control. Compared to FF, using the position data of rod 6 reduces RMSE by 27 %, 74 %, and 34 % for the sweep, circle, and line trajectories, respectively. Combining rods 6 and 10 yields a slight but not statistically significant improvement over tip-only sensing. 
+
+Task 5: Real-Time User-Defined Tracking 
+
+In this final experiment, we evaluate real-time tracking performance without a precomputed reference trajectory or feedforward input. The actuator tip is commanded to follow an optical marker affixed to the end of a handheld rod. Unlike previous tasks, the reference is generated online and varies continuously and arbitrarily over time. Three modifications to the control strategy are introduced: 1) The measured marker position is projected onto the actuator’s planar workspace and used as the task-space reference. 2) The offline quasi-static feedforward component is re-placed with an online inverse update computed at a lower rate (100 Hz), while the observer and pressure control loops remain at 1 kHz. 3) The velocity feedforward term in Eq. (9) is disabled. Figure 14(a) provides representative snapshots during a 30 s trial in which the reference marker is moved dynamically throughout the workspace. The projected reference and mea-sured tip trajectories are shown in Fig. 14(b), demonstrating stable real-time tracking under non-periodic and user-defined motion. IV. D ISCUSSION 
+
+This work positions non-minimal coordinate discrete elastic rod models as a practical alternative to both reduced-order PCC formulations and learning-dominant control approaches for soft pneumatic actuators. The results suggest a shift in the prevailing modeling–control tradeoff: real-time task-space control with dynamic model-based state estimation does not require either minimal-coordinate reduction or heavy data-driven augmentation when the mechanics are structured ap-propriately. 
+
+A. Comparison with Prior Soft-Actuator Tracking Results 
+
+Table IV summarizes representative results from prior dy-namic control studies of soft continuum manipulators. Much of the literature has focused on curvature tracking, quasi-static task-space control, or dynamic tracking at relatively low band-widths. PCC-based implementations commonly operate below 0.5 Hz with cm-level Cartesian accuracy, while learning-based approaches often report 10–30 mm errors over multi-second dynamic tasks. Recent Koopman-based and residual modeling strategies achieve 5–70 mm errors at frequencies up to approximately 0.5–1.1 Hz, typically on longer or higher-DoF platforms. 9                                                                        
+
+> TABLE IV RECENT LITERATURE SUMMARY OF DYNAMIC CONTROL OF SOFT CONTINUUM MANIPULATORS .FBL=F EEDBACK LINEARIZATION , PP=P OLE PLACEMENT , NARX = N ONLINEAR AUTOREGRESSIVE WITH EXOGENOUS INPUTS , UKF=U NSCENTED
+> KALMAN FILTER , AP=A DAPTIVE PASSIVITY CONTROL , ANCF=A BS . N ODAL COORDINATE FORMULATION
+> Ref. (Year) Model Controller(s) Platform Size Free-space tracking results
+> [24] (2017) 3-link PCC FBL Festo Bionic Handling Assistant 87 cm <3 mm static and ≈50 mm dynamic error (0.5 Hz) [16] (2018) NN MPC 1-DOF pneumatic joint N/A 2° error to 40° step angle tracking with 1–2 s rise time [12] (2018) 5-link PCC Curvature PID Planar soft pneumatic actuator 32 cm 5° L2norm error (0.33 Hz) [25] (2019) Learned NARX model Model-based RL policy 2-segment pneumatic soft actuator 30 cm 26 mm Cartesian error (dynamic reaching) [13] (2022) Lumped 2nd-order FBL, PP/LQR, UKF 1-DOF Pneunet 10 cm 6–10° avg. error to angle staircase input (0.25-0.5 Hz) [17] (2023) Koopman LQR 2 PMAs 37 cm, 53 cm 5–10 mm error (from reported plots) (1.1 Hz, 1.52 m/s) [34] (2025) Koopman MPC 3-segment PMA 72 cm 67 mm RMSE (0.1 Hz circular tracking) [35] (2025) ANCF + NN FBL 3-DOF soft parallel robot 17.5 cm 0.4–1.1 mm tracking error (5–80 mm/s) [14] (2025) 3-link PCC AP 9-DOF pneumatic actu-ator 45 cm 11–43 mm L2norm error (0.5 Hz, 0.42 m/s)
+> This work Discrete elastic rod FF + PI 2-DOF planar Pneunet 25 cm 1.5–2.3 mm RMSE (slow tracking); 5.5–12.4 mm RMSE (1–2 Hz, 0.37 m/s)
+
+In contrast, this work demonstrates mm-scale Cartesian accuracy (1.5–2.3 mm RMSE) for slow trajectories and sub-cm accuracy (5.5–12.4 mm RMSE) for periodic tracking at 1–2 Hz. To our knowledge, this represents one of the highest reported closed-loop task-space tracking bandwidths for pneu-matically actuated soft continuum robots while maintaining mm-level precision. 
+
+1) Comparison to PCC-Based Dynamic Models: PCC formulations remain the dominant modeling framework for continuum robots due to their geometric interpretability and reduced state dimension [18]–[20]. However, this reduction introduces two structural limitations: (i) dense inertia matrices with cubic scaling in segment count [21], [22], and (ii) reliance on curvature shape assumptions that limit the ability to capture higher-order deformation without increasing segment resolution. Consequently, most dynamic PCC implementations operate with 3–5 segments [12], [23], [24], trading fidelity for real-time tractability. In contrast, the non-minimal formulation adopted here pre-serves absolute coordinates with holonomic constraints while maintaining block-sparse structure. This enables real-time in-tegration with 10 segments, capturing distributed curvature variation without imposing predefined shape constraints. The 1–2 Hz tracking results illustrate that stable dynamic task-space control can be achieved without quasi-static curvature assumptions. Thus, here we demonstrate that non-minimal co-ordinates can invert the traditional tractability–fidelity tradeoff when sparsity is exploited correctly. 
+
+2) Comparison to Learning-Based Control Approaches: 
+
+Learning-based strategies, ranging from neural inverse models to MPC with learned dynamics, have demonstrated strong em-pirical performance in capturing nonlinear behavior [17], [25], [34]. However, these methods introduce structural tradeoffs: performance depends on training data coverage, extrapolation across actuator geometries or operating regimes may be lim-ited, and stability guarantees are typically empirical. In the present framework, generalization across P1, P2, and P3 required only parameter updates, with no retraining or structural controller modification. Physical constraints are enforced directly through the Lagrangian formulation rather than learned implicitly. For pneumatically actuated continuum systems of this class, structured model-based dynamics can achieve high-precision, moderate-bandwidth task-space con-trol without learned inverse mappings. 
+
+B. Structural Advantages and Real-Time Adaptability 1) Observer-Based State Estimation: Soft robots often rely on dense sensing (e.g., embedded strain sensors or full-field vision) to compensate for modeling uncertainty [3], [20]. In contrast, this work demonstrates that a virtual force-injected dynamic observer can reconstruct full-state behavior from sparse Cartesian measurements alone. The intermediate-point sensing experiment (Task 4) is par-ticularly instructive. Even without direct tip sensing, mean-ingful trajectory tracking was achieved (average 45% reduc-tion in RMSE relative to FF only). This indicates that the dynamic structure itself contributes to observability. Such model-consistent observability is difficult to replicate in purely learning-driven approaches without dense sensing or recurrent architectures. This property has practical implications for soft robotic de-ployment. In many real-world tasks such as grasping, insertion, environmental interaction, or operation in cluttered spaces, the actuator tip may be occluded or physically inaccessible to sensors. In such scenarios, reconstructing tip behavior from proximal or intermediate measurements is essential. The abil-ity to maintain stable task-space tracking using only backbone sensing suggests that structured dynamic models can reduce sensing requirements while preserving control performance. This lowers hardware complexity and improves robustness in settings where visual or embedded tip sensing is unreliable or unavailable. The observer residual should be interpreted as an aggregate correction term rather than a physically identified external 10 
+
+wrench. In free-space tracking, this is useful because errors due to parameter mismatch, pneumatic delay, and unmodeled dissipation are converted into stabilizing virtual forces that keep the model state consistent with sparse measurements. However, in contact-rich tasks, the same residual may also contain contributions from environmental contact. With only position measurements, the observer cannot uniquely distin-guish contact forces from internal model error or actuation mismatch. Therefore, the present implementation should not be interpreted as a contact-force observer. Decoupling these effects would require additional information, such as pres-sure/force sensing, known environmental/contact constraints, multiple distributed measurements, or an augmented distur-bance/contact estimator. Contact-rich manipulation and force regulation are therefore outside the scope of this study and are left for future work. 
+
+2) Real-Time Adaptability and Arbitrary Tracking: Task 5 demonstrates real-time tracking of an online, user-defined reference without a precomputed feedforward trajectory. The actuator followed a handheld optical marker over a large portion of the workspace (approximately 250 mm in x and over 200 mm in y - the actuator itself is 253 mm in length). Tracking remained stable under aggressive, non-periodic ex-citation, although a measurable phase lag was observed due to pneumatic delay, the absence of the velocity feedforward term, and the reduced online inverse-update rate. This result suggests that the structured dynamic formulation can support responsive user-defined tracking without retraining or model restructuring. To our knowledge, real-time tracking of arbitrary, user-generated trajectories using a purely mechanics-based dynamic model (without learning, residual correction, or policy adapta-tion) has rarely been demonstrated for pneumatically actuated continuum systems. Prior work using Koopman-based linear controllers [17] reported similar dynamic excitation under learned models. Here, comparable behavior is achieved using only a structured dynamic formulation and sparse sensing. This capability is significant for practical deployment. Many soft robotic applications such as human–robot interaction, assistive manipulation, teleoperation, and exploratory tasks require responsive, real-time adaptation to unpredictable ref-erences. Demonstrating stable arbitrary tracking without re-training or model restructuring suggests that structured non-minimal dynamics can serve as a reliable backbone for such applications. 
+
+C. Limitations 
+
+First, the present study is restricted to planar modeling and control. Although recent work has extended the underlying formulation to spatial 3D rods using a symmetric constrained-Lagrangian formulation with quaternions and Baumgarte sta-bilization [29], the experimental validation here does not include torsional effects or out-of-plane dynamics. In that 3D formulation, a six-link 3D dynamic observer using backward Euler integration (0.025 s step) reduced mean position error from 7.6% to 1.9% of robot length, demonstrating real-time feasibility for moderate discretizations. Extending the present controller to full spatial Cosserat rod models is therefore computationally plausible, but achieving the 1 kHz update rate used in this planar implementation will require additional optimization and experimental validation. Because the actuators are 3D printed from TPU, mate-rial hysteresis, fabrication variability, and fatigue can alter the effective stiffness and damping over time. The present implementation uses offline-identified parameters and does not explicitly adapt ki and bi online. Moderate parameter mismatch is partially corrected by task-space feedback and observer residual injection, but prolonged systematic drift may reduce observer accuracy, particularly under reduced-sensing conditions. Online parameter adaptation, periodic recalibra-tion, or actuator replacement may mitigate this limitation. Finally, the experiments presented here validate pla-nar free-space task-space tracking. Although the underlying constrained-Lagrangian framework accommodates both holo-nomic and non-holonomic constraints [30], the present evalu-ation does not include contact interaction, force regulation, or manipulation. Likewise, full 3D motion, torsional dynamics, and long-term adaptation to material degradation remain to be experimentally validated. V. C ONCLUSION 
+
+This work demonstrates that non-minimal coordinate dis-crete elastic rod models can be used for real-time planar free-space task-space control of soft pneumatic continuum actuators. Across five experimental tasks—including precision tracking, high-speed motion, actuator generalization, reduced sensing, and real-time user-driven references—the proposed controller architecture achieved stable and accurate perfor-mance without relying on reduced-order curvature assumptions or learning-based inverse mappings. More broadly, the results show that when sparsity is exploited, constrained non-minimal formulations can retain distributed mechanical fidelity while remaining computationally viable for planar free-space con-trol. Future work will extend this framework to spatial rod models and evaluate contact-rich manipulation, further estab-lishing physics-grounded structured dynamics as a scalable foundation for high-performance soft robotic control. FUNDING DATA 
+
+This work was funded by a Vanderbilt University Seeding Success grant. CONFLICTS OF INTEREST 
+
+The authors declare no conflicts of interest. REFERENCES [1] J. Burgner-Kahrs, D. C. Rucker, and H. Choset, “Continuum robots for medical applications: A survey,” IEEE Transactions on Robotics , vol. 31, no. 6, pp. 1261–1280, 2015. [2] P. E. Dupont, N. Simaan, H. Choset, and D. C. Rucker, “Continuum robots for medical interventions,” Proceedings of the IEEE , vol. 110, no. 7, pp. 847–870, 2022. [3] C. Laschi, B. Mazzolai, and M. Cianchetti, “Soft robotics: Technologies and systems pushing the boundaries of robot abilities,” Science Robotics ,vol. 1, no. 1, p. eaah3690, 2016. 11 
+
+[4] F. Ilievski, A. D. Mazzeo, R. F. Shepherd, X. Chen, and G. M. White-sides, “Soft robotics for chemists,” Angewandte Chemie International Edition , vol. 50, no. 8, pp. 1890–1895, 2011. [5] N. El-Atab, R. B. Mishra, F. Al-Modaf, L. Joharji, A. A. Alsharif, H. Alamoudi, M. Diaz, N. Qaiser, and M. M. Hussain, “Soft actuators for soft robotic applications: A review,” Advanced Intelligent Systems ,vol. 2, no. 10, p. 2000128, 2020. [6] H. Su, X. Hou, X. Zhang, W. Qi, S. Cai, X. Xiong, and J. Guo, “Pneumatic soft robots: Challenges and benefits,” Actuators , vol. 11, no. 3, 2022. [7] M. S. Xavier, C. D. Tawk, A. Zolfagharian, J. Pinskier, D. Howard, T. Young, J. Lai, S. M. Harrison, Y. K. Yong, M. Bodaghi, and A. J. Fleming, “Soft pneumatic actuators: A review of design, fabrication, modeling, sensing, control and applications,” IEEE Access , vol. 10, pp. 59442–59485, 2022. [8] Y. Bailly and Y. Amirat, “Modeling and control of a hybrid continuum active catheter for aortic aneurysm treatment,” in Proceedings of the 2005 IEEE International Conference on Robotics and Automation ,pp. 924–929, 2005. [9] D. B. Camarillo, C. R. Carlson, and J. K. Salisbury, “Task-space control of continuum manipulators with coupled tendon drive,” in Experimental Robotics (O. Khatib, V. Kumar, and G. J. Pappas, eds.), (Berlin, Heidelberg), pp. 271–280, Springer Berlin Heidelberg, 2009. [10] M. Mahvash and P. E. Dupont, “Stiffness control of surgical continuum manipulators,” IEEE Transactions on Robotics , vol. 27, no. 2, pp. 334– 345, 2011. [11] P. E. Dupont, J. Lock, B. Itkowitz, and E. Butler, “Design and Control of Concentric-Tube Robots,” IEEE Transactions on Robotics , vol. 26, pp. 209–225, 2010. [12] C. Della Santina, R. K. Katzschmann, A. Bicchi, and D. Rus, “Dynamic control of soft robots interacting with the environment,” in 2018 IEEE International Conference on Soft Robotics (RoboSoft) , pp. 46–53, 2018. [13] M. S. Xavier, A. J. Fleming, and Y. K. Yong, “Nonlinear estimation and control of bending soft pneumatic actuators using feedback linearization and ukf,” IEEE/ASME Transactions on Mechatronics , vol. 27, no. 4, pp. 1919–1927, 2022. [14] M. Azizkhani, S. Kousik, and Y. Chen, “Dynamic task space control of redundant pneumatically actuated soft robot,” IEEE Robotics and Automation Letters , vol. 10, no. 6, pp. 6408–6415, 2025. [15] D. Braganza, D. M. Dawson, I. D. Walker, and N. Nath, “A neural net-work controller for continuum robots,” IEEE Transactions on Robotics ,vol. 23, no. 6, pp. 1270–1277, 2007. [16] M. T. Gillespie, C. M. Best, E. C. Townsend, D. Wingate, and M. D. Killpack, “Learning nonlinear dynamic models of soft robots for model predictive control with neural networks,” in 2018 IEEE International Conference on Soft Robotics (RoboSoft) , pp. 39–45, 2018. [17] D. A. Haggerty, M. J. Banks, E. Kamenar, A. B. Cao, P. C. Curtis, I. Mezic, and E. W. Hawkes, “Control of soft robots with inertial dynamics,” Science Robotics , vol. 8, no. 81, p. eadd6864, 2023. [18] R. J. Webster and B. A. Jones, “Design and kinematic modeling of constant curvature continuum robots: A review,” The International Journal of Robotics Research , vol. 29, no. 13, pp. 1661–1683, 2010. [19] I. S. Godage, G. A. Medrano-Cerda, D. T. Branson, E. Guglielmino, and D. G. Caldwell, “Dynamics for variable length multisection continuum arms,” The International Journal of Robotics Research , vol. 35, no. 6, pp. 695–722, 2016. [20] R. K. Katzschmann, C. D. Santina, Y. Toshimitsu, A. Bicchi, and D. Rus, “Dynamic motion control of multi-segment soft robots using piecewise constant curvature matched with an augmented rigid body model,” in 
+
+2019 2nd IEEE International Conference on Soft Robotics (RoboSoft) ,pp. 454–461, 2019. [21] J. Till, V. Aloi, and D. C. Rucker, “Real-time dynamics of soft and continuum robots based on cosserat rod models,” The International Journal of Robotics Research , vol. 38, no. 6, pp. 723–746, 2019. [22] F. Boyer, V. Lebastard, F. Candelier, and F. Renda, “Dynamics of continuum and soft robots: A strain parameterization based approach,” 
+
+IEEE Transactions on Robotics , vol. 37, no. 3, pp. 847–863, 2021. [23] A. D. Kapadia, K. E. Fry, and I. D. Walker, “Empirical investigation of closed-loop control of extensible continuum manipulators,” in 2014 IEEE/RSJ International Conference on Intelligent Robots and Systems ,pp. 329–335, 2014. [24] V. Falkenhahn, A. Hildebrandt, R. Neumann, and O. Sawodny, “Dy-namic control of the bionic handling assistant,” IEEE/ASME Transac-tions on Mechatronics , vol. 22, no. 1, pp. 6–17, 2017. [25] T. G. Thuruthel, E. Falotico, F. Renda, and C. Laschi, “Model-based reinforcement learning for closed-loop dynamic control of soft robotic manipulators,” IEEE Transactions on Robotics , vol. 35, no. 1, pp. 124– 134, 2019. [26] F. Renda, C. Armanini, V. Lebastard, F. Candelier, and F. Boyer, “A geometric variable-strain approach for static modeling of soft manipula-tors with tendon and fluidic actuation,” IEEE Robotics and Automation Letters , vol. 5, no. 3, pp. 4006–4013, 2020. [27] D. C. Rucker, E. J. Barth, J. Gaston, and J. C. Gallentine, “Task-space control of continuum robots using underactuated discrete rod models,” in 2022 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) , pp. 10967–10974, IEEE, 2022. [28] S. Y. Kim, N. S. Kumar, and E. J. Barth, “Variable stiffness and impedance control of a soft pneumatic actuator with tunable collision dynamics and trajectory following,” Journal of Dynamic Systems, Mea-surement, and Control , vol. 148, p. 031003, 12 2025. [29] J. B. Gaston, N. S. Kumar, E. J. Barth, and D. C. Rucker, “A 3d discrete elastic rod model and observer for continuum robots,” Journal of Mechanisms and Robotics , vol. 18, p. 031002, 01 2026. [30] N. S. Kumar, J. E. Peters, S. Y. Kim, J. Gaston, D. C. Rucker, and E. J. Barth, “Constrained lagrangian-based, nonholonomic modeling and validation of a pneumatically actuated wheeled soft robot,” Journal of Mechanisms and Robotics , vol. 18, p. 041002, 03 2026. [31] J. Baumgarte, “Stabilization of constraints and integrals of motion in dynamical systems,” Computer Methods in Applied Mechanics and Engineering , vol. 1, no. 1, pp. 1–16, 1972. [32] R. K. Katzschmann, M. Thieffry, O. Goury, A. Kruszewski, T.-M. Guerra, C. Duriez, and D. Rus, “Dynamically closed-loop controlled soft robotic arm using a reduced order finite element model with state observer,” in 2019 2nd IEEE International Conference on Soft Robotics (RoboSoft) , pp. 717–724, 2019. [33] W. Huang, X. Huang, C. Majidi, and M. K. Jawed, “Dynamic simulation of articulated soft robots,” Nature Communications , vol. 11, no. 1, p. 2233, 2020. [34] D. Bruder, D. Bombara, and R. J. Wood, “A koopman-based residual modeling approach for the control of a soft robot arm,” The International Journal of Robotics Research , vol. 44, no. 3, pp. 388–406, 2025. [35] X. Huang, Y. Rong, and G. Gu, “High-precision dynamic control of soft robots with the physics-learning hybrid modeling approach,” 
+
+IEEE/ASME Transactions on Mechatronics , vol. 30, no. 3, pp. 1658– 1669, 2025. 
+
+VI. B IOGRAPHY SECTION 
+
+Nithin S. Kumar (Student Member, IEEE) received the B.S. degree (Van-derbilt University), the S.M. degree (MIT), and is currently a Ph.D. candidate in Mechanical Engineering at Vanderbilt University. His research interests include the design, modeling, and control of soft/continuum robots. 
+
+Joshua Gaston (Student Member, IEEE) received the B.S. degree (Tennessee Tech University) and the M.S. degree (UTK), and is currently a Ph.D. candidate in Mechanical Engineering at UTK. His research interests include the design and control of soft/continuum robots. 
+
+D. Caleb Rucker (Senior Member, IEEE) is a B. Ray Thompson Professor in Mechanical Engineering at the University of Tennessee, Knoxville, where he directs the REACH lab. His research interests include design, modeling, and control of medical robots and soft/continuum robots. 
+
+Eric J. Barth (ASME Fellow, IEEE Member) is a Professor in Mechanical Engineering at Vanderbilt University. His research interests include the design, modeling, and control of fluid power systems, soft and medical robotics.

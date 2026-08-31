@@ -6,33 +6,32 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-30
-- 运行时间：2026-08-30 22:58:43 UTC
+- 最新运行日期：2026-08-31
+- 运行时间：2026-08-31 23:31:22 UTC
 - 运行状态：成功
 - 本次总论文数：4
-- 精读区：0
-- 速读区：4
+- 精读区：3
+- 速读区：1
 
 ### 今日简报（AI）
-今日共速读4篇论文，无精读；聚焦软体气动执行器控制、潜世界模型导航与连续体机器人形状估计。其中软体执行器动态跟踪与连续体机器人约束感知形状估计两篇尤为值得关注，均显示模型与物理约束融合的潜力。建议读者优先浏览这两篇，后续可深入挖掘控制导向学习与物理信息网络的结合点。
-- 详情：[/202608/30/README](/202608/30/README)
+今日精读3篇、速读1篇，重点聚焦机器人精细操作与柔顺控制。最值得关注两篇9分论文：GRAFT实现高效在线强化适应，Contact-Guided Exploration结合多Critic RL解决非抓取移动操作。建议下一步优先精读这两篇，重点关注其自适应策略与探索机制设计。
+- 详情：[/202608/31/README](/202608/31/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [GRAFT: Grounded and Efficient Online Reinforcement Adaptation for Fine-Grained Robot Manipulation](/202608/31/2608.27079v2-graft-grounded-and-efficient-online-reinforcement-adaptation-for-fine-grained-robot-manipulation)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：面向精细机器人操作的在线强化学习自适应
+2. [Contact-Guided Exploration for Non-Prehensile Locomanipulation with Multi-Critic RL](/202608/31/2608.28140v1-contact-guided-exploration-for-non-prehensile-locomanipulation-with-multi-critic-rl)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：使用多评论家强化学习进行非抓取式移动操作，属于机械臂操作任务
+3. [ChainSplat: A Physics-Inspired Screw-Theoretic Model for Learning Deformable Linear Object Dynamics from Multi-View RGB Videos](/202608/31/2608.28570v1-chainsplat-a-physics-inspired-screw-theoretic-model-for-learning-deformable-linear-object-dynamics-from-multi-view-rgb-videos)  
+   标签：评分：9.0/10、query:mbrl-manip
+   evidence：从多视角视频学习可变形线性物体动力学以用于机器人操作
 
 ### 速读区论文标签
-1. [Control-Oriented Learning for Dynamic Tracking and Stability Analysis of Soft Pneumatic Actuators](/202608/30/2608.25171v1-control-oriented-learning-for-dynamic-tracking-and-stability-analysis-of-soft-pneumatic-actuators)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于EDMDc的执行器动力学模型用于机器人控制
-2. [Predicting Consequences and Reinforcing Navigation Policies with Latent World Models](/202608/30/2608.26190v1-predicting-consequences-and-reinforcing-navigation-policies-with-latent-world-models)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：学习动作条件潜在世界模型用于预测后果和强化策略，用于导航而非机械臂操作
-3. [Constraint-Aware Physics-Informed Neural Networks for Static Shape Estimation of Co-Manipulative Continuum Robots](/202608/30/2608.26273v1-constraint-aware-physics-informed-neural-networks-for-static-shape-estimation-of-co-manipulative-continuum-robots)  
-   标签：评分：7.0/10、query:diff-physics
-   evidence：用于共操作形状估计的物理信息神经网络
-4. [Riemann-1.0: An Embodied World Action Model for Physical AI](/202608/30/2608.27033v1-riemann-10-an-embodied-world-action-model-for-physical-ai)  
+1. [Task-space model-based control of pneumatic soft actuators](/202608/31/2608.27186v1-task-space-model-based-control-of-pneumatic-soft-actuators)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：统一世界动作模型用于具身控制与仿真
+   evidence：基于动态模型的实时任务空间控制，适用于软体执行器
 
 
 <div class="dpr-home-promo-card">
