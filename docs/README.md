@@ -6,58 +6,50 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-02
-- 运行时间：2026-09-02 23:09:34 UTC
+- 最新运行日期：2026-09-04
+- 运行时间：2026-09-04 22:26:21 UTC
 - 运行状态：成功
-- 本次总论文数：12
-- 精读区：4
-- 速读区：8
+- 本次总论文数：10
+- 精读区：5
+- 速读区：5
 
 ### 今日简报（AI）
-今日精读与速读聚焦机器人灵巧操作与世界模型，共12篇论文，其中4篇精读、8篇速读。  
-最值得关注的是《Motus2》与《Facet-0》两篇9.0分精读，分别探索自进化通用世界模型与接触丰富场景的机器人基础模型。  
-建议先围绕“视频预训练+世界动作模型”这条主线，对比理解各方法在跨具身泛化与精细操作上的取舍。
-- 详情：[/202609/02/README](/202609/02/README)
+今日精读聚焦视觉-语言-动作模型的高效训练与操作泛化，并以世界模型与局部接触几何为亮点。最值得关注《WISE》中世界模型引导的想象调度（9.0分）及《One Demonstration》中基于接触几何的泛化方法（8.0分）。建议后续可延伸探索在线强化学习与力感知控制，以贴近真实部署需求。
+- 详情：[/202609/04/README](/202609/04/README)
 
 ### 精读区论文标签
-1. [Motus2: A Self-Evolving General World Model for Dexterous Manipulation](/202609/02/2608.30237v1-motus2-a-self-evolving-general-world-model-for-dexterous-manipulation)  
+1. [WISE: World-model-guided Imagination Scheduling for Efficient Post-training of Vision-Language-Action Models](/202609/04/2609.03681v1-wise-world-model-guided-imagination-scheduling-for-efficient-post-training-of-vision-language-action-models)  
    标签：评分：9.0/10、query:mbrl-manip
-   evidence：提出策略-模拟器-评估器统一的通用世界模型，用于灵巧操作的基于模型强化学习
-2. [Facet-0: A Robotic Foundation Model for Contact-Rich Precise Manipulation](/202609/02/2609.01596v1-facet-0-a-robotic-foundation-model-for-contact-rich-precise-manipulation)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：接触丰富的机器人精密操作，使用强化学习后训练并学习动作-扳手价值函数
-3. [SUN: Persistent Programs For Language-Grounded Control-to-Learning-to-Real Policies](/202609/02/2608.31167v1-sun-persistent-programs-for-language-grounded-control-to-learning-to-real-policies)  
+   evidence：面向视觉-语言-动作操作策略的世界模型引导强化学习后训练
+2. [One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry](/202609/04/2609.01938v1-one-demonstration-many-objects-generalizing-manipulation-via-local-contact-geometry)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：将MPC代价与RL奖励统一用于语言引导的机器人操作策略
-4. [Non-Prehensile Throwing: A Reinforcement Learning Perspective](/202609/02/2609.00771v1-non-prehensile-throwing-a-reinforcement-learning-perspective)  
+   evidence：通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。
+3. [One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry](/202609/04/2609.01938v2-one-demonstration-many-objects-generalizing-manipulation-via-local-contact-geometry)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：机械臂非抓取投掷任务的强化学习，直接优化关节空间轨迹
+   evidence：通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。
+4. [Real-Time Shape Control of Multi-Segment Soft Robotic Arms Using Koopman Operators with Global and Local Observables](/202609/04/2609.03175v1-real-time-shape-control-of-multi-segment-soft-robotic-arms-using-koopman-operators-with-global-and-local-observables)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：使用Koopman算子学习多段软体机械臂的连续变形动力学，并用于实时基于模型的形状控制。
+5. [Toward Physically Grounded JEPA World Models for Goal-Conditioned Robotic Planning](/202609/04/2609.03565v1-toward-physically-grounded-jepa-world-models-for-goal-conditioned-robotic-planning)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：学习动作条件下的JEPA动力学/世界模型，并通过逆动力学和状态对齐用于目标条件规划；实验包含推物等操作任务
 
 ### 速读区论文标签
-1. [Latent Action as Intention Enables Efficient Future Imagination for World Action Models](/202609/02/2608.24882v2-latent-action-as-intention-enables-efficient-future-imagination-for-world-action-models)  
+1. [PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies](/202609/04/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：学习观测演变的世界动作模型，用隐动作表示未来意图支持控制
-2. [AnyWorld: Factorized Egocentric World Models for Cross-Embodiment Generalization](/202609/02/2608.29242v2-anyworld-factorized-egocentric-world-models-for-cross-embodiment-generalization)  
+   evidence：面向直接世界动作策略的预测对齐与值引导进化方法，属于可服务于机械臂操作的模型化策略学习
+2. [Real-Time Dynamics-Based Torque-Sampling MPPI for Compliant and Force Aware Manipulation](/202609/04/2609.02020v1-real-time-dynamics-based-torque-sampling-mppi-for-compliant-and-force-aware-manipulation)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：从人类视频学习的分解式世界模型生成机器人操作轨迹，可视为用于机器人控制的动力学模型
-3. [ZimaBlue: Evolving Generalizable World Action Models through Scalable Video Pre-training](/202609/02/2609.00188v1-zimablue-evolving-generalizable-world-action-models-through-scalable-video-pre-training)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：从大规模第一人称视频学习机械臂操作的世界动作模型
-4. [TrAct: Bridging Robot Control and Visual Prediction with Visual Tracks](/202609/02/2608.24101v2-tract-bridging-robot-control-and-visual-prediction-with-visual-tracks)  
+   evidence：基于刚体动力学的MPPI模型预测控制，面向机械臂柔顺与力感知操作
+3. [SmoothRL: Online Reinforcement Learning During Asynchronous Execution](/202609/04/2608.29768v1-smoothrl-online-reinforcement-learning-during-asynchronous-execution)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：用视觉轨迹连接动作与预测，学习可驱动控制的世界模型
-5. [PredVLA: Predictive Sensorimotor Modeling for Sub-Million-Parameter Robot Manipulation](/202609/02/2608.26673v2-predvla-predictive-sensorimotor-modeling-for-sub-million-parameter-robot-manipulation)  
+   evidence：在异步执行与动作分块进行中实施在线强化学习，用于部署机器人策略，契合基于学习策略与强化学习的机器人操作方向。
+4. [AcrossWAM1.0:A Modular Latent World-Action Stack for Compact Robot Policies](/202609/04/2608.29937v1-acrosswam10a-modular-latent-world-action-stack-for-compact-robot-policies)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习层次循环动力学模型预测视觉与本体感受状态用于操作控制
-6. [Hydra: A Navigation World Action Model with Discrete Latent Planning and Continuous Flow-Matching Execution](/202609/02/2608.28995v1-hydra-a-navigation-world-action-model-with-discrete-latent-planning-and-continuous-flow-matching-execution)  
+   evidence：潜在世界模型解码器预测动作相关的视觉子目标，可作为机器人控制的可复用动力学模型，与学习动力学模型需求吻合
+5. [World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models](/202609/04/2609.02159v1-world-coherent-decoding-self-verifying-test-time-planning-for-world-action-models)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习世界动作模型并在潜空间规划实现实时机器人控制，属于模型类方法但面向导航而非机械臂操作
-7. [AnyWorld: Factorized Egocentric World Models for Cross-Embodiment Generalization](/202609/02/2608.29242v1-anyworld-factorized-egocentric-world-models-for-cross-embodiment-generalization)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：分解式自我中心世界模型将单条人类交互转换为多样机器人轨迹以支持操作控制学习
-8. [ProxPI: Proximal Prior Injection for Sampling-Based MPC under Learned-Prior Mismatch](/202609/02/2609.00941v1-proxpi-proximal-prior-injection-for-sampling-based-mpc-under-learned-prior-mismatch)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：通过近端代价在学习先验失配时注入策略到MPPI采样，是可用于机械臂控制的模型基方法
+   evidence：基于世界模型rollout的自验证测试时规划方法，与机械臂操作中的模型基规划相关
 
 
 <div class="dpr-home-promo-card">

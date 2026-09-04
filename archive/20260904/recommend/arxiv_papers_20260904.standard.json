@@ -1,0 +1,429 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-04T22:18:07.571581+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 5,
+    "deep_cap": 7,
+    "deep_selected": 5,
+    "quick_candidates": 5,
+    "quick_skim_target": 12,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2609.03681v1",
+      "source": "arxiv",
+      "title": "WISE: World-model-guided Imagination Scheduling for Efficient Post-training of Vision-Language-Action Models",
+      "abstract": "Post-training VLA policies typically rely on supervised fine-tuning with costly expert demonstrations or reinforcement learning with expensive and potentially unstable real-world exploration. World models offer a promising alternative by evaluating candidate behaviors through imagined futures, yet effective post-training requires more than accurate prediction: imagination must be scheduled where it is useful, bounded within reliable horizons, and translated into trustworthy policy supervision. In robotic manipulation, the value of imagination varies substantially across execution stages, while extended rollouts can accumulate prediction errors and introduce unreliable learning signals. We introduce WISE (World-model-guided Imagination Scheduling for Efficient Post-training of Vision-Language-Action Models), a unified framework that coordinates when and how world-model imagination is used during policy refinement. WISE selectively invokes imagination at interaction-relevant states, performs bounded multi-view rollouts, evaluates candidate futures using progress and completion signals, and uses their relative outcomes to refine actions generated from real interaction contexts. Extensive experiments with both $π_0$ and $π_{0.5}$ demonstrate consistent improvements across diverse manipulation tasks while reducing GPU computation time by approximately 80% compared with full imagination. Real-world evaluations further show substantial gains in robustness and generalization under diverse real-world distribution shifts.",
+      "authors": [
+        "Chenhao Zhang",
+        "Hanyu Zhao",
+        "Hang Cheng",
+        "Tengfei Pan",
+        "Long Zeng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-03T11:17:57+00:00",
+      "link": "https://arxiv.org/pdf/2609.03681v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "World-model-guided RL post-training for vision-language-action manipulation policies",
+      "llm_evidence_cn": "面向视觉-语言-动作操作策略的世界模型引导强化学习后训练",
+      "llm_evidence": "面向视觉-语言-动作操作策略的世界模型引导强化学习后训练",
+      "canonical_evidence": "面向视觉-语言-动作操作策略的世界模型引导强化学习后训练",
+      "llm_tldr_en": "WISE schedules imagination with a world model to post-train VLA policies, reducing reliance on expert demos and real-world RL while improving manipulation sample efficiency and avoiding unstable exploration.",
+      "llm_tldr_cn": "视觉-语言-动作(VLA)模型的后训练通常依赖昂贵的专家示范或真实环境强化学习，效率低且风险高。WISE提出一种世界模型引导的想象调度方法，按需在可靠时间范围内生成想象未来，并将其转化为可信的策略监督信号，从而在机械臂操作任务上减少真实交互需求。实验表明该方法能提升策略的后训练样本效率与任务表现。这项工作为基于世界模型的机器人策略高效后训练提供了可行方案。",
+      "llm_tldr": "视觉-语言-动作(VLA)模型的后训练通常依赖昂贵的专家示范或真实环境强化学习，效率低且风险高。WISE提出一种世界模型引导的想象调度方法，按需在可靠时间范围内生成想象未来，并将其转化为可信的策略监督信号，从而在机械臂操作任务上减少真实交互需求。实验表明该方法能提升策略的后训练样本效率与任务表现。这项工作为基于世界模型的机器人策略高效后训练提供了可行方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.01938v1",
+      "source": "arxiv",
+      "title": "One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry",
+      "abstract": "Dexterous manipulation with multi-fingered robot hands promises human-level dexterity, but collecting large-scale dexterous robot hand data remains difficult. Learning from human demonstrations has emerged as a scalable alternative to robot teleoperation, providing strong priors on object interaction and contact strategies. Recent sim-to-real RL methods incorporate such priors, but often (i) omit rewards that explicitly incentivize precise contact, yielding weak real-world performance, and/or (ii) generalize poorly to unseen object instances. We propose DemoMimic (Dexterous Motion Mimic), a policy that manipulates objects by focusing on their geometry local to the contact points. Its contact-centric rewards encourage precise contact and improve sim-to-real consistency, yielding a single real-world policy that transfers across objects of varying shape, scale, mass, and friction wherever local contact structure is preserved. Real-world ablations show that DemoMimic achieves 71% success across 16 objects, four tasks, and two robot-hand embodiments, with the smallest sim-to-real drop compared to baselines.",
+      "authors": [
+        "Satvik Sharma",
+        "Samrat Sahoo",
+        "Huang Huang",
+        "Fei-Fei Li Jiajun Wu",
+        "Dorsa Sadigh",
+        "Jeannette Bohg"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-01T23:04:35+00:00",
+      "link": "https://arxiv.org/pdf/2609.01938v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Sim-to-real RL for dexterous manipulation with a single demonstration; contact-centric rewards and local contact geometry improve generalization to unseen objects.",
+      "llm_evidence_cn": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "llm_evidence": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "canonical_evidence": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "llm_tldr_en": "DemoMimic learns dexterous manipulation policies from a single human demonstration by focusing on local geometry at contact points and using contact-centric rewards, enabling robust sim-to-real transfer and generalization to many unseen objects.",
+      "llm_tldr_cn": "灵巧手真实数据难以大规模采集，而模拟到现实强化学习往往缺乏精确接触激励，泛化能力不足。论文提出DemoMimic，利用单个人类示教点示范建立接触先验，策略重点关注接触点附近的局部物体几何，并用接触中心的模仿奖励显式鼓励精确接触。该策略在未见过的物体实例上仍能保持较好的操作表现，具有形状泛化能力。该工作表明局部接触几何是关键表征，可显著提高灵巧操作的模拟到真实迁移效率和效果。",
+      "llm_tldr": "灵巧手真实数据难以大规模采集，而模拟到现实强化学习往往缺乏精确接触激励，泛化能力不足。论文提出DemoMimic，利用单个人类示教点示范建立接触先验，策略重点关注接触点附近的局部物体几何，并用接触中心的模仿奖励显式鼓励精确接触。该策略在未见过的物体实例上仍能保持较好的操作表现，具有形状泛化能力。该工作表明局部接触几何是关键表征，可显著提高灵巧操作的模拟到真实迁移效率和效果。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.01938v2",
+      "source": "arxiv",
+      "title": "One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry",
+      "abstract": "Dexterous manipulation with multi-fingered robot hands promises human-level dexterity, but collecting large-scale dexterous robot hand data remains difficult. Learning from human demonstrations has emerged as a scalable alternative to robot teleoperation, providing strong priors on object interaction and contact strategies. Recent sim-to-real RL methods incorporate such priors, but often (i) omit rewards that explicitly incentivize precise contact, yielding weak real-world performance, and/or (ii) generalize poorly to unseen object instances. We propose DemoMimic (Dexterous Motion Mimic), a policy that manipulates objects by focusing on their geometry local to the contact points. Its contact-centric rewards encourage precise contact and improve sim-to-real consistency, yielding a single real-world policy that transfers across objects of varying shape, scale, mass, and friction wherever local contact structure is preserved. Real-world ablations show that DemoMimic achieves 71% success across 16 objects, four tasks, and two robot-hand embodiments, with the smallest sim-to-real drop compared to baselines.",
+      "authors": [
+        "Satvik Sharma",
+        "Samrat Sahoo",
+        "Huang Huang",
+        "Fei-Fei Li",
+        "Jiajun Wu",
+        "Dorsa Sadigh",
+        "Jeannette Bohg"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-01T23:04:35+00:00",
+      "link": "https://arxiv.org/pdf/2609.01938v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Sim-to-real RL for dexterous manipulation with a single demonstration; contact-centric rewards and local contact geometry improve generalization to unseen objects.",
+      "llm_evidence_cn": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "llm_evidence": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "canonical_evidence": "通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。",
+      "llm_tldr_en": "DemoMimic learns dexterous manipulation policies from a single human demonstration by focusing on local geometry at contact points and using contact-centric rewards, enabling robust sim-to-real transfer and generalization to many unseen objects.",
+      "llm_tldr_cn": "灵巧手真实数据难以大规模采集，而模拟到现实强化学习往往缺乏精确接触激励，泛化能力不足。论文提出DemoMimic，利用单个人类示教点示范建立接触先验，策略重点关注接触点附近的局部物体几何，并用接触中心的模仿奖励显式鼓励精确接触。该策略在未见过的物体实例上仍能保持较好的操作表现，具有形状泛化能力。该工作表明局部接触几何是关键表征，可显著提高灵巧操作的模拟到真实迁移效率和效果。",
+      "llm_tldr": "灵巧手真实数据难以大规模采集，而模拟到现实强化学习往往缺乏精确接触激励，泛化能力不足。论文提出DemoMimic，利用单个人类示教点示范建立接触先验，策略重点关注接触点附近的局部物体几何，并用接触中心的模仿奖励显式鼓励精确接触。该策略在未见过的物体实例上仍能保持较好的操作表现，具有形状泛化能力。该工作表明局部接触几何是关键表征，可显著提高灵巧操作的模拟到真实迁移效率和效果。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.03175v1",
+      "source": "arxiv",
+      "title": "Real-Time Shape Control of Multi-Segment Soft Robotic Arms Using Koopman Operators with Global and Local Observables",
+      "abstract": "Multi-segment soft robotic arms can continuously reconfigure their body shapes for safe interaction, but tip control alone is insufficient for constrained-space tasks. Therefore, shape control is a more important task for multi-segment soft arms than tip control, but remains challenging due to the high dimensionality and nonlinear dynamics of continuum deformation. In existing work, shape control accuracy is defined by the error in the global frame (global shape error). For multi-segment soft arms, using only global shape error as the control objective is insufficient, as segment coupling, gravity-induced loading, and inertial effects become more significant. This difficulty increases with the number of segments. In this paper, we present a Koopman-based model predictive control framework that combines global and local observables, enabling real-time shape control on multi-segment soft robotic arms. The framework is evaluated through numerical and physical experiments. Numerical experiments demonstrate the scalability of the proposed controller by achieving shape control on robots with up to 10 independently actuated segments. The physical experiments demonstrate that the controller is capable of (1) real-time shape control of 3- and 5-segment robotic arms with tip speeds up to 0.6 m/s, (2) robust tracking without retraining, including distal payloads up to 400~g and recovery from a 7~N lateral disturbance, and (3) the potential for future inspection applications through a confined-space demonstration. These results demonstrate that the proposed framework enables dynamic, scalable, and accurate real-time shape control on multi-segment soft robotic arms.",
+      "authors": [
+        "Jiahe Wang",
+        "Eron Ristich",
+        "Sultan Haidar Ali",
+        "Eric weissman",
+        "Lei Zhang",
+        "Wanxin Jin",
+        "Yi Ren",
+        "Jiefeng Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-09-02T21:36:13+00:00",
+      "link": "https://arxiv.org/pdf/2609.03175v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Learning Koopman dynamics models with global and local observables for real-time model-based shape control of soft robotic arms.",
+      "llm_evidence_cn": "使用Koopman算子学习多段软体机械臂的连续变形动力学，并用于实时基于模型的形状控制。",
+      "llm_evidence": "使用Koopman算子学习多段软体机械臂的连续变形动力学，并用于实时基于模型的形状控制。",
+      "canonical_evidence": "使用Koopman算子学习多段软体机械臂的连续变形动力学，并用于实时基于模型的形状控制。",
+      "llm_tldr_en": "This paper addresses real-time shape control of multi-segment soft arms by learning Koopman operators with global and local observables, capturing segment coupling, gravity, and inertia to overcome the limits of tip-only or global-error control.",
+      "llm_tldr_cn": "多段软体机械臂因连续变形维度高、非线性强，仅依赖末端控制或全局形状误差难以满足受限空间任务。论文提出结合全局与局部可观测量的Koopman算子，数据驱动地学习高维连续变形动力学，实时形状控制由此可以表达在线性化低维空间中。该方法在目标中引入段间耦合、重力载荷与惯性效应的局部近似，增强了形状跟踪的精度。它为软体机器人形状控制提供一种可实时部署的基于模型方法。",
+      "llm_tldr": "多段软体机械臂因连续变形维度高、非线性强，仅依赖末端控制或全局形状误差难以满足受限空间任务。论文提出结合全局与局部可观测量的Koopman算子，数据驱动地学习高维连续变形动力学，实时形状控制由此可以表达在线性化低维空间中。该方法在目标中引入段间耦合、重力载荷与惯性效应的局部近似，增强了形状跟踪的精度。它为软体机器人形状控制提供一种可实时部署的基于模型方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.03565v1",
+      "source": "arxiv",
+      "title": "Toward Physically Grounded JEPA World Models for Goal-Conditioned Robotic Planning",
+      "abstract": "Action-conditioned JEPA world models enable planning toward visually specified goals without reconstructing future pixels, yet latent prediction alone does not explicitly encourage the learned representations to retain information relevant to robotic control. We introduce an end-to-end JEPA world model that augments latent prediction with inverse dynamics (IDM) and state alignment (SA). While inverse dynamics discourages latent collapse and makes latent transitions informative of the actions that produced them, state alignment grounds consecutive representations in their associated physical configuration and motion. Across four benchmark tasks, our model attains the highest success rates on TwoRoom (100%), PushT (98%), and OGBench-Cube (87%), while performing comparably to LeWorldModel on Reacher. Our ablation further shows that adding state alignment consistently improves planning success over IDM alone across all four tasks. Although LeWorldModel, our primary baseline, attains higher average straightening on OGBench-Cube, transition-subspace analysis shows that its transition energy is concentrated in a substantially lower-dimensional subspace. Our state-aligned model exhibits a higher effective transition dimension than LeWorldModel and improves planning over IDM alone, supporting state alignment as an effective complement to inverse dynamics for robotic planning.",
+      "authors": [
+        "Muyuan Liu",
+        "Yue Huang",
+        "Zheng Liang",
+        "Xiang Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-09-03T09:11:13+00:00",
+      "link": "https://arxiv.org/pdf/2609.03565v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Learns action-conditioned JEPA world/dynamics model with inverse-dynamics and state-alignment objectives and uses it for goal-conditioned robot planning; benchmarks include PushT and OGBench-Cube manipulation tasks",
+      "llm_evidence_cn": "学习动作条件下的JEPA动力学/世界模型，并通过逆动力学和状态对齐用于目标条件规划；实验包含推物等操作任务",
+      "llm_evidence": "学习动作条件下的JEPA动力学/世界模型，并通过逆动力学和状态对齐用于目标条件规划；实验包含推物等操作任务",
+      "canonical_evidence": "学习动作条件下的JEPA动力学/世界模型，并通过逆动力学和状态对齐用于目标条件规划；实验包含推物等操作任务",
+      "llm_tldr_en": "JEPA world models usually miss control-relevant physical structure. This paper adds inverse-dynamics and state-alignment losses so latent transitions are physically grounded and action-informative, yielding top success rates on TwoRoom, PushT, and OGBench-Cube planning benchmarks.",
+      "llm_tldr_cn": "动作条件JEPA世界模型可在不重建像素的前提下为视觉目标规划，但纯潜变量预测未显式保留控制相关的物理结构。该文提出端到端JEPA世界模型，在潜变量预测中加入逆动力学与状态对齐，使潜在转移既反映动作又对应物理配置与运动。在TwoRoom、PushT和OGBench-Cube上取得100%、98%和87%的最高成功率，证明物理接地的潜表征能提升目标条件机器人规划。",
+      "llm_tldr": "动作条件JEPA世界模型可在不重建像素的前提下为视觉目标规划，但纯潜变量预测未显式保留控制相关的物理结构。该文提出端到端JEPA世界模型，在潜变量预测中加入逆动力学与状态对齐，使潜在转移既反映动作又对应物理配置与运动。在TwoRoom、PushT和OGBench-Cube上取得100%、98%和87%的最高成功率，证明物理接地的潜表征能提升目标条件机器人规划。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.30378v1",
+      "source": "arxiv",
+      "title": "PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies",
+      "abstract": "Direct vision-language-action policies generate continuous robot actions efficiently, but standard behavior cloning leaves two complementary gaps: their representations are not explicitly required to describe how the scene evolves over multiple time scales, and deployment trajectories of unequal quality are often reused without separating useful dynamics from undesirable behavior. We introduce \\method, a direct world-action policy that combines outcome-agnostic predictive learning with outcome-aware policy improvement. \\method first retains a local fixed-offset JEPA objective and adds trajectory-relative multi-horizon transition alignment at 25%, 50%, 75%, and 100% of the remaining episode. These training-only targets require the current policy representation to preserve both local physical changes and longer-range task progress, without supplying explicit future tokens to the action head. \\method then trains an independent distributional value critic on cumulative deployment trajectories, computes action-chunk-aligned $N$-step advantages, and converts them into positive, negative, or null text conditions for a flow-matching actor. Thus, every valid trajectory can teach what physically happened, while the actor is deployed only under the condition associated with relatively better actions. The multi-horizon predictor and critic are removed from online execution, preserving direct action generation from the current observation, language instruction, and proprioception. \\redclaim{Across the three simulation benchmarks, \\method achieves the strongest overall performance while preserving the direct actor's online execution path.}",
+      "authors": [
+        "Botong Zhao",
+        "Fang Yu",
+        "Tim",
+        "Senhua Zhu",
+        "Xinyuan Chen",
+        "Yue Lu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-08-31T07:36:11+00:00",
+      "link": "https://arxiv.org/pdf/2608.30378v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Predictive alignment plus value-guided evolution for direct world-action policies, a model-based-style policy learning approach for robot manipulation policies",
+      "llm_evidence_cn": "面向直接世界动作策略的预测对齐与值引导进化方法，属于可服务于机械臂操作的模型化策略学习",
+      "llm_evidence": "面向直接世界动作策略的预测对齐与值引导进化方法，属于可服务于机械臂操作的模型化策略学习",
+      "canonical_evidence": "面向直接世界动作策略的预测对齐与值引导进化方法，属于可服务于机械臂操作的模型化策略学习",
+      "llm_tldr_en": "PAVE trains direct world-action policies by aligning multi-horizon transitions and applying value-guided evolution, enabling policies to capture scene dynamics and ignore low-quality trajectories for stronger robot control.",
+      "llm_tldr_cn": "直接视觉-语言-动作策略用行为克隆训练时，表征未要求刻画多时间尺度场景演化，且会复用低质量轨迹。PAVE在局部JEPA目标上加入25%至100%剩余轨迹的迁移对齐，并随后用值引导进化改进策略。它利用预测学习与结果感知改进的组合，提高世界动作策略的动态预测能力和最终任务表现，从而在机械臂操作等机器人控制中有较强适用性。",
+      "llm_tldr": "直接视觉-语言-动作策略用行为克隆训练时，表征未要求刻画多时间尺度场景演化，且会复用低质量轨迹。PAVE在局部JEPA目标上加入25%至100%剩余轨迹的迁移对齐，并随后用值引导进化改进策略。它利用预测学习与结果感知改进的组合，提高世界动作策略的动态预测能力和最终任务表现，从而在机械臂操作等机器人控制中有较强适用性。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.29768v1",
+      "source": "arxiv",
+      "title": "SmoothRL: Online Reinforcement Learning During Asynchronous Execution",
+      "abstract": "Deploying robot policies in the physical world requires satisfying two fundamental desiderata: reliability and smooth real-time execution. However, deploying state-of-the-art generalist models presents challenges on both fronts. Achieving the precision and robustness required for real-world deployment necessitates sample-efficient online reinforcement learning (RL) to adapt pretrained models. Meanwhile, the increasing scale of robot foundation models has led to higher inference latency. To satisfy real-time constraints under high latency, modern systems adopt asynchronous inference with action chunking, overlapping policy computation with chunk execution to hide latency and enable smooth control. Despite their complementary roles, integrating asynchronous execution with gradient-based online RL remains underexplored. We present SmoothRL, an online RL framework that fine-tunes a pretrained policy within an asynchronous inference loop. SmoothRL follows a value-gradient paradigm, directly updating policy parameters using gradients of the action-value function with respect to policy actions. To enable correct optimization under asynchronous execution, SmoothRL explicitly models the asynchronous inference process during training. Specifically, each generated action chunk is partitioned by frame index into three regions: a committed region, consisting of actions committed by the previous inference cycle; an execution region, containing newly generated actions executed by the robot; and a discarded region, containing actions superseded by the next inference cycle. Gradients are propagated only through the execution region, ensuring policy optimization aligns with the trajectory distribution induced by asynchronous execution. We evaluate SmoothRL on real-world robotic tasks requiring high precision, as well as highly dynamic tasks that necessitate asynchronous execution.",
+      "authors": [
+        "Guang Gao",
+        "Yuxuan Nong",
+        "Baifu Huang",
+        "Jianan Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-30T12:56:09+00:00",
+      "link": "https://arxiv.org/pdf/2608.29768v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Online reinforcement learning to adapt robot policies while asynchronous execution and action chunking maintain smooth deployment.",
+      "llm_evidence_cn": "在异步执行与动作分块进行中实施在线强化学习，用于部署机器人策略，契合基于学习策略与强化学习的机器人操作方向。",
+      "llm_evidence": "在异步执行与动作分块进行中实施在线强化学习，用于部署机器人策略，契合基于学习策略与强化学习的机器人操作方向。",
+      "canonical_evidence": "在异步执行与动作分块进行中实施在线强化学习，用于部署机器人策略，契合基于学习策略与强化学习的机器人操作方向。",
+      "llm_tldr_en": "SmoothRL conducts sample-efficient online RL while asynchronous inference and action chunking execute, allowing large robot foundation models to be adapted to real-time deployment without sacrificing smooth control.",
+      "llm_tldr_cn": "在真实世界部署机器人策略要同时满足可靠性和平滑实时执行，而大规模预训练模型的高推理延迟往往破坏实时要求。论文提出SmoothRL，在异步推理和动作分块执行期间同步进行在线强化学习，隐藏延迟并改善采样效率。该方法使策略更新与块状动作执行相重叠，兼顾了实时平滑控制与在线适配能力。它为高延迟机器人基础模型提供了一种可落地的在线强化学习部署范式，有助于在物理世界中保持策略可靠。",
+      "llm_tldr": "在真实世界部署机器人策略要同时满足可靠性和平滑实时执行，而大规模预训练模型的高推理延迟往往破坏实时要求。论文提出SmoothRL，在异步推理和动作分块执行期间同步进行在线强化学习，隐藏延迟并改善采样效率。该方法使策略更新与块状动作执行相重叠，兼顾了实时平滑控制与在线适配能力。它为高延迟机器人基础模型提供了一种可落地的在线强化学习部署范式，有助于在物理世界中保持策略可靠。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.02020v1",
+      "source": "arxiv",
+      "title": "Real-Time Dynamics-Based Torque-Sampling MPPI for Compliant and Force Aware Manipulation",
+      "abstract": "This study proposes a novel Model Predictive Path Integral (MPPI)-based task-space control framework. The proposed framework explicitly solves rigid-body dynamics within a real-time MPC formulation and enforces safety constraints, enabling accurate motion and force control that yields compliant behaviors for safe and effective physical interaction of robotic manipulators in unstructured environments. By leveraging MPPI, the proposed framework efficiently handles nonlinear dynamics that are difficult to solve with conventional MPC approaches in real-time. Furthermore, we develop a torque-sampling-based control architecture that enables efficient exploitation of GPU-based parallelization, resulting in effective compliant and force-aware behaviors. As a result, the proposed framework achieves a solver update rate of over 166 Hz with a 0.18 s prediction horizon, and its performance is validated through real-world experiments on a 7-DoF manipulator.",
+      "authors": [
+        "Euncheol Im",
+        "Taehyun Kim",
+        "Yonghwan Oh",
+        "Myotaeg Lim",
+        "Yisoo Lee"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-02T02:46:57+00:00",
+      "link": "https://arxiv.org/pdf/2609.02020v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "dynamics-based MPPI model-based control for compliant and force-aware robot arm manipulation",
+      "llm_evidence_cn": "基于刚体动力学的MPPI模型预测控制，面向机械臂柔顺与力感知操作",
+      "llm_evidence": "基于刚体动力学的MPPI模型预测控制，面向机械臂柔顺与力感知操作",
+      "canonical_evidence": "基于刚体动力学的MPPI模型预测控制，面向机械臂柔顺与力感知操作",
+      "llm_tldr_en": "Presents a real-time MPPI task-space controller that explicitly solves rigid-body dynamics with safety constraints; torque sampling and GPU parallelization enable compliant force-aware manipulation of robot arms.",
+      "llm_tldr_cn": "针对非线性刚体动力学下的机械臂实时柔顺与力受控交互难题，提出基于动力学模型的扭矩采样MPPI框架。该方法在实时MPC中显式求解刚体动力学并施加安全约束，以扭矩采样结合GPU并行处理非线性动力学。结果表明能实现准确运动与力控制以及柔顺行为，适用于非结构化环境中的安全物理交互。该工作为模型预测式机械臂控制提供了有效范式。",
+      "llm_tldr": "针对非线性刚体动力学下的机械臂实时柔顺与力受控交互难题，提出基于动力学模型的扭矩采样MPPI框架。该方法在实时MPC中显式求解刚体动力学并施加安全约束，以扭矩采样结合GPU并行处理非线性动力学。结果表明能实现准确运动与力控制以及柔顺行为，适用于非结构化环境中的安全物理交互。该工作为模型预测式机械臂控制提供了有效范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.29937v1",
+      "source": "arxiv",
+      "title": "AcrossWAM1.0:A Modular Latent World-Action Stack for Compact Robot Policies",
+      "abstract": "Latent world-action models avoid rendering future pixels by predicting an action-relevant visual subgoal in feature space. LaWAM established this formulation, but its original presentation left the world model, multimodal backbone, and deployment checkpoint tightly coupled. We introduce AcrossWAM1.0, a modularization and scaling study of this latent world-action stack. Rather than presenting latent subgoals as a new algorithm, we make the module boundary explicit: a policy adapter produces latent-action and action-generation contexts; a retained latent world decoder grounds the predicted transition in the current scene;and a flow-matching expert generates continuous action chunks. We further separate training-only teachers from the inference graph and provide a verifiable deployment export. On 2,000 paired LIBERO episodes, replacing a Qwen3-VL-2B backbone with Qwen3.5-0.8B yields 97.45% success versus 98.00% for the 2B model (a-0.55percentage-point difference; exact McNemarp=0.266). This does not prove equivalence, but it meets a prespecified two-point retention criterion. The compact, inference-reachable checkpoint contains 1,472.6M unique parameters, 42.4% fewer than the original 2B policy, while all retained tensors are bitwise identical to the source checkpoint. Cross-family execution is additionally checked with a MiniCPM-V adapter smoke test; closed-loop cross-family transfer remains an open evaluation. AcrossWAM1.0 therefore contributes an auditable software and evaluation boundary for compact latent world-action policies, distinct from LaWAM's original latent-subgoal contribution.",
+      "authors": [
+        "Yafei Zhang",
+        "Nan Wu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-30T18:09:17+00:00",
+      "link": "https://arxiv.org/pdf/2608.29937v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "modular latent world decoder predicts action-relevant subgoals, directly supporting learned dynamics models for robot control",
+      "llm_evidence_cn": "潜在世界模型解码器预测动作相关的视觉子目标，可作为机器人控制的可复用动力学模型，与学习动力学模型需求吻合",
+      "llm_evidence": "潜在世界模型解码器预测动作相关的视觉子目标，可作为机器人控制的可复用动力学模型，与学习动力学模型需求吻合",
+      "canonical_evidence": "潜在世界模型解码器预测动作相关的视觉子目标，可作为机器人控制的可复用动力学模型，与学习动力学模型需求吻合",
+      "llm_tldr_en": "AcrossWAM1.0 modularizes the latent world-action stack, separating policy adapter, latent world decoder, and flow-matching action expert to support reusable world models for compact robot policies.",
+      "llm_tldr_cn": "潜在世界行动模型通过在特征空间预测动作相关的视觉子目标来避免渲染未来像素，但已有LaWAM实现将世界模型、多模态骨干和部署强耦合。AcrossWAM1.0明确了模块边界：策略适配器负责潜在行动与动作生成上下文，潜在世界解码器以当前场景约束转换预测，流匹配专家输出连续动作块，并将训练教师与推理图分离。该模块化与扩展研究为紧凑机器人的世界模型控制策略提供了更清晰可复用的组件，也便于在模型基强化学习中引入潜在动力学模型。",
+      "llm_tldr": "潜在世界行动模型通过在特征空间预测动作相关的视觉子目标来避免渲染未来像素，但已有LaWAM实现将世界模型、多模态骨干和部署强耦合。AcrossWAM1.0明确了模块边界：策略适配器负责潜在行动与动作生成上下文，潜在世界解码器以当前场景约束转换预测，流匹配专家输出连续动作块，并将训练教师与推理图分离。该模块化与扩展研究为紧凑机器人的世界模型控制策略提供了更清晰可复用的组件，也便于在模型基强化学习中引入潜在动力学模型。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.02159v1",
+      "source": "arxiv",
+      "title": "World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models",
+      "abstract": "World Action Models (WAMs) aim to control robots by stochastically generating visual futures and then decoding actions, but empirical observations indicate that the results can strongly depend on which future is selected. We propose World-Coherent-Decoding (WCD), a self-verifying test-time planning framework that treats WAM rollouts as falsifiable future--action hypotheses. At each decision step, WCD samples multiple candidates from a frozen WAM and ranks them using internal generative signals: flow-based video surprisal for visual plausibility and action path effort for action-generation stability. After execution, the realized observation audits the selected imagination, yielding an imagination--reality mismatch that trains a lightweight online predictor for future candidate selection. Thus, WCD converts delayed self-verification into pre-execution reliability estimation without updating the backbone model. On RoboTwin 2.0, WCD improves Hard success under limited randomized-scene supervision from $55.80\\%$ to $60.90\\%$, with a $+16.43$ gains on Horizon-3 tasks, and shows qualitative robustness on real Franka visual-shift tests. These results highlight a simple principle: test-time scaling for WAMs depends less on sampling more futures than on selecting reliable ones.",
+      "authors": [
+        "Chuhan Zhang",
+        "Seiji Ito",
+        "Kenta Hoshino",
+        "Satoshi Ikehata",
+        "Ikuro Sato"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-02T06:21:36+00:00",
+      "link": "https://arxiv.org/pdf/2609.02159v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Self-verifying test-time planning over world model rollouts, relevant to model-based robot manipulation planning",
+      "llm_evidence_cn": "基于世界模型rollout的自验证测试时规划方法，与机械臂操作中的模型基规划相关",
+      "llm_evidence": "基于世界模型rollout的自验证测试时规划方法，与机械臂操作中的模型基规划相关",
+      "canonical_evidence": "基于世界模型rollout的自验证测试时规划方法，与机械臂操作中的模型基规划相关",
+      "llm_tldr_en": "WCD improves world-action-model control by treating rollouts as falsifiable hypotheses, ranking sampled futures with generative surprise and action-stability cues, and auditing real outcomes to adjust imagination-reality mismatch.",
+      "llm_tldr_cn": "世界动作模型依赖随机生成的视觉未来解码动作，但规划效果常取决于选中哪一个未来。WCD将世界模型的rollout视为可证伪的未来-动作假设：每次决策时采样多个未来，用基于流的视频意外度判断视觉合理性，用动作路径代价衡量生成稳定性，并按这些内部信号排序。在执行后，真实观测会审计被选中的想象，产生想象-现实失配信号并训练轻量修正模型。该方法提高了测试时规划的鲁棒性与一致性，为将世界模型更可靠地用于机械臂操作中的模型基规划提供了思路。",
+      "llm_tldr": "世界动作模型依赖随机生成的视觉未来解码动作，但规划效果常取决于选中哪一个未来。WCD将世界模型的rollout视为可证伪的未来-动作假设：每次决策时采样多个未来，用基于流的视频意外度判断视觉合理性，用动作路径代价衡量生成稳定性，并按这些内部信号排序。在执行后，真实观测会审计被选中的想象，产生想象-现实失配信号并训练轻量修正模型。该方法提高了测试时规划的鲁棒性与一致性，为将世界模型更可靠地用于机械臂操作中的模型基规划提供了思路。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
