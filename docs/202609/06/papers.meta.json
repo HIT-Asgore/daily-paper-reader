@@ -1,0 +1,69 @@
+{
+  "label": "2026-09-06",
+  "date": "2026-09-06",
+  "generated_at": "2026-09-06T21:32:10",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202609/06/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies",
+      "section": "deep",
+      "title_en": "PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies",
+      "authors": "Botong Zhao, Fang Yu, Tim, Senhua Zhu, Xinyuan Chen, Yue Lu",
+      "date": "2026-08-31",
+      "pdf": "https://arxiv.org/pdf/2608.30378v1",
+      "score": "8.0",
+      "evidence": "结合预测对齐与价值引导进化的世界-动作策略，用于机械臂操作强化学习。",
+      "tldr": "直接视觉-语言-动作策略经行为克隆时表征不显式建模多尺度场景变化，且不等质量轨迹未区分有益与不良行为。PAVE以局部JEPA预测和轨迹相对多水平对齐（剩余25%~100%）强化物理与任务表征，另训练价值评论家计算N步优势并转为正/负/空条件，驱动流匹配行动者。三个仿真基准上综合最优，在线执行仍为直接动作生成，无额外预测/评论模块。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Direct vision-language-action policies generate continuous robot actions efficiently, but standard behavior cloning leaves two complementary gaps: their representations are not explicitly required to describe how the scene evolves over multiple time scales, and deployment trajectories of unequal quality are often reused without separating useful dynamics from undesirable behavior. We introduce \\method, a direct world-action policy that combines outcome-agnostic predictive learning with outcome-aware policy improvement. \\method first retains a local fixed-offset JEPA objective and adds trajectory-relative multi-horizon transition alignment at 25%, 50%, 75%, and 100% of the remaining episode. These training-only targets require the current policy representation to preserve both local physical changes and longer-range task progress, without supplying explicit future tokens to the action head. \\method then trains an independent distributional value critic on cumulative deployment trajectories, computes action-chunk-aligned $N$-step advantages, and converts them into positive, negative, or null text conditions for a flow-matching actor. Thus, every valid trajectory can teach what physically happened, while the actor is deployed only under the condition associated with relatively better actions. The multi-horizon predictor and critic are removed from online execution, preserving direct action generation from the current observation, language instruction, and proprioception. \\redclaim{Across the three simulation benchmarks, \\method achieves the strongest overall performance while preserving the direct actor's online execution path.}",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/06/2608.30378v2-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies",
+      "section": "quick",
+      "title_en": "PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies",
+      "authors": "Botong Zhao, Fang Yu, Tim Yu, Senhua Zhu, Xinyuan Chen, Yue Lu",
+      "date": "2026-08-31",
+      "pdf": "https://arxiv.org/pdf/2608.30378v2",
+      "score": "6.0",
+      "evidence": "通过多尺度转移对齐和JEPA预测目标使动作策略学习场景动力学表征用于机器人控制",
+      "tldr": "直接视觉-语言-动作策略虽可直接生成机器人动作，但行为克隆未显式建模多时间尺度场景演变，也未在异质轨迹中分离有益动态。PAVE先用JEPA局部预测和多地平线过渡对齐学习表征，再利用值评论家将N步优势转为正负/空条件指导流匹配actor，推理时移除附加模块。三个模拟基准上获得最强综合性能且保持在线直接生成，为价值引导的世界-动作策略提供有效范式。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Direct vision-language-action policies generate continuous robot actions efficiently, but standard behavior cloning leaves two complementary gaps: their representations are not explicitly required to describe how the scene evolves over multiple time scales, and deployment trajectories of unequal quality are often reused without separating useful dynamics from undesirable behavior. We introduce \\method, a direct world-action policy that combines outcome-agnostic predictive learning with outcome-aware policy improvement. \\method first retains a local fixed-offset JEPA objective and adds trajectory-relative multi-horizon transition alignment at 25%, 50%, 75%, and 100% of the remaining episode. These training-only targets require the current policy representation to preserve both local physical changes and longer-range task progress, without supplying explicit future tokens to the action head. \\method then trains an independent distributional value critic on cumulative deployment trajectories, computes action-chunk-aligned $N$-step advantages, and converts them into positive, negative, or null text conditions for a flow-matching actor. Thus, every valid trajectory can teach what physically happened, while the actor is deployed only under the condition associated with relatively better actions. The multi-horizon predictor and critic are removed from online execution, preserving direct action generation from the current observation, language instruction, and proprioception. \\redclaim{Across the three simulation benchmarks, \\method achieves the strongest overall performance while preserving the direct actor's online execution path.}",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/06/2609.00161v1-impact-attention-is-the-interaction-map-for-scalable-interaction-aware-world-model-training",
+      "section": "quick",
+      "title_en": "IMPACT: Attention Is the Interaction Map for Scalable Interaction-Aware World Model Training",
+      "authors": "Rongze Tang, Jianjie Fang, Zhaolu Wang, Ziyou Wang, Xvyuan Liu, Haisheng Su, Xin Zhang, Wei Wu, Chen Gao, Yong Li, Zhibo Chen",
+      "date": "2026-08-31",
+      "pdf": "https://arxiv.org/pdf/2609.00161v1",
+      "score": "6.0",
+      "evidence": "利用注意力交互图重加权去噪目标，改进世界模型训练，支持动力学模型学习",
+      "tldr": "世界模型在动作条件未来预测上进步显著，但难以生成物理可信的交互。现有方法引入外部运动、几何或语义表示，依赖辅助估计或人工标注，限制训练规模。IMPACT重新审视全局平均MSE的监督分配问题，利用操作物体标记的交叉注意力作为时空先验，结合局部预测误差自动构建交互图，对去噪损失进行重加权。实验覆盖机器人臂与人手操控等多种控制模态与DiT骨干，显示相比MSE基线在交互保真度、物理合理性及视觉质量上一致提升。该框架无需外部表示，也不改变推理流程，为大规模交互感知世界模型训练提供了可扩展方案。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World models have made remarkable progress in action-conditioned future prediction for embodied agents, yet still struggle to model physically plausible interactions. Existing approaches address this limitation by constraining the generation process with external representations encoding motion, geometry, or semantics. Obtaining these spatiotemporally dense representations typically requires auxiliary estimators or manual annotations, limiting training scalability. We instead revisit the training objective and identify a supervision-allocation mismatch under the globally averaged mean squared error (MSE) denoising objective: prevalent static content dominates the optimization signal, leaving sparse dynamic-object regions critical to interaction generation disproportionately under-supervised. Motivated by this observation, we introduce IMPACT, a scalable Interaction-aware Model training framework with Prior-guided Attention Calibration and Targeting. IMPACT uses cross-attention associated with manipulated-object tokens as an internal spatiotemporal prior for action-conditioned changes. It samples candidate regions from this prior, calibrates them with detached local prediction errors to construct an interaction map, and uses the map to reweight denoising supervision, requiring neither external representations nor inference-time modifications. Extensive experiments on robot-arm and human-hand manipulation, spanning diverse control modalities and DiT backbones, show that IMPACT consistently outperforms the corresponding MSE-trained baselines, improving interaction fidelity, physical plausibility, and visual quality.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/06/2609.02531v1-spatially-aware-world-action-model-via-geometric-latent-diffusion",
+      "section": "quick",
+      "title_en": "Spatially Aware World Action Model via Geometric Latent Diffusion",
+      "authors": "Javier Alejandro Lopetegui Gonzalez, Paul Pacaud, Cordelia Schmid",
+      "date": "2026-09-02",
+      "pdf": "https://arxiv.org/pdf/2609.02531v1",
+      "score": "6.0",
+      "evidence": "空间感知世界-动作模型联合预测未来观测与动作，可作为机器人控制中学习的动力学模型",
+      "tldr": "现有世界动作模型仅处理RGB观测，缺乏3D信息，限制了空间理解与机器人策略学习。提出SA-WAM，将预训练视频扩散模型改造为联合预测动作、RGB与深度图的框架，通过非线性编码将深度信号适配至冻结VAE的输入域，无需3D微调即复用视觉先验。在RoboCasa、LIBERO-Plus及真实UR5机械臂任务上均取得最佳性能，并显著提升未来状态预测质量。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World Action Models (WAMs) leverage the capabilities of large-scale pretrained video diffusion models to jointly predict future observations and actions, inheriting rich visual and physical priors from internet-scale video. This has made them a promising paradigm for robot policy learning, yet the prevailing models operate exclusively on RGB observations and do not leverage 3D information. To bridge this gap, we introduce a Spatially Aware World Action Model (SA-WAM), which repurposes a pretrained video model for joint action, RGB, and depth prediction, enabling 3D-aware world modeling and action prediction within a single diffusion backbone. We use a nonlinear encoding that maps the unbounded depth signal into the bounded input domain expected by the frozen VAE tokenizer. This allows us to reuse the tokenizer without 3D-specific fine-tuning, incorporating geometric information without sacrificing the pretrained priors. SA-WAM achieves state-of-the-art results on the RoboCasa and LIBERO-Plus benchmarks, while simultaneously improving future-state predictions. Furthermore, SA-WAM outperforms strong baselines in real-world evaluation using a UR5 robotic arm, with strong gains in randomized environments. We analyze the correlation between world model prediction quality and rollout success, providing insights into WAM performance and avenues for its improvement.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

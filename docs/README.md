@@ -6,50 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-04
-- 运行时间：2026-09-04 22:26:21 UTC
+- 最新运行日期：2026-09-06
+- 运行时间：2026-09-06 21:32:05 UTC
 - 运行状态：成功
-- 本次总论文数：10
-- 精读区：5
-- 速读区：5
+- 本次总论文数：4
+- 精读区：1
+- 速读区：3
 
 ### 今日简报（AI）
-今日精读聚焦视觉-语言-动作模型的高效训练与操作泛化，并以世界模型与局部接触几何为亮点。最值得关注《WISE》中世界模型引导的想象调度（9.0分）及《One Demonstration》中基于接触几何的泛化方法（8.0分）。建议后续可延伸探索在线强化学习与力感知控制，以贴近真实部署需求。
-- 详情：[/202609/04/README](/202609/04/README)
+今日主攻世界-动作模型（World-Action Models），共4篇，其中《PAVE》精读达8.0分，被速读中再次收录，成最热焦点；另涉足交互感知训练与几何潜扩散建模两方向。  
+最值得关注的是《PAVE》提出的预测对齐+价值引导进化策略，以及《IMPACT》用注意力图扩展可交互世界模型训练的思路。  
+建议普通读者先追PAVE的核心方法，再浏览后两篇的对比实验，快速把握该领域近期演进脉络。
+- 详情：[/202609/06/README](/202609/06/README)
 
 ### 精读区论文标签
-1. [WISE: World-model-guided Imagination Scheduling for Efficient Post-training of Vision-Language-Action Models](/202609/04/2609.03681v1-wise-world-model-guided-imagination-scheduling-for-efficient-post-training-of-vision-language-action-models)  
-   标签：评分：9.0/10、query:mbrl-manip
-   evidence：面向视觉-语言-动作操作策略的世界模型引导强化学习后训练
-2. [One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry](/202609/04/2609.01938v1-one-demonstration-many-objects-generalizing-manipulation-via-local-contact-geometry)  
+1. [PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies](/202609/06/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies)  
    标签：评分：8.0/10、query:mbrl-manip
-   evidence：通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。
-3. [One Demonstration, Many Objects: Generalizing Manipulation via Local Contact Geometry](/202609/04/2609.01938v2-one-demonstration-many-objects-generalizing-manipulation-via-local-contact-geometry)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：通过单次人类演示和接触中心奖励，使用模拟到现实的强化学习提高灵巧操作对未见过物体的泛化能力。
-4. [Real-Time Shape Control of Multi-Segment Soft Robotic Arms Using Koopman Operators with Global and Local Observables](/202609/04/2609.03175v1-real-time-shape-control-of-multi-segment-soft-robotic-arms-using-koopman-operators-with-global-and-local-observables)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：使用Koopman算子学习多段软体机械臂的连续变形动力学，并用于实时基于模型的形状控制。
-5. [Toward Physically Grounded JEPA World Models for Goal-Conditioned Robotic Planning](/202609/04/2609.03565v1-toward-physically-grounded-jepa-world-models-for-goal-conditioned-robotic-planning)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：学习动作条件下的JEPA动力学/世界模型，并通过逆动力学和状态对齐用于目标条件规划；实验包含推物等操作任务
+   evidence：结合预测对齐与价值引导进化的世界-动作策略，用于机械臂操作强化学习。
 
 ### 速读区论文标签
-1. [PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies](/202609/04/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：面向直接世界动作策略的预测对齐与值引导进化方法，属于可服务于机械臂操作的模型化策略学习
-2. [Real-Time Dynamics-Based Torque-Sampling MPPI for Compliant and Force Aware Manipulation](/202609/04/2609.02020v1-real-time-dynamics-based-torque-sampling-mppi-for-compliant-and-force-aware-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：基于刚体动力学的MPPI模型预测控制，面向机械臂柔顺与力感知操作
-3. [SmoothRL: Online Reinforcement Learning During Asynchronous Execution](/202609/04/2608.29768v1-smoothrl-online-reinforcement-learning-during-asynchronous-execution)  
+1. [PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies](/202609/06/2608.30378v2-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：在异步执行与动作分块进行中实施在线强化学习，用于部署机器人策略，契合基于学习策略与强化学习的机器人操作方向。
-4. [AcrossWAM1.0:A Modular Latent World-Action Stack for Compact Robot Policies](/202609/04/2608.29937v1-acrosswam10a-modular-latent-world-action-stack-for-compact-robot-policies)  
+   evidence：通过多尺度转移对齐和JEPA预测目标使动作策略学习场景动力学表征用于机器人控制
+2. [IMPACT: Attention Is the Interaction Map for Scalable Interaction-Aware World Model Training](/202609/06/2609.00161v1-impact-attention-is-the-interaction-map-for-scalable-interaction-aware-world-model-training)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：潜在世界模型解码器预测动作相关的视觉子目标，可作为机器人控制的可复用动力学模型，与学习动力学模型需求吻合
-5. [World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models](/202609/04/2609.02159v1-world-coherent-decoding-self-verifying-test-time-planning-for-world-action-models)  
+   evidence：利用注意力交互图重加权去噪目标，改进世界模型训练，支持动力学模型学习
+3. [Spatially Aware World Action Model via Geometric Latent Diffusion](/202609/06/2609.02531v1-spatially-aware-world-action-model-via-geometric-latent-diffusion)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：基于世界模型rollout的自验证测试时规划方法，与机械臂操作中的模型基规划相关
+   evidence：空间感知世界-动作模型联合预测未来观测与动作，可作为机器人控制中学习的动力学模型
 
 
 <div class="dpr-home-promo-card">
