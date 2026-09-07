@@ -1,6 +1,9 @@
 * <a class="dpr-sidebar-root-link" href="#/">首页</a>
 * <a class="dpr-sidebar-root-link dpr-sidebar-noactive-link" href="javascript:void(0)" data-dpr-hash="#/tutorial/README">使用教程</a>
 * Daily Papers
+  * 2026-09-07 <!--dpr-date:20260907-->
+    * 速读区
+      * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/07/2609.04355v1-vla-precision-asymmetric-co-bootstrapping-for-efficient-real-world-online-rl-of-vision-language-action-models" data-sidebar-item="{&quot;title&quot;: &quot;VLA-Precision: Asymmetric Co-Bootstrapping for Efficient Real-World Online RL of Vision-Language-Action Models&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2609.04355v1-vla-precision-asymmetric-co-bootstrapping-for-efficient-real-world-online-rl-of-vision-language-action-models&quot;, &quot;score&quot;: &quot;7.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;mbrl-manip&quot;}], &quot;evidence&quot;: &quot;面向精密机械臂操作的VLA模型真机在线强化学习&quot;}">VLA-Precision: Asymmetric Co-Bootstrapping for Efficient Real-World Online RL of Vision-Language-Action Models</a>
   * 2026-09-06 <!--dpr-date:20260906-->
     * 精读区
       * <a class="dpr-sidebar-item-link dpr-sidebar-item-structured" href="#/202609/06/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies" data-sidebar-item="{&quot;title&quot;: &quot;PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies&quot;, &quot;link&quot;: &quot;https://arxiv.org/abs/2608.30378v1-pave-predictive-alignment-and-value-guided-evolution-for-world-action-policies&quot;, &quot;score&quot;: &quot;8.0&quot;, &quot;tags&quot;: [{&quot;kind&quot;: &quot;query&quot;, &quot;label&quot;: &quot;mbrl-manip&quot;}], &quot;evidence&quot;: &quot;结合预测对齐与价值引导进化的世界-动作策略，用于机械臂操作强化学习。&quot;}">PAVE: Predictive Alignment and Value-Guided Evolution for World-Action Policies</a>
