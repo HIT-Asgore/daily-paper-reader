@@ -1,0 +1,69 @@
+{
+  "label": "2026-09-08",
+  "date": "2026-09-08",
+  "generated_at": "2026-09-08T22:02:19",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202609/08/2609.02159v1-world-coherent-decoding-self-verifying-test-time-planning-for-world-action-models",
+      "section": "quick",
+      "title_en": "World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models",
+      "authors": "Chuhan Zhang, Seiji Ito, Kenta Hoshino, Satoshi Ikehata, Ikuro Sato",
+      "date": "2026-09-02",
+      "pdf": "https://arxiv.org/pdf/2609.02159v1",
+      "score": "7.0",
+      "evidence": "在机器人控制中对世界模型推演进行自验证规划，与基于模型的强化学习高度相关。",
+      "tldr": "世界动作模型依赖随机生成的未来想象解码动作，但结果受所选未来强烈影响。提出World-Coherent-Decoding自验证测试时规划框架，将模型展开视为可证伪假设，用流式视频惊异和动作路径努力对候选排序，并借执行后真实观测训练轻量在线预测器，把延迟自验证转为事前可靠性估计。在RoboTwin 2.0上Hard成功率由55.80%升至60.90%，Horizon-3任务提升16.43，真实Franka视觉偏移测试呈定性鲁棒。关键启示是测试时扩展应侧重选择可靠未来而非采样更多。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World Action Models (WAMs) aim to control robots by stochastically generating visual futures and then decoding actions, but empirical observations indicate that the results can strongly depend on which future is selected. We propose World-Coherent-Decoding (WCD), a self-verifying test-time planning framework that treats WAM rollouts as falsifiable future--action hypotheses. At each decision step, WCD samples multiple candidates from a frozen WAM and ranks them using internal generative signals: flow-based video surprisal for visual plausibility and action path effort for action-generation stability. After execution, the realized observation audits the selected imagination, yielding an imagination--reality mismatch that trains a lightweight online predictor for future candidate selection. Thus, WCD converts delayed self-verification into pre-execution reliability estimation without updating the backbone model. On RoboTwin 2.0, WCD improves Hard success under limited randomized-scene supervision from $55.80\\%$ to $60.90\\%$, with a $+16.43$ gains on Horizon-3 tasks, and shows qualitative robustness on real Franka visual-shift tests. These results highlight a simple principle: test-time scaling for WAMs depends less on sampling more futures than on selecting reliable ones.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/08/2609.05266v1-tacpac-tactile-prediction-and-real-time-action-correction-in-world-action-models-for-contact-rich-manipulation",
+      "section": "quick",
+      "title_en": "TacPAC: Tactile Prediction and Real-Time Action Correction in World-Action Models for Contact-Rich Manipulation",
+      "authors": "Zipei Ma, Xiaofei Wei, Junzhe Jiang, Shunlin Lu, Li Zhang",
+      "date": "2026-09-04",
+      "pdf": "https://arxiv.org/pdf/2609.05266v1",
+      "score": "7.0",
+      "evidence": "使用世界-动作模型预测未来观测，把触觉预测转为实时动作修正以改善接触丰富操作，可归为操作动力学预测/模型类方法",
+      "tldr": "世界动作模型的视觉预测难以感知接触信号，把触觉作为额外视图直接预测又受“预测先于执行”的时序限制，增益有限。TacPAC将触觉预测转化为执行中的动作校正：动作块生成后，缓存对应的预测接触与计划表示，并让触觉专家将每个新触觉图像与该缓存比对，修正尚未执行的动作。单次校正只需一次缓存扫描，比重新生成动作块便宜20.7倍。在五项真实机器人任务上均领先基线，平均成功率从22%增长至64%。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World-action models guide action generation with predicted future observations, but vision-centric predictions miss the local contact cues that decide contact-rich manipulation. However, naively predicting future tactile observations as additional views recovers only a third of the achievable gain in our experiments. This gap reflects a timing mismatch: predictions precede execution, while tactile feedback arrives during it. We introduce TacPAC, which turns tactile prediction into real-time action correction. Once the base model has planned an action chunk, TacPAC caches the predicted contact that plan was conditioned on together with the plan's own representation, and a tactile expert reads each newly observed tactile image against that cache to correct the actions not yet executed. Feedback is thus interpreted against what the plan anticipated rather than in isolation, and one correction is a single pass over that cache, $20.7\\times$ cheaper than regenerating the chunk. On five real-robot tasks spanning precision insertion, fragile-object handling, object reorientation, and long-horizon manipulation, TacPAC leads every task and raises the average from 22% for its vision-only base model to 64%. Code is available at https://github.com/LogosRoboticsGroup/TacPAC.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/08/2608.30880v1-zeva-in-context-causal-learning-for-generalizable-embodied-manipulation",
+      "section": "quick",
+      "title_en": "Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation",
+      "authors": "Fu Chen, Xin Ding, Bingjia Huang, Xiangyu Li, Mingju Wang, Jiawei He, Kun Li, Wei Sun, Yunxin Liu, Hao Wu, Ting Cao",
+      "date": "2026-08-31",
+      "pdf": "https://arxiv.org/pdf/2608.30880v1",
+      "score": "6.0",
+      "evidence": "从动作和状态变化中提取因果交互信号并用于后续控制，类似学习动力学效应以指导机器人控制",
+      "tldr": "通用具身操作难以仅靠预训练应对真实世界中的未知物理条件。Zeva框架首次实现机器人从自身物理交互中在线上下文学习，同时保持策略模型冻结：通过因果交互提取器编码动作与状态变化，存入双时标因果记忆，并在后续决策时检索注入策略。实验表明其在仿真和真实操作中优于前沿VLA与WAM，且无需梯度更新即可在部署中自我进化，成功率随经验积累持续提升，交互经验还能跨任务泛化。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Generalizable embodied manipulation remains difficult to achieve through pretraining alone, due to unseen physical conditions in the real world. We argue that robots need to learn from their own physical interactions on the fly during real-world deployment and use this knowledge to inform subsequent actions. We present Zeva, the first framework that enables in-context learning from a robot's own physical interaction experience while keeping the policy model frozen. Zeva employs a Causal Interaction Extractor to encode an executed action and its induced state change into a causal interaction signal, which is stored in a dual-timescale causal memory. For subsequent actions, relevant causal interaction signals are retrieved from memory and injected into the frozen policy model as context. Experiments in simulation and real-world manipulation demonstrate that Zeva achieves the best performance among the compared frontier VLAs and WAMs and, more importantly, enables self-evolution during deployment without gradient updates. Its success rate continues to improve as the robot accumulates interaction experience. Furthermore, the acquired interaction experience can generalize across tasks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/08/2609.01215v1-refactor-vla-unsupervised-library-learning-of-typed-motor-programs",
+      "section": "quick",
+      "title_en": "REFACTOR-VLA: Unsupervised Library Learning of Typed Motor Programs",
+      "authors": "Riyaaz Shaik, Chandru Venkataraman",
+      "date": "2026-09-01",
+      "pdf": "https://arxiv.org/pdf/2609.01215v1",
+      "score": "6.0",
+      "evidence": "在VLA机器人技能发现中使用学习的隐世界模型度量行为等价性，与基于模型的控制相关。",
+      "tldr": "现有视觉-语言-动作模型多为单体架构，直接输出原始动作，缺乏可复用抽象，导致长程任务性能下降且难以解释。REFACTOR-VLA提出基于行为等价核的睡眠/唤醒学习框架，在睡眠阶段从潜在世界模型滚动中聚类动作片段，在唤醒阶段生成类型化lambda程序供动作解码器使用。实验表明增大世界模型容量无益，而加入对比损失显著提升聚类质量，在LIBERO基准上超越最强基线，并首次生成真实任务语言库。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Most vision-language-action (VLA) models -- OpenVLA, $π_0$, RT-2, RDT-1B -- are monolithic: they emit raw motor commands or short action chunks without organizing behavior into reusable abstractions, so they degrade on long-horizon tasks and resist interpretation. Existing skill-discovery methods sidestep the core question of when two action sequences are behaviorally equivalent, either clustering contrastive embeddings or delegating the judgment to a language model uncalibrated to the robot's dynamics. We introduce REFACTOR-VLA, a wake/sleep system for learning reusable skills. Its sleep phase clusters motor-program fragments under a Behavioral-Equivalence Kernel (BEK) computed from rollouts of a learned latent world model $M_φ$; its wake phase emits typed lambda terms over a Hindley--Milner-inspired vocabulary, consumed by a library-conditioned rectified-flow action decoder. Abstractions are admitted only if they pass Minimum Description Length and return-preservation gates. On LIBERO we report two findings. First, enlarging the world model from 188M to 430M parameters worsened performance on 4 of 4 suites, so capacity alone does not help. Second, the training objective matters far more: adding an auxiliary supervised contrastive (InfoNCE) loss during world-model warmup substantially improves sleep-phase clustering, giving Normalized Mutual Information at $n=3$ seeds of $0.462 \\pm 0.021$ (object), $0.867 \\pm 0.025$ (spatial), $0.915 \\pm 0.013$ (goal) and $0.754 \\pm 0.010$ (LIBERO-10), and beating the strongest published baseline on all 4 suites by a mean $Δ= +0.184$. Across providers ($n=12$) the 95% bootstrap confidence interval for mean pairwise NMI is $[0.683, 0.729]$ (mean $0.705$). The sleep phase also yields the first real-LIBERO task-language library: the decoder uses 2 of 3 admitted abstractions and rewrites all 256 sampled demonstrations.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

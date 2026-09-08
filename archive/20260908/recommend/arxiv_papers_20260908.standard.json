@@ -1,0 +1,186 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-08T21:59:56.645625+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.02159v1",
+      "source": "arxiv",
+      "title": "World-Coherent Decoding: Self-Verifying Test-Time Planning for World Action Models",
+      "abstract": "World Action Models (WAMs) aim to control robots by stochastically generating visual futures and then decoding actions, but empirical observations indicate that the results can strongly depend on which future is selected. We propose World-Coherent-Decoding (WCD), a self-verifying test-time planning framework that treats WAM rollouts as falsifiable future--action hypotheses. At each decision step, WCD samples multiple candidates from a frozen WAM and ranks them using internal generative signals: flow-based video surprisal for visual plausibility and action path effort for action-generation stability. After execution, the realized observation audits the selected imagination, yielding an imagination--reality mismatch that trains a lightweight online predictor for future candidate selection. Thus, WCD converts delayed self-verification into pre-execution reliability estimation without updating the backbone model. On RoboTwin 2.0, WCD improves Hard success under limited randomized-scene supervision from $55.80\\%$ to $60.90\\%$, with a $+16.43$ gains on Horizon-3 tasks, and shows qualitative robustness on real Franka visual-shift tests. These results highlight a simple principle: test-time scaling for WAMs depends less on sampling more futures than on selecting reliable ones.",
+      "authors": [
+        "Chuhan Zhang",
+        "Seiji Ito",
+        "Kenta Hoshino",
+        "Satoshi Ikehata",
+        "Ikuro Sato"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-09-02T06:21:36+00:00",
+      "link": "https://arxiv.org/pdf/2609.02159v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Model-based test-time planning over world model rollouts for robot control, strongly related to model-based RL.",
+      "llm_evidence_cn": "在机器人控制中对世界模型推演进行自验证规划，与基于模型的强化学习高度相关。",
+      "llm_evidence": "在机器人控制中对世界模型推演进行自验证规划，与基于模型的强化学习高度相关。",
+      "canonical_evidence": "在机器人控制中对世界模型推演进行自验证规划，与基于模型的强化学习高度相关。",
+      "llm_tldr_en": "Proposes World-Coherent Decoding, which treats WAM rollouts as falsifiable hypotheses, ranks candidates via video surprisal and action effort, and uses realized observations to audit imagination and train a lightweight mismatch predictor for robot control.",
+      "llm_tldr_cn": "世界动作模型(WAM)生成视觉未来再解码动作，但结果依赖采样的未来。本文提出世界一致解码(WCD)，将WAM的推出序列视为可证伪的假设，在测试时采样并利用视觉惊奇度和动作路径努力度排序候选，避免单次不稳定预测。执行后，真实观测会审计所选想象并产生想象-现实失配信号，用于训练轻量级模型。该方法为基于世界模型的机器人规划提供了更可靠的推理框架。",
+      "llm_tldr": "世界动作模型(WAM)生成视觉未来再解码动作，但结果依赖采样的未来。本文提出世界一致解码(WCD)，将WAM的推出序列视为可证伪的假设，在测试时采样并利用视觉惊奇度和动作路径努力度排序候选，避免单次不稳定预测。执行后，真实观测会审计所选想象并产生想象-现实失配信号，用于训练轻量级模型。该方法为基于世界模型的机器人规划提供了更可靠的推理框架。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.30880v1",
+      "source": "arxiv",
+      "title": "Zeva: In-Context Causal Learning for Generalizable Embodied Manipulation",
+      "abstract": "Generalizable embodied manipulation remains difficult to achieve through pretraining alone, due to unseen physical conditions in the real world. We argue that robots need to learn from their own physical interactions on the fly during real-world deployment and use this knowledge to inform subsequent actions. We present Zeva, the first framework that enables in-context learning from a robot's own physical interaction experience while keeping the policy model frozen. Zeva employs a Causal Interaction Extractor to encode an executed action and its induced state change into a causal interaction signal, which is stored in a dual-timescale causal memory. For subsequent actions, relevant causal interaction signals are retrieved from memory and injected into the frozen policy model as context. Experiments in simulation and real-world manipulation demonstrate that Zeva achieves the best performance among the compared frontier VLAs and WAMs and, more importantly, enables self-evolution during deployment without gradient updates. Its success rate continues to improve as the robot accumulates interaction experience. Furthermore, the acquired interaction experience can generalize across tasks.",
+      "authors": [
+        "Fu Chen",
+        "Xin Ding",
+        "Bingjia Huang",
+        "Xiangyu Li",
+        "Mingju Wang",
+        "Jiawei He",
+        "Kun Li",
+        "Wei Sun",
+        "Yunxin Liu",
+        "Hao Wu",
+        "Ting Cao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-08-31T14:39:00+00:00",
+      "link": "https://arxiv.org/pdf/2608.30880v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "In-context learning from action-state causal interactions, akin to learning dynamics effects to inform robot control",
+      "llm_evidence_cn": "从动作和状态变化中提取因果交互信号并用于后续控制，类似学习动力学效应以指导机器人控制",
+      "llm_evidence": "从动作和状态变化中提取因果交互信号并用于后续控制，类似学习动力学效应以指导机器人控制",
+      "canonical_evidence": "从动作和状态变化中提取因果交互信号并用于后续控制，类似学习动力学效应以指导机器人控制",
+      "llm_tldr_en": "Zeva lets a frozen robot policy learn in-context from its own physical interactions: a Causal Interaction Extractor converts action-state changes into reusable signals stored in dual-timescale memory and retrieved for subsequent actions. It improves embodied manipulation under unseen physical conditions and offers useful ideas for model-based control.",
+      "llm_tldr_cn": "针对机器人在真实部署时面临未见过物理条件、仅靠预训练难以泛化的问题，Zeva提出在保持基础策略冻结的情况下从自身物理交互经验中学习的框架。其因果交互提取器将执行动作与状态变化编码为因果信号，存入双时间尺度记忆，并在后续动作中检索注入相关信息。实验结果显示该方法能提升机器人在未见过物理条件下的具身操作泛化能力。该工作为基于模型的控制与动力学学习提供了新的思路。",
+      "llm_tldr": "针对机器人在真实部署时面临未见过物理条件、仅靠预训练难以泛化的问题，Zeva提出在保持基础策略冻结的情况下从自身物理交互经验中学习的框架。其因果交互提取器将执行动作与状态变化编码为因果信号，存入双时间尺度记忆，并在后续动作中检索注入相关信息。实验结果显示该方法能提升机器人在未见过物理条件下的具身操作泛化能力。该工作为基于模型的控制与动力学学习提供了新的思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.05266v1",
+      "source": "arxiv",
+      "title": "TacPAC: Tactile Prediction and Real-Time Action Correction in World-Action Models for Contact-Rich Manipulation",
+      "abstract": "World-action models guide action generation with predicted future observations, but vision-centric predictions miss the local contact cues that decide contact-rich manipulation. However, naively predicting future tactile observations as additional views recovers only a third of the achievable gain in our experiments. This gap reflects a timing mismatch: predictions precede execution, while tactile feedback arrives during it. We introduce TacPAC, which turns tactile prediction into real-time action correction. Once the base model has planned an action chunk, TacPAC caches the predicted contact that plan was conditioned on together with the plan's own representation, and a tactile expert reads each newly observed tactile image against that cache to correct the actions not yet executed. Feedback is thus interpreted against what the plan anticipated rather than in isolation, and one correction is a single pass over that cache, $20.7\\times$ cheaper than regenerating the chunk. On five real-robot tasks spanning precision insertion, fragile-object handling, object reorientation, and long-horizon manipulation, TacPAC leads every task and raises the average from 22% for its vision-only base model to 64%. Code is available at https://github.com/LogosRoboticsGroup/TacPAC.",
+      "authors": [
+        "Zipei Ma",
+        "Xiaofei Wei",
+        "Junzhe Jiang",
+        "Shunlin Lu",
+        "Li Zhang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-04T15:24:58+00:00",
+      "link": "https://arxiv.org/pdf/2609.05266v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "World-action model with tactile prediction for real-time action correction in contact-rich manipulation; learns an action-conditional predictive model for manipulation",
+      "llm_evidence_cn": "使用世界-动作模型预测未来观测，把触觉预测转为实时动作修正以改善接触丰富操作，可归为操作动力学预测/模型类方法",
+      "llm_evidence": "使用世界-动作模型预测未来观测，把触觉预测转为实时动作修正以改善接触丰富操作，可归为操作动力学预测/模型类方法",
+      "canonical_evidence": "使用世界-动作模型预测未来观测，把触觉预测转为实时动作修正以改善接触丰富操作，可归为操作动力学预测/模型类方法",
+      "llm_tldr_en": "Vision-centric world-action models miss local contact cues; naive tactile prediction suffers a timing mismatch. TacPAC caches the predicted contact with the planned action chunk, and a tactile expert corrects actions in real time as new observations arrive.",
+      "llm_tldr_cn": "以视觉为中心的世界-动作模型在密集接触操作中缺少局部触觉线索，而简单把未来触觉作为额外视角预测只能恢复约三分之一的潜在收益，原因是预测先于执行、触觉反馈发生在执行期间。TacPAC将触觉预测转化为实时动作修正：基础模型生成动作块后缓存该计划依赖的预测接触与计划表征，再由触觉专家根据每次新观测量实时修正动作。实验表明这种修正方式比朴素触觉预测带来更高的动作增益，为使用世界模型与触觉进行接触丰富操作提供了一个有效的解决方案。",
+      "llm_tldr": "以视觉为中心的世界-动作模型在密集接触操作中缺少局部触觉线索，而简单把未来触觉作为额外视角预测只能恢复约三分之一的潜在收益，原因是预测先于执行、触觉反馈发生在执行期间。TacPAC将触觉预测转化为实时动作修正：基础模型生成动作块后缓存该计划依赖的预测接触与计划表征，再由触觉专家根据每次新观测量实时修正动作。实验表明这种修正方式比朴素触觉预测带来更高的动作增益，为使用世界模型与触觉进行接触丰富操作提供了一个有效的解决方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.01215v1",
+      "source": "arxiv",
+      "title": "REFACTOR-VLA: Unsupervised Library Learning of Typed Motor Programs",
+      "abstract": "Most vision-language-action (VLA) models -- OpenVLA, $π_0$, RT-2, RDT-1B -- are monolithic: they emit raw motor commands or short action chunks without organizing behavior into reusable abstractions, so they degrade on long-horizon tasks and resist interpretation. Existing skill-discovery methods sidestep the core question of when two action sequences are behaviorally equivalent, either clustering contrastive embeddings or delegating the judgment to a language model uncalibrated to the robot's dynamics. We introduce REFACTOR-VLA, a wake/sleep system for learning reusable skills. Its sleep phase clusters motor-program fragments under a Behavioral-Equivalence Kernel (BEK) computed from rollouts of a learned latent world model $M_φ$; its wake phase emits typed lambda terms over a Hindley--Milner-inspired vocabulary, consumed by a library-conditioned rectified-flow action decoder. Abstractions are admitted only if they pass Minimum Description Length and return-preservation gates. On LIBERO we report two findings. First, enlarging the world model from 188M to 430M parameters worsened performance on 4 of 4 suites, so capacity alone does not help. Second, the training objective matters far more: adding an auxiliary supervised contrastive (InfoNCE) loss during world-model warmup substantially improves sleep-phase clustering, giving Normalized Mutual Information at $n=3$ seeds of $0.462 \\pm 0.021$ (object), $0.867 \\pm 0.025$ (spatial), $0.915 \\pm 0.013$ (goal) and $0.754 \\pm 0.010$ (LIBERO-10), and beating the strongest published baseline on all 4 suites by a mean $Δ= +0.184$. Across providers ($n=12$) the 95% bootstrap confidence interval for mean pairwise NMI is $[0.683, 0.729]$ (mean $0.705$). The sleep phase also yields the first real-LIBERO task-language library: the decoder uses 2 of 3 admitted abstractions and rewrites all 256 sampled demonstrations.",
+      "authors": [
+        "Riyaaz Shaik",
+        "Chandru Venkataraman"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-09-01T13:19:05+00:00",
+      "link": "https://arxiv.org/pdf/2609.01215v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Uses a learned latent world model for behavioral equivalence in VLA robot policy skill discovery, relevant to model-based robot control.",
+      "llm_evidence_cn": "在VLA机器人技能发现中使用学习的隐世界模型度量行为等价性，与基于模型的控制相关。",
+      "llm_evidence": "在VLA机器人技能发现中使用学习的隐世界模型度量行为等价性，与基于模型的控制相关。",
+      "canonical_evidence": "在VLA机器人技能发现中使用学习的隐世界模型度量行为等价性，与基于模型的控制相关。",
+      "llm_tldr_en": "Presents REFACTOR-VLA, a wake/sleep system that clusters motor-program fragments by a Behavioral-Equivalence Kernel from rollouts of a learned latent world model, yielding reusable typed skill libraries for long-horizon VLA robot policies.",
+      "llm_tldr_cn": "现有VLA模型直接输出原始动作，缺少可复用的行为抽象，长程任务表现差。REFACTOR-VLA采用醒睡学习：睡眠阶段借助学习的隐世界模型M_phi展开动作片段，并用行为等价核聚类出运动程序库；唤醒阶段输出类型化的抽象技能。方法在不依赖语言模型校准的情况下自动推断动作序列何时等价，提升长程任务的可解释性与复用性。该工作属于基于世界模型的机器人技能学习。",
+      "llm_tldr": "现有VLA模型直接输出原始动作，缺少可复用的行为抽象，长程任务表现差。REFACTOR-VLA采用醒睡学习：睡眠阶段借助学习的隐世界模型M_phi展开动作片段，并用行为等价核聚类出运动程序库；唤醒阶段输出类型化的抽象技能。方法在不依赖语言模型校准的情况下自动推断动作序列何时等价，提升长程任务的可解释性与复用性。该工作属于基于世界模型的机器人技能学习。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
