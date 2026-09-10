@@ -1,0 +1,264 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-10T21:40:16.938283+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 6,
+    "quick_skim_target": 12,
+    "quick_selected": 6
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.09597v1",
+      "source": "arxiv",
+      "title": "Compact Visuotactile World Models for Lifting: Prediction, Reward Alignment, and Force Constraints",
+      "abstract": "Accurate contact prediction is useful for robotic manipulation only if it supports effective decisions. We investigate this connection using a compact, randomly initialized visuotactile world model, trajectory-level uncertainty calibration, and behavior-initialized actor-critic learning in imagination. On 160 MuJoCo Lift episodes, adding touch reduces endpoint-force prediction error from 1.058 to 0.228 N and interval-peak error from 2.724 to 0.523 N across three training seeds. However, tactile persistence achieves lower errors of 0.095 and 0.498 N, respectively. Two exploratory control rounds comprise 680 executions on 40 independent test initial conditions. A matched reward revision on fresh test environments increases in-distribution 10 cm lifting success from 20.0% to 93.3%, while success within an 8 N per-finger budget reaches only 33.3%, compared with 70.0% for force feedback. Calibration margins reduce force violations at the cost of task completion. In a separate study of public GelSight recordings, a force regressor achieves 0.04234 N error, but frame-level calibration covers only 15.80% of complete trajectories; trajectory-level calibration raises this to 87.36% at nominal 90% coverage. Together, these findings distinguish improvements in sensing and task reward from improvements in force-constrained control. The evidence is limited to public sensing records and simulator execution, without a demonstrated transfer between them.",
+      "authors": [
+        "Qinzhen Ma",
+        "Sida Peng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-09-09T01:50:54+00:00",
+      "link": "https://arxiv.org/pdf/2609.09597v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "visuotactile world model with actor-critic learning in imagination for lifting manipulation",
+      "llm_evidence_cn": "视觉触觉世界模型与想象式actor-critic用于抓取提升",
+      "llm_evidence": "视觉触觉世界模型与想象式actor-critic用于抓取提升",
+      "canonical_evidence": "视觉触觉世界模型与想象式actor-critic用于抓取提升",
+      "llm_tldr_en": "A compact visuotactile world model with trajectory-level uncertainty calibration and behavior-initialized actor-critic learning in imagination improves force prediction and control for MuJoCo lifting manipulation.",
+      "llm_tldr_cn": "针对机器人抓取提升中接触力预测难以支撑有效决策的问题，本文提出紧凑的随机初始化视觉触觉世界模型，结合轨迹级不确定性校准与行为初始化的想象式actor-critic学习。在160个MuJoCo提升回合中，加入触觉将末端力预测误差从1.058N降至0.228N，但触觉持续性基线误差更低；两轮控制实验在40个独立初始条件下完成680次执行。结果表明世界模型可支撑操纵决策，但触觉预测增益需结合控制效果审慎解读。",
+      "llm_tldr": "针对机器人抓取提升中接触力预测难以支撑有效决策的问题，本文提出紧凑的随机初始化视觉触觉世界模型，结合轨迹级不确定性校准与行为初始化的想象式actor-critic学习。在160个MuJoCo提升回合中，加入触觉将末端力预测误差从1.058N降至0.228N，但触觉持续性基线误差更低；两轮控制实验在40个独立初始条件下完成680次执行。结果表明世界模型可支撑操纵决策，但触觉预测增益需结合控制效果审慎解读。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.06186v1",
+      "source": "arxiv",
+      "title": "Spectral Prioritized Sweeping in Nonstationary Reinforcement Learning",
+      "abstract": "Prioritized Sweeping (PS) accelerates model-based reinforcement learning by selecting backups according to Bellman residual magnitude. In nonstationary reward settings, however, the canonical priority score is shortsighted: after a localized reward shift, residuals propagate only through realized backups, so bottlenecked or topologically distant state estimates may remain static under a limited replanning budget. We introduce the Graph Topology Augmentation framework, which employ the graph's resolvent and its diffusion semantic, to augment the inquired signal. Our application, Graph Topology Augmentation for Prioritized Sweeping (GTA-PS), or which the alias Spectral Prioritized Sweeping (SPS) might be more universal, provides a drop-in ordering score for the setting of fixed dynamics and changing state rewards. GTA-PS uses a smootherized policy, inducing a transition chain, with its in- and out-Laplacian. The standard priority key is augmented with a mixing of regularized Laplacian inverses diffusing the residual magnitude. Furthermore, the topology contribution is annealed by a scheduler based on the Second Largest Eigenvalue Modulus (SLEM), allowing its scale to adapt to the chain's mixing regime. We prove that the forward potential coincides with geometric discounted residual propagation and show that GTA-PS gives active priority instantly to all states. Tabular experiments on FourRooms and GARNET domains demonstrate improved replanning efficiency over standard PS under both exact DP and Dyna-style host planners.",
+      "authors": [
+        "Hung Pham",
+        "Tuan Dam"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-09-05T17:06:10+00:00",
+      "link": "https://arxiv.org/pdf/2609.06186v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-based RL backup prioritization for improved replanning sample efficiency",
+      "llm_evidence_cn": "面向样本效率的模型强化学习备份优先级改进",
+      "llm_evidence": "面向样本效率的模型强化学习备份优先级改进",
+      "canonical_evidence": "面向样本效率的模型强化学习备份优先级改进",
+      "llm_tldr_en": "Prioritized Sweeping accelerates model-based RL by prioritizing backups, but its canonical score is shortsighted in nonstationary rewards; GTA-PS augments the priority signal using graph resolvent and diffusion semantics.",
+      "llm_tldr_cn": "针对优先扫描在非平稳奖励下优先级短视、残差只能沿已实现备份传播、有限重规划预算下瓶颈或远端状态估计停滞的问题，本文提出图拓扑增强框架GTA-PS（又称谱优先扫描SPS）。该方法利用图预解式与扩散语义增强查询信号，为备份排序提供即插即用的评分函数，从而提升非平稳环境下模型强化学习的重规划效率。工作为通用MBRL算法改进，可迁移至机器人控制以提升样本效率，但未在机械臂操作任务上验证。",
+      "llm_tldr": "针对优先扫描在非平稳奖励下优先级短视、残差只能沿已实现备份传播、有限重规划预算下瓶颈或远端状态估计停滞的问题，本文提出图拓扑增强框架GTA-PS（又称谱优先扫描SPS）。该方法利用图预解式与扩散语义增强查询信号，为备份排序提供即插即用的评分函数，从而提升非平稳环境下模型强化学习的重规划效率。工作为通用MBRL算法改进，可迁移至机器人控制以提升样本效率，但未在机械臂操作任务上验证。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.09941v1",
+      "source": "arxiv",
+      "title": "HaWMPO: Hallucination-Aware World Model-based Policy Optimization for Generalist Robot Policy",
+      "abstract": "Generalist robot policies have demonstrated strong generalization across robotic manipulation tasks, yet their success rates remain limited in com- plex long-horizon scenarios. Recent methods improve Visual-Language-Action (VLA) policies through online reinforcement learning on real robots, but such training relies on costly physical interactions, suffers from low sample efficiency, and may introduce hardware and safety risks. World models offer a promising alternative by enabling policy optimization with imagined rollouts. However, long-horizon rollouts generated by world models often suffer from prediction hal- lucinations, producing biased state transitions that can mislead policy learning. To address this issue, we propose Hallucination-aware World Model-based Pol- icy Optimization (HaWMPO), a closed-loop reinforcement learning pipeline for VLA policy post-training with world models. Specifically, HaWMPO introduces an action-conditioned hallucination-aware model to estimate the reliability of gen- erated image sequences, and incorporates hallucination scores into group relative policy optimization through a Reward-Soft mechanism, suppressing unreliable ac- tion chunks during training. On the LIBERO benchmark, HaWMPO achieves the best average success rate, with gains of 15.0% over the base model and 2.8% over the strongest baseline; real-world experiments on a G1 robot further validate its effectiveness, raising the average success rate on two manipulation tasks from 67.5% to 80.0%.",
+      "authors": [
+        "Zengjue Chen",
+        "Peidong Liu",
+        "Jiawei Li",
+        "Qi Wang"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-09T09:33:25+00:00",
+      "link": "https://arxiv.org/pdf/2609.09941v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world-model-based policy optimization for robot manipulation",
+      "llm_evidence_cn": "面向机器人操作的世界模型策略优化",
+      "llm_evidence": "面向机器人操作的世界模型策略优化",
+      "canonical_evidence": "面向机器人操作的世界模型策略优化",
+      "llm_tldr_en": "Online RL for generalist robot policies is costly and sample-inefficient, while world-model rollouts suffer from hallucination-induced bias. HaWMPO proposes hallucination-aware world-model policy optimization to improve long-horizon manipulation with imagined rollouts.",
+      "llm_tldr_cn": "通用机器人策略在复杂长时程操作中成功率有限，而在真实机器人上做在线强化学习代价高、样本效率低且存在安全风险。世界模型可用想象轨迹替代真实交互，但长时程预测常出现幻觉，导致状态转移有偏并误导策略学习。作者提出HaWMPO，一种幻觉感知的世界模型策略优化方法，用以缓解预测偏差并提升通用机器人策略的长时程操作表现。",
+      "llm_tldr": "通用机器人策略在复杂长时程操作中成功率有限，而在真实机器人上做在线强化学习代价高、样本效率低且存在安全风险。世界模型可用想象轨迹替代真实交互，但长时程预测常出现幻觉，导致状态转移有偏并误导策略学习。作者提出HaWMPO，一种幻觉感知的世界模型策略优化方法，用以缓解预测偏差并提升通用机器人策略的长时程操作表现。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.09828v1",
+      "source": "arxiv",
+      "title": "RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback",
+      "abstract": "Real-world observations of deformable objects are often sparse or surface-level, while downstream tasks require hidden physical quantities such as internal deformation, stress fields, and interaction forces. Physics-based simulation can recover these quantities, but online real-to-sim adaptation remains challenging due to costly full-space optimization, limited feedback, and time-varying material properties. To address these challenges, we propose RealSimLoop, a differentiable framework for online real-to-sim adaptation using vision data as physical feedback. Our approach achieves quasi-real-time performance by executing differentiable simulation within a reduced-order neural subspace, drastically accelerating the optimization loop. We couple this efficient dynamics model with differentiable rendering, enabling direct gradient backpropagation that leverages high-fidelity pixel data to refine physical parameters such as material stiffness. Furthermore, by employing a sliding-window objective function, RealSimLoop enables robust online adaptation, allowing the system to track time-varying material properties and effectively bridge the real-to-sim gap arising from model reduction or unmodeled dynamics. Extensive experiments demonstrate that our method outperforms conventional offline methods, and we validate the framework's versatility in downstream applications, including external force prediction and 3D stress field reconstruction with novel view synthesis.",
+      "authors": [
+        "Zhihao Cen",
+        "Chuhua Xian",
+        "Hailin Sun",
+        "Yuliang Liufu",
+        "Zhen Zhang",
+        "Xiangyu Chu",
+        "Hongmin Cai",
+        "Yunbo Zhang",
+        "Guoxin Fang"
+      ],
+      "primary_category": "cs.GR",
+      "categories": [
+        "cs.GR",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "published": "2026-09-09T07:33:40+00:00",
+      "link": "https://arxiv.org/pdf/2609.09828v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable simulation for online real-to-sim adaptation",
+      "llm_evidence_cn": "面向在线真实到仿真适配的可微仿真",
+      "llm_evidence": "面向在线真实到仿真适配的可微仿真",
+      "canonical_evidence": "面向在线真实到仿真适配的可微仿真",
+      "llm_tldr_en": "RealSimLoop is a differentiable framework for online real-to-sim adaptation using vision feedback, running differentiable simulation in a reduced-order neural subspace for quasi-real-time performance.",
+      "llm_tldr_cn": "针对可变形物体真实观测稀疏、需恢复内部形变与应力等隐藏物理量，而在线真实到仿真适配因全空间优化昂贵、反馈有限且材料属性时变而困难的问题，本文提出RealSimLoop。该框架以视觉数据作为物理反馈，在降阶神经子空间内执行可微仿真，大幅加速优化并实现准实时性能。实验表明该方法能在有限反馈下实现在线适配。该工作为可微仿真在物理参数辨识与操作任务中的应用提供了高效途径。",
+      "llm_tldr": "针对可变形物体真实观测稀疏、需恢复内部形变与应力等隐藏物理量，而在线真实到仿真适配因全空间优化昂贵、反馈有限且材料属性时变而困难的问题，本文提出RealSimLoop。该框架以视觉数据作为物理反馈，在降阶神经子空间内执行可微仿真，大幅加速优化并实现准实时性能。实验表明该方法能在有限反馈下实现在线适配。该工作为可微仿真在物理参数辨识与操作任务中的应用提供了高效途径。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable simulation for manipulation tasks",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.10506v1",
+      "source": "arxiv",
+      "title": "DUET-DINO: Simultaneous Cross-View World Modeling for Latent Planning in Robot Manipulation",
+      "abstract": "Action-conditioned latent world models predict future visual representations, enabling zero-shot goal-conditioned robot planning and control. However, their predictions for fine-grained spatial and rotational actions are unreliable for full 7-DoF end-effector control. To address this gap, we introduce DUET-DINO, a simultaneous cross-view latent world model that jointly learns action-conditioned predictions from static side- and wrist-camera observations through cross-view conditioning. By exploiting complementary global scene and gripper-centric information, DUET-DINO enables latent planning over the full 7-DoF action space. Across spatially diverse reach, orientation-intensive angled-reach, and multi-goal grasp-and-lift tasks, DUET-DINO consistently outperforms single-view and independent dual-view baselines, achieving 92% success on reach, 72.5% on angled-reach, and 60.0% on lift tasks. DUET-DINO is trained from scratch on DROID and RoboArena datasets and generalizes robustly under visual distribution shifts. We further show that while V-JEPA 2 wrist-view predictions underestimate visual dynamics induced by fine-grained actions, DINOv3 predictions better capture action-conditioned scene changes, leading to stronger downstream planning. The code and model checkpoints will be open-sourced. Project page: https://utn-air.github.io/DUET-DINO",
+      "authors": [
+        "Nisarga Nilavadi",
+        "Ralf Römer",
+        "Moritz Reuss",
+        "Michael Krawez",
+        "Tobias Jülg",
+        "Angela P. Schoellig",
+        "Rudolf Lioutikov",
+        "Wolfram Burgard"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-09-09T17:41:38+00:00",
+      "link": "https://arxiv.org/pdf/2609.10506v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "cross-view latent world model for model-based planning and control in manipulation",
+      "llm_evidence_cn": "跨视角潜在世界模型用于操作任务的基于模型规划控制",
+      "llm_evidence": "跨视角潜在世界模型用于操作任务的基于模型规划控制",
+      "canonical_evidence": "跨视角潜在世界模型用于操作任务的基于模型规划控制",
+      "llm_tldr_en": "DUET-DINO jointly learns action-conditioned latent predictions from side and wrist cameras via cross-view conditioning, enabling reliable latent planning over the full 7-DoF action space for manipulation.",
+      "llm_tldr_cn": "针对动作条件潜在世界模型对精细空间与旋转动作预测不可靠、难以支撑完整7自由度末端控制的问题，本文提出DUET-DINO同步跨视角潜在世界模型，通过跨视角条件化联合学习侧视与腕部相机的动作条件预测。该方法利用全局场景与夹爪中心互补信息，实现全7自由度动作空间上的潜在规划，并在空间多样到达、朝向密集斜向到达与多目标抓取提升任务上验证有效性。结果说明跨视角建模可提升世界模型在精细操作规划中的可靠性，为基于模型的操作控制提供新思路。",
+      "llm_tldr": "针对动作条件潜在世界模型对精细空间与旋转动作预测不可靠、难以支撑完整7自由度末端控制的问题，本文提出DUET-DINO同步跨视角潜在世界模型，通过跨视角条件化联合学习侧视与腕部相机的动作条件预测。该方法利用全局场景与夹爪中心互补信息，实现全7自由度动作空间上的潜在规划，并在空间多样到达、朝向密集斜向到达与多目标抓取提升任务上验证有效性。结果说明跨视角建模可提升世界模型在精细操作规划中的可靠性，为基于模型的操作控制提供新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.10308v1",
+      "source": "arxiv",
+      "title": "Deformable Object Manipulation under Partial Observability via Real-Time Full-Shape Estimation",
+      "abstract": "Manipulating deformable objects (DOs) is challenging due to their high-dimensional state space, underactuated dynamics, and partial observability. In this paper, we propose cRVAE, a lightweight conditional recurrent variational autoencoder that estimates the full DO state from only partial corner-node observations during inference. The resulting model is used as the forward model in a receding-horizon optimal control framework for obstacle-aware collaborative DO manipulation. In simulation on rope and fabric, cRVAE estimates the full DO state from the available corner-node measurements alone, matching the accuracy of a parameter-identified XPBD model. At inference it uses no physical parameters as model inputs and performs no online parameter identification. It also runs approximately 350 times faster on the rope and over 1500 times faster on the fabric per forward pass, keeping horizon-based planning within the 100 ms control budget where XPBD exceeds it already at short horizons. Full-shape estimation from corner sensing at in-loop speed is what makes the model deployable on hardware, which we demonstrate on a Unitree Go2 robot.",
+      "authors": [
+        "Kosar Behnia",
+        "Ville Kyrki",
+        "Gokhan Alcan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-09T15:17:30+00:00",
+      "link": "https://arxiv.org/pdf/2609.10308v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learned forward dynamics model used in receding-horizon control",
+      "llm_evidence_cn": "学习前向动力学模型用于滚动时域控制",
+      "llm_evidence": "学习前向动力学模型用于滚动时域控制",
+      "canonical_evidence": "学习前向动力学模型用于滚动时域控制",
+      "llm_tldr_en": "cRVAE, a lightweight conditional recurrent VAE, estimates full deformable-object state from partial corner observations and serves as the forward model in receding-horizon optimal control.",
+      "llm_tldr_cn": "形变物体操作因高维状态、欠驱动动力学和部分可观测性而十分困难。本文提出轻量条件循环变分自编码器cRVAE，仅从部分角点观测估计物体完整形状，并将其作为滚动时域最优控制的前向模型。在绳索与布料的仿真中，cRVAE仅凭角点测量即可达到与参数辨识XPBD模型相当的估计精度，且推理时无需物理参数。该工作为部分可观测下的基于模型形变物体操作提供了实时状态估计方案。",
+      "llm_tldr": "形变物体操作因高维状态、欠驱动动力学和部分可观测性而十分困难。本文提出轻量条件循环变分自编码器cRVAE，仅从部分角点观测估计物体完整形状，并将其作为滚动时域最优控制的前向模型。在绳索与布料的仿真中，cRVAE仅凭角点测量即可达到与参数辨识XPBD模型相当的估计精度，且推理时无需物理参数。该工作为部分可观测下的基于模型形变物体操作提供了实时状态估计方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

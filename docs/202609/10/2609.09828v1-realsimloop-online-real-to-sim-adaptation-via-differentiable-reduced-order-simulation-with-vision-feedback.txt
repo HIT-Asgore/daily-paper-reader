@@ -1,0 +1,545 @@
+Title: RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback
+
+URL Source: https://arxiv.org/pdf/2609.09828v1
+
+Published Time: Thu, 10 Sep 2026 00:56:27 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+# RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback 
+
+# ZHIHAO CEN, South China University of Technology, China 
+
+# CHUHUA XIAN ∗, South China University of Technology, China 
+
+# HAILIN SUN, The Chinese University of Hong Kong, China 
+
+# YULIANG LIUFU, The Chinese University of Hong Kong, China 
+
+# ZHEN ZHANG, The Chinese University of Hong Kong, China 
+
+# XIANGYU CHU, The Chinese University of Hong Kong, China 
+
+# HONGMIN CAI, South China University of Technology, China 
+
+# YUNBO ZHANG, Hong Kong Institute of Science & Innovation, CAS, Hong Kong, China 
+
+# GUOXIN FANG ∗, The Chinese University of Hong Kong, China Frame t Frame t-w+1 (a) (c) (d) Frame t - 1 
+
+Frame t-w+2 Frame t -1 Frame t (b) Real Physical Interaction 
+
+> FullSpace SubSpace
+
+Forward Backward 3DGS Vision Based Marker Based 
+
+Time Integration with Diff. Reduced-Order Sim. Multi-view Vision Feedback Computation Time (s) Sim-to-Real Error (mm) von Mises stress 0 kPa 100 kPa 
+
+Avg. Err. = 4.6 mm Avg. Err. = 7.1 mm 
+
+Fig. 1. We propose an online Real-to-Sim method to reduce the reality gap for deformable object manipulation. (a) In our pipeline, real-to-sim gap is eliminated by minimizing the difference between physical vision feedback and simulation-based rendered images within a sliding time window {𝑡 − 𝑤 + 1, . . . , 𝑡 }. In this way, we close the sim-real loop by integrating scene representation with 3D-GS, (b) and realize downstream applications like physical stress construction in arbitrary new synthesized views. (c) Neural reduced-order differentiable simulation is adopted, which significantly accelerates computation and achieves quasi-real-time performance, delivering 6.23x speedup over full-space methods. (d) Our method generalizes to physical inputs from conventional marker-based motion capture systems, whereas the vision-based solution performs better. 
+
+> ∗
+
+Corresponding authors. Authors’ Contact Information: Zhihao Cen, czh1224415633@gmail.com, South China University of Technology, Guangzhou, China; Chuhua Xian, chhxian@scut.edu.cn, South China University of Technology, Guangzhou, China; Hailin Sun, hlsun@mae. cuhk.edu.hk, The Chinese University of Hong Kong, Hong Kong SAR, China; Yuliang Li-ufu, yuliangliufu@cuhk.edu.hk, The Chinese University of Hong Kong, Hong Kong SAR, China; Zhen Zhang, zhzhen@link.cuhk.edu.hk, The Chinese University of Hong Kong, Hong Kong SAR, China; Xiangyu Chu, xiangyuchu@cuhk.edu.hk, The Chinese Univer-sity of Hong Kong, Hong Kong SAR, China; Hongmin Cai, hmcai@scut.edu.cn, South China University of Technology, Guangzhou, China; Yunbo Zhang, yunbozhang@hkust-gz.edu.cn, Hong Kong Institute of Science & Innovation, CAS, Hong Kong, Hong Kong, China; Guoxin Fang, guoxinfang@cuhk.edu.hk, The Chinese University of Hong Kong, Hong Kong SAR, China. 
+
+This work is licensed under a Creative Commons Attribution 4.0 International License. 
+
+Real-world observations of deformable objects are often sparse or surface-level, while downstream tasks require hidden physical quantities such as internal deformation, stress fields, and interaction forces. Physics-based simulation can recover these quantities, but online real-to-sim adaptation remains challenging due to costly full-space optimization, limited feed-back, and time-varying material properties. To address these challenges, we propose RealSimLoop, a differentiable framework for online real-to-sim adaptation using vision data as physical feedback. Our approach achieves quasi-real-time performance by executing differentiable simulation within a reduced-order neural subspace, drastically accelerating the optimization 
+
+SA Conference Papers ’26, Kuala Lumpur, Malaysia 
+
+© 2026 Copyright held by the owner/author(s). ACM ISBN 979-8-4007-2842-6/2026/12 https://doi.org/10.1145/3829340.3842376 SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. arXiv:2609.09828v1 [cs.GR] 9 Sep 2026 2 • Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang         
+
+> loop. We couple this efficient dynamics model with differentiable rendering, enabling direct gradient backpropagation that leverages high-fidelity pixel data to refine physical parameters such as material stiffness. Furthermore, by employing a sliding-window objective function, RealSimLoop enables robust online adaptation, allowing the system to track time-varying material properties and effectively bridge the real-to-sim gap arising from model reduction or unmodeled dynamics. Extensive experiments demonstrate that our method outperforms conventional offline methods, and we validate the framework’s versatility in downstream applications, including external force prediction and 3D stress field reconstruction with novel view synthesis. CCS Concepts: • Computing methodologies →Shape modeling ; • Ap-plied computing →Engineering .Additional Key Words and Phrases: Real-to-Sim Adaptation, Reduced-order simulation, Deformable model.
+> ACM Reference Format:
+> Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang. 2026. RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback. In SIGGRAPH Asia 2026 Conference Papers (SA Confer-ence Papers ’26), December 01–04, 2026, Kuala Lumpur, Malaysia. ACM, New York, NY, USA, 12 pages. https://doi.org/10.1145/3829340.3842376
+
+1 Introduction 
+
+Bridging the reality gap between the physical world and digital simulation is a cornerstone of digital twin technologies, enabling a wide range of applications, including robotic manipulation of de-formable objects (Fig. 1), multi-material structural analysis (Fig. 3), heat-sensitive stiffness tracking (Fig. 6), and structural health moni-toring (Fig. 9). In these applications, real-world observations are often limited to sparse or surface-level geometric measurements cap-tured by motion capture or vision systems. Physics-based simulation can complement such observations by inferring hidden physical quantities, such as internal deformation, stress distribution, and interaction forces [Gjoka et al. 2024; Kim et al. 2017]. This makes real-to-sim adaptation essential for keeping simulations aligned with real-world physical behavior [Nealen et al. 2006]. However, achieving this level of physical understanding remains challenging. Conventional Real-to-Sim adaptation methods typi-cally conduct an offline solution [Cai et al. 2024]: collecting a set of pre-recorded datasets, then fitting simulation parameters using para-metric material models (e.g., linear elasticity, Saint Venant-Kirchhoff (StVK) model [Barbič and James 2005], Neo-Hookean model [Smith et al. 2018], etc.). However, this may introduce significant modeling errors - particularly for hyperelastic materials, as idealized constitu-tive laws rarely match real-world complex laws perfectly. On the other hand, these offline approaches can suffer from open-loop drift, resulting in a lack of adaptability to time-varying properties or sud-den environmental changes [Hahn et al. 2019] (example also shown in Fig. 8 and discussed in Sec. 5.2). Recently, data-driven approaches based on vision systems have enabled online scene reconstruction [Wu et al. 2024]. Although these advances enable the effective recovery of time-varying sur-face geometry from video inputs, they suffer from a fundamental disconnect with physical reality [Wang et al. 2025]. Critical mechan-ical information for downstream applications, such as the prediction of internal stress fields, force boundary conditions, and material properties (see the application demonstrated in Sec. 5.2), cannot be inferred from these approaches. 
+
+1.1 Our method and contribution 
+
+In this work, we introduce RealSimLoop , a novel quasi-real-time 
+
+online real-to-sim adaptation framework that continuously synchro-nizes a differentiable physical simulator with vision feedback. Our pipeline is driven by efficient scene representation (e.g., 3D Gaussian Splatting [Kerbl et al. 2023]), and coupled with a time window -based objective function that allows us to capture dynamic variations in material properties over time to reduce the accumulated sim-to-real gap [Liu et al. 2021]. To bridge the gap between observed geometry and underlying physical parameters, we employ a differentiable simulation engine capable of highly efficient forward and back-ward steps. Our system also enables seamless online operation by integrating a neural-subspace reduced-order model [Fulton et al. 2019], which accelerates high-fidelity soft-body simulation. While such models are prone to approximation errors [Shen et al. 2021], our framework leverages continuous visual feedback to dynami-cally compensate for these inaccuracies, therefore maintaining the efficiency to eliminate the real-to-sim gap. 
+
+RealSimLoop addresses the system-level challenge of continuously maintaining physically meaningful deformable-object simulations by integrating visual feedback, efficient differentiable simulation, and online material adaptation under practical computational con-straints. Our technical contributions are summarized as follows: 
+
+• We propose a sliding-window optimization approach for on-line real-to-sim adaptation, reducing open-loop drift and aligning simulation with evolving real-world behavior. 
+
+• We employ an efficient neural-based differentiable simulator that accelerates forward simulation and gradient backpropa-gation, making online gradient-based real-to-sim adaptation computationally feasible. 
+
+• We integrate differentiable simulation with differentiable ren-dering to incorporate vision-based physical feedback, en-abling closed-loop adaptation from image observations. We validate the proposed method in different virtual and physical settings. Compared with offline methods [Cai et al. 2024; Hahn et al. 2019] and purely vision-based pipelines [Wang et al. 2025; Wu et al. 2024], our approach continuously closes the real-to-sim gap while preserving physical consistency. We showcase practical applications in robotic manipulation, force estimation, and structural analysis. The source code of this work will be released upon acceptance. 
+
+2 Related Work 
+
+We review literature on differentiable simulation and Real-to-Sim adaptation for both graphics and robotics applications. In addition, we discuss recent advances in neural reduced-order methods for deformable simulation. 
+
+Real-to-sim adaptation from physical observations. Aligning physics-based simulation with real-world observations is essential for digital twins, robotic manipulation, and physical state reconstruction. Ex-isting solutions often rely on expensive data acquisition devices, such as motion capture systems [Chen et al. 2017; Hahn et al. 2019] and specialized probing or force-sensing setups [Bickel et al. 2009;     
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback •3Diff. Rendering Diff. Reduced-order Simulation
+> Subspace
+> 𝜙 𝜙 −1
+> Full-space Full-space
+> Geometry Mapping
+> Update Time-varying Material Property 𝜽
+> Timeline
+
+Vision Feedback   
+
+> Update GS Orientation
+> ...... ......
+> 𝒙 𝑔 𝑡 𝒑 1
+> 𝒑 2𝒑 3
+> 𝒑 4
+> Backward Gradient
+> Loss Evaluation
+> Current window
+
+# [ ]              
+
+> Total Online R2S Loss
+> Fig. 2. Pipeline for online real-to-sim adaptation with vision-based feedback (i.e., sparse-view images 𝐼 real obtained from cameras). The forward process simulates deformation using a reduced-order model, maps the geometry to 3D Gaussians, and renders the image 𝐼 render through differentiable rendering to evaluate Ls2r by updating time-varying material properties. The backward process back-propagates loss gradients to update material properties 𝜽 and Gaussian orientations within a sliding window (i.e., from 𝑇 𝑒 -w+1 to 𝑇 𝑒 ), supporting gradient-based optimization to efficiently eliminate the real-sim difference.
+
+Pai et al. 2001, 2018], to capture the physical world and calibrate sim-ulations. Image-based observations offer a scalable alternative: prior work estimates cloth material properties from images [Bouman et al. 2013; Davis et al. 2015; Yang et al. 2017], while recent differentiable rendering methods enable image-level losses to optimize simula-tion states and physical parameters [Cai et al. 2024; Jatavallabhula et al. 2021; Rho et al. 2025]. Recent works [Jiang et al. 2025; Li et al. 2023; Modi et al. 2024; Zhong et al. 2024] have also invited vision data to guide the real-to-sim adaptation with deformable objects. Nevertheless, most methods remain offline , i.e., fitting a single set of parameters to a pre-collected sequence, and therefore struggle to track evolving physical properties during dynamic interactions. A major barrier to online real-to-sim adaptation is the high com-putational cost of repeatedly simulating and differentiating physical dynamics. Although recent methods incorporate the Material Point Method (MPM) [Hu et al. 2018; Xie et al. 2024], they often remain too expensive for real-time use. Similarly, Vid2Sim [Chen et al. 2025] employs a mesh-free simulation model to reduce complexity but remains unsuitable for online adaptation over long sequences. To address this, we introduce a sliding-window adaptation objective integrated with reduced-order differentiable simulation, improving computational efficiency while enabling robust online tracking of evolving physical properties. 
+
+Differentiable and Reduced-Order Simulation. Differentiable simula-tion has become a vital research direction in the computer graphics community, enabling the computation of gradients for simulation outputs w.r.t. physical parameters and initial states [Degrave et al. 2019; Huang et al. 2024]. This capability facilitates gradient-based optimization for inverse problems, driving applications in rigid body control [Xu et al. 2021] and cloth manipulation [Li et al. 2022]. In particular, it has been widely introduced for soft body simula-tion [Du et al. 2021; Hu et al. 2019], where Hahn et al. [2019] have demonstrated its ability for offline real-to-sim transfer. On the other hand, Reduced-order simulation has emerged as a key direction for accelerating physics by mapping high-dimensional systems to low-dimensional subspaces [Chang et al. 2023; Sharp et al. 2023]. While early linear methods like modal analysis [James and Pai 2002; Pentland and Williams 1989] and PCA [Krysl et al. 2001] require large subspaces for nonlinear deformations, recent neural networks enable nonlinear mappings with superior representation capabilities [Fulton et al. 2019]. Although techniques like Lipschitz loss [Lyu et al. 2024] or linear corrections [Shen et al. 2021] opti-mize speed, they rely on supervised data; conversely, unsupervised alternatives [Sharp et al. 2023; Wang et al. 2024] can suffer from physical drift. In this work, we leverage the differentiable reduced-order simulator with vision feedback to eliminate the real-to-sim gap, utilizing the neural-based nonlinear mapping from [Fulton et al. 2019] to capture complex deformations. 
+
+3 Preliminary and Overview 
+
+In this section, we first provide preliminary knowledge on sim-ulation and the formulation of the online real-to-sim adaptation problem. Then, we give a short discussion followed by an overview of our pipeline (illustrated in Fig. 2). 
+
+3.1 Preliminary of Simulation and Problem of Real-to-Sim 
+
+Consider a deformable object discretized by a tetrahedral mesh M
+
+consisting of 𝑛 vertices and 𝑚 elements. The system configuration of the object at time 𝑡 is represented by a flattened vector 𝒙 𝑡 ∈ R3𝑛 ,obtained by stacking the positions of all vertices. For a dynamic system using implicit time integration [Baraff and Witkin 2023], the   
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. 4•Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang
+
+forward deformable simulation can be formulated as: 
+
+𝒓 (𝒙 𝑡 , 𝒚 𝑡 , 𝜽 ) := 1
+
+Δ𝑡 2 𝑴 (𝒙 𝑡 − 𝒚 𝑡 ) − 𝒇 (𝒙 𝑡 , 𝜽 ) = 0, (1) where Δ𝑡 is the timestep, 𝑴 is the lumped mass matrix, 𝜽 = [𝐸, 𝑣 ]
+
+is the material parameters representing Young’s modulus and Pois-son’s ratio respectively, 𝒚 𝑡 := 𝒙 𝑡 −1 +Δ𝑡 𝒗 𝑡 −1, 𝒗 𝑡 −1 = (𝒙 𝑡 −1 −𝒙 𝑡 −2)/ Δ𝑡 ,
+
+𝒇 (𝒙 𝑡 , 𝜽 ) denotes the total forces including elastic internal force, gravity, and interaction force. Consider a sequence of timesteps 
+
+𝑡 = 0, 1, · · · ,𝑇 , forward simulation solves the nonlinear system: 
+
+𝒓 (𝒙 𝑡 , 𝒚 𝑡 , 𝜽 ) = 0, ∀𝑡 ∈ { 0, . . . ,𝑇 }, (2) As 𝒚 𝑡 is a function of 𝒙 𝑡 −1 and 𝒗 𝑡 −1, and 𝒗 𝑡 −1 is either a boundary condition or a function of 𝒙 𝑡 −1 and 𝒙 𝑡 −2, we can stack the DoF vectors of all timesteps as a vector 𝑿 ∈ R𝑇 ×3×𝑛 . And the residual functions of the nonlinear system can be also stacked as a single function 𝑹 (𝑿 , 𝜽 ). Forward simulation then solves 𝑿 such that the state equation 𝑹 (𝑿 , 𝜽 ) = 0 holds. To eliminate the real-to-sim gap, an objective function Lr2s that describes the difference between the simulation result 𝑿 and the observation (e.g., motion capture systems, multi-view RGB feed-ings) of the real-world experiment is introduced. In this work, we try to correct the reality gap by finding empirically the best mate-rial parameters 𝜽 to minimize the discrepancy between simulation and real-world observation, which can be written as a constrained optimization problem: argmin 
+
+> 𝜽
+
+Lr2s (𝑿 ) s.t. 𝑹 (𝑿 , 𝜽 ) = 0. (3) which is often solved by gradient-based optimization methods -details to be discussed in Sec. 4.3. 
+
+3.2 Short Discussion and Overview 
+
+In conventional offline methods, the objective Lr2s is typically de-fined as the discrepancy between simulated trajectories and ground-truth geometry data collected via a motion capture system [Hahn et al. 2019] as: 
+
+Loff r2s −𝑚𝑎𝑟𝑘 (𝜽 ) =
+
+∫ 𝑇 𝑡 =0
+
+> 𝑘
+
+∑︁ 
+
+> 𝑖 =1
+
+∥p𝑖 𝑠𝑖𝑚 (𝜽 ) − p𝑖 𝑟𝑒𝑎𝑙 ∥2𝑑𝑡, (4) which aggregates sim-real error over time 𝑇 at marker points p ∈ M .While effective for small strains, the accuracy of offline methods will collapse at large elongations (>100%), even with complex material models such as the Yeoh model [Yeoh 1993] (see Fig.12 and Sec.5.3 for a detailed discussion). Meanwhile, constant material parame-ters (i.e., 𝜽 kept unchanged across the entire time domain) cannot compensate for the error accumulation inherent in long-horizon forward simulations. To handle this issue and greatly improve the accuracy of simula-tion, we propose the online pipeline (as illustrated in Fig. 2), where the reality gap accumulation issue is handled through a window -based real-to-sim objective with the update of material properties through time steps, which minimizes the vision-based loss accu-mulated over the current window {𝑇 𝑒 − 𝑤 + 1, . . . ,𝑇 𝑒 } to update the material properties 𝜽 . Here 𝑇 𝑒 is the current time step, 𝑤 is the window size. To ensure the speed of online update, neural reduced-order solu-tion is invited to greatly improve the simulation speed, where we introduce a subspace mapping 𝜙 obtained by data-driven method into the time-integration of forward simulation (we refer [Fulton et al. 2019] for a comprehensive description of the neural reduced order simulations). Together with time-varying material properties 
+
+𝜽 , the time integration of forward simulation Eq. 1 is reformulated as 
+
+𝑱 (𝒛 𝑡 )⊤𝒓 (𝒛 𝑡 , 𝒚 𝑡 , 𝜽 ) := 𝑱 (𝒛 𝑡 )⊤  1
+
+Δ𝑡 2 𝑴  𝜙 (𝒛 𝑡 ) − 𝒚 𝑡  − 𝒇  𝜙 (𝒛 𝑡 ), 𝜽  = 0
+
+(5) where the subspace mapping function 𝜙 : R𝑟 → R3𝑛 maps the low-dimensional subspace state 𝑧 ∈ R𝑟 to the high-dimensional full space (i.e., making 𝒙 = 𝜙 (𝒛 )), 𝑱 (𝒛 𝑡 ) = 𝜕 𝒙 𝑡  
+
+> 𝜕 𝒛 𝑡
+
+= 𝜕𝜙 𝜕 𝒛 ∈ R3𝑛 ×𝑟 is the Jacobian of the neural subspace mapping, 𝒚 𝑡 := 𝜙 (𝒛 𝑡 −1) + Δ𝑡 𝒗 𝑡 −1
+
+and 𝒗 𝑡 −1 = (𝜙 (𝒛 𝑡 −1) − 𝜙 (𝒛 𝑡 −2))/ Δ𝑡 . Similarly, we give the definition of the nonlinear system in the reduced subspace for the window time 𝑤 :
+
+𝑱 (𝒛 𝑡 )⊤𝒓 (𝒛 𝑡 , 𝒚 𝑡 , 𝜽 ) = 0, ∀𝑡 ∈ { 𝑇 𝑒 − 𝑤 + 1, . . . ,𝑇 𝑒 }, (6) Further, the stacked DoF vectors across all timesteps can be rewritten as 𝒁 ∈ R𝑤 ×𝑟 and the residual functions of the nonlinear system as the constraint for online real-to-sim adaptation problem can also be formulated as 𝑹 (𝒁 , 𝜽 ) = 0 (similar to the constraint in Eq. 3). On the other hand, unlike conventional approaches that rely solely on geometric information (i.e., marker positions captured by motion capture system), our framework leverages high-density visual data to capture complex deformation patterns and highly dynamic systems (see comparisons in Sec. 5.2). To achieve high-efficiency geometry-to-image mapping, we integrate 3D Gaussian Splatting (3DGS) with differentiable rendering, thereby defining a differentiable online objective with physical vision feedback to eliminate the reality gap. As illustrated by the dashed line in Fig. 2, the differentiability of both simulation and rendering provides effi-cient gradient evaluation, allowing for robust optimization of the online real-to-sim adaptation and supporting downstream practical applications. 
+
+4 Method and Details 
+
+We now detail the method applied to realize online sim-to-real adap-tation with vision-feedback, starting from 3DGS-based mapping for an online window-based objective, then give the differentiable form of the reduced-order simulation to support gradient-based optimization. 
+
+4.1 GS-Based Vision-Geometry Mapping 
+
+In our pipeline, Gaussian primitives at timestep 𝑡 is defined as 
+
+G𝑡 = {𝒙 𝑡 𝑔 , Σ𝑡 𝑔 , 𝒄 𝑡 𝑔 , 𝜎 𝑡 𝑔 }. For these Gaussian attributes, 𝒙 𝑔 , Σ𝑔 , 𝒄 𝑔 , and 𝜎 𝑔 
+
+denote the center position, covariance matrix, spherical harmonic coefficients, and opacity, respectively. To establish a geometric map-ping between the Gaussian points and the mesh, we express each Gaussian’s position as a barycentric interpolation of its enclosing tetrahedron’s vertices (i.e., 𝒙 𝑔 = Í4 
+
+> 𝑖 =1
+
+𝑤 𝑖 𝒑 𝑖 , 𝑠.𝑡 ., Í4 
+
+> 𝑖 =1
+
+𝑤 𝑖 = 1, where 
+
+𝒑 𝑖 denotes the coordinate of the i-th vertex.). Here we denote this geometry mapping function 𝐵 (·) w.r.t. reduced-order simulation’s latent space coordinates 𝒛 𝑡 (defined in Eq. 5) as 𝒙 𝑡 𝑔 = 𝐵 (𝜙 (𝒛 𝑡 )) .  
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback •5
+
+It is worth noting that during each online iteration, the Gaussian center positions 𝒙 𝑡 𝑔 are updated synchronously with the deformed mesh M ( 𝑡 ) to ensure strict spatial alignment between the rendering primitives and the underlying geometry (see middle part of Fig. 2 for illustration). Since the motion of the tetrahedral mesh is governed by a defined physical model, the appearance variations obtained through GS rendering inherently adhere to these physical dynamics. This also showcases the significance of physical simulation, which mitigates artifacts caused by sparse views. Furthermore, the inter-polation between positions is differentiable, supporting the chain rule for gradient propagation as discussed in the following section. 
+
+4.2 Window-based Online R2S Adaptation objectives 
+
+For online real-to-sim adaptation, a key challenge lies in balancing the accumulation of historical data and the need for immediate re-sponsiveness. Drawing inspiration from offline methods — where the dataset length encompasses the entire interaction sequence — we introduce the concept of a window to formulate the online ob-jective. In this context, a window represents a rolling buffer of re-cent observations. Unlike the offline setting, where the window effectively spans the full history, the online window size is deliber-ately constrained. This constraint serves a dual purpose: it remains large enough to capture material characteristics and temporal dy-namics, yet small enough to ensure computational efficiency for real-time performance and accommodate material variations. Conse-quently, the windowed differentiable-simulation objective function with vision-based input data is defined as: 
+
+Lonline r2s −𝑣𝑖𝑠𝑖𝑜𝑛 =∑︁    
+
+> 𝑡 ∈ { 𝑇 𝑒 −𝑤 +1,...,𝑇 𝑒 }
+> 𝐾
+
+∑︁ 
+
+> 𝑐 =1
+
+|R (G 𝑡 ) − 𝐼 𝑐 𝑟𝑒𝑎𝑙 | (7) where R (·) is the differentiable renderer based on 3DGS [Kerbl et al. 2023], and {𝐼 𝑐 𝑟𝑒𝑎𝑙 }𝑐 =1,2,...𝐾 (K is the number of views) are the cap-tured images. By minimizing the online-updated objective function 
+
+Lonline r2s −𝑣𝑖𝑠𝑖𝑜𝑛 , the deviation between simulation results and observa-tion data over the window time horizon can be eliminated with updated material properties in the simulation. It is worth noting that a smaller window enables faster parameter updates but is more susceptible to noise, while a larger window leads to slower updates but yields more stable and accurate results - detailed results and discussion in Sec. 5.3. 
+
+4.3 Gradient-based Optimization 
+
+To achieve online real-to-sim adaptation, we aim to minimize the window-based objective function Lonline (Eq. 7) with respect to the material parameters 𝜽 and Gaussian attributes G. Mathematically, we aim to minimize the vision-based loss accumulated over the current window {𝑇 𝑒 −𝑤 +1, . . . ,𝑇 𝑒 } to update the material properties of 𝜃 , which follows the formulation of Eq. 3: argmin 
+
+> 𝜽 ,G𝑡
+
+Lonline r2s-vision (G 𝑡 ) s.t. 𝑹 (𝒁 , 𝜽 ) = 0, (8) where the constraint represents the discrete state equations of the reduced-order simulation (derived from Eq. 5). While the gradients for Gaussian attributes can be computed directly via the differentiable rasterizer, computing the gradient for material parameters, 𝑑 L/ 𝑑 𝜽 , is non-trivial due to the complex (a)       
+
+> Forward Backward 3DGS
+> Computational Time (s) Ground Truth Matched Sim. Result Stress Reconstruction (synthesized views by GS)
+> FullSpace SubSpace
+> (b) E (MPa)
+> Frame (c)
+> Material 0 Material 1
+> Fig. 3. Online real-to-sim results for a multi-material cable-driven de-formable structure. (a) With vision feedback, the simulation results match the ground truth, enabling downstream applications such as stress recon-struction. (b) Convergence curves for the Young’s modulus of two silicone rubber materials. (c) Comparison with computation time showcases that our subspace solution achieves a 7.56 ×speedup, ensuring online efficiency.
+
+dependency of the simulation state on 𝜽 . We solve this constrained optimization problem using the adjoint method, which propagates gradients backward through time without explicitly forming the dense Jacobian of the simulation trajectory w.r.t 𝜽 and previous states, while efficiently exploiting system sparsity. 
+
+4.3.1 Vision-to-State Gradient Backpropagation. First, we compute the gradient of the loss with respect to the reduced simulation state 
+
+𝒛 𝑡 at each time step 𝑡 within the window. Applying the chain rule through the differentiable rendering and the subspace mapping we have 
+
+𝜕 L
+
+𝜕 𝒛 𝑡 = 𝜕 L
+
+𝜕𝐼 𝑡 
+
+𝜕𝐼 𝑡 
+
+𝜕 G𝑡 
+
+𝜕 G𝑡 
+
+𝜕 𝒙 𝑡 · 𝑱 (𝒛 𝑡 ), (9) The first two term aggregates gradients from the pixel level to the GS geometry, while the third term projects these geometric gradients into the reduced simulation subspace. 
+
+4.3.2 Adjoint Method for Reduced-Order Physics. With the state gradients 𝜕 L 
+
+> 𝜕 𝒛 𝑡
+
+available, we must propagate them to the material parameters 𝜽 . The relationship between 𝒛 and 𝜽 is governed by physics equilibrium. Specifically, we define the physics residual as 
+
+𝑱 (𝒛 𝑡 )⊤𝒓 (𝒛 𝑡 , 𝒚 𝑡 , 𝜽 ) (see Eq. 5). We seek 𝒛 𝑡 such that the residual is orthogonal to the tangent space of the neural subspace mapping: 
+
+𝒉 (𝒛 𝑡 , 𝒛 𝑡 −1, 𝒛 𝑡 −2, 𝜽 ) := 𝑱 (𝒛 𝑡 )⊤𝒓 (𝒛 𝑡 , 𝒚 𝑡 , 𝜽 ) = 0. (10) To compute the total derivative 𝑑 L/ 𝑑 𝜽 , we introduce adjoint vari-ables 𝝀 𝑡 ∈ R𝑟 . The adjoint variables are computed by solving the following linear system backward in time (from 𝑡 = 𝑡 𝑒 down to 𝑡 𝑠 ):  
+
+> 𝑡 +2
+
+∑︁ 
+
+> 𝑘 =𝑡
+
+ 𝜕 𝒉 𝑘 
+
+𝜕 𝒛 𝑡 
+
+⊤
+
+𝝀 𝑘 = − 𝜕 L
+
+𝜕 𝒛 𝑡 . (11) The matrix on the left-hand side is the transpose of the reduced tangent stiffness matrix. Substituting the residual definition, this is          
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. 6•Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang Stress Analysis Sim Result Real Scene
+> CD:8.24mm(10.42mm)
+> CD:7.64mm(11.72mm)
+> CD:7.86mm(12.54mm)
+> 020
+> Vertex Dis To Scanned PCD(mm)
+> von Mises stress
+> 0 kPa 100 kPa
+> Scanned PCD Dis To Mesh(mm)
+> Count
+> With RealToSim
+> Without RealToSim
+> Target 1
+> Target 2
+> Target 3
+> Count Count
+> (a) (b) (c) (d)
+
+Fig. 4. Result for soft bar manipulation by dual robot arms. (a) After performing online real-to-sim adaptation, the control strategy optimized in simulation is directly applied to the real robotic system without additional tuning. (b) Corresponding simulation results after adaptation, colored by the vertex-to-scan distance. (c) Quantitative comparison between the simulated mesh and the ground-truth point cloud captured by a 3D scanner, demonstrating reduced geometric discrepancy after real-to-sim adaptation. (d) The adapted simulation with vision-based feedback further enables downstream physical analysis of von Mises stress reconstruction. 
+
+efficiently computed as: 
+
+𝜕 𝒉 𝑡 
+
+𝜕 𝒛 𝑡 = 𝜕 𝑱 (𝒛 𝑡 )⊤
+
+𝜕 𝒛 𝑡 𝒓 𝑡 + 𝑱 (𝒛 𝑡 )⊤ 𝜕 𝒓 𝑡 
+
+𝜕 𝒛 𝑡 ,𝜕 𝒉 𝑡 +1
+
+𝜕 𝒛 𝑡 = 𝑱 (𝒛 𝑡 +1)⊤ 𝜕 𝒓 𝑡 +1
+
+𝜕 𝒛 𝑡 , 𝜕 𝒉 𝑡 +2
+
+𝜕 𝒛 𝑡 = 𝑱 (𝒛 𝑡 +2)⊤ 𝜕 𝒓 𝑡 +2
+
+𝜕 𝒛 𝑡 .
+
+(12) where 𝜕 𝑱 /𝜕 𝒛 𝑡 corresponds to the Hessian of the nonlinear mapping 
+
+𝜙 . Finally, once the adjoint variables 𝝀 are computed for the entire window, the gradients with respect to the material parameters are accumulated through the controlled window :
+
+𝑑 L
+
+𝑑 𝜽 =
+
+> 𝑇 𝑒
+
+∑︁  
+
+> 𝑡 =𝑇 𝑒 −𝑤 +1
+
+𝝀 ⊤
+
+> 𝑡
+
+ 𝜕 𝒉 𝑡 
+
+𝜕 𝜽 
+
+
+
+=
+
+> 𝑇 𝑒
+
+∑︁  
+
+> 𝑡 =𝑇 𝑒 −𝑤 +1
+
+𝝀 ⊤
+
+> 𝑡
+
+
+
+−𝑱 (𝒛 𝑡 )⊤ 𝜕 𝒇 (𝒛 𝑡 , 𝜽 )
+
+𝜕 𝜽 
+
+
+
+.
+
+(13) The resulting gradients 𝑑 L 
+
+> 𝑑𝜃
+
+accurately capture how changes in ma-terial properties propagate through the reduced subspace together with vision feedback, enabling the optimizer with gradient descent to iteratively refine the physical parameters 𝜃 at the end of each sliding window, closing the loop between visual observation and physical parameters. 
+
+5 Results and Discussion 
+
+This section details the implementation and results of our online 
+
+real-to-sim adaptation framework using vision feedback. We refer to the supplemental video for detailed results. 
+
+5.1 Implementation and Details of Training 
+
+We implement the differentiable reduced-order simulation module in JAX [Bradbury et al. 2018] and use the stable neo-Hookean [Smith et al. 2018] material model to define the elastic energy, while the 3DGS module is implemented in PyTorch [Paszke et al. 2017]. For processing physically collected vision data, SAM 2 [Ravi et al. 2024] is used. During simulation, the subspace Hessian matrix is ob-tained via automatic differentiation. Additionally, we apply the data-generation procedure by combining different material parame-ters with randomly generated interaction sequences, allowing the learned subspace to cover diverse soft-body deformations. The ma-terial properties (e.g., 𝐸 and 𝜈 ), are linearly sampled within the range of physical prior for each frame to create the dataset. In this work, all training and experiments are conducted on an NVIDIA RTX 4090 GPU. The experiments presented in this chapter adopt the AutoEncoder (AE)-based subspace network ar-chitecture proposed in [Fulton et al. 2019]. The comparison with other reduced-order methods (e.g., linear subspace-based represen-tations [Benchekroun et al. 2023; Wang et al. 2015]) is presented in Sec.5.3.1. The encoder and decoder of the AE both consist of fully connected hidden layers with a size of 2 × 200, and the learning rate is set to 1 × 10 −3. The corresponding subspace dimensions are reported in the table 1 (ablation study on the selection is dis-cussed in Sec. 5.3.2.) To construct the dataset for subspace training, we generate data by combining different material configurations with randomly synthesized interaction sequences. This strategy aims to ensure that the learned subspace adequately covers diverse deformation patterns arising during online state inference. 
+
+5.2 Computation and Physical Results 
+
+We evaluated the framework across diverse physical scenarios to demonstrate robustness; Tests involving deformable object interac-tions highlight the method’s efficiency. While the backward pass                                                                                       
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback •7
+> Table 1. Parameters and results of experiments evaluated in this work. 𝑛 : number of full-space DOFs; 𝑟 : the subspace dimension used; 𝑤 : the window size used; 𝑐 : number of camera views for SI; 𝑇 𝑟 : average computational time in subspace(s) per frame; 𝑇 𝑓 : average computational time in fullspace(s) per frame.
+> Model Figure 𝑛 𝑟 𝑤 𝑐 Comp. time for online SI per frame (s) Accel. Rate forward backward 3DGS total 𝑇 𝑟 total 𝑇 𝑓
+> Material Bar Fig. 1 10K 30 340.17 0.14 0.22 0.53 3.30 6.23x Eiffel tower Fig. 3, 8 12K 10 320.06 0.07 0.05 0.18 1.36 7.56x Dinosaur Fig. 4, 7 15K 100 580.24 0.32 0.45 1.01 7.77 7.69x Gingerbread Joy Fig. 5, 6 3.6K 80 15 10.19 0.17 0.22 0.58 1.46 2.52x High Speed Ball †Fig. 7 3.4K -20 1----1.75 -
+> †For this highly dynamic case, the reduced-order method failed to converge, and only full-space data is reported here. Detailed discussion see Sec. 5.3. Frame
+> Force1 (N)
+> (a)
+> (b)
+> Target3 Target4
+> C1
+> C2
+> C3
+> Predicted force
+> Measured force
+> Target2 Target3 Target4 Target5
+> Target1
+> Target1
+> Force2 (N) Force3 (N)
+> Fig. 5. (a) Additional real-to-sim adaptation result for cable-driven inter-action with the multi-material Eiffel Tower model. (b) With the help of simulation, we can predict the cable force based on stress field reconstruc-tion, which matches the ground-truth data captured by the force sensor, as shown in the zoom-in view.
+
+typically dominates computation time due to high-dimensional Jaco-bian and Hessian evaluations, our reduced order model significantly accelerates this step, achieving a 2 .52 − 7.69 × speedup (detailed breakdown of the computational cost can be found in Table 1.) The first case we tested is deformable object manipulation by a dual robot arm. As shown in Fig. 1, positional constraints are applied at both ends of a square-shaped bar made with silicon rubber (mate-rial: Smooth-on Dragon Skin 10A). This setup induces pronounced twisting and stretching deformations under the motion of two UR5e robot arms. With the help of the vision feedback from 4 cameras viewed in a stack of window time, the real-to-sim gap is reduced by dynamically updating the material properties. Especially with the reduced-order method, computation time is reduced by 6.23 times (i.e., from 3.30 s to 0.53 s per frame) and the reconstruction error has also decreased to an average of 4.6 mm (2 .3% of the model size). With the updated material properties, we further perform a shape-control test using the dual-arm robot setup. The control command is computed using model predictive control (MPC) in simulation with the method presented in [Zhang et al. 2025], where a dynam-ics model rolls out candidate dual-arm 6-DoF end-effector action sequences, shape error with respect to the goal state is minimized to optimize the action sequence iteratively, and the first optimized action is executed after inverse-kinematics conversion. As shown in Fig. 4(a), directly applying the configuration computed in simula-tion produces physical results that closely match with target shapes, with Chamfer Distance reported in Fig. 4(b). As downstream applications of real-to-sim adaptation, our pipeline recovers internal physical states for stress reconstruction (Figs. 1(b), 3(a), 8(b)). We calculate the Cauchy stress 𝝈 from the identified parameters and deformation gradient, then derive the Von Mises stress 𝜎 vM via the deviatoric stress 𝒔 :
+
+𝜎 vM = √1.5 𝒔 : 𝒔 , where 𝒔 = 𝝈 − tr (𝝈 )𝑰 /3.
+
+These stresses are transferred to Gaussian attributes to enable real-time, multi-view visualization for digital twins. For example, the stress distribution within the soft bar can be accurately recon-structed at each frame (see Fig. 4(d)), providing additional physical insight beyond surface geometry. We refer readers to the supple-mental video for a better illustration. To verify the method’s ability to handle spatially varying stiffness, we utilized a cable-driven interaction setup with the Eiffel Tower model. As illustrated in Fig. 3 and Fig. 5, the structure is composed of distinct material zones using two silicone materials (Dragon Skin 30A and 10A, with 𝐸 = 0.74 MPa and 0 .24 MPa, respectively). With the proposed pipeline, multiple independent elasticity parameters are accurately identified. Similarly, the stress distribution during cable actuation can be reconstructed, as shown in Fig. 3(a), which further enables external cable-force prediction by computing inter-nal nodal forces from the reconstructed stress field. For each cable, we identify the attached vertices and approximate the total tension by summing the magnitudes of the internal forces at those vertices. As shown in Fig. 5(b), the computed cable force closely matches the force measured by the sensor in the physical setup. We also demonstrate the ability of the proposed online real-to-sim adaptation in stiffness tracking for a temperature-varying structure. As shown in Fig. 6, the gingerbread-man-shaped specimen was fabricated using a 3D-printed polycaprolactone (PCL) truss struc-ture embedded within Ecoflex 00-30 silicone through a molding    
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. 8•Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang Frame
+> Push Force (N)
+> E (kPa)
+> Frame
+> Frame 133
+> Frame 317
+> Frame 627
+> Temp 45 ℃
+> Temp 33 ℃
+> Temp 27 ℃(a)
+> (b) (c)
+> Fig. 6. Online real-to-sim adaptation for stiffness tracking in a temperature-varying structure. (a) Representative frames showing simulated deformation during cooling. (b) Push force over time. (c) Estimated Young’s modulus over time, demonstrating tracking of temperature-dependent stiffness variation.
+
+process. With temperature decreases from 45 ◦C to 27 ◦, it progres-sively increases the stiffness of the PCL structure [Baptista et al. 2020], resulting in changes in deformation and force responses un-der similar interactions. Our method continuously adapts online real-to-sim adaptation, and well captures the increasing push force and estimated increasing Young’s modulus. Validation cases involving collisions and high-frequency dynam-ics are also tested. This includes the golf-ball bouncing case, our online method better matches the ground-truth transient deforma-tion, while the offline baseline shows noticeable shape errors during compression and rebound - as a comparison, the PSNR greatly in-creased from 18.0 to 22.6 with our online method for the first key frame shown in Fig. 7. For ease of comparison with existing work and to conduct ablation studies, we also include a virtual test case using the Dinosaur model with random external interactions (see Fig. 10), and details of this case are discussed in the next section. 
+
+5.3 Comparison, Ablation Study, and Discussion 
+
+5.3.1 Comparison with existing offline method. We compare our online real-to-sim approach with existing vision-based offline meth-ods [Chen et al. 2025; Hahn et al. 2019]. Unlike our method, the offline baseline estimates a single fixed model from the full sequence. This strategy is less effective for long-horizon interactions, espe-cially when the system exhibits time-varying materials or accumu-lates modeling errors over time. A detailed virtual comparison is provided in Fig. 8(c), where the offline method can failed to capture the material variation and cannot solve for the deformation. We F1=75  F2=94  F3=116    
+
+> Offline
+> Online
+> Ground
+> Truth
+> Online
+> Offline
+> Fig. 7. Result of a high-speed ball bouncing back after hitting a wall with 𝜐 0=27m /s. The vision data are duplicated from IPC [Li et al. 2020], and the texture of the result is obtained by GS-based training.
+
+further observe that the offline method remains less effective even when the material properties are fixed. In the two-robot-arm bar manipulation example, our method achieves a higher PSNR of 25.91 compared with 24.42 for the offline baseline. This suggests that op-timizing a limited set of material parameters offline is insufficient to fully capture the physical behavior in long-horizon manipula-tion tasks, where accumulated errors and unmodeled dynamics can degrade reconstruction accuracy. A similar performance difference is observed in the material aging experiment. As shown in Fig. 9(a), our online method closely tracks the increasing stiffness of the bar over time, whereas the offline base-line converges to an almost constant stiffness and fails to capture the temporal variation. Consequently, the offline method overesti-mates the stiffness in the early frames and underestimates it in the later frames as the ground-truth stiffness increases. The per-frame 
+
+𝐿 2 error in Fig. 9(b) further shows that our method consistently achieves lower simulation error, reducing the loss by approximately 3–5 × compared with the offline baseline. 
+
+5.3.2 Ablation Study on Parameter Selection. We conduct an abla-tion study on hyperparameter selection with the dinosaur model under random contact conditions (Fig. 11), focusing on the sub-space dimension 𝑟 , temporal window size 𝑤 , and number of camera          
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback •9E = 10 KPa Frame 6 Frame 8 Frame 14 Frame 22
+> (a) (b)
+> E = 20 KPa E = 30 KPa E = 40 KPa
+> Frame
+> L2 Error (m)
+> Frame
+> E (kPa)
+> (c) (d)
+> Ground Truth Online R2S Offline R2S Offline R2S Online R2S
+
+Fig. 8. (a) Comparison of deformation dynamics across different stiffness levels (Young’s modulus changing dynamically from 10 kPa to 40 kPa in steps when the bar is hit by the Gingerbread-man. (b) Reconstructed stress fields over time (E = 10 kPa for all frames). (c) Prediction of time-varying Young’s modulus changes and (d) comparison of online and offline methods, showing that the proposed online framework tracks evolving stiffness. (b) L2 Error (Log) E (kPa) Frame (a) Frame 
+
+> Online R2S Ground Truth Offline R2S Offline R2S Online R2S
+
+Fig. 9. Result and analysis of material aging in the bar manipulation task. (a) Our online real-to-sim method accurately tracks the time-varying Young’s modulus of the bar, whereas the offline baseline estimates an almost con-stant stiffness. (b) The per-frame L2 error further shows that online real-to-sim consistently outperforms the offline method. 
+
+view 𝑐 . It can be seen that increasing 𝑟 improves deformation ex-pressiveness and rapidly reduces the L2 reconstruction error from 
+
+𝑟 = 30 to 𝑟 = 90, after which the error plateaus, while update time grows approximately linearly. We choose 𝑟 = 100 as a trade-off point, where the error stabilizes around 0.025 m, i.e., about 5% of the model size. With 𝑟 = 100 fixed, increasing 𝑤 incorporates more temporal constraints and further reduces the error, but also linearly increases update time; the improvement becomes marginal after 
+
+𝑤 = 5. We also present the ablation of camera number in Fig. 11(c), where can be seen that increasing the number of cameras initially reduces the reconstruction error, indicating that additional views provide useful constraints for the online update. However, once the multi-view images cover most of the geometry, the accuracy Vision Based Data Marker Based Data (a)    
+
+> Position
+> Frame
+> E
+> Vision Based E=0.0267 Marker Based E=0.0525
+> (c)
+> Vision Based Baseline Marker Based
+> L2 Error (m)
+> Ground Truth Vision Based Marker Based (b)
+> 00.25
+> Vertex Dist Err.
+
+Fig. 10. Comparison of online real-to-sim adaptation on the dinosaur ex-ample using vision-based and marker-based physical input. 40 markers uniformly distributed are used for comparison. (a) Key frame showcase vision-based method outperforms in terms of reconstructed geometry ac-curacy. (b) Material parameter update curves during online adaptation. (c) Distribution of L2 errors over all frames for the two methods. 
+
+improvement becomes marginal, while the update time continues to increase approximately linearly. Therefore, 𝑟 , 𝑤 , and 𝑐 are tuned for each model to balance reconstruction accuracy and computational efficiency - we refer Table 1 for statistics. 
+
+5.3.3 Discussion on Constitutive Model Choice and Vision-based Feedback. We further examine how the choice of constitutive model affects online real-to-sim adaptation. As shown in Fig. 12, although the Yeoh model provides a higher-order formulation with four ma-terial parameters, it is less robust under large deformation and produces larger reconstruction errors than the Neo-Hookean model. This suggests that a more expressive material model does not nec-essarily improve online adaptation, as the higher-dimensional pa-rameter space can make optimization less stable from limited obser-vations. Both models require similar online update time within our reduced-order differentiable pipeline, indicating that the framework remains efficient even with the higher-dimensional Yeoh parame-terization. On the other hand, we also compare with conventional learning based methods [Benchekroun et al. 2023; Wang et al. 2015] to demonstrate the effectiveness of the neural subspace selection. In the same Dinosaur setting, the average reconstruction error is     
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. 10 •Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang (a) L2 Error (m)
+> Time (s)
+> Subspace Dimension
+> (b) L2 Error (m)
+> Window Size
+> L2 Error
+> Update Time
+> Time (s)
+> L2 Error (m)
+> (c)
+> Time (s)
+> Camera Number
+> L2 Error
+> Update Time
+> L2 Error
+> Update Time
+
+Fig. 11. Ablation studies on the Dinosaur model with random interactions. (a) Increasing the subspace dimension reduces the L2 error but increases the update time. (b) A larger temporal window size generally improves accuracy at the cost of longer update time (for this test, a fixed 𝑟 = 100 is used). (c) Ablation on the number of camera views 𝑐 for both reconstruction error and computational cost. 
+
+decreases from 24.34 to 20.15 with our AutoEncoder-based subspace network [Fulton et al. 2019] reduces it to 20.15, demonstrates that it can better capture complex nonlinear deformation modes than classic Linear Blend Skinning (LBS) representations [Chen et al. 2025] for the presented real-to-sim tasks. Additionally, the proposed online real-to-sim adaptation frame-work supports both marker-based and vision-based observation inputs. We compare the two on the bar and dinosaur manipula-tion cases and find that vision-based feedback is more effective. As shown in Fig. 10(c), the average vertex 𝐿 2 error decreases from 0.052 m to 0.026 m, while the material update curves in Fig. 10(b) show faster convergence due to the denser spatial information pro-vided by images. Similarly, Fig. 1(d) shows that the vision-based solution reduces vertex error by about 50%, substantially reducing the real-to-sim error. 
+
+5.3.4 Limitation and Future Work. While our framework is robust across diverse scenarios, several limitations remain. Although we show effective online SI for multi-material setups with clearly de-fined regions, extending to per-element material distributions would greatly increase the parameter space and complicate optimization. Addressing this may require stronger regularization or neural repre-sentations for continuous material variation. Additionally, reduced-order models may face convergence issues in highly dynamic sys-tems and have limited extrapolation capability for unseen deforma-tion modes or out-of-range material parameters [Lyu et al. 2024; Sharp et al. 2023]. Therefore for such cases, e.g., the high-speed ball (a)    
+
+> L2 Error(m)
+> Neohook
+> E=1.13
+> (c) Computation Time(s)
+> Ground Truth Neohook Yeoh
+> (b)
+> Yeoh
+> E=1.14
+> Neohook
+> E=0.027
+> Yeoh
+> E=0.032
+
+Fig. 12. Comparison of different material models tested with our pipeline. (a) Qualitative comparison between the ground-truth geometry and the adapted simulation results using the two material models. (b, c) With the proposed method, the Yeoh model shows similar computation time but less robust real-to-sim adaptation under large deformation. 
+
+in Fig. 7, we revert to full-space simulation. Even without model reduction, our online framework remains more accurate than the offline method, producing simulations that better match visual ob-servations. Future work will explore adaptive refinement to retain reduced-order efficiency in highly dynamic cases, and inviting un-supervised learning to improve the extrapolation ability. 
+
+6 Conclusion 
+
+In this work, we present an online real-to-sim adaptation framework that integrates differentiable reduced-order simulation with visual feedback. By combining a neural subspace solver with window-based optimization, our method alleviates the computational bot-tlenecks of offline full-space methods while capturing time-varying dynamics to reduce sim-to-real gaps. Extensive virtual and physi-cal experiments on elastic object manipulation, cable-driven multi-material manipulation, and temperature-dependent stiffness track-ing show the effectiveness of our pipeline. Our method consistently outperforms offline baselines and marker-based approaches, sup-porting downstream applications such as force prediction, 3D stress reconstruction, and robot-based manipulation. We believe this capa-bility opens new opportunities for building digital twins that mimic the physical world with dynamic interactions. 
+
+Acknowledgments 
+
+The authors would like to thank Mr. Chenyu Xu for his kind help in conducting time-varying material experiments, and Mr. Aoran Lyu for insightful discussions during the early stages of this work. This work is supported by the Guangdong Basic and Applied Basic Research Foundation (2025A1515010124), and in part by the National Key Research and Development Program of China (2024YFF1206600), the National Natural Science Foundation of China (62325204), and the HKSAR Research Grants Council Early Career Scheme (RGC-ECS) (CUHK/24204924). 
+
+> SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia.
+
+RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback • 11 
+
+References 
+
+Cameron Baptista, Aharon Azagury, Hyeseon Shin, Christopher M Baker, Eileen Ly, Rachel Lee, and Edith Mathiowitz. 2020. The effect of temperature and pressure on polycaprolactone morphology. Polymer 191 (2020), 122227. David Baraff and Andrew Witkin. 2023. Large steps in cloth simulation. In Seminal Graphics Papers: Pushing the Boundaries, Volume 2 . 767–778. Jernej Barbič and Doug L James. 2005. Real-time subspace integration for St. Venant-Kirchhoff deformable models. ACM transactions on graphics (TOG) 24, 3 (2005), 982–990. Otman Benchekroun, Jiayi Eris Zhang, Siddhartha Chaudhuri, Eitan Grinspun, Yi Zhou, and Alec Jacobson. 2023. Fast Complementary Dynamics via Skinning Eigenmodes. 
+
+ACM Transactions on Graphics 42, 4, Article 77 (2023). Bernd Bickel, Moritz Bächer, Miguel A Otaduy, Wojciech Matusik, Hanspeter Pfister, and Markus Gross. 2009. Capture and modeling of non-linear heterogeneous soft tissue. ACM transactions on graphics (TOG) 28, 3 (2009), 1–9. Katherine L Bouman, Bei Xiao, Peter Battaglia, and William T Freeman. 2013. Estimating the material properties of fabric from video. In Proceedings of the IEEE international conference on computer vision . 1984–1991. James Bradbury, Roy Frostig, Peter Hawkins, Matthew James Johnson, Chris Leary, Dougal Maclaurin, George Necula, Adam Paszke, Jake VanderPlas, Skye Wanderman-Milne, and Qiao Zhang. 2018. JAX: composable transformations of Python+NumPy programs . http://github.com/jax-ml/jax Junhao Cai, Yuji Yang, Weihao Yuan, Yisheng He, Zilong Dong, Liefeng Bo, Hui Cheng, and Qifeng Chen. 2024. Gic: Gaussian-informed continuum for physical property identification and simulation. Advances in Neural Information Processing Systems 37 (2024), 75035–75063. Yue Chang, Peter Yichen Chen, Zhecheng Wang, Maurizio M Chiaramonte, Kevin Carlberg, and Eitan Grinspun. 2023. Licrom: Linear-subspace continuous reduced order modeling with neural fields. In SIGGRAPH Asia 2023 Conference Papers . 1–12. Chuhao Chen, Zhiyang Dou, Chen Wang, Yiming Huang, Anjun Chen, Qiao Feng, Jiatao Gu, and Lingjie Liu. 2025. Vid2sim: Generalizable, video-based reconstruction of appearance, geometry and physics for mesh-free simulation. 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) (2025), 26545–26555. Desai Chen, David IW Levin, Wojciech Matusik, and Danny M Kaufman. 2017. Dynamics-aware numerical coarsening for fabrication design. ACM Transactions on Graphics (TOG) 36, 4 (2017), 1–15. Abe Davis, Katherine L Bouman, Justin G Chen, Michael Rubinstein, Fredo Durand, and William T Freeman. 2015. Visual vibrometry: Estimating material properties from small motion in video. In Proceedings of the ieee conference on computer vision and pattern recognition . 5335–5343. Jonas Degrave, Michiel Hermans, Joni Dambre, and Francis Wyffels. 2019. A differ-entiable physics engine for deep learning in robotics. Frontiers in neurorobotics 13 (2019), 6. Tao Du, Kui Wu, Pingchuan Ma, Sebastien Wah, Andrew Spielberg, Daniela Rus, and Wojciech Matusik. 2021. Diffpd: Differentiable projective dynamics. ACM Transac-tions on Graphics (ToG) 41, 2 (2021), 1–21. Lawson Fulton, Vismay Modi, David Duvenaud, David IW Levin, and Alec Jacobson. 2019. Latent-space dynamics for reduced deformable simulation. In Computer graphics forum , Vol. 38. Wiley Online Library, 379–391. Arvi Gjoka, Espen Knoop, Moritz Bächer, Denis Zorin, and Daniele Panozzo. 2024. Soft pneumatic actuator design using differentiable simulation. In ACM SIGGRAPH 2024 Conference Papers . 1–11. David Hahn, Pol Banzet, James M Bern, and Stelian Coros. 2019. Real2sim: Visco-elastic parameter estimation from dynamic motion. ACM Transactions on Graphics (TOG) 
+
+38, 6 (2019), 1–13. Yuanming Hu, Yu Fang, Ziheng Ge, Ziyin Qu, Yixin Zhu, Andre Pradhana, and Chen-fanfu Jiang. 2018. A moving least squares material point method with displacement discontinuity and two-way rigid body coupling. ACM Transactions on Graphics (TOG) 37, 4 (2018), 1–14. Yuanming Hu, Jiancheng Liu, Andrew Spielberg, Joshua B Tenenbaum, William T Freeman, Jiajun Wu, Daniela Rus, and Wojciech Matusik. 2019. Chainqueen: A real-time differentiable physical simulator for soft robotics. In 2019 International conference on robotics and automation (ICRA) . IEEE, 6265–6271. Zizhou Huang, Davi Colli Tozoni, Arvi Gjoka, Zachary Ferguson, Teseo Schneider, Daniele Panozzo, and Denis Zorin. 2024. Differentiable solver for time-dependent deformation problems with contact. ACM Transactions on Graphics 43, 3 (2024), 1–30. Doug L James and Dinesh K Pai. 2002. DyRT: Dynamic response textures for real time deformation simulation with graphics hardware. In Proceedings of the 29th annual conference on Computer graphics and interactive techniques . 582–585. Krishna Murthy Jatavallabhula, Miles Macklin, Florian Golemo, Vikram Voleti, Linda Petrini, Martin Weiss, Breandan Considine, Jérôme Parent-Lévesque, Kevin Xie, Kenny Erleben, et al. 2021. gradsim: Differentiable simulation for system identifica-tion and visuomotor control. arXiv preprint arXiv:2104.02646 (2021). Hanxiao Jiang, Hao-Yu Hsu, Kaifeng Zhang, Hsin-Ni Yu, Shenlong Wang, and Yunzhu Li. 2025. Phystwin: Physics-informed reconstruction and simulation of deformable objects from videos. In 2025 IEEE/CVF International Conference on Computer Vision (ICCV) . IEEE, 7219–7230. Bernhard Kerbl, Georgios Kopanas, Thomas Leimkühler, and George Drettakis. 2023. 3D Gaussian splatting for real-time radiance field rendering. ACM Trans. Graph. 42, 4 (2023), 139–1. Meekyoung Kim, Gerard Pons-Moll, Sergi Pujades, Seungbae Bang, Jinwook Kim, Michael J Black, and Sung-Hee Lee. 2017. Data-driven physics for human soft tissue animation. ACM Transactions on Graphics (ToG) 36, 4 (2017), 1–12. Petr Krysl, Sanjay Lall, and Jerrold E Marsden. 2001. Dimensional model reduction in non-linear finite element dynamics of solids and structures. International Journal for numerical methods in engineering 51, 4 (2001), 479–504. Minchen Li, Zachary Ferguson, Teseo Schneider, Timothy R Langlois, Denis Zorin, Daniele Panozzo, Chenfanfu Jiang, and Danny M Kaufman. 2020. Incremental po-tential contact: intersection-and inversion-free, large-deformation dynamics. ACM Trans. Graph. 39, 4 (2020), 49. Xuan Li, Yi-Ling Qiao, Peter Yichen Chen, Krishna Murthy Jatavallabhula, Ming Lin, Chenfanfu Jiang, and Chuang Gan. 2023. Pac-nerf: Physics augmented continuum neural radiance fields for geometry-agnostic system identification. arXiv preprint arXiv:2303.05512 (2023). Yifei Li, Tao Du, Kui Wu, Jie Xu, and Wojciech Matusik. 2022. Diffcloth: Differentiable cloth simulation with dry frictional contact. ACM Transactions on Graphics (TOG) 
+
+42, 1 (2022), 1–20. Fei Liu, Zihan Li, Yunhai Han, Jingpei Lu, Florian Richter, and Michael C Yip. 2021. Real-to-sim registration of deformable soft tissue with position-based dynamics for surgical robot autonomy. In 2021 IEEE International Conference on Robotics and Automation (ICRA) . IEEE, 12328–12334. Aoran Lyu, Shixian Zhao, Chuhua Xian, Zhihao Cen, Hongmin Cai, and Guoxin Fang. 2024. Accelerate Neural Subspace-Based Reduced-Order Solver of Deformable Simulation by Lipschitz Optimization. ACM Transactions on Graphics (TOG) 43, 6 (2024), 1–10. Vismay Modi, Nicholas Sharp, Or Perel, Shinjiro Sueda, and David IW Levin. 2024. Simplicits: Mesh-free, geometry-agnostic elastic simulation. ACM Transactions on Graphics (TOG) 43, 4 (2024), 1–11. Andrew Nealen, Matthias Müller, Richard Keiser, Eddy Boxerman, and Mark Carlson. 2006. Physically based deformable models in computer graphics. In Computer graphics forum , Vol. 25. Wiley Online Library, 809–836. Dinesh K Pai, Kees van den Doel, Doug L James, Jochen Lang, John E Lloyd, Joshua L Richmond, and Som H Yau. 2001. Scanning physical interaction behavior of 3D objects. In Proceedings of the 28th annual conference on Computer graphics and interactive techniques . 87–96. Dinesh K Pai, Austin Rothwell, Pearson Wyder-Hodge, Alistair Wick, Ye Fan, Egor Larionov, Darcy Harrison, Debanga Raj Neog, and Cole Shing. 2018. The human touch: Measuring contact with real human soft tissues. ACM Transactions on Graphics (TOG) 37, 4 (2018), 1–12. Adam Paszke, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. 2017. Auto-matic differentiation in pytorch. (2017). Alex Pentland and John Williams. 1989. Good vibrations: Modal dynamics for graphics and animation. In Proceedings of the 16th annual conference on Computer graphics and interactive techniques . 215–222. Nikhila Ravi, Valentin Gabeur, Yuan-Ting Hu, Ronghang Hu, Chaitanya Ryali, Tengyu Ma, Haitham Khedr, Roman Rädle, Chloe Rolland, Laura Gustafson, Eric Mintun, Junting Pan, Kalyan Vasudev Alwala, Nicolas Carion, Chao-Yuan Wu, Ross Girshick, Piotr Dollár, and Christoph Feichtenhofer. 2024. SAM 2: Segment Anything in Images and Videos. arXiv preprint arXiv:2408.00714 (2024). https://arxiv.org/abs/2408.00714 Daniel Rho, Jun Myeong Choi, Biswadip Dey, and Roni Sengupta. 2025. ProJo4D: Progressive Joint Optimization for Sparse-View Inverse Physics Estimation. arXiv preprint arXiv:2506.05317 (2025). Nicholas Sharp, Cristian Romero, Alec Jacobson, Etienne Vouga, Paul Kry, David IW Levin, and Justin Solomon. 2023. Data-free learning of reduced-order kinematics. In 
+
+ACM SIGGRAPH 2023 Conference Proceedings . 1–9. Siyuan Shen, Yang Yin, Tianjia Shao, He Wang, Chenfanfu Jiang, Lei Lan, and Kun Zhou. 2021. High-order differentiable autoencoder for nonlinear model reduction. 
+
+arXiv preprint arXiv:2102.11026 (2021). Breannan Smith, Fernando De Goes, and Theodore Kim. 2018. Stable neo-hookean flesh simulation. ACM Transactions on Graphics (TOG) 37, 2 (2018), 1–15. Jianyuan Wang, Minghao Chen, Nikita Karaev, Andrea Vedaldi, Christian Rupprecht, and David Novotny. 2025. Vggt: Visual geometry grounded transformer. In Proceed-ings of the Computer Vision and Pattern Recognition Conference . 5294–5306. Jiahong Wang, Yinwei Du, Stelian Coros, and Bernhard Thomaszewski. 2024. Neural Modes: Self-supervised Learning of Nonlinear Modal Subspaces. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 23158–23167. Yu Wang, Alec Jacobson, Jernej Barbic, and Ladislav Kavan. 2015. Linear Subspace Design for Real-Time Shape Deformation. ACM Transactions on Graphics 34, 4, Article 57 (2015). SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia. 12 • Zhihao Cen, Chuhua Xian, Hailin Sun, Yuliang Liufu, Zhen Zhang, Xiangyu Chu, Hongmin Cai, Yunbo Zhang, and Guoxin Fang 
+
+Guanjun Wu, Taoran Yi, Jiemin Fang, Lingxi Xie, Xiaopeng Zhang, Wei Wei, Wenyu Liu, Qi Tian, and Xinggang Wang. 2024. 4d gaussian splatting for real-time dynamic scene rendering. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition . 20310–20320. Tianyi Xie, Zeshun Zong, Yuxing Qiu, Xuan Li, Yutao Feng, Yin Yang, and Chenfanfu Jiang. 2024. Physgaussian: Physics-integrated 3d gaussians for generative dynamics. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition .4389–4398. Jie Xu, Tao Chen, Lara Zlokapa, Michael Foshey, Wojciech Matusik, Shinjiro Sueda, and Pulkit Agrawal. 2021. An end-to-end differentiable framework for contact-aware robot design. arXiv preprint arXiv:2107.07501 (2021). Shan Yang, Junbang Liang, and Ming C Lin. 2017. Learning-based cloth material recovery from video. In Proceedings of the IEEE International Conference on Computer Vision . 4383–4393. O. H. Yeoh. 1993. Some Forms of the Strain Energy Function for Rubber. Rubber Chemistry and Technology 66, 5 (1993), 754–771. doi:10.5254/1.3538343 Zhen Zhang, Xiangyu Chu, Yunxi Tang, Lulu Zhao, Jing Huang, Zhongliang Jiang, and KW Samuel Au. 2025. Manipulating Elasto-Plastic Objects With 3D Occupancy and Learning-Based Predictive Control. IEEE Robotics and Automation Letters (2025). Licheng Zhong, Hong-Xing Yu, Jiajun Wu, and Yunzhu Li. 2024. Reconstruction and simulation of elastic objects with spring-mass 3d gaussians. In European Conference on Computer Vision . Springer, 407–423. SA Conference Papers ’26, December 01–04, 2026, Kuala Lumpur, Malaysia.
