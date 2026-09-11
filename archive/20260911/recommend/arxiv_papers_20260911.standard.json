@@ -1,0 +1,180 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-11T21:16:59.974843+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 2,
+    "deep_cap": 7,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2609.10905v1",
+      "source": "arxiv",
+      "title": "Planning along Differentiable Charts of Constraint Manifolds with General-Purpose IK Solvers",
+      "abstract": "Planning trajectories for robot manipulators under kinematic equality constraints restricts feasible motions to a measure-zero submanifold of the configuration space, requiring special algorithmic treatment. A promising strategy is parametrizing the set of feasible configurations using analytic inverse kinematics (IK). Bespoke analytic IK functions can be written to be differentiable, a necessary property for gradient-based trajectory optimization. But the vast majority of IK functions are computed by automated meta-solvers like IKFast, and are difficult to modify for differentiability. We present a new approach for computing gradients of analytic IK parameterizations: we leverage the inverse function theorem to recover the desired gradients from the ordinary forward kinematic Jacobian. Furthermore, we present a least-squares domain extension and an optimization-amenable description of the reachability constraint, which preserves gradient signal outside the reachable workspace. We demonstrate the efficacy of our approach through numerical experiments and downstream tasks, including a hardware demonstration of an RB-Y1 picking up a box and placing it on a table. Project website: https://cohnt.github.io/inverse-function-theorem-parameterization/",
+      "authors": [
+        "Thomas Cohn",
+        "Seiji Shaw",
+        "Harel Biggie",
+        "Travis Manderson",
+        "Nicholas Roy",
+        "Russ Tedrake"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-09T23:22:03+00:00",
+      "link": "https://arxiv.org/pdf/2609.10905v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "differentiable IK gradients for gradient-based manipulator planning",
+      "llm_evidence_cn": "面向机械臂梯度规划的可微逆运动学梯度",
+      "llm_evidence": "面向机械臂梯度规划的可微逆运动学梯度",
+      "canonical_evidence": "面向机械臂梯度规划的可微逆运动学梯度",
+      "llm_tldr_en": "The paper shows how to recover gradients of analytic inverse kinematics parameterizations, which are usually produced by meta-solvers like IKFast and hard to make differentiable, enabling gradient-based trajectory optimization for constrained robot manipulators.",
+      "llm_tldr_cn": "机械臂在运动学等式约束下的轨迹规划被限制在零测度子流形上，而多数解析逆运动学（IK）由IKFast等元求解器生成，难以改造为可微形式。本文提出利用反函数定理恢复解析IK参数化梯度的方法，从而在约束流形的可微图卡上进行梯度轨迹优化。该方法使通用IK求解器也能提供可靠梯度，支撑机械臂的端到端可微规划与控制。",
+      "llm_tldr": "机械臂在运动学等式约束下的轨迹规划被限制在零测度子流形上，而多数解析逆运动学（IK）由IKFast等元求解器生成，难以改造为可微形式。本文提出利用反函数定理恢复解析IK参数化梯度的方法，从而在约束流形的可微图卡上进行梯度轨迹优化。该方法使通用IK求解器也能提供可靠梯度，支撑机械臂的端到端可微规划与控制。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "robot arm manipulation using differentiable methods",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2609.09597v2",
+      "source": "arxiv",
+      "title": "Compact Visuotactile World Models for Lifting: Prediction, Reward Alignment, and Force Constraints",
+      "abstract": "Accurate tactile forecasts need not improve force-constrained control. We study a 652,157-parameter action-conditioned visuotactile world model with matched behavior cloning, policy learning in imagination, independent reactive implicit Q-learning, and model-assisted force feedback. A fixed protocol executes 34 policies on 120 fresh MuJoCo environments spanning geometry and physical-parameter shifts, plus 324 independently replayed action branches on 12 additional ID environments. Visuotactile dynamics reduce force action-effect MAE from 0.413 N for persistence to 0.338 N. Model-assisted feedback raises ID force-budgeted success from 73.3% to 93.3%, with paired difference +20.0 [+6.7,+33.4] percentage points (95% CI), with the difference occurring during scripted lowering. Its pooled difference is +3.9 [-4.5,+11.7] points. Imagined RL achieves 11.9% pooled joint success versus 25.0% for reactive IQL. An empirical tactile-residual stress test adds 330 executions. The evidence concerns rigid-box lifting after a common approach, without physical-robot transfer or a closed-loop safety guarantee.",
+      "authors": [
+        "Qinzhen Ma"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-09-09T01:50:54+00:00",
+      "link": "https://arxiv.org/pdf/2609.09597v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "action-conditioned world model with policy learning in imagination",
+      "llm_evidence_cn": "世界模型与想象中策略学习用于操作",
+      "llm_evidence": "世界模型与想象中策略学习用于操作",
+      "canonical_evidence": "世界模型与想象中策略学习用于操作",
+      "llm_tldr_en": "A 652k-parameter action-conditioned visuotactile world model with policy learning in imagination and model-assisted force feedback lifts force-budgeted success from 73.3% to 93.3% across 120 MuJoCo environments.",
+      "llm_tldr_cn": "触觉预测精度的提升未必能改善受约束的力控制，视觉触觉世界模型在力约束抓取中的实际价值仍不明确。本文研究一个65万参数的动作条件视觉触觉世界模型，结合行为克隆、想象中策略学习与模型辅助力反馈，在120个MuJoCo环境与324条回放动作分支上进行系统评测。结果显示视觉触觉动力学将力作用效果MAE从0.413N降至0.338N，模型辅助反馈将力预算成功率从73.3%提升至93.3%。该工作表明紧凑世界模型可显著提升力约束抓取任务的预测与控制表现。",
+      "llm_tldr": "触觉预测精度的提升未必能改善受约束的力控制，视觉触觉世界模型在力约束抓取中的实际价值仍不明确。本文研究一个65万参数的动作条件视觉触觉世界模型，结合行为克隆、想象中策略学习与模型辅助力反馈，在120个MuJoCo环境与324条回放动作分支上进行系统评测。结果显示视觉触觉动力学将力作用效果MAE从0.413N降至0.338N，模型辅助反馈将力预算成功率从73.3%提升至93.3%。该工作表明紧凑世界模型可显著提升力约束抓取任务的预测与控制表现。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.10137v1",
+      "source": "arxiv",
+      "title": "Assembling Two Parts in One Hand",
+      "abstract": "A hallmark of human dexterity is the cooperative use of fingers, where different fingers take on distinct yet coordinated roles to accomplish fine manipu- lation, such as capping a pen with the hand that holds it. We study this finger-level coordination through in-hand assembly: mating two rigid objects within a single dexterous hand, with no second arm and no fixture. We present a reinforcement learning formulation to solve this problem in a unified framework, which is driven by a goal relative pose between the two parts. Finger coordination is shaped by a function-based auxiliary reward and regularized toward a single human reference pose, while domain randomization and a fusion of historical proprioception and object observation confer robustness to occlusion-induced estimation noise. The same recipe solves three different assembly tasks (Bottle, Syringe, and Marker). Trained purely in simulation, the policies transfer zero-shot to hardware with a single camera, demonstrating robustness to state-estimation errors caused by oc- clusion. Our experiments also reveal that in-hand assembly places demands on hand morphology and can serve as a benchmark for modern robotic hand systems. Videos and code are available at https://ltbgbird.github.io/in-hand-assembly-page/.",
+      "authors": [
+        "Liuao Pei",
+        "Tianyue Wu",
+        "Hui Zhang",
+        "Ping Luo",
+        "Jie Song"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-09T13:17:34+00:00",
+      "link": "https://arxiv.org/pdf/2609.10137v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning for in-hand manipulation and assembly",
+      "llm_evidence_cn": "面向手内操作与装配的强化学习",
+      "llm_evidence": "面向手内操作与装配的强化学习",
+      "canonical_evidence": "面向手内操作与装配的强化学习",
+      "llm_tldr_en": "This paper formulates in-hand assembly of two rigid objects within one dexterous hand as a reinforcement learning problem, shaping finger coordination with auxiliary rewards and robustness to occlusion noise.",
+      "llm_tldr_cn": "单手为笔加盖等动作体现了人类手指协同分工完成精细操作的能力，而机器人在单只灵巧手内装配两个刚体、不使用第二臂与夹具仍十分困难。本文提出统一的强化学习求解框架，以两零件间的目标相对位姿驱动，用函数型辅助奖励塑形手指协同，并正则化到单一人类参考姿态。方法结合域随机化与历史本体感受和物体观测的融合，对遮挡引起的估计噪声保持鲁棒，为手内装配提供了新途径。",
+      "llm_tldr": "单手为笔加盖等动作体现了人类手指协同分工完成精细操作的能力，而机器人在单只灵巧手内装配两个刚体、不使用第二臂与夹具仍十分困难。本文提出统一的强化学习求解框架，以两零件间的目标相对位姿驱动，用函数型辅助奖励塑形手指协同，并正则化到单一人类参考姿态。方法结合域随机化与历史本体感受和物体观测的融合，对遮挡引起的估计噪声保持鲁棒，为手内装配提供了新途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.11697v1",
+      "source": "arxiv",
+      "title": "ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies",
+      "abstract": "Vision-Language-Action (VLA) and World-Action Models (WAMs) have demonstrated strong capabilities in general-purpose robotic manipulation, yet their generated actions may violate hard physical constraints and therefore be unsafe or infeasible for deployment. Existing safety approaches either optimize statistical safety objectives without deterministic per-step guarantees or correct unsafe actions only during inference, creating a mismatch between policy training and execution. We introduce ActSafeGuard, a differentiable and training-aligned safeguard layer for flow-matching based policies. ActSafeGuard integrates hard action feasibility into policy learning, not merely treating safety as an inference-time external component. Through an analytical ray-scaling operator design, ActSafeGuard enables boundary-aware gradients to guide the model to naturally learn constrained manifolds. Extensive experiments on multiple standard foundation backbones ($π_{0.5}$ and Fast-WAM) across various tasks demonstrate that ActSafeGuard consistently achieves a $100\\%$ step safety rate while fully preserving or even boosting task success rates, providing a scalable and minimally invasive solution for safe embodied AI deployment.",
+      "authors": [
+        "Jianming Ma",
+        "Rongjun Jin",
+        "Xiaxi Si",
+        "Yang Zhang",
+        "Yiheng Li",
+        "Yue Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-09-10T15:21:47+00:00",
+      "link": "https://arxiv.org/pdf/2609.11697v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable constraint layer for manipulation policies",
+      "llm_evidence_cn": "面向操作策略的可微约束层",
+      "llm_evidence": "面向操作策略的可微约束层",
+      "canonical_evidence": "面向操作策略的可微约束层",
+      "llm_tldr_en": "ActSafeGuard is a differentiable, training-aligned safeguard layer that embeds hard action feasibility into flow-matching policy learning, reducing the train-inference mismatch of inference-time safety correction for manipulation.",
+      "llm_tldr_cn": "视觉-语言-动作模型与世界动作模型虽在通用机器人操作中表现强劲，但其生成动作可能违反硬物理约束，导致部署时不可行或不安全。现有安全方法要么只优化统计安全目标、缺乏逐步确定性保证，要么仅在推理阶段修正动作，造成训练与执行的不一致。本文提出ActSafeGuard，一种可微且与训练对齐的流匹配策略安全保障层，将硬动作可行性约束直接融入策略学习。该方法把安全从推理期外挂组件转变为训练内嵌机制，缩小了训练与执行之间的差距。",
+      "llm_tldr": "视觉-语言-动作模型与世界动作模型虽在通用机器人操作中表现强劲，但其生成动作可能违反硬物理约束，导致部署时不可行或不安全。现有安全方法要么只优化统计安全目标、缺乏逐步确定性保证，要么仅在推理阶段修正动作，造成训练与执行的不一致。本文提出ActSafeGuard，一种可微且与训练对齐的流匹配策略安全保障层，将硬动作可行性约束直接融入策略学习。该方法把安全从推理期外挂组件转变为训练内嵌机制，缩小了训练与执行之间的差距。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

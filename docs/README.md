@@ -6,39 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-10
-- 运行时间：2026-09-10 21:42:42 UTC
+- 最新运行日期：2026-09-11
+- 运行时间：2026-09-11 21:20:36 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：0
-- 速读区：6
+- 本次总论文数：4
+- 精读区：2
+- 速读区：2
 
 ### 今日简报（AI）
-今日速读6篇机器人世界模型论文，聚焦触觉预测、幻觉感知策略优化与跨视角潜在规划三大方向。最值得关注的是《Compact Visuotactile World Models for Lifting》将视觉-触觉世界模型与力约束、奖励对齐结合，以及《DUET-DINO》用同步跨视角建模提升操作规划。普通读者可优先从这两篇的摘要入手，理解世界模型如何同时服务预测与决策。
-- 详情：[/202609/10/README](/202609/10/README)
+今日日报收录4篇机器人操作与规划论文，精读2篇、速读2篇，聚焦触觉世界模型、约束规划与安全执行。
+最值得看两篇8分精读：一篇做举升任务的紧凑视触觉世界模型（预测、奖励对齐、力约束），一篇研究约束流形可微图上的通用IK规划。
+普通读者可先读这两篇精读，再用速读了解单手装配和流匹配策略的约束执行。
+- 详情：[/202609/11/README](/202609/11/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Compact Visuotactile World Models for Lifting: Prediction, Reward Alignment, and Force Constraints](/202609/11/2609.09597v2-compact-visuotactile-world-models-for-lifting-prediction-reward-alignment-and-force-constraints)  
+   标签：评分：8.0/10、query:mbrl-manip
+   evidence：世界模型与想象中策略学习用于操作
+2. [Planning along Differentiable Charts of Constraint Manifolds with General-Purpose IK Solvers](/202609/11/2609.10905v1-planning-along-differentiable-charts-of-constraint-manifolds-with-general-purpose-ik-solvers)  
+   标签：评分：8.0/10、query:diff-physics
+   evidence：面向机械臂梯度规划的可微逆运动学梯度
 
 ### 速读区论文标签
-1. [Compact Visuotactile World Models for Lifting: Prediction, Reward Alignment, and Force Constraints](/202609/10/2609.09597v1-compact-visuotactile-world-models-for-lifting-prediction-reward-alignment-and-force-constraints)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：视觉触觉世界模型与想象式actor-critic用于抓取提升
-2. [HaWMPO: Hallucination-Aware World Model-based Policy Optimization for Generalist Robot Policy](/202609/10/2609.09941v1-hawmpo-hallucination-aware-world-model-based-policy-optimization-for-generalist-robot-policy)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：面向机器人操作的世界模型策略优化
-3. [DUET-DINO: Simultaneous Cross-View World Modeling for Latent Planning in Robot Manipulation](/202609/10/2609.10506v1-duet-dino-simultaneous-cross-view-world-modeling-for-latent-planning-in-robot-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：跨视角潜在世界模型用于操作任务的基于模型规划控制
-4. [Spectral Prioritized Sweeping in Nonstationary Reinforcement Learning](/202609/10/2609.06186v1-spectral-prioritized-sweeping-in-nonstationary-reinforcement-learning)  
+1. [Assembling Two Parts in One Hand](/202609/11/2609.10137v1-assembling-two-parts-in-one-hand)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向样本效率的模型强化学习备份优先级改进
-5. [RealSimLoop: Online Real-to-Sim Adaptation via Differentiable Reduced-Order Simulation with Vision Feedback](/202609/10/2609.09828v1-realsimloop-online-real-to-sim-adaptation-via-differentiable-reduced-order-simulation-with-vision-feedback)  
+   evidence：面向手内操作与装配的强化学习
+2. [ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies](/202609/11/2609.11697v1-actsafeguard-differentiable-and-training-aligned-constraint-enforcement-for-flow-matching-policies)  
    标签：评分：6.0/10、query:diff-physics
-   evidence：面向在线真实到仿真适配的可微仿真
-6. [Deformable Object Manipulation under Partial Observability via Real-Time Full-Shape Estimation](/202609/10/2609.10308v1-deformable-object-manipulation-under-partial-observability-via-real-time-full-shape-estimation)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习前向动力学模型用于滚动时域控制
+   evidence：面向操作策略的可微约束层
 
 
 <div class="dpr-home-promo-card">
