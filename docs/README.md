@@ -6,34 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-11
-- 运行时间：2026-09-11 21:20:36 UTC
+- 最新运行日期：2026-09-12
+- 运行时间：2026-09-12 21:31:56 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：2
-- 速读区：2
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-今日日报收录4篇机器人操作与规划论文，精读2篇、速读2篇，聚焦触觉世界模型、约束规划与安全执行。
-最值得看两篇8分精读：一篇做举升任务的紧凑视触觉世界模型（预测、奖励对齐、力约束），一篇研究约束流形可微图上的通用IK规划。
-普通读者可先读这两篇精读，再用速读了解单手装配和流匹配策略的约束执行。
-- 详情：[/202609/11/README](/202609/11/README)
+今天速读3篇、精读0篇，主线落在可形变物体物理建模、机器人策略强化学习与模块化生产优化。
+
+最值得看的是《PhysReal》的混合本构建模和《Beyond Noise Steering》的双潜空间机器人策略，两篇均6.0分，偏方法探索。
+
+普通读者可先读摘要与结论，判断是否贴合机器人或生产优化需求，再决定要不要深读。
+- 详情：[/202609/12/README](/202609/12/README)
 
 ### 精读区论文标签
-1. [Compact Visuotactile World Models for Lifting: Prediction, Reward Alignment, and Force Constraints](/202609/11/2609.09597v2-compact-visuotactile-world-models-for-lifting-prediction-reward-alignment-and-force-constraints)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：世界模型与想象中策略学习用于操作
-2. [Planning along Differentiable Charts of Constraint Manifolds with General-Purpose IK Solvers](/202609/11/2609.10905v1-planning-along-differentiable-charts-of-constraint-manifolds-with-general-purpose-ik-solvers)  
-   标签：评分：8.0/10、query:diff-physics
-   evidence：面向机械臂梯度规划的可微逆运动学梯度
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Assembling Two Parts in One Hand](/202609/11/2609.10137v1-assembling-two-parts-in-one-hand)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向手内操作与装配的强化学习
-2. [ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies](/202609/11/2609.11697v1-actsafeguard-differentiable-and-training-aligned-constraint-enforcement-for-flow-matching-policies)  
+1. [PhysReal: Learning Real-World Deformable Object Physics via Hybrid Constitutive Modeling](/202609/12/2609.07532v1-physreal-learning-real-world-deformable-object-physics-via-hybrid-constitutive-modeling)  
    标签：评分：6.0/10、query:diff-physics
-   evidence：面向操作策略的可微约束层
+   evidence：结合混合本构建模的可微MPM模拟器
+2. [Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy](/202609/12/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：面向生成式机器人操作策略的强化学习
+3. [Distributed Optimization of Modular Production Systems using Model-based Reinforcement Learning with Inverse Models](/202609/12/2609.11615v1-distributed-optimization-of-modular-production-systems-using-model-based-reinforcement-learning-with-inverse-models)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：基于模型强化学习与逆模型用于控制
 
 
 <div class="dpr-home-promo-card">

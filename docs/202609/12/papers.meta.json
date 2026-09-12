@@ -1,0 +1,54 @@
+{
+  "label": "2026-09-12",
+  "date": "2026-09-12",
+  "generated_at": "2026-09-12T21:32:04",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202609/12/2609.07532v1-physreal-learning-real-world-deformable-object-physics-via-hybrid-constitutive-modeling",
+      "section": "quick",
+      "title_en": "PhysReal: Learning Real-World Deformable Object Physics via Hybrid Constitutive Modeling",
+      "authors": "Yinan Deng, Jianqiao Song, Yisi Zhang, Yuhan Wang, Jiahui Wang, Yufeng Yue",
+      "date": "2026-09-07",
+      "pdf": "https://arxiv.org/pdf/2609.07532v1",
+      "score": "6.0",
+      "evidence": "结合混合本构建模的可微MPM模拟器",
+      "tldr": "真实可变形物体的动力学常源于空间异质材料响应，仅靠视觉观测难以学习。PhysReal 提出视频驱动框架，将空间变化的混合专家-神经本构模型与可微分 MPM 模拟器、3DGS 渲染器结合。通过渐进课程依次优化全局材料属性、局部空间参数和神经本构残差，并辅以运动与掩码监督。实验表明其在动态重建和未来状态预测上表现更优，并具机器人应用潜力。",
+      "tags": "query:diff-physics",
+      "abstract_en": "Learning physically plausible dynamics from visual observations is essential for interactive world models and embodied agents. However, modeling real-world deformable objects remains challenging because their dynamics often arise from complex, spatially heterogeneous material responses. To address this challenge, we propose PhysReal, a video-driven framework for learning and simulating the underlying physics of real deformable objects. PhysReal integrates a spatially varying hybrid expert-neural constitutive model with a differentiable MPM simulator and 3DGS renderer. Analytical expert models provide interpretable physical priors, while neural constitutive residuals capture material responses beyond predefined formulations. Spatially distributed patches parameterize the constitutive field, enabling a continuous representation of local material variations. To organize the identification of this model from sparse visual observations, we adopt a progressive curriculum that sequentially optimizes global material properties, spatially varying local parameters, and neural constitutive residuals, together with complementary motion and mask supervision. Extensive experiments on diverse deformable-object interactions demonstrate that PhysReal achieves superior performance in dynamic reconstruction and future-state prediction, while showing strong potential for downstream robotic applications.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/12/2609.11270v1-beyond-noise-steering-dual-latent-space-reinforcement-learning-for-generative-robot-policy",
+      "section": "quick",
+      "title_en": "Beyond Noise Steering: Dual-Latent Space Reinforcement Learning for Generative Robot Policy",
+      "authors": "Pengfei Zhang, Teng Sun, Xianchao Xiu",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.11270v1",
+      "score": "6.0",
+      "evidence": "面向生成式机器人操作策略的强化学习",
+      "tldr": "预训练生成式机器人策略虽能提供表达性动作先验，但现有强化学习仅操控初始噪声空间，无法调节生成过程中的中间动作表示，导致性能下降与效率不足。为此，作者提出双潜在空间强化学习DLSRL：actor同时预测初始噪声潜变量与动作表示潜变量，后者经适配器映射后通过残差连接注入中间动作token隐状态。该双控设计无需更新基础策略即可直接调整动作表示。实验覆盖多种生成式策略架构与机器人操作任务，表明DLSRL能加速在线策略自适应并取得有竞争力性能。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Pretrained generative robot policies learn expressive action priors from demonstrations. However, existing reinforcement learning methods only steer the noisy space but fail to modulate intermediate action representations during the generation process, resulting in performance degradation and inefficiency. To address this limitation, we propose a novel Dual-Latent Space Reinforcement Learning (DLSRL) framework, which complements initial-noise steering with representation-level control inside the frozen generator. Specifically, our actor network predicts two distinct latent variables: an initial-noise latent variable that steers behavior generation, and an action-representation latent variable for intermediate feature modulation. Moreover, this representation latent variable is mapped to adapter features and ingeniously injected into the hidden states of intermediate action tokens via residual connections. Our dual-control design enables direct adjustment of action representations without updating the base policy. Experiments across generative policy architectures and robotic manipulation tasks show that DLSRL effectively accelerates online robot policy adaptation and achieves competitive performance. Our code is available at \\href{https://github.com/xianchaoxiu/DLSRL}{https://github.com/xianchaoxiu/DLSRL}.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/12/2609.11615v1-distributed-optimization-of-modular-production-systems-using-model-based-reinforcement-learning-with-inverse-models",
+      "section": "quick",
+      "title_en": "Distributed Optimization of Modular Production Systems using Model-based Reinforcement Learning with Inverse Models",
+      "authors": "Andreas Schwung, Steve Yuwono, Sofiene Lassoued, Dorothea Schwung",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.11615v1",
+      "score": "6.0",
+      "evidence": "基于模型强化学习与逆模型用于控制",
+      "tldr": "针对高度灵活、模块化制造系统的数据驱动自学习控制难题，本文提出一种带近似逆过程模型的基于模型强化学习框架。该方法将执行机构动力学与状态空间动力学解耦，使策略训练仅在任务空间中进行，并用轻量前馈网络实现逆模型并嵌入标准RL策略网络。在含异构生产模块的实验室模块化生产测试台上验证，性能与训练速度均获提升，尤其对off-policy算法更明显。该工作为模块化生产单元分布式优化提供了高效训练途径。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "This paper presents a novel approach for data-driven self-learning control of highly flexible, modular manufacturing systems. Specifically, we employ a novel framework for model-based reinforcement learning which introduces approximate inverse process models within the training of reinforcement policies. This approach disentangles the learning of actuation dynamics and the dynamics in state space, resulting in RL-based training solely within the task space. We propose a lightweight feedforward architecture for approximate inverse models and integrate them within the policy network of standard RL algorithms. We apply the approach to a laboratory modular production testbed with heterogeneous production modules. The results underline the efficiency improvements for modular manufacturing units in terms of both performance and training speed, particularly for off-policy algorithms.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
