@@ -1,0 +1,99 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-13T22:01:30.553763+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.07211v1",
+      "source": "arxiv",
+      "title": "Phase-and-First-Arrival VLM Feedback for Sparse-Reward Reinforcement Learning in Surgical Manipulation",
+      "abstract": "Sparse outcome feedback limits what robots can learn from unsuccessful attempts at complex manipulation. Failed multi-stage surgical attempts can contain grasps, lifts, or transfers worth reusing. In sparse-reward reinforcement learning, terminal rewards collapse such attempts to the same outcome, while scalar vision-language model (VLM) ratings reveal neither what progress merits credit nor when it occurred. We introduce phase-and-first-arrival feedback: one VLM query per recorded episode identifies the furthest visually verified task phase and when that phase is first reached, allowing the learner to reuse partial behavior and localize credit. We instantiate it in SurgPhaseBench, a phase-structured suite spanning rigid and deformable tasks, and evaluate it in simulation and hardware. Across five simulated tasks, our method reaches 75.2% mean success, compared with 52.1% for a reward based on Contrastive Language-Image Pre-training (CLIP) using the same visual input; the advantage persists when only the feedback representation changes. On hardware, the same record supports autonomous block picking and slip recovery. Together, these results show that trajectory-level visual supervision can preserve partial progress while providing the temporal credit needed for sparse-reward control.",
+      "authors": [
+        "Wanli Liuchen",
+        "Fangyuan Wang",
+        "Bin Li",
+        "Anqing Duan",
+        "Yunhui Liu",
+        "Peng Zhou",
+        "David Navarro-Alarcon"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-07T08:29:59+00:00",
+      "link": "https://arxiv.org/pdf/2609.07211v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL for multi-stage surgical manipulation with sparse rewards",
+      "llm_evidence_cn": "面向多阶段手术操作的稀疏奖励强化学习",
+      "llm_evidence": "面向多阶段手术操作的稀疏奖励强化学习",
+      "canonical_evidence": "面向多阶段手术操作的稀疏奖励强化学习",
+      "llm_tldr_en": "Sparse outcome feedback limits learning from failed multi-stage surgical manipulation attempts. The paper introduces phase-and-first-arrival VLM feedback, one query per episode identifying the furthest verified task phase and its first arrival time, enabling credit localization and reuse of partial behavior, evaluated on SurgPhaseBench.",
+      "llm_tldr_cn": "针对多阶段手术操作中稀疏奖励导致失败尝试难以被有效利用的问题，本文提出相位与首次到达反馈机制，通过每个回合一次VLM查询识别视觉上最远的任务相位及其首次到达时刻，从而复用部分行为并实现信用定位。作者构建了SurgPhaseBench评测套件，实验表明该方法能更有效地利用失败轨迹中的可复用片段。该工作为稀疏奖励下的复杂操作学习提供了阶段级反馈的新思路。",
+      "llm_tldr": "针对多阶段手术操作中稀疏奖励导致失败尝试难以被有效利用的问题，本文提出相位与首次到达反馈机制，通过每个回合一次VLM查询识别视觉上最远的任务相位及其首次到达时刻，从而复用部分行为并实现信用定位。作者构建了SurgPhaseBench评测套件，实验表明该方法能更有效地利用失败轨迹中的可复用片段。该工作为稀疏奖励下的复杂操作学习提供了阶段级反馈的新思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.11661v1",
+      "source": "arxiv",
+      "title": "Contact-Aware Incremental Model Predictive Control for an Underactuated Aerial Manipulator",
+      "abstract": "We present a robust contact-aware control framework for aerial writing on an underactuated platform. The framework combines nonlinear model predictive control (NMPC) for accurate end-effector position and normal-force tracking at small reference penetration depths, with consistent performance across controller tunings, with whole-body incremental nonlinear dynamic inversion (INDI) for robustness to frictional and aerodynamic disturbances during contact. The proposed controllers are validated on a quadrotor-based aerial manipulator with a rigid, single-link, one-degree-of-freedom (DoF) arm in simulation and real-world experiments. The aerial writing experiments span vertical and inclined surfaces, multiple reference forces, different friction conditions, and wind disturbances. The results demonstrate that robust simultaneous five-DoF end-effector pose and contact-force tracking is achievable on a standard underactuated quadrotor with a simple, rigid, single-link arm, without requiring a fully actuated platform, a complex arm, or dedicated force/torque sensing.",
+      "authors": [
+        "Darwin Liu",
+        "Tamas Keviczky",
+        "Sihao Sun"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T15:03:02+00:00",
+      "link": "https://arxiv.org/pdf/2609.11661v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Model predictive control framework for a robot manipulator performing contact-aware aerial writing",
+      "llm_evidence_cn": "面向机械臂接触式空中书写的模型预测控制框架",
+      "llm_evidence": "面向机械臂接触式空中书写的模型预测控制框架",
+      "canonical_evidence": "面向机械臂接触式空中书写的模型预测控制框架",
+      "llm_tldr_en": "A contact-aware control framework combines nonlinear MPC for end-effector position and normal-force tracking with whole-body incremental nonlinear dynamic inversion for an underactuated aerial manipulator.",
+      "llm_tldr_cn": "欠驱动空中平台上的接触式书写要求在小压入深度下精确跟踪末端位置与法向力，同时抵御摩擦与气动扰动。本文提出接触感知控制框架，将非线性模型预测控制与全身增量非线性动态逆相结合，前者负责位置与力跟踪，后者提升接触鲁棒性。在带单自由度刚性臂的四旋翼空中机械臂上，仿真与实机实验覆盖垂直和倾斜表面及多种参考力，验证了控制器调参一致性与鲁棒性，为机械臂接触操作的基于模型控制提供了可行方案。",
+      "llm_tldr": "欠驱动空中平台上的接触式书写要求在小压入深度下精确跟踪末端位置与法向力，同时抵御摩擦与气动扰动。本文提出接触感知控制框架，将非线性模型预测控制与全身增量非线性动态逆相结合，前者负责位置与力跟踪，后者提升接触鲁棒性。在带单自由度刚性臂的四旋翼空中机械臂上，仿真与实机实验覆盖垂直和倾斜表面及多种参考力，验证了控制器调参一致性与鲁棒性，为机械臂接触操作的基于模型控制提供了可行方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
