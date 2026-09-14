@@ -1,0 +1,54 @@
+{
+  "label": "2026-09-14",
+  "date": "2026-09-14",
+  "generated_at": "2026-09-14T23:04:10",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202609/14/2609.12278v1-amortized-low-rank-adaptation-for-model-based-reinforcement-learning",
+      "section": "quick",
+      "title_en": "Amortized Low-Rank Adaptation for Model-Based Reinforcement Learning",
+      "authors": "Fernando Palafox, David Fridovich-Keil",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.12278v1",
+      "score": "7.0",
+      "evidence": "基于模型强化学习的世界模型适应方法",
+      "tldr": "世界模型在环境变化时预测失准，需用少量交互快速适应未知测试环境。为此提出 CLAW：用超网络在测试时生成低秩 LoRA 适配器，冻结基座模型，仅需少量转移样本前向生成。在多种 locomotion 与 manipulation 环境族中，仅用数秒测试数据即超越梯度适应和上下文学习，并缓解数据稀缺过拟合。其优势源于高表达力适配器而非上下文条件，且联合预训练超网络与基座模型优于事后训练。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World models let agents plan by predicting the consequences of their actions, but changes in the environment can make them inaccurate. We study the problem of adapting a world model to an unknown test-time environment, drawn from a known environment family, using only a few episodes of interaction. Existing approaches trade off computational cost against expressivity, i.e., the range of models a method can produce. For example, in-context learning is computationally cheap but limited in expressivity, and gradient-based adaptation is expressive but computationally expensive. We present CLAW (Context-conditioned Low-rank Adaptation of World models), which addresses this tradeoff by using a hypernetwork to generate low-rank (LoRA) adapters at test time. During pretraining, we simulate adaptation to a variety of environments and jointly train the hypernetwork and base world model. At test time, we freeze the base model and use a forward pass of the hypernetwork to generate adapters from a small batch of test-time transitions. We evaluate CLAW in locomotion and manipulation environment families that vary in dynamics, embodiment, and reward. We show that, using only seconds of test-time data, CLAW outperforms gradient-based adaptation and in-context learning during online adaptation. We also show that CLAW avoids overfitting in data-scarce regimes, that its advantage comes from the expressive adapters rather than context conditioning, and that pretraining the hypernetwork jointly with the base model outperforms training it post hoc.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/14/2609.09210v1-identifying-habit-physics-and-nuisance-in-robot-world-models",
+      "section": "quick",
+      "title_en": "Identifying Habit, Physics, and Nuisance in Robot World Models",
+      "authors": "Jinting Hang, Zhenhui Cai",
+      "date": "2026-09-06",
+      "pdf": "https://arxiv.org/pdf/2609.09210v1",
+      "score": "6.0",
+      "evidence": "学习机器人世界模型并分离物理与干扰因素",
+      "tldr": "遥操作演示虽由动作近似决定动态，却因操作者习惯、共享物理与观测干扰而呈多模态，纠缠的下一观测预测器会同时吸收三者。作者用结构因果模型拆分三者，并以替换/打乱动作及改变外观/相机干预验证：固定状态改动作显著增大下一状态误差，外观变化则不应如此，习惯感知反向评分能更好排序可行过去。据此冻结共享物理读出、只更新薄接口，在 StackCube、DROID、RH20T 上提升低样本迁移，并在污染适应数据下保持更干净动态，且扩展到像素观测。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Teleoperated demonstrations are often multimodal even when the underlying dynamics are nearly deterministic given the executed action. We argue that this multimodality typically mixes three factors--operator habit in action selection, shared physics, and observation nuisance--and that entangled next-observation predictors absorb all three. We formalize the split with a structural causal model a=g(h,z,u), z'=f(z,a), o=r(z,c), and test it with complementary interventions: replacing or shuffling actions at fixed state sharply increases next-state error, whereas appearance and camera changes should not; habit-aware reverse scoring improves ranking of feasible pasts without rewriting the dynamics. The associated adaptation rule is to freeze a shared physics readout and update only a thin interface. On StackCube, DROID, and RH20T this rule improves low-shot transfer relative to training from scratch, retains cleaner dynamics under corrupted adaptation data, and extends from proprioception to pixel observations with multi-view and multi-step checks. We do not equate latent actions with operator habit, and we do not target large-scale video generation benchmarks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/14/2609.11875v1-unimpa-a-unified-memory-prediction-action-model-via-action-grounded-transition-modeling",
+      "section": "quick",
+      "title_en": "UniMPA: A Unified Memory-Prediction-Action Model via Action-Grounded Transition Modeling",
+      "authors": "Wei Li, Rui Shao, Jie He, Lingsen Zhang, Ziwei Liu, Liqiang Nie",
+      "date": "2026-09-10",
+      "pdf": "https://arxiv.org/pdf/2609.11875v1",
+      "score": "6.0",
+      "evidence": "面向机器人操作的统一记忆-预测-动作过渡建模",
+      "tldr": "VLA模型在机器人操作中受限于观测到动作的转移可实现性差距，表现为转移歧义、预测与执行不匹配、经验与实现不匹配三类耦合问题。UniMPA提出统一记忆-预测-动作模型，以动作锚定的共享转移接口连接持久选择性未来预测、时序视觉-动作记忆库与动作-视觉记忆库。方法通过记忆检索可执行证据并利用原型偏置流做场景自适应细化。该工作将未来预测、物理可执行性评估与经验适配统一到转移建模框架中。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Recent advances in Vision-Language-Action (VLA) models have improved robotic manipulation, yet observation-to-action learning remains limited by a fundamental transition realizability gap, manifested in three tightly coupled problems: (i) Transition ambiguity. Visually similar current observations may correspond to different manipulation phases and imply different subsequent transitions. (ii) Prediction--execution mismatch. A visually plausible predicted future observation does not necessarily correspond to a physically realizable transition. (iii) Experience--realization mismatch. A historically executable action pattern may not necessarily realize the intended transition in the current scene and therefore requires context-aware adaptation. Accordingly, we propose UniMPA, a Unified Memory-Prediction-Action model that addresses these problems through a shared action-grounded transition interface. (i) UniMPA introduces Persistent-Selective Future Prediction to resolve transition ambiguity by modeling the intended future state evolution. A persistent latent stream continuously tracks task-level progress, while a transition-critical pixel stream selectively resolves fine-grained interaction changes through memory-grounded prediction. (ii) To assess the physical executability of the anticipated transition, the predicted transition queries a temporal Visual-Action Memory Bank. The bank retrieves historically realized visual-action experience, grounding future prediction in executable evidence. (iii) To adapt executable experience to the current scene, an Action-Visual Memory Bank retrieves visually grounded action prototypes from historical action evolution. Prototype-Biased Flow then shifts the flow source toward a historically supported action manifold for context-aware refinement.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

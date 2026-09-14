@@ -1,0 +1,138 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-14T23:01:33.941536+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 12,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.12278v1",
+      "source": "arxiv",
+      "title": "Amortized Low-Rank Adaptation for Model-Based Reinforcement Learning",
+      "abstract": "World models let agents plan by predicting the consequences of their actions, but changes in the environment can make them inaccurate. We study the problem of adapting a world model to an unknown test-time environment, drawn from a known environment family, using only a few episodes of interaction. Existing approaches trade off computational cost against expressivity, i.e., the range of models a method can produce. For example, in-context learning is computationally cheap but limited in expressivity, and gradient-based adaptation is expressive but computationally expensive. We present CLAW (Context-conditioned Low-rank Adaptation of World models), which addresses this tradeoff by using a hypernetwork to generate low-rank (LoRA) adapters at test time. During pretraining, we simulate adaptation to a variety of environments and jointly train the hypernetwork and base world model. At test time, we freeze the base model and use a forward pass of the hypernetwork to generate adapters from a small batch of test-time transitions. We evaluate CLAW in locomotion and manipulation environment families that vary in dynamics, embodiment, and reward. We show that, using only seconds of test-time data, CLAW outperforms gradient-based adaptation and in-context learning during online adaptation. We also show that CLAW avoids overfitting in data-scarce regimes, that its advantage comes from the expressive adapters rather than context conditioning, and that pretraining the hypernetwork jointly with the base model outperforms training it post hoc.",
+      "authors": [
+        "Fernando Palafox",
+        "David Fridovich-Keil"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.RO"
+      ],
+      "published": "2026-09-10T23:16:40+00:00",
+      "link": "https://arxiv.org/pdf/2609.12278v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "world-model adaptation method for model-based RL",
+      "llm_evidence_cn": "基于模型强化学习的世界模型适应方法",
+      "llm_evidence": "基于模型强化学习的世界模型适应方法",
+      "canonical_evidence": "基于模型强化学习的世界模型适应方法",
+      "llm_tldr_en": "CLAW adapts world models at test time by using a hypernetwork to generate low-rank LoRA adapters, balancing computational cost and expressivity in model-based RL.",
+      "llm_tldr_cn": "针对世界模型在环境变化时预测失准、测试时适应面临计算成本与表达力权衡的问题，论文提出CLAW方法，用超网络在测试时生成低秩LoRA适配器，仅凭少量交互情节即可快速适配世界模型。实验表明该方法在计算开销与模型表达力之间取得更优平衡，提升了适应性能。这为基于模型强化学习在非平稳环境中的快速在线适应提供了高效方案。",
+      "llm_tldr": "针对世界模型在环境变化时预测失准、测试时适应面临计算成本与表达力权衡的问题，论文提出CLAW方法，用超网络在测试时生成低秩LoRA适配器，仅凭少量交互情节即可快速适配世界模型。实验表明该方法在计算开销与模型表达力之间取得更优平衡，提升了适应性能。这为基于模型强化学习在非平稳环境中的快速在线适应提供了高效方案。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.09210v1",
+      "source": "arxiv",
+      "title": "Identifying Habit, Physics, and Nuisance in Robot World Models",
+      "abstract": "Teleoperated demonstrations are often multimodal even when the underlying dynamics are nearly deterministic given the executed action. We argue that this multimodality typically mixes three factors--operator habit in action selection, shared physics, and observation nuisance--and that entangled next-observation predictors absorb all three. We formalize the split with a structural causal model a=g(h,z,u), z'=f(z,a), o=r(z,c), and test it with complementary interventions: replacing or shuffling actions at fixed state sharply increases next-state error, whereas appearance and camera changes should not; habit-aware reverse scoring improves ranking of feasible pasts without rewriting the dynamics. The associated adaptation rule is to freeze a shared physics readout and update only a thin interface. On StackCube, DROID, and RH20T this rule improves low-shot transfer relative to training from scratch, retains cleaner dynamics under corrupted adaptation data, and extends from proprioception to pixel observations with multi-view and multi-step checks. We do not equate latent actions with operator habit, and we do not target large-scale video generation benchmarks.",
+      "authors": [
+        "Jinting Hang",
+        "Zhenhui Cai"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-09-06T00:20:22+00:00",
+      "link": "https://arxiv.org/pdf/2609.09210v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learns world model separating shared physics from nuisance for robot dynamics",
+      "llm_evidence_cn": "学习机器人世界模型并分离物理与干扰因素",
+      "llm_evidence": "学习机器人世界模型并分离物理与干扰因素",
+      "canonical_evidence": "学习机器人世界模型并分离物理与干扰因素",
+      "llm_tldr_en": "Robot world models entangle operator habit, shared physics, and observation nuisance. This work formalizes the split with a structural causal model and intervention tests, freezing a shared physics readout to improve dynamics learning.",
+      "llm_tldr_cn": "遥操作演示数据常呈多模态，即便给定动作后动力学近乎确定，其多模态性混杂了操作者习惯、共享物理与观测干扰三因素，被纠缠的下一观测预测器全部吸收。该工作用结构因果模型a=g(h,z,u)、z'=f(z,a)、o=r(z,c)形式化这一分解，并通过替换或打乱动作、改变外观与相机等干预实验加以验证。结果显示固定状态下扰动动作会显著增大下一状态误差，而外观变化则不会，习惯感知的反向评分还能在不改写动力学的前提下改进可行历史的排序。其贡献在于提出冻结共享物理读出的适配规则，为可迁移、可解释的机器人动力学建模提供依据。",
+      "llm_tldr": "遥操作演示数据常呈多模态，即便给定动作后动力学近乎确定，其多模态性混杂了操作者习惯、共享物理与观测干扰三因素，被纠缠的下一观测预测器全部吸收。该工作用结构因果模型a=g(h,z,u)、z'=f(z,a)、o=r(z,c)形式化这一分解，并通过替换或打乱动作、改变外观与相机等干预实验加以验证。结果显示固定状态下扰动动作会显著增大下一状态误差，而外观变化则不会，习惯感知的反向评分还能在不改写动力学的前提下改进可行历史的排序。其贡献在于提出冻结共享物理读出的适配规则，为可迁移、可解释的机器人动力学建模提供依据。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.11875v1",
+      "source": "arxiv",
+      "title": "UniMPA: A Unified Memory-Prediction-Action Model via Action-Grounded Transition Modeling",
+      "abstract": "Recent advances in Vision-Language-Action (VLA) models have improved robotic manipulation, yet observation-to-action learning remains limited by a fundamental transition realizability gap, manifested in three tightly coupled problems: (i) Transition ambiguity. Visually similar current observations may correspond to different manipulation phases and imply different subsequent transitions. (ii) Prediction--execution mismatch. A visually plausible predicted future observation does not necessarily correspond to a physically realizable transition. (iii) Experience--realization mismatch. A historically executable action pattern may not necessarily realize the intended transition in the current scene and therefore requires context-aware adaptation. Accordingly, we propose UniMPA, a Unified Memory-Prediction-Action model that addresses these problems through a shared action-grounded transition interface. (i) UniMPA introduces Persistent-Selective Future Prediction to resolve transition ambiguity by modeling the intended future state evolution. A persistent latent stream continuously tracks task-level progress, while a transition-critical pixel stream selectively resolves fine-grained interaction changes through memory-grounded prediction. (ii) To assess the physical executability of the anticipated transition, the predicted transition queries a temporal Visual-Action Memory Bank. The bank retrieves historically realized visual-action experience, grounding future prediction in executable evidence. (iii) To adapt executable experience to the current scene, an Action-Visual Memory Bank retrieves visually grounded action prototypes from historical action evolution. Prototype-Biased Flow then shifts the flow source toward a historically supported action manifold for context-aware refinement.",
+      "authors": [
+        "Wei Li",
+        "Rui Shao",
+        "Jie He",
+        "Lingsen Zhang",
+        "Ziwei Liu",
+        "Liqiang Nie"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T17:45:03+00:00",
+      "link": "https://arxiv.org/pdf/2609.11875v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unified memory-prediction-action transition modeling for robotic manipulation",
+      "llm_evidence_cn": "面向机器人操作的统一记忆-预测-动作过渡建模",
+      "llm_evidence": "面向机器人操作的统一记忆-预测-动作过渡建模",
+      "canonical_evidence": "面向机器人操作的统一记忆-预测-动作过渡建模",
+      "llm_tldr_en": "UniMPA addresses the transition realizability gap in vision-language-action manipulation through action-grounded transition modeling, tackling transition ambiguity and prediction-execution mismatch.",
+      "llm_tldr_cn": "视觉-语言-动作模型虽提升了机器人操作，但从观测到动作的学习仍受过渡可实现性差距制约，表现为过渡歧义、预测与执行失配、经验与实现失配三类问题。本文提出UniMPA统一记忆-预测-动作模型，通过动作锚定的过渡建模来对齐预测与物理可实现性。该框架在操作任务中增强了过渡建模的一致性与上下文自适应能力，为VLA式操作提供了新的建模范式。",
+      "llm_tldr": "视觉-语言-动作模型虽提升了机器人操作，但从观测到动作的学习仍受过渡可实现性差距制约，表现为过渡歧义、预测与执行失配、经验与实现失配三类问题。本文提出UniMPA统一记忆-预测-动作模型，通过动作锚定的过渡建模来对齐预测与物理可实现性。该框架在操作任务中增强了过渡建模的一致性与上下文自适应能力，为VLA式操作提供了新的建模范式。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
