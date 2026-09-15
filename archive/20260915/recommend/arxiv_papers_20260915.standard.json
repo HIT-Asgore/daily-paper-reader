@@ -1,0 +1,263 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-15T22:26:45.717649+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 1,
+    "deep_cap": 7,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 12,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2609.14878v1",
+      "source": "arxiv",
+      "title": "Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation",
+      "abstract": "Real-world reinforcement learning (RL) offers a promising route to dexterous manipulation policies that can adapt directly from physical interaction, but learning is hindered by inefficient early exploration and costly failures. We propose a framework that uses sampling-based model predictive control (MPC) as scaffolding for real-world dexterous RL, providing structured prior experience and task-directed guidance during learning without human demonstrations or corrective actions. A small set of MPC trajectories is first used to populate an offline replay buffer and to pretrain the actor and critic. During online learning, MPC intermittently guides data collection while an off-policy Soft Actor-Critic learner trains from both prior MPC experience and newly collected physical interaction, with control gradually transitioning to the learned policy. On continuous in-hand rotation with a 16-DoF Allegro hand, the method reaches 100\\% success in policy-only evaluation (5/5 trials) after 7 minutes of online RL, following initialization with 20 MPC trajectories collected on hardware in 12 minutes. Online training incurs about three object drops on average. After 20 minutes of online learning, the policy achieves more than five times the rotation speed of the MPC controller. It completes 1000 consecutive rotations over more than 110 minutes without a drop. Ablations show complementary benefits from MPC-based pretraining, retained MPC experience, and online MPC guidance. We further demonstrate rapid adaptation to different object geometries and successful goal-conditioned reorientation, showing that the framework enables efficient, low-intervention, real-world dexterous RL.",
+      "authors": [
+        "Emek Barış Küçüktabak",
+        "Karankumar Patel",
+        "Zhaodong Yang",
+        "Jinda Cui",
+        "Kazuhiro Sasabuchi",
+        "Jun Takamatsu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-14T00:57:55+00:00",
+      "link": "https://arxiv.org/pdf/2609.14878v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "MPC scaffolding for real-world RL to improve sample efficiency",
+      "llm_evidence_cn": "以MPC作为脚手架提升真实世界RL的样本效率",
+      "llm_evidence": "以MPC作为脚手架提升真实世界RL的样本效率",
+      "canonical_evidence": "以MPC作为脚手架提升真实世界RL的样本效率",
+      "llm_tldr_en": "Real-world RL for dexterous manipulation suffers from inefficient exploration and costly failures. Using sampling-based MPC as scaffolding to pretrain actor/critic and intermittently guide data collection with off-policy SAC improves learning without human demonstrations.",
+      "llm_tldr_cn": "真实世界强化学习虽能直接从物理交互中学习灵巧操作策略，却受早期探索低效与失败代价高的制约。本文提出以采样型模型预测控制作为脚手架，先用少量MPC轨迹填充离线回放缓冲并预训练演员与评论家，再在在线学习中由MPC间歇引导数据采集，同时用离策略SAC持续训练。无需人类示教或纠正即可提升学习效率与稳定性。该框架展示了模型基控制与无模型RL结合以提升样本效率的潜力。",
+      "llm_tldr": "真实世界强化学习虽能直接从物理交互中学习灵巧操作策略，却受早期探索低效与失败代价高的制约。本文提出以采样型模型预测控制作为脚手架，先用少量MPC轨迹填充离线回放缓冲并预训练演员与评论家，再在在线学习中由MPC间歇引导数据采集，同时用离策略SAC持续训练。无需人类示教或纠正即可提升学习效率与稳定性。该框架展示了模型基控制与无模型RL结合以提升样本效率的潜力。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "how to apply model based RL to robot arm control for improved sample efficiency",
+      "matched_requirement_id": "req-16",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.14868v1",
+      "source": "arxiv",
+      "title": "Primitive-Informed Sampling-Based MPC for Multi-Fingered Dexterous Manipulation",
+      "abstract": "We present a primitive-informed sampling-based model predictive control (MPC) framework for multi-fingered dexterous manipulation. Sampling-based MPC avoids the need for gradients through complex contact dynamics, but direct exploration of the high-dimensional joint space is inefficient and makes performance strongly dependent on the sampling distribution. Our framework biases sampling using low-dimensional manipulation primitives that encode coordinated finger motions, while simultaneously optimizing joint-level residuals to adapt these motions to the current hand-object configuration. Task-related rollout constraints reject infeasible trajectories during forward simulation, improving the effective use of the sampling budget. We evaluate the approach on a physical Allegro hand using a synchronized MuJoCo digital twin. Ablations show that both the primitive and residual are necessary for reliable continuous in-hand rotation, that increasing the sampling budget alone does not recover this coordination, and that rollout constraints substantially improve success rate. A primitive extracted from a single object remains effective across object sizes and under model mismatch, and the framework further supports grasping, object reorientation, and coordinated arm-hand reach-grasp-transport, using primitives extracted from both a simulation-trained policy and human hand-motion data.",
+      "authors": [
+        "Emek Barış Küçüktabak",
+        "Karankumar Patel",
+        "Jinda Cui",
+        "Zhaodong Yang",
+        "Kazuhiro Sasabuchi",
+        "Jun Takamatsu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-14T00:36:17+00:00",
+      "link": "https://arxiv.org/pdf/2609.14868v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "sampling-based MPC for dexterous manipulation without contact gradients",
+      "llm_evidence_cn": "面向灵巧操作的采样模型预测控制",
+      "llm_evidence": "面向灵巧操作的采样模型预测控制",
+      "canonical_evidence": "面向灵巧操作的采样模型预测控制",
+      "llm_tldr_en": "Sampling-based MPC avoids gradients through contact dynamics but scales poorly for dexterous hands; this work biases sampling with low-dimensional manipulation primitives and optimizes joint-level residuals, improving effective use of the sampling budget.",
+      "llm_tldr_cn": "针对多指灵巧操作中采样型模型预测控制探索效率低、性能过度依赖采样分布的问题，本文提出基元引导的采样MPC框架，用低维操作基元编码协调的手指运动以偏置采样，并同时优化关节级残差以适应当前手物构型，还通过任务相关约束在仿真中剔除不可行轨迹。实验表明该框架显著提升采样预算利用率，改善了灵巧操作的控制性能，为接触丰富操作提供了无需接触梯度的模型控制方案。",
+      "llm_tldr": "针对多指灵巧操作中采样型模型预测控制探索效率低、性能过度依赖采样分布的问题，本文提出基元引导的采样MPC框架，用低维操作基元编码协调的手指运动以偏置采样，并同时优化关节级残差以适应当前手物构型，还通过任务相关约束在仿真中剔除不可行轨迹。实验表明该框架显著提升采样预算利用率，改善了灵巧操作的控制性能，为接触丰富操作提供了无需接触梯度的模型控制方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.11697v2",
+      "source": "arxiv",
+      "title": "ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies",
+      "abstract": "Vision-Language-Action (VLA) and World-Action Models (WAMs) have demonstrated strong capabilities in general-purpose robotic manipulation, yet their generated actions may violate hard physical constraints and therefore be unsafe or infeasible for deployment. Existing safety approaches either optimize statistical safety objectives without deterministic per-step guarantees or correct unsafe actions only during inference, creating a mismatch between policy training and execution. We introduce ActSafeGuard, a differentiable and training-aligned safeguard layer for flow-matching based policies. ActSafeGuard integrates hard action feasibility into policy learning, not merely treating safety as an inference-time external component. Through an analytical ray-scaling operator design, ActSafeGuard enables boundary-aware gradients to guide the model to naturally learn constrained manifolds. Extensive experiments on multiple standard foundation backbones ($π_{0.5}$ and Fast-WAM) across various tasks demonstrate that ActSafeGuard consistently achieves a $100\\%$ step safety rate while fully preserving or even boosting task success rates, providing a scalable and minimally invasive solution for safe embodied AI deployment.",
+      "authors": [
+        "Jianming Ma",
+        "Rongjun Jin",
+        "Xiaxi Si",
+        "Yang Zhang",
+        "Yiheng Li",
+        "Yue Gao"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI"
+      ],
+      "published": "2026-09-10T15:21:47+00:00",
+      "link": "https://arxiv.org/pdf/2609.11697v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable safeguard layer integrated into manipulation policy learning",
+      "llm_evidence_cn": "可微安全层融入操作策略学习",
+      "llm_evidence": "可微安全层融入操作策略学习",
+      "canonical_evidence": "可微安全层融入操作策略学习",
+      "llm_tldr_en": "ActSafeGuard is a differentiable, training-aligned safeguard layer that enforces hard action feasibility inside flow-matching policy learning rather than at inference time.",
+      "llm_tldr_cn": "针对视觉-语言-动作等通用机器人操作策略可能违反硬物理约束、且现有安全方法仅在推理阶段修正导致训练与执行不一致的问题，本文提出ActSafeGuard——一种可微且与训练对齐的安全防护层。该方法将硬动作可行性直接融入流匹配策略的学习目标，而非仅作为推理期的外部组件。其核心价值在于以可微方式在训练中保证每步动作可行，从而缓解训练与部署的错配，提升机器人操作策略的安全性与可部署性。",
+      "llm_tldr": "针对视觉-语言-动作等通用机器人操作策略可能违反硬物理约束、且现有安全方法仅在推理阶段修正导致训练与执行不一致的问题，本文提出ActSafeGuard——一种可微且与训练对齐的安全防护层。该方法将硬动作可行性直接融入流匹配策略的学习目标，而非仅作为推理期的外部组件。其核心价值在于以可微方式在训练中保证每步动作可行，从而缓解训练与部署的错配，提升机器人操作策略的安全性与可部署性。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.12245v1",
+      "source": "arxiv",
+      "title": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "abstract": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising- level advantage for each step of the generative process. DIA com- bines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "authors": [
+        "Arjun Sohal",
+        "Yuchi Zhao",
+        "Miroslav Bogdanovic",
+        "Alan Aspuru-Guzik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T22:02:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.12245v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Reinforcement learning fine-tuning of diffusion policies for robotic manipulation tasks",
+      "llm_evidence_cn": "面向机器人操作任务的扩散策略强化学习微调",
+      "llm_evidence": "面向机器人操作任务的扩散策略强化学习微调",
+      "canonical_evidence": "面向机器人操作任务的扩散策略强化学习微调",
+      "llm_tldr_en": "DIA addresses credit assignment when fine-tuning diffusion robot policies with RL: instead of giving all denoising steps the same environment-level credit, it assigns differentiated intermediate advantages within the inner denoising MDP.",
+      "llm_tldr_cn": "扩散策略在机器人操作中广泛使用，但纯行为克隆受限于演示数据的质量与覆盖。本文提出DIA，将扩散策略微调建模为外层环境MDP与内层去噪MDP，并对各去噪中间步骤分配差异化优势，而非统一的环境级信用。该工作旨在提升扩散策略强化学习微调的信用分配精度，为操作策略的在线改进提供更精细的优化思路。",
+      "llm_tldr": "扩散策略在机器人操作中广泛使用，但纯行为克隆受限于演示数据的质量与覆盖。本文提出DIA，将扩散策略微调建模为外层环境MDP与内层去噪MDP，并对各去噪中间步骤分配差异化优势，而非统一的环境级信用。该工作旨在提升扩散策略强化学习微调的信用分配精度，为操作策略的在线改进提供更精细的优化思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.12245v2",
+      "source": "arxiv",
+      "title": "DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization",
+      "abstract": "Diffusion-based robot policies have become widely used in robotic manipulation, where they are typically trained with behavior cloning. However, policies trained purely from demonstrations are limited by the quality and coverage of the available data. Reinforcement learning can further improve the performance of these pretrained policies through interaction. A common approach is to use policy-gradient methods that formulate diffusion-policy fine-tuning as an outer environment MDP together with an inner denoising MDP. However, existing methods typically assign the same environment-level credit to all denoising steps used to construct an action chunk, without distinguishing which intermediate decisions contributed most to the final return. We introduce Denoising Intermediate Advantage (DIA), a policy-gradient method that learns a value function over partially denoised actions and uses it to construct a denoising level advantage for each step of the generative process. DIA combines this inner credit signal with the standard environment-level PPO advantage, providing state-dependent credit throughout the denoising chain. Across Robomimic, FurnitureBench, Franka Kitchen, and D3IL, DIA consistently improves final performance over existing diffusion-policy fine-tuning methods. Beyond final reward, DIA reaches successful states more efficiently and can shift farther from the pretrained behavior distribution, enabling it to discover more effective and efficient task-level strategies and subtask sequences that baseline methods fail to reach.",
+      "authors": [
+        "Arjun Sohal",
+        "Yuchi Zhao",
+        "Miroslav Bogdanovic",
+        "Alan Aspuru-Guzik"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-10T22:02:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.12245v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning fine-tuning of diffusion policies for robotic manipulation",
+      "llm_evidence_cn": "面向机械臂操作扩散策略的强化学习微调",
+      "llm_evidence": "面向机械臂操作扩散策略的强化学习微调",
+      "canonical_evidence": "面向机械臂操作扩散策略的强化学习微调",
+      "llm_tldr_en": "Diffusion manipulation policies trained by behavior cloning are limited by demo data; RL fine-tuning helps but existing methods give all denoising steps equal credit. DIA introduces denoising intermediate advantage to distinguish each step's contribution to the return.",
+      "llm_tldr_cn": "扩散策略在机械臂操作中多由行为克隆训练，受限于演示数据的质量与覆盖度；强化学习可进一步微调，但现有策略梯度方法对所有去噪步骤分配相同信用。本文提出DIA，通过去噪中间优势估计区分各中间决策对最终回报的贡献。方法提升了扩散策略微调的信用分配效率与操作性能。为扩散策略的强化学习微调提供了更精细的优势估计方案。",
+      "llm_tldr": "扩散策略在机械臂操作中多由行为克隆训练，受限于演示数据的质量与覆盖度；强化学习可进一步微调，但现有策略梯度方法对所有去噪步骤分配相同信用。本文提出DIA，通过去噪中间优势估计区分各中间决策对最终回报的贡献。方法提升了扩散策略微调的信用分配效率与操作性能。为扩散策略的强化学习微调提供了更精细的优势估计方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.13545v1",
+      "source": "arxiv",
+      "title": "Runtime-Incremental Transformer for Reinforcement-Learning-Based Adaptive Control",
+      "abstract": "Learning-based adaptive control of robotic manipulators with non-observable friction memory has been addressed by attention- based meta-controllers whose number of attention heads is fixed before training and is tuned by costly offline search. At long memory horizons, such fixed-capacity controllers are prone to catastrophic failures on a sizeable fraction of training seeds. The present paper introduces a runtime mechanism that grows and prunes the heads of the attention block during reinforcement learning, governed by two signals: the effective rank of the on-policy context distribution, which triggers growth when representational capacity becomes insufficient, and the per-head output magnitude, which flags redundant heads for removal. Policy continuity at growth events and a quantitative bound at prune events are established analytically. On a two- link manipulator with Stribeck friction, the proposed mechanism attains full success across all memory regimes, eliminating the long-horizon failure mode and removing the need for offline tuning of the head count.",
+      "authors": [
+        "Giansalvo Cirrincione",
+        "Adriano Fagiolini"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-09-11T21:16:47+00:00",
+      "link": "https://arxiv.org/pdf/2609.13545v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Reinforcement-learning-based adaptive control of robotic manipulators with runtime-incremental attention heads",
+      "llm_evidence_cn": "面向机械臂的强化学习自适应控制与运行时增量注意力头",
+      "llm_evidence": "面向机械臂的强化学习自适应控制与运行时增量注意力头",
+      "canonical_evidence": "面向机械臂的强化学习自适应控制与运行时增量注意力头",
+      "llm_tldr_en": "For RL-based adaptive control of manipulators with friction memory, the paper grows and prunes attention heads at runtime using context effective rank and per-head output magnitude, avoiding fixed-capacity failures at long memory horizons.",
+      "llm_tldr_cn": "基于注意力的元控制器用于机械臂自适应控制时，头数需预先固定并经昂贵离线搜索，长记忆场景下常出现灾难性失效。本文提出运行时增量机制，依据在线上下文分布的有效秩触发注意力头增长，并依据各头输出幅度剪除冗余头。该机制在强化学习训练过程中动态调整控制器容量，有助于缓解固定容量模型的失效问题，提升机械臂自适应控制的鲁棒性。",
+      "llm_tldr": "基于注意力的元控制器用于机械臂自适应控制时，头数需预先固定并经昂贵离线搜索，长记忆场景下常出现灾难性失效。本文提出运行时增量机制，依据在线上下文分布的有效秩触发注意力头增长，并依据各头输出幅度剪除冗余头。该机制在强化学习训练过程中动态调整控制器容量，有助于缓解固定容量模型的失效问题，提升机械臂自适应控制的鲁棒性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
