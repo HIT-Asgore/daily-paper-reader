@@ -1,0 +1,180 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-16T21:39:41.815507+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 12,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.13053v1",
+      "source": "arxiv",
+      "title": "Dynin-Robotics: Omnimodal Unified Diffusion Vision-Language-Action Model",
+      "abstract": "Visual goal and dynamics prediction can provide language-conditioned robot policies with both a target outcome and a representation of action-dependent scene changes. We bring these predictions into action generation and selection through a shared trajectory model. Dynin-Robotics implements this formulation on Dynin-Omni, an omnimodal masked-diffusion backbone, representing language, visual observations, goals, and actions as discrete tokens. By varying conditioning and target spans, the same model learns action prediction, action-conditioned next-observation prediction, terminal goal-state prediction, and trajectory-to-instruction reconstruction. These interfaces support test-time scaling through goal prediction, action-candidate evaluation, and joint refinement of action and future-state predictions. We continually pretrain the model on approximately 1.33 million trajectories from 48 Open X-Embodiment datasets and adapt it separately to downstream domains. On two VLABench tasks, robot pretraining improves adaptation within a fixed Stage-2 step budget, and the full objective mixture improves shifted-instruction success over Policy-only post-training under the same coupled decoder. Combining goal guidance with joint action-next-state denoising further improves shifted-instruction success over action-only decoding; the benefit depends on how the predictions are composed. Dynin-Robotics achieves competitive performance on LIBERO and zero-shot LIBERO-Plus, together with a 78.4% average success rate across four manipulation conditions on a Franka Research 3 robot. An optimized block-parallel implementation accelerates model-side action decoding by up to 29.2x relative to the base implementation under the reported profiling setup. These results support shared trajectory modeling as a common interface for learning complementary robot objectives and composing their predictions during control.",
+      "authors": [
+        "Hoeun Lee",
+        "Jaeik Kim",
+        "Jusang Oh",
+        "Jinhyeok Kim",
+        "Geon Choi",
+        "Hyeonggeun Kim",
+        "Jaeyoung Do"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-09-11T16:49:26+00:00",
+      "link": "https://arxiv.org/pdf/2609.13053v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unified diffusion model learning action-conditioned next-observation and goal prediction for robot policies",
+      "llm_evidence_cn": "统一扩散模型学习动作条件下一观测预测与目标预测，服务机器人策略",
+      "llm_evidence": "统一扩散模型学习动作条件下一观测预测与目标预测，服务机器人策略",
+      "canonical_evidence": "统一扩散模型学习动作条件下一观测预测与目标预测，服务机器人策略",
+      "llm_tldr_en": "Language-conditioned robot policies benefit from both target outcomes and action-dependent scene changes. Dynin-Robotics uses an omnimodal masked-diffusion backbone over language, observations, goals and actions to jointly learn action prediction, next-observation prediction and goal-state prediction, enabling test-time scaling.",
+      "llm_tldr_cn": "语言条件机器人策略若能同时获得目标结果与动作相关场景变化的预测，可提升决策质量。本文提出Dynin-Robotics，在掩码扩散骨干Dynin-Omni上将语言、观测、目标与动作表示为离散token，通过变换条件与目标跨度统一学习动作预测、动作条件下一观测预测与目标状态预测。这些接口支持目标预测与动作候选评估等测试时扩展。该工作为机器人操作提供了融合动力学预测的统一视觉-语言-动作建模框架。",
+      "llm_tldr": "语言条件机器人策略若能同时获得目标结果与动作相关场景变化的预测，可提升决策质量。本文提出Dynin-Robotics，在掩码扩散骨干Dynin-Omni上将语言、观测、目标与动作表示为离散token，通过变换条件与目标跨度统一学习动作预测、动作条件下一观测预测与目标状态预测。这些接口支持目标预测与动作候选评估等测试时扩展。该工作为机器人操作提供了融合动力学预测的统一视觉-语言-动作建模框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.13516v1",
+      "source": "arxiv",
+      "title": "Constraint-Grounded Reinforcement Learning for Variable Impedance Control in Contact-Rich Robotic Insertion",
+      "abstract": "In robotic insertion under uncertain contact, the axial force limit and the appropriate controller gain vary across tasks. As a result, a single fixed gain is unlikely to remain suitable across different task conditions, making conventional impedance controllers reliant on manual retuning. To eliminate manual retuning, we propose Constraint-Grounded Reinforcement Learning (CG-RL), a variable impedance framework for online gain adaptation. Conditioned on the force limit and contact feedback, the policy outputs a residual motion, an insertion rate, and a requested gain. The controller projects this gain into the admissible range without exposing the range itself to the policy. This separation allows a single policy to operate under different force limits without retraining or manual retuning. We evaluate CG-RL on simulated oblique insertion across five training seeds. CG-RL achieves an $85.8\\pm7.7\\%$ (mean $\\pm$ SD) success rate of insertions without violating the force limit, while keeping the applied gain within the admissible range. As a comparison, a fixed-gain baseline using the midpoint gain achieves a success rate of $50.1\\%$. The policy adapts its insertion rate continuously to the specified force limit and further generalizes to more permissive force limits above the training range. In contrast, the same actor without force-limit input does not exhibit this adaptation. The applied gain is guaranteed to remain within the admissible range, while force-limit satisfaction is validated empirically rather than guaranteed formally.",
+      "authors": [
+        "Lin He",
+        "Min Deng"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-11T20:36:38+00:00",
+      "link": "https://arxiv.org/pdf/2609.13516v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning for variable impedance control in contact-rich robotic insertion manipulation",
+      "llm_evidence_cn": "面向接触丰富机器人插入操作的强化学习变阻抗控制",
+      "llm_evidence": "面向接触丰富机器人插入操作的强化学习变阻抗控制",
+      "canonical_evidence": "面向接触丰富机器人插入操作的强化学习变阻抗控制",
+      "llm_tldr_en": "In contact-rich insertion the axial force limit and suitable gain vary across tasks, so fixed gains require manual retuning. CG-RL conditions a policy on force limit and contact feedback to output residual motion, insertion rate and a requested gain, with the controller projecting it into the admissible range.",
+      "llm_tldr_cn": "接触丰富的机器人插入任务中，轴向力上限与合适控制器增益随任务变化，固定增益难以通用且依赖人工重调。本文提出约束锚定强化学习CG-RL，策略以力限与接触反馈为条件，输出残余运动、插入速率与增益请求，由控制器将增益投影到可行范围而不向策略暴露范围。实验表明单一策略可适应不同任务条件，免去人工重调。该工作为接触丰富操作提供了可自适应的变阻抗强化学习框架。",
+      "llm_tldr": "接触丰富的机器人插入任务中，轴向力上限与合适控制器增益随任务变化，固定增益难以通用且依赖人工重调。本文提出约束锚定强化学习CG-RL，策略以力限与接触反馈为条件，输出残余运动、插入速率与增益请求，由控制器将增益投影到可行范围而不向策略暴露范围。实验表明单一策略可适应不同任务条件，免去人工重调。该工作为接触丰富操作提供了可自适应的变阻抗强化学习框架。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "robot arm manipulation tasks using reinforcement learning",
+      "matched_requirement_id": "req-11",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.13761v1",
+      "source": "arxiv",
+      "title": "Learning In-Hand Object Reaching to General 6D Poses",
+      "abstract": "In-hand manipulation allows multi-fingered dexterous hands to reconfigure grasped objects without releasing and regrasping them. This improves manipulation efficiency by reducing repeated grasp acquisition and large arm motions. However, most learning-based methods focus on reorientation, continuous rotation, or translation, whereas many tasks require joint control of object position and orientation. We formulate this capability as in-hand 6D object pose reaching: starting from an existing grasp, coordinated finger motions move the object to a palm-relative target pose. We present POISE (Palm-relative Object reaching In SE(3)), a sim-to-real reinforcement learning framework for this task. POISE combines diverse stable-grasp initialization, goal- and geometry-conditioned control, an adaptive 6D goal curriculum, and a compact reward scheme for pose reaching and grasp preservation. In simulation, diverse initialization raises held-out-grasp success from 40.1% to 51.5% and post-drop recovery from 33.8% to 72.9%; the curriculum raises full-range success from 6.2% to 59.5%. On hardware, the grasp-maintenance reward improves three-target sequence success from 20% to 80%. In real-world experiments, POISE reaches successive 6D targets without manual reset across multiple object geometries and wrist orientations, and recovers from external disturbances. To support further research in dexterous manipulation, we will release our code at https://junxiaolin.github.io/poise-website/.",
+      "authors": [
+        "Junxiao Lin",
+        "Tianyue Wu",
+        "Jie Yin",
+        "Jia Pan",
+        "Kaifeng Zhang",
+        "Weiming Zhi"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-12T07:11:37+00:00",
+      "link": "https://arxiv.org/pdf/2609.13761v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "sim-to-real reinforcement learning framework for in-hand manipulation to 6D poses",
+      "llm_evidence_cn": "面向手内6D位姿到达的仿真到现实强化学习框架",
+      "llm_evidence": "面向手内6D位姿到达的仿真到现实强化学习框架",
+      "canonical_evidence": "面向手内6D位姿到达的仿真到现实强化学习框架",
+      "llm_tldr_en": "Most learning-based in-hand manipulation methods focus on reorientation or translation, not joint control of position and orientation. POISE is a sim-to-real RL framework for in-hand 6D object pose reaching, combining diverse stable-grasp initialization with goal- and geometry-conditioned policies.",
+      "llm_tldr_cn": "手内操作可让多指灵巧手在不松手重抓的情况下重构物体，提升操作效率，但多数学习式方法仅关注重定向或平移，难以联合控制位置与姿态。本文提出POISE，一个面向手内6D物体位姿到达的仿真到现实强化学习框架，结合多样稳定抓取初始化与目标、几何条件化策略。实验表明其能从已有抓取出发协调手指运动，将物体移动到掌心相对目标位姿。该工作为灵巧手内操作提供了可泛化到通用6D位姿的强化学习方案。",
+      "llm_tldr": "手内操作可让多指灵巧手在不松手重抓的情况下重构物体，提升操作效率，但多数学习式方法仅关注重定向或平移，难以联合控制位置与姿态。本文提出POISE，一个面向手内6D物体位姿到达的仿真到现实强化学习框架，结合多样稳定抓取初始化与目标、几何条件化策略。实验表明其能从已有抓取出发协调手指运动，将物体移动到掌心相对目标位姿。该工作为灵巧手内操作提供了可泛化到通用6D位姿的强化学习方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.13819v1",
+      "source": "arxiv",
+      "title": "Benchmarking Optimizers to Solve Inverse Problems with Differentiable Physics Simulators",
+      "abstract": "Solving inverse problems with differentiable physics simulators holds the potential to revolutionize scientific discovery and engineering design, as it enjoys both the strict physical correctness from rigorous numerical physics simulators, and the high efficiency and effectiveness from automatic differentiation and gradient-based optimization. However, currently, this paradigm faces performance issues in optimization. In this work, we target benchmarking the performance of different optimizers to solve various inverse problems. We construct 12 differentiable physics simulators spanning physics domains including discrete mechanics, continuous mechanics, atomistic simulations, rendering, and semi-empirical physics models. Based on these simulators, we design corresponding inverse problems that can be categorized into parameter identification, inverse design, and optimal control. Finally, we conduct extensive experiments to compare the performance of different optimizers, including regular first-order methods, approximate second-order methods, as well as global optimizers, on these inverse problems, and analyze the results to provide insights on how to choose and design optimizers for differentiable programming. We hope such benchmarks can inspire the development of more effective optimizers, and further promote the applications of differentiable programming in various scientific and engineering domains.",
+      "authors": [
+        "Xiang Chen",
+        "Huanhuan Xia"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "math.OC",
+        "physics.comp-ph"
+      ],
+      "published": "2026-09-12T09:05:38+00:00",
+      "link": "https://arxiv.org/pdf/2609.13819v1",
+      "tags": [
+        "keyword:diff-physics",
+        "query:diff-physics"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmarking optimizers for differentiable physics simulators",
+      "llm_evidence_cn": "可微物理模拟器的优化器基准测试",
+      "llm_evidence": "可微物理模拟器的优化器基准测试",
+      "canonical_evidence": "可微物理模拟器的优化器基准测试",
+      "llm_tldr_en": "Differentiable physics simulators combine physical correctness with gradient optimization but suffer optimization issues. This work benchmarks optimizers across twelve differentiable simulators spanning mechanics, rendering and atomistic domains for inverse problems.",
+      "llm_tldr_cn": "可微物理模拟器结合自动微分与梯度优化求解逆问题，兼具物理正确性与高效性，但优化器性能问题制约其应用。本文构建覆盖离散力学、连续力学、原子模拟、渲染等12个可微物理模拟器，对多种优化器进行基准测试。结果揭示了不同优化器在各类逆问题上的性能差异。该基准为可微物理求解逆问题的优化器选择提供了实证依据。",
+      "llm_tldr": "可微物理模拟器结合自动微分与梯度优化求解逆问题，兼具物理正确性与高效性，但优化器性能问题制约其应用。本文构建覆盖离散力学、连续力学、原子模拟、渲染等12个可微物理模拟器，对多种优化器进行基准测试。结果揭示了不同优化器在各类逆问题上的性能差异。该基准为可微物理求解逆问题的优化器选择提供了实证依据。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable physics for robotic manipulation",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

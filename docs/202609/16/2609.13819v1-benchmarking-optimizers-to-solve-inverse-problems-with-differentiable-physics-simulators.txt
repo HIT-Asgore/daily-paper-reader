@@ -1,0 +1,1125 @@
+Title: Benchmarking Optimizers to Solve Inverse Problems with Differentiable Physics Simulators
+
+URL Source: https://arxiv.org/pdf/2609.13819v1
+
+Published Time: Tue, 15 Sep 2026 00:43:22 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# BENCHMARKING OPTIMIZERS TO SOLVE INVERSE PROBLEMS WITH DIFFERENTIABLE PHYSICS SIMULATORS 
+
+A P REPRINT 
+
+Xiang Chen Huanhuan Xia 
+
+Zhongguancun Academy, Beijing, China Zhongguancun Institute of Artificial Intelligence, Beijing, China 
+
+chenxiang@bza.edu.cn huanhuanxia@zgci.ac.cn 
+
+September 15, 2026 
+
+# ABSTRACT 
+
+Solving inverse problems with differentiable physics simulators holds the potential to revolutionize scientific discovery and engineering design, as it enjoys both the strict physical correctness from rigorous numerical physics simulators, and the high efficiency and effectiveness from automatic differentiation and gradient-based optimization. However, currently, this paradigm faces performance issues in optimization. In this work, we target benchmarking the performance of different optimizers to solve various inverse problems. We construct 12 differentiable physics simulators spanning physics domains including discrete mechanics, continuous mechanics, atomistic simulations, rendering, and semi-empirical physics models. Based on these simulators, we design corresponding inverse problems that can be categorized into parameter identification, inverse design, and optimal control. Finally, we conduct extensive experiments to compare the performance of different optimizers, including regular first-order methods, approximate second-order methods, as well as global optimizers, on these inverse problems, and analyze the results to provide insights on how to choose and design optimizers for differentiable programming. We hope such benchmarks can inspire the development of more effective optimizers, and further promote the applications of differentiable programming in various scientific and engineering domains. 
+
+# 1 Introduction 
+
+Deep learning has achieved remarkable success in the last decade, relying on the universal approximation capability of neural network models [Scarselli and Tsoi, 1998], the high efficiency of gradient computation of automatic differentiation systems [Baydin et al., 2018], and the incredible effectiveness and generalizability from the optimization process [Chizat and Bach, 2020]. However, purely data-driven models can never solve the issue of unguaranteed validity. One of the alternatives is differentiable physics models, which guarantee strict physical rigorousness by implementing the numerical physics process in automatic differentiation systems, while still enjoys the high efficiency and effectiveness provided by automatic differentiation and gradient-based optimizers. Currently, differentiable physics models are facing performance issues. Although it achieves great success in certain scenarios, in some others the optimization process tends to fail. As a matter of fact, optimization in deep learning has never been an easy task. During the development of deep learning, many model architecture designs are specifically proposed so that training can be more effective and stable, such as ReLU [Nair and Hinton, 2010], residual connections [He et al., 2016], normalizations [Huang et al., 2023], etc. However, such techniques can not be applied to differentiable physics models, because the model structure is predetermined by the underlying physical process. Hence this approach can only be improved by advancing optimizer techniques. To the best of our knowledge, there are no comprehensive benchmarks available for evaluating the performance of optimizers on various differentiable physics models and inverse problems. Many previous works have implemented differentiable physics models for all kinds of physical domains and tasks in the last few years, but very few works have arXiv:2609.13819v1 [cs.LG] 12 Sep 2026 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+systematically studied this paradigm as a whole. It is difficult to unify these simulators and tasks into a framework, as each of them may use different coding structures, different automatic differentiation tools, and even different languages, which induces difficulties to discover better methods that can be widely applied in various scenarios. The closest previous works we can find are DiffTaichi [Hu et al., 2020] and PhiFlow [Holl and Thuerey, 2024]. However, their motivation and target are neither to benchmark optimizers nor to systematically study the performances on various physics models and inverse problems. In this work, we target benchmarking the performance of different optimizers to solve inverse problems with differen-tiable physics simulators. We construct 12 differentiable physics simulators spanning areas including discrete mechanics, continuous mechanics, atomistic simulations, rendering, and semi-empirical physics models. Correspondingly, we design inverse problems for each of the physics simulators. The inverse problems are categorized into parameter identification, inverse design and optimal control problems. For optimizers, we utilize and implement first-order local, approximate second-order local, and global optimizers, each with 4 optimizers, all of them utilizing the gradient information to accelerate the optimization efficiency. Finally, we conduct extensive experiments to compare the performance of different optimizers on these problems, and analyze the results to provide insights on how to choose and design optimizers for differentiable programming. We hope such benchmarks can help make discoveries that are more fundamental and general about the optimization process of differentiable programming, inspire the development of more effective optimizers, and further promote the applications of differentiable programming in various scientific and engineering domains, as well as help general deep learning and large language model techniques to evolve to better model architectures and optimization methods. 
+
+# 2 Related Work 
+
+Differentiable Programming Techniques. Common deep learning layers such as fully-connected layers, convolution layers, and attention layers, are all explicit layers, which means the output of the layer z can be written as an explicit function of the input x, parameterized by trainable parameter θ, i.e., z = fθ (x). Automatic differentiation, different from numerical differentiation or symbolic differentiation, can compute machine-precision gradients efficiently for models with high-dimensional input and low-dimensional output by backpropagation [Baydin et al., 2018]. For implicit layers, on the contrary, the input x and output z of the layer satisfy an equation gθ (x, z ) = 0 [Kolter et al., 2020]. In such cases, the gradient can be computed by the implicit differentiation method. Previous works deriving and implementing implicit layers have been proposed in various forms, including ODE (Ordinary Differential Equations) [Chen et al., 2018], PDE (Partial Differential Equations) [Mitusch et al., 2019], self-consistent iterations [Bai et al., 2019], optimization [Amos and Kolter, 2017, Agrawal et al., 2019], etc. 
+
+Differentiable Physics Models. Over the past decade, differentiable physics models have been developed across a broad spectrum of physical domains. In classical mechanics, differentiable formulations have been extensively advanced for both discrete and continuous systems. For discrete mechanics, researchers have successfully differentiated rigid-body dynamics [de Avila Belbute-Peres et al., 2018], mass-spring systems [Hu et al., 2020], and formalisms grounded in Lagrangian [Lutter et al., 2019] and Hamiltonian mechanics [Greydanus et al., 2019]. Parallel progress in continuous mechanics has enabled end-to-end differentiable simulations of fluid mechanics [Holl and Thuerey, 2024], elastic mechanics [Hoyer et al., 2019], as well as wave propagation in electromagnetics [Oskooi et al., 2010], optics [Colburn and Majumdar, 2021], and acoustics [Jin et al., 2024]. Beyond classical regimes, differentiability has been systematically integrated into ab-initio simulations, including DFT (Density Functional Theory) [Li et al., 2021, Kasim and Vinko, 2021], MD (Molecular Dynamics) [Doerr et al., 2021], and high-accuracy quantum chemical methods such as CCSD/CI [Tamayo-Mendoza et al., 2018]. In computer graphics and vision, these techniques have further catalyzed advances in inverse rendering [Kato et al., 2020], such as NeRF (Neural Radiance Fields) [Mildenhall et al., 2021] and 3D Gaussian Splatting [Kerbl et al., 2023]. Underpinning this rapid interdisciplinary expansion are dedicated programming ecosystems and frameworks explicitly engineered for differentiable programming, most notably JAX [Schoenholz and Cubuk, 2020, Freeman et al., 2021, Xue et al., 2023, Campagne et al., 2023, Du and He, 2025], Julia [Innes et al., 2019], and Taichi [Hu et al., 2020]. 
+
+Optimizers for Deep Learning. Standard deep learning optimizers are predominantly first-order local optimizers with mini-batch gradient estimation, such as SGD (Stochastic Gradient Descent) and its variants with momentum and adaptive learning rate [Sun, 2020, Schneider et al., 2019]. Recently, novel methods such as Muon [Jordan et al., 2024, Liu et al., 2025] have achieved substantial improvement in training large language models, by explicitly leveraging the two-dimensional structure of neural network parameters. Concurrently, approximate second-order optimizers have been actively investigated for deep learning, including L-BFGS [Bollapragada et al., 2018], K-FAC [Martens and Grosse, 2015], Shampoo [Gupta et al., 2018], and SOAP [Vyas et al., 2025]. 2Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 1: List of the implemented differentiable physics models. 
+
+Category Model Input Output 
+
+Discrete Mechanics Projectile Motion Earth’s gravity initial state horizontal range Flight Dynamics vehicle params Earth params initial state control policy flight trajectory Mass-Spring Systems system params initial state control policy movement trajectory Rigid-Body Dynamics system params initial state control policy movement trajectory Continuous Mechanics Elastic Mechanics material density boundary conditions physical params compliance displacement Fluid Mechanics car shape physical params drag Atomistic Simulations Density Functional Theory system params total energy electron density Tight Binding material params eigenvalue spectrum Bloch bands Rendering Gaussian Splatting scene params render params scene image Atmospheric Scattering Earth params Sun params atmosphere params render params sky image Semi-Empirical Tire Magic Formula tire params tire forces Battery Thevenin Model circuit params OCV params initial state current profile voltage SoC trajectory 
+
+# 3 Method 
+
+In the following, we will introduce separately the differentiable physics models we implemented, the inverse problems we designed, and the optimizers we benchmarked in this work. 
+
+3.1 Differentiable Physics Model Zoo 
+
+The physics models we implemented in the model zoo are summarized in Table 1. We consider 5 categories of physics simulations, i.e., discrete mechanics, continuous mechanics, atomistic simulations, rendering, and semi-empirical physics models, which can cover quite a portion of application scenarios such as academic research, industrial development, entertainment business, etc. All models are implemented in PyTorch, so that we enjoy a unified interface as well as the mature and active community support. All the physical and geometrical configurations, initial and boundary conditions, are provided in the __init__ function. Only the control policies for controlled dynamic systems are fed from the forward function. The optimization variables are set as trainable, and the gradient of these variables with respect to the loss function is computed efficiently by the automatic differentiation system. We provide a gallery of the implemented differentiable physics simulators in Figure 1 to demonstrate the sanity of our implementation. More 3Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+implementation details, such as the underlying mathematical formulations and numerical algorithms of each simulator, are provided in Appendix A. 
+
+Discrete Mechanics The discrete mechanics simulators consider systems made up of discrete components. Within this category, we consider a simple projectile motion problem which, from specific initial height, speed, launch angle, and gravity, computes flight time and horizontal range; a flight dynamics model simulating the flight trajectory with atmosphere, gravity, and controllable lift/drag coefficients; a 2D mass-spring robot with springs, damping, gravity, and inelastic ground contact, driven by a control policy; and a controllable 2D rigid-body dynamics system with damped springs and joints. 
+
+Continuous Mechanics The continuous mechanics simulators target macroscopic continuum problems, which are typically governed by PDEs. In the current benchmark, we implemented an elastic mechanics simulator and a fluid simulator, both in 2 dimensions. The elastic mechanics simulator [Christensen and Klarbring, 2008] computes the compliance and displacement of an elastic body under external forces and normals, given the material density and physical parameters. The fluid simulator computes the drag of a car silhouette in a wind tunnel [Angot et al., 1999]. 
+
+Atomistic Simulations The atomistic simulations target microscopic problems at the atomic level. The DFT (Density Functional Theory) simulator [Bickelhaupt and Baerends, 2000] computes the total energy and electron density of a system of atoms, more specifically in our current implementation, a two-electron spherical closed shell. The TB (Tight Binding) model [Goringe et al., 1997] computes the supercell eigenvalue spectrum, Bloch bands, and (for visualization) a Gaussian-smoothed density of states, given onsite energies and hopping parameters. 
+
+Rendering The rendering simulations target image formation from environmental and rendering parameters. The Gaussian splatting simulator [Kerbl et al., 2023] renders the image by splatting the gaussian blobs with properties including position, scale, and color. The atmospheric scattering simulator [Rayleigh, 1871] generates the sky image by computing Rayleigh and Mie scattering, given the Earth, the Sun, and the atmosphere medium parameters. 
+
+Semi-Empirical Physics Models In many engineering scenarios, the underlying physical process is either not fully understood, or too complex to be efficiently computed. In such cases, semi-empirical physics models are used. We implement two popular semi-empirical models, namely the magic formula for tire dynamics [Pacejka and Bakker, 2026], and the Thevenin equivalent circuit model for battery SoC (State of Charge) estimation [Hannan et al., 2017]. 
+
+3.2 Inverse Problems 
+
+We design inverse problems based on the constructed differentiable physics models, which can be categorized into 3 types, namely parameter identification, inverse design and optimal control. The dimensions of the optimization variables of different problems are designed to have different scales. We intentionally keep the problems small in scale, so that each optimizer can be benchmarked with all inverse problems in an efficient way. Also, we believe scaling law holds for the benchmarked problems, hence the performance on larger problems can be estimated from the results on small problems. The inverse problem tasks are summarized in Table 2. 
+
+Parameter Identification For parameter identification problems, the goal is to identify the unknown parameters in the physics model so that it best matches observed data. For the XC Functional Fitting problem, we fit the LDA exchange-correlation functional to the reference total energy and electron density. For the Tire Params Fitting problem, we fit the Pacejka BCDE parameters so longitudinal and lateral forces match synthetic curves from a hidden ground-truth. For the Battery Params Fitting problem, we fit the first-order Thevenin circuit parameters together with a cubic open-circuit voltage map so that, under fixed random pulse-current profiles and initial state of charge, the predicted terminal voltage and state-of-charge trajectories match a frozen ground-truth battery, with voltage error as the primary term and a smaller weight on state-of-charge error. For the Tight Binding Params Fitting problem, we fit onsite and hopping parameters so that the supercell eigenvalue spectrum and the Bloch band energies match a frozen reference chain, with a larger weight on the eigenvalues than on the bands; the density of states is computed for visualization but is not part of the training loss. For the 2D Reconstruction problem, we fit the Gaussian blobs for the rendered image to match a target image. 
+
+Inverse Design For inverse design problems, the goal is to optimize certain parameters of the system so that a desired performance metric can achieve the best result. The Range Matching problem of Projectile Motion fits the launch angle so that the predicted horizontal range matches a fixed target value, measured by squared error. The Shape Optimization problem tunes the shape parameters of the car silhouette in order to minimize the drag estimate. The Chromaticity 4Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT         
+
+> (a) Projectile Motion (b) Flight Dynamics (c) Mass-Spring Systems
+> (d) Rigid-Body Dynamics (e) Elastic Mechanics (f) Fluid Mechanics
+> (g) Density Functional Theory (h) Tight Binding (i) Gaussian Splatting
+> (j) Atmospheric Scattering (k) Tire Magic Formula (l) Battery Thevenin Model
+
+Figure 1: Gallery of the implemented differentiable physics simulators. Maximization problem is to discover the best sun direction and atmosphere medium parameters to maximize the RGB difference between the top and bottom of the rendered sky image. The Topology Optimization problem optimizes element densities under the SIMP material law on a half MBB beam to minimize scaled compliance subject to a soft volume constraint that keeps the mean density near a prescribed volume fraction. 
+
+Optimal Control The optimal control problems are only for dynamic systems, where an optimal policy can be discovered for the system to achieve optimum of a desired performance. The Range Maximization problem of Flight Dynamics learns an open-loop schedule of lift and drag coefficients over a fixed horizon. The simulator integrates altitude and ground range in meters, while the objective reports downrange in units of one thousand kilometers and adds 5Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 2: List of the benchmarked inverse problems. 
+
+Category Problem Base Simulator Dimension of Design Variables 
+
+Parameter Identification XC Functional Fitting DFT 2Tire Params Fitting Tire Magic Formula 8Battery Params Fitting Battery Thevenin Model 9Tight Binding Params Fitting Tight Binding 32 2D Reconstruction Gaussian Splatting 224 Inverse Design Range Matching Projectile Motion 1Shape Optimization Fluid Mechanics 4Chromaticity Maximization Atmospheric Scattering 15 Topology Optimization Elastic Mechanics 600 Optimal Control Robot Setpoint Rigid-Body Dynamics 70 Range Maximization Flight Dynamics 400 Robot Reach Mass-Spring Systems 1100 small effort and temporal-smoothness penalties on the control logits. The Robot Setpoint problem with Rigid-Body Dynamics learns open-loop spring actuations over a short horizon to drive a designated body toward a planar goal, with terminal velocity and control-regularization terms. The Robot Reach problem with Mass-Spring Systems likewise learns open-loop spring actuations over a longer horizon to reach a planar goal, with analogous velocity and effort or smoothness penalties. 
+
+3.3 Optimizers 
+
+Table 3: List of the benchmarked optimizers. 
+
+Category Optimizer 
+
+First-order Local SGD RMSprop Adam AdamW Approximate Second-order Local L-BFGS K-FAC Shampoo SOAP Global Random Search Simulated Annealing Particle Swarm Differential Evolution The optimizers we benchmark fall into 3 categories, namely first-order local optimizers, approximate second-order local optimizers, and global optimizers utilizing gra-dient information for local search. For each category, we implemented 4 optimizers, as listed in Table 3. For first-order local optimizers, they are the most commonly used optimizers in deep learning. In this work, we include Py-Torch official implementations of SGD, RMSprop, Adam, and AdamW optimizers. For approximate second-order local optimizers, they have better convergence and ac-curacy properties than first-order optimizers, hence are suitable for scientific computing problems. Except for the classical L-BFGS method, the other 3 optimizers are modern variants that are specifically designed for deep learning, i.e., K-FAC [Martens and Grosse, 2015], Sham-poo [Gupta et al., 2018] and SOAP [Vyas et al., 2025]. The above two categories of optimizers are all local opti-mizers, which means they are only capable of converging to local minima. However for problems with non-convex loss landscape and optimization variables with physical meanings, it is often desirable to find the global minimum. Hence we also include 4 well-recognized global optimizers, namely Random Search [Bergstra and Bengio, 2012], Sim-ulated Annealing [Kirkpatrick et al., 1983], Particle Swarm [Kennedy and Eberhart, 1995], and Differential Evolution [Das and Suganthan, 2010], which utilize gradient information for local search, but also have mechanisms to escape from local minima and explore the global landscape. 
+
+# 4 Evaluation and Analysis 
+
+In this section we benchmark the optimizers with the designed inverse problem tasks on the implemented differentiable physics models. We record the optimization process, time and memory consumption during experiments. Each experiment is repeated 3 times with random initialization to demonstrate statistical significance. All experiments are performed on a server with an NVIDIA A100 GPU (80 GB). The major results are summarized in Table 4–6, where 6Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 4: The performance of optimizers on the benchmarked parameter identification problems. Optimizer DFT Tire Battery Tight Binding Gaussian Splatting SGD 1.9e−14 ± 2.7e−14 3.8e−4 ± 1.9e−5 2.0e−5 ± 1.4e−5 3.2e−5 ± 2.1e−6 2.2e−2 ± 4.7e−4
+
+RMSprop 0.0 ± 0.0 2.6e−4 ± 3.7e−5 2.5e−4 ± 2.2e−4 5.6e−5 ± 1.2e−5 1.6e−2 ± 1.6e−4
+
+Adam 1.9e−14 ± 2.7e−14 2.6e−4 ± 1.7e−5 5.1e−5 ± 3.3e−5 7.2e−7 ± 2.8e−7 1.4e−2 ± 8.8e−5
+
+AdamW 3.5e−12 ± 3.0e−12 3.4e−4 ± 1.5e−5 3.3e−4 ± 3.6e−4 8.5e−7 ± 4.9e−7 1.4e−2 ± 1.6e−4
+
+LBFGS 8.8e−11 ± 6.2e−11 2.5e−7 ± 4.0e−8 3.3e−6 ± 5.2e−7 1.1e−9 ± 5.2e−10 1.0e−2 ± 1.9e−4
+
+KFAC 5.1e−10 ± 1.3e−10 2.4e−4 ± 1.9e−5 4.9e−5 ± 5.8e−5 3.5e−7 ± 6.0e−8 2.2e−2 ± 1.1e−3
+
+Shampoo 0.0 ± 0.0 5.7e−4 ± 1.0e−4 4.3e−4 ± 5.4e−4 6.9e−4 ± 2.2e−4 1.4e−2 ± 1.0e−4
+
+SOAP 3.2e−9 ± 1.2e−9 2.5e−4 ± 1.5e−5 5.6e−5 ± 2.4e−5 4.1e−7 ± 8.9e−8 1.5e−2 ± 5.2e−4
+
+RS 1.9e−14 ± 2.7e−14 4.2e−4 ± 3.2e−5 3.8e−5 ± 1.1e−6 1.3e−4 ± 1.6e−5 1.9e−2 ± 3.4e−4
+
+SA 9.3e−11 ± 2.2e−11 1.1e−3 ± 3.7e−4 4.5e−5 ± 2.5e−6 5.2e−3 ± 4.9e−4 2.2e−2 ± 5.0e−4
+
+PS 0.0 ± 0.0 8.1e−5 ± 2.0e−5 8.5e−6 ± 1.5e−6 2.0e−5 ± 7.1e−6 1.9e−2 ± 4.4e−4
+
+DE 0.0 ± 0.0 1.3e−4 ± 4.2e−5 1.7e−5 ± 5.9e−6 4.4e−3 ± 7.7e−4 2.6e−2 ± 1.4e−3
+
+Table 5: The performance of optimizers on the benchmarked inverse design problems. Optimizer Projectile Fluid Atmospheric Elastic SGD 1.0e−9 ± 1.3e−9 6.2e−2 ± 4.6e−7 −7.5e−1 ± 2.0e−3 1.5e0 ± 4.8e−3
+
+RMSprop 1.5e−9 ± 1.9e−9 4.2e−2 ± 1.7e−7 −7.5e−1 ± 9.6e−5 1.6e0 ± 5.5e−3
+
+Adam 2.0e−10 ± 1.5e−10 4.0e−2 ± 1.3e−7 −7.5e−1 ± 6.2e−4 1.5e0 ± 5.2e−3
+
+AdamW 2.9e−11 ± 2.1e−11 4.2e−2 ± 2.3e−7 −7.4e−1 ± 1.9e−3 1.5e0 ± 6.0e−3
+
+LBFGS 2.4e−10 ± 1.7e−10 4.0e−2 ± 2.1e−8 −7.5e−1 ± 4.9e−8 1.5e0 ± 4.5e−3
+
+KFAC 5.7e−10 ± 1.9e−10 4.0e−2 ± 9.8e−9 −7.5e−1 ± 2.1e−5 1.6e0 ± 1.2e−2
+
+Shampoo 5.8e−7 ± 5.1e−8 4.0e−2 ± 0.0 −7.5e−1 ± 6.7e−4 1.6e0 ± 8.7e−3
+
+SOAP 6.2e−11 ± 4.1e−11 4.0e−2 ± 7.3e−6 −7.5e−1 ± 4.8e−5 1.9e0 ± 3.5e−2
+
+RS 0.0 ± 0.0 4.0e−2 ± 0.0 −7.2e−1 ± 4.0e−5 1.5e0 ± 1.6e−2
+
+SA 2.4e−12 ± 1.7e−12 4.0e−2 ± 0.0 −7.2e−1 ± 2.0e−2 2.6e0 ± 5.7e−2
+
+PS 0.0 ± 0.0 4.0e−2 ± 0.0 −7.5e−1 ± 5.6e−8 1.5e0 ± 6.6e−3
+
+DE 0.0 ± 0.0 4.0e−2 ± 1.8e−9 −7.5e−1 ± 1.3e−4 2.5e0 ± 2.0e−2
+
+each element represents the best objective values obtained during the optimization process, and the mean and std values are computed across the multiple runs of optimizations. For SIMP topology optimization, non-converged runs with negative best loss are excluded before hyper-parameter selection and aggregation (Appendix B). In the table, RS is short for Random Search, SA is short for Simulated Annealing, PS is short for Particle Swarm, and DE is short for Differential Evolution. More details regarding experimental setups and results are provided in Appendix B. 
+
+When curvature helps, and when it hurts. Across parameter identification (Table 4), approximate second-order methods are not uniformly better, but they decisively shine on structured spectral matching: L-BFGS reaches a mean best loss on the order of 10 −9 on tight-binding fitting, with K-FAC and SOAP close behind at ∼ 10 −7, whereas untuned first-order baselines such as SGD plateau several orders of magnitude higher. This matches the intuition that least-squares-type objectives against smooth matrix spectra are locally analytic and benefit from exploiting gradient geometry. Conversely, on the radial LDA exchange–correlation fit, nearly all optimizer families reach near-zero best losses (many within numerical tolerance of 0) once hyperparameters are selected per method, indicating a well-conditioned two-parameter fit when the forward SCF remains stable. Tight-binding and DFT therefore bracket a key lesson for differentiable physics benchmarks: optimizer rankings are most informative on tasks where the forward model yields stable objectives but the landscape still separates update rules. 
+
+Global search, initialization sensitivity, and dimensionality. The expectation that global optimizers can be more robust under random initialization is supported most cleanly on low-dimensional inverse design. On projectile range matching (Table 5), random search, particle swarm, and differential evolution reach essentially optimal best objectives (exact zeros within numerical tolerance), on par with L-BFGS/SOAP. Simulated annealing likewise attains a mean best loss of ∼ 10 −12 , indicating repeated landing on the global structure of this one-dimensional landscape. At the same time, approximate second-order methods remain competitive here (L-BFGS mean ∼ 10 −10 ), illustrating the classical 7Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 6: The performance of optimizers on the benchmarked optimal control problems. Optimizer Flight Dynamics Rigid Body Mass Spring SGD −1.3e0 ± 1.2e−6 1.9e−1 ± 1.7e−5 1.9e−1 ± 1.1e−2
+
+RMSprop −1.3e0 ± 6.7e−7 1.9e−1 ± 1.3e−5 5.9e−2 ± 9.6e−3
+
+Adam −1.3e0 ± 9.7e−8 1.9e−1 ± 2.7e−5 1.3e−1 ± 1.3e−2
+
+AdamW −1.3e0 ± 3.5e−7 1.9e−1 ± 1.5e−5 1.4e−1 ± 1.9e−2
+
+LBFGS −1.3e0 ± 5.0e−6 1.9e−1 ± 1.6e−3 2.0e−1 ± 3.0e−2
+
+KFAC −1.3e0 ± 5.6e−8 1.9e−1 ± 7.8e−6 1.9e−1 ± 1.0e−2
+
+Shampoo −1.3e0 ± 0.0 1.9e−1 ± 2.5e−6 5.8e−2 ± 1.0e−2
+
+SOAP −1.3e0 ± 2.6e−3 1.9e−1 ± 1.1e−5 1.1e−1 ± 8.4e−3
+
+RS −1.3e0 ± 2.2e−4 1.9e−1 ± 4.1e−6 9.5e−2 ± 1.6e−2
+
+SA −1.3e0 ± 1.8e−3 1.9e−1 ± 2.0e−5 1.1e−1 ± 1.9e−2
+
+PS −1.3e0 ± 1.1e−3 1.9e−1 ± 3.6e−5 1.0e−1 ± 3.6e−2
+
+DE −1.3e0 ± 9.2e−4 1.9e−1 ± 1.4e−4 1.1e−1 ± 5.7e−3
+
+trade-off: when the basin is generous, curvature-aware updates converge explosively; when it is not, population-based methods pay extra forward passes but buy insurance against bad seeds. The topology-optimization column is the counterpoint: with hundreds of design variables, most first-order methods and several global methods attain stable mean best losses around 1.5, while simulated annealing and differential evolution plateau higher near 2.5–2.6. Without a non-negativity filter, a minority of K-FAC and differential-evolution runs collapse to large negative losses (about 3% of all SIMP runs, concentrated in these two optimizers); naïve minimization of mean best loss would then prefer those failed trajectories. After discarding non-converged runs ( best_loss < 0)and re-selecting hyperparameters on converged repeats only, K-FAC lands with the stable cluster ( ∼ 1.6), whereas differential evolution remains among the weaker but finite performers. Each compliance evaluation requires solving a large sparse equilibrium system inside the autodiff graph, so high-variance proposals can still probe physically meaningless density fields—but such failures should be filtered rather than rewarded. This supports the following conclusion that, global optimizers improve robustness primarily when either (i) the search space is low-dimensional, or (ii) stochastic gradient noise dominates and local curvature is uninformative—not automatically when the forward model is “physics-based.” 
+
+Rendering and semi-empirical fits. Gaussian splatting reconstruction (224 parameters) shows a clear split: L-BFGS achieves the strongest mean best loss around 10 −2, adaptive first-order methods land nearby, and global methods remain slightly worse around 2 × 10 −2 with small run-to-run variance. Semi-empirical tire and battery fits are comparatively forgiving: most methods land in a band of 10 −6–10 −3 mean best losses, with L-BFGS particularly strong on both tasks and particle swarm competitive on the tire task. These tasks behave closer to “standard” differentiable programming in machine learning, where tuned first-order and second-order methods are strong baselines and globals serve as sanity checks rather than sole workhorses. 
+
+Optimal control: long unrolls and noisy credit assignment. The flight-dynamics and mass–spring columns (Table 6) exemplify the point about backpropagating through long rollouts. Flight dynamics now yields tightly clustered mean best losses around −1.3 with very small standard deviations across all twelve optimizers, indicating a comparatively well-conditioned open-loop objective at the reported scale, with only modest separation among update rules. Mass– spring control remains more discriminative (mean best losses ∼ 0.06 –0.20 ), with Shampoo and RMSprop among the strongest configurations, suggesting that even stable contact-rich rollouts retain multi-modal structure in the policy space. Rigid-body setpoint control in Table 6 attains finite mean best losses for all twelve optimizers, clustered around 
+
+∼ 0.19 with very small spread; this is qualitatively similar to the tight flight cluster and tighter than mass–spring, indicating a relatively stable setpoint objective here despite contacts and joints, while still leaving limited room for optimizer choice. 
+
+Compute–objective trade-offs. Appendix B.2 makes the runtime story quantitative. On DFT XC fitting, a single global-optimizer step costs roughly 5–1.9 × 10 1 s of wall time versus ∼ 1 s for first- and second-order local methods—an order-of-magnitude gap before counting how many steps each family needs. The ratio is milder on inexpensive forward models (tire, Gaussian splatting) but widens again on elastic topology optimization and flight dynamics, where one global step can exceed ten forward–backward passes of a local optimizer. We therefore come to the following conclusion that, for offline calibration, design, or scientific inversion, paying an order of magnitude in wall time can be rational 8Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+if it reduces residual error or avoids manual initialization engineering; for real-time control or any setting where the optimizer sits inside an inner loop at kHz rates, first-order methods with small per-step cost remain the pragmatic default, and the benchmark encourages reporting both objective and step-time tables whenever a new simulator is added. 
+
+Takeaway for future optimizer research. Differentiable physics does not inherit the “default optimizers” culture of deep networks: the same Adam hyperparameters that suffice for splatting can be less decisive for a Kohn–Sham outer loop, while L-BFGS may dominate on a 32-parameter tight-binding ring yet fail to offset the cost of global search on a 600-variable topology field. We hope the zoo encourages methods that adapt to simulator structure—mixed-precision stable eigen-solvers for quantum tasks, trust-region filters for contact rollouts, and hybrid global-local schedules whose search radius shrinks as physics residuals fall—rather than treating optimizer choice as an afterthought bolted onto an otherwise frozen forward model. 
+
+# 5 Conclusion 
+
+In this work, we constructed to the best of our knowledge the first benchmark for optimizers to solve inverse problems with differentiable physics simulators. More specifically, we implemented 12 differentiable physics simulators across various physics domains, and designed corresponding inverse problems spanning parameter identification, inverse design, and optimal control. For optimizers, we considered first-order, approximate second-order, and global optimizers, all utilizing the gradient information provided by the differentiable physics models and automatic differentiation tools. We benchmarked the performance of optimizers on these inverse problems, and analyzed the results to provide insights on how to choose and design optimizers for differentiable programming. 
+
+Limitations and Broader impacts. For inverse problem task types, besides the 3 types we benchmarked in this work, there are also other types of tasks that can be solved by differentiable physics models, such as data assimilation and state estimation. Also, constrained optimization has not been considered in the current work, which is also ubiquitous in real-life applications. We will develop more physics simulators, task types and optimizers continuously. Broader impacts of this work include the potential to further promote the applications of differentiable programming in various scientific and engineering domains. 
+
+Acknowledgments 
+
+This work was supported by Zhongguancun Academy under Grant No. XTS0030. 
+
+# References 
+
+Franco Scarselli and Ah Chung Tsoi. Universal approximation using feedforward neural networks: A survey of some existing methods, and some new results. Neural networks , 11(1):15–37, 1998. Atilim Gunes Baydin, Barak A Pearlmutter, Alexey Andreyevich Radul, and Jeffrey Mark Siskind. Automatic differentiation in machine learning: a survey. Journal of machine learning research , 18(153):1–43, 2018. Lenaic Chizat and Francis Bach. Implicit bias of gradient descent for wide two-layer neural networks trained with the logistic loss. In Conference on learning theory , pages 1305–1338. PMLR, 2020. Vinod Nair and Geoffrey E Hinton. Rectified linear units improve restricted boltzmann machines. In Proceedings of the 27th international conference on machine learning (ICML-10) , pages 807–814, 2010. Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition , pages 770–778, 2016. Lei Huang, Jie Qin, Yi Zhou, Fan Zhu, Li Liu, and Ling Shao. Normalization techniques in training dnns: Methodology, analysis and application. IEEE transactions on pattern analysis and machine intelligence , 45(8):10173–10196, 2023. Yuanming Hu, Luke Anderson, Tzu-Mao Li, Qi Sun, Nathan Carr, Jonathan Ragan-Kelley, and Fredo Durand. Difftaichi: Differentiable programming for physical simulation. In International Conference on Learning Representations , 2020. Philipp Holl and Nils Thuerey. Phiflow: Differentiable simulations for pytorch, tensorflow and jax. In International Conference on Machine Learning . PMLR, 2024. J. Zico Kolter, David Duvenaud, and Matthew Johnson. Deep implicit layers: Neural odes, deep equilibrium models, and beyond. NeurIPS 2020 Tutorial, 2020. URL https://implicit-layers-tutorial.org/ .Ricky TQ Chen, Yulia Rubanova, Jesse Bettencourt, and David K Duvenaud. Neural ordinary differential equations. 
+
+Advances in neural information processing systems , 31, 2018. 9Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Sebastian Mitusch, Simon Funke, and Jørgen Dokken. dolfin-adjoint 2018.1: automated adjoints for fenics and firedrake. 
+
+Journal of Open Source Software , 4(38):1292, 2019. Shaojie Bai, J Zico Kolter, and Vladlen Koltun. Deep equilibrium models. Advances in neural information processing systems , 32, 2019. Brandon Amos and J Zico Kolter. Optnet: Differentiable optimization as a layer in neural networks. In International conference on machine learning , pages 136–145. PMLR, 2017. Akshay Agrawal, Brandon Amos, Shane Barratt, Stephen Boyd, Steven Diamond, and J Zico Kolter. Differentiable convex optimization layers. Advances in neural information processing systems , 32, 2019. Filipe de Avila Belbute-Peres, Kevin Smith, Kelsey Allen, Josh Tenenbaum, and J Zico Kolter. End-to-end differentiable physics for learning and control. Advances in neural information processing systems , 31, 2018. Michael Lutter, Christian Ritter, and Jan Peters. Deep lagrangian networks: Using physics as model prior for deep learning. In International Conference on Learning Representations , 2019. Samuel Greydanus, Misko Dzamba, and Jason Yosinski. Hamiltonian neural networks. Advances in neural information processing systems , 32, 2019. Stephan Hoyer, Jascha Sohl-Dickstein, and Sam Greydanus. Neural reparameterization improves structural optimization. In NeurIPS 2019 Workshop on Solving Inverse Problems with Deep Networks , 2019. Ardavan F Oskooi, David Roundy, Mihai Ibanescu, Peter Bermel, John D Joannopoulos, and Steven G Johnson. Meep: A flexible free-software package for electromagnetic simulations by the fdtd method. Computer Physics Communications , 181(3):687–702, 2010. Shane Colburn and Arka Majumdar. Inverse design and flexible parameterization of meta-optics using algorithmic differentiation. Communications Physics , 4(1):65, 2021. Xutong Jin, Chenxi Xu, Ruohan Gao, Jiajun Wu, Guoping Wang, and Sheng Li. Diffsound: Differentiable modal sound rendering and inverse rendering for diverse inference tasks. In ACM SIGGRAPH 2024 Conference Papers , pages 1–12, 2024. Li Li, Stephan Hoyer, Ryan Pederson, Ruoxi Sun, Ekin D Cubuk, Patrick Riley, and Kieron Burke. Kohn-sham equations as regularizer: Building prior knowledge into machine-learned physics. Physical review letters , 126(3): 036401, 2021. M. F. Kasim and S. M. Vinko. Learning the exchange-correlation functional from nature with fully differentiable density functional theory. Phys. Rev. Lett. , 127:126403, Sep 2021. doi: 10.1103/PhysRevLett.127.126403. Stefan Doerr, Maciej Majewski, Adrià Pérez, Andreas Kramer, Cecilia Clementi, Frank Noe, Toni Giorgino, and Gianni De Fabritiis. Torchmd: A deep learning framework for molecular simulations. Journal of chemical theory and computation , 17(4):2355–2363, 2021. Teresa Tamayo-Mendoza, Christoph Kreisbeck, Roland Lindh, and Alán Aspuru-Guzik. Automatic differentiation in quantum chemistry with applications to fully variational hartree–fock. ACS central science , 4(5):559–566, 2018. Hiroharu Kato, Deniz Beker, Mihai Morariu, Takahiro Ando, Toru Matsuoka, Wadim Kehl, and Adrien Gaidon. Differentiable rendering: A survey. arXiv preprint arXiv:2006.12057 , 2020. Ben Mildenhall, Pratul P Srinivasan, Matthew Tancik, Jonathan T Barron, Ravi Ramamoorthi, and Ren Ng. Nerf: Representing scenes as neural radiance fields for view synthesis. Communications of the ACM , 65(1):99–106, 2021. Bernhard Kerbl, Georgios Kopanas, Thomas Leimkühler, George Drettakis, et al. 3d gaussian splatting for real-time radiance field rendering. ACM Trans. Graph. , 42(4):139–1, 2023. Samuel Schoenholz and Ekin Dogus Cubuk. Jax md: a framework for differentiable physics. Advances in Neural Information Processing Systems , 33:11428–11441, 2020. C. Daniel Freeman, Erik Frey, Anton Raichuk, Sertan Girgin, Igor Mordatch, and Olivier Bachem. Brax - a differentiable physics engine for large scale rigid body simulation. In Thirty-fifth Conference on Neural Information Processing Systems Datasets and Benchmarks Track (Round 1) , 2021. Tianju Xue, Shuheng Liao, Zhengtao Gan, Chanwook Park, Xiaoyu Xie, Wing Kam Liu, and Jian Cao. Jax-fem: A differentiable gpu-accelerated 3d finite element solver for automatic inverse design and mechanistic data science. 
+
+Computer Physics Communications , 291:108802, 2023. Jean-Eric Campagne, François Lanusse, Joe Zuntz, Alexandre Boucaud, Santiago Casas, Minas Karamanis, David Kirkby, Denise Lanzieri, Yin Li, and Austin Peel. Jax-cosmo: An end-to-end differentiable and gpu accelerated cosmology library. arXiv preprint arXiv:2302.05163 , 2023. 10 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Honghui Du and QiZhi He. Jax-mpm: A learning-augmented differentiable meshfree framework for gpu-accelerated lagrangian simulation and geophysical inverse modeling. arXiv preprint arXiv:2507.04192 , 2025. Mike Innes, Alan Edelman, Keno Fischer, Chris Rackauckas, Elliot Saba, Viral B Shah, and Will Tebbutt. A differen-tiable programming system to bridge machine learning and scientific computing. arXiv preprint arXiv:1907.07587 ,2019. Ruo-Yu Sun. Optimization for deep learning: An overview. Journal of the Operations Research Society of China , 8(2): 249–294, 2020. Frank Schneider, Lukas Balles, and Philipp Hennig. Deepobs: A deep learning optimizer benchmark suite. arXiv preprint arXiv:1903.05499 , 2019. Keller Jordan, Yuchen Jin, Vlado Boza, You Jiacheng, Franz Cesista, Laker Newhouse, and Jeremy Bernstein. Muon: An optimizer for hidden layers in neural networks, 2024. URL https://kellerjordan.github.io/posts/muon , 6(3):4, 2024. Jingyuan Liu, Jianlin Su, Xingcheng Yao, Zhejun Jiang, Guokun Lai, Yulun Du, Yidao Qin, Weixin Xu, Enzhe Lu, Junjie Yan, et al. Muon is scalable for llm training. arXiv preprint arXiv:2502.16982 , 2025. Raghu Bollapragada, Jorge Nocedal, Dheevatsa Mudigere, Hao-Jun Shi, and Ping Tak Peter Tang. A progressive batching l-bfgs method for machine learning. In International Conference on Machine Learning , pages 620–629. PMLR, 2018. James Martens and Roger Grosse. Optimizing neural networks with kronecker-factored approximate curvature. In 
+
+International conference on machine learning , pages 2408–2417. PMLR, 2015. Vineet Gupta, Tomer Koren, and Yoram Singer. Shampoo: Preconditioned stochastic tensor optimization. In Interna-tional Conference on Machine Learning , pages 1842–1850. PMLR, 2018. Nikhil Vyas, Depen Morwani, Rosie Zhao, Itai Shapira, David Brandfonbrener, Lucas Janson, and Sham M. Kakade. Soap: Improving and stabilizing shampoo using adam for language modeling. In The Thirteenth International Conference on Learning Representations , 2025. Peter W Christensen and Anders Klarbring. An introduction to structural optimization , volume 153. Springer Science & Business Media, 2008. Philippe Angot, Charles-Henri Bruneau, and Pierre Fabrie. A penalization method to take into account obstacles in incompressible viscous flows. Numerische Mathematik , 81(4):497–520, 1999. F Matthias Bickelhaupt and Evert Jan Baerends. Kohn-sham density functional theory: predicting and understanding chemistry. Reviews in computational chemistry , pages 1–86, 2000. CM Goringe, DR Bowler, and E Hernández. Tight-binding modelling of materials. Reports on Progress in Physics , 60 (12):1447–1512, 1997. John William Strutt Baron Rayleigh. On the scattering of light by small particles . 1871. Hans B Pacejka and Egbert Bakker. The magic formula tyre model. In Tyre models for vehicle dynamics analysis ,pages 1–18. CRC Press, 2026. Mohammad A Hannan, MS Hossain Lipu, Aini Hussain, and Azah Mohamed. A review of lithium-ion battery state of charge estimation and management system in electric vehicle applications: Challenges and recommendations. 
+
+Renewable and Sustainable Energy Reviews , 78:834–854, 2017. James Bergstra and Yoshua Bengio. Random search for hyper-parameter optimization. Journal of machine learning research , 13(2), 2012. Scott Kirkpatrick, C Daniel Gelatt Jr, and Mario P Vecchi. Optimization by simulated annealing. science , 220(4598): 671–680, 1983. James Kennedy and Russell Eberhart. Particle swarm optimization. In Proceedings of ICNN’95-international conference on neural networks , volume 4, pages 1942–1948. ieee, 1995. Swagatam Das and Ponnuthurai Nagaratnam Suganthan. Differential evolution: A survey of the state-of-the-art. IEEE transactions on evolutionary computation , 15(1):4–31, 2010. 11 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+# A Details of Differentiable Physics Model Zoo 
+
+A.1 Discrete Mechanics Projectile Motion. We model planar motion of a point mass under constant gravitational acceleration g > 0, with initial height h0 > 0, launch speed v0 > 0, and launch angle θ. The initial velocity components are vx, 0 = v0 cos θ and 
+
+vy, 0 = v0 sin θ. The trajectory is the parabola: 
+
+x(t) = vx, 0t, y(t) = h0 + vy, 0t − 12 gt 2. (1) The simulator is implemented in closed form: the time of flight to ground impact is obtained by solving y(t) = 0 for the positive root, 
+
+timp =
+
+vy, 0 +
+
+q
+
+v2 
+
+> y, 0
+
++ 2 gh 0
+
+g , (2) and the horizontal range used as the scalar output is sx = vx, 0timp .
+
+Flight Dynamics. The vehicle is modeled as a point mass m with reference area S. The system state is set as 
+
+s = ( h, x, v, γ )⊤: altitude h (m), a ground-range coordinate x (m), speed v (m/s), and flight-path angle γ (rad, from horizontal). At each step, a control policy returns aerodynamic coefficients (CL, C D ) as functions of s. Let Re denote the Earth radius and μ denote the gravitational parameter. The radial distance r = Re + h gives g(r) = μ/r 2. The air density ρ(h) = ρ0 exp( −h/H ) for h ≤ 120 km and ρ = 0 above. The dynamic pressure is q = 12 ρ(h)v2, with lift 
+
+L = qSC L and drag D = qSC D . The system state is updated by: 
+
+˙h = v sin γ, (3) 
+
+˙x = v cos γ Re
+
+r , (4) 
+
+˙v = − Dm − g(r) sin γ, (5) 
+
+˙γ = Lmv −
+
+ g(r)
+
+v − vr
+
+
+
+cos γ. (6) One explicit Euler update with step ∆t advances s ← s + ∆ t ( ˙h, ˙x, ˙v, ˙γ)⊤. Rollouts start from a stored initial state and end until h ≤ 0. In the benchmarked open-loop task, (CL, C D ) are produced from per-step logits as above; positions remain in SI meters inside the integrator, while the loss and trajectory plots divide h and x by U = 10 6 m so that the range term − xT /U is expressed in units of 1000 km , together with the effort/smoothness regularizers scaled by 1/U .
+
+Mass-Spring Systems. The mathematical formulation and experimental setups are inspired by Hu et al. [2020, Sec. E.5]. We consider a two-dimensional particle system with N point masses. Let xi(t), vi(t) ∈ R2 denote the position and velocity of mass i ∈ { 1, . . . , N }. Springs are undirected edges e = ( a, b ) between anchors a, b ∈ { 1, . . . , N }.Each spring has a nominal rest length Le > 0, a stiffness ke ≥ 0, and an actuation gain αe ≥ 0. A scalar control 
+
+une ∈ [−1, 1] is applied at discrete time index n; passive springs correspond to αe = 0 , for which une has no effect. The commanded natural length at step n is Ltar  
+
+> e
+
+(une ) = Le
+
+ 1 + αe une
+
+. Let dne = xna − xnb and ℓne = ∥dne ∥. For numerical stability we use a regularized length ˜ℓne = max( ℓne , ε ) with fixed small ε > 0. The spring exerts a velocity impulse aligned with dne :
+
+∆v ne = ∆ t k e
+
+˜ℓne − Ltar  
+
+> e
+
+(une )˜ℓne
+
+dne , (7) which is accumulated on the endpoints as va ← va − ∆v ne and vb ← vb + ∆v ne .Let ζ > 0 be a damping coefficient and g < 0 a constant gravitational acceleration along the vertical axis (so the gravitational increment to velocity is (0 , g ∆t)). After summing spring impulses, velocities are updated by exponential damping and gravity: 
+
+ev n+1  
+
+> i
+
+= e−ζ ∆t vni +  0, g ∆t + X
+
+> e∋i
+
+δvne,i , (8) where δvne,i is the contribution of spring e to mass i from the impulse rule above. Let y denote the vertical component and let the ground be the horizontal line y = h. If the pre-update configuration is below the ground, yni < h , and the post-impulse vertical velocity is still directed into the ground, ev n+1  
+
+> i,y
+
+< 0, we apply 12 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+an inelastic stop projection: 
+
+vn+1  
+
+> i
+
+=
+
+(0, yni < h and ev n+1  
+
+> i,y
+
+< 0,
+
+ev n+1  
+
+> i
+
+, otherwise. (9) Positions are then advanced in semi-implicit Euler: xn+1  
+
+> i
+
+= xni + ∆ t vn+1  
+
+> i
+
+.
+
+Rigid-Body Dynamics. The mathematical formulation and experimental setups are inspired by Hu et al. [2020, Sec. E.7]. The simulator tracks N planar rigid bodies. For each body i ∈ { 1, . . . , N } at discrete time n, let xni ∈ R2 be the center of mass, vni ∈ R2 the translational velocity, θni the orientation, and ωni the scalar angular velocity (about the axis normal to the plane). Each body is a centered axis-aligned rectangle in its own frame with half-extents (hx,i , h y,i ).With uniform areal density ρ = 1 , the reference implementation uses 
+
+mi = 4 hx,i hy,i , Ii = 43 hx,i hy,i 
+
+ h2 
+
+> x,i
+
++ h2
+
+> y,i
+
+, (10) with inverse parameters m−1 
+
+> i
+
+and I−1 
+
+> i
+
+used in impulse updates. Let R(θ) denote the plane rotation by θ. A body-fixed attachment offset rb 
+
+> i
+
+maps to world position pni = xni + R(θni )rb 
+
+> i
+
+and inherits linear velocity 
+
+vn 
+
+> att ,i
+
+= vni + ωni J R(θni )rb 
+
+> i
+
+, J =
+
+0 −11 0
+
+
+
+. (11) Between bodies a and b, two body-fixed offsets define world anchors pna and pnb as above. Define dn = pna − pnb and the regularized length ˜ℓn = max  ∥dn∥, ε  with fixed ε = 10 −4. For a scalar control un ∈ [−1, 1] (clamped), a passive actuation gain α = 0 enforces an inactive control channel. For a spring with rest length L > 0 and stiffness k, the commanded length is 
+
+Ln
+
+> tar
+
+(un) = L  1 + α u n. (12) For a joint, one sets Ln 
+
+> tar
+
+= 0 so the anchors coincide in the unconstrained limit. The primary Hooke-style velocity impulse aligned with dn is 
+
+Jn 
+
+> spring
+
+= ∆ t k ˜ℓn − Ln
+
+> tar
+
+˜ℓn dn. (13) For joints, an additional projection impulse damps the relative anchor velocity vn 
+
+> rel
+
+= vn 
+
+> att ,a
+
+− vn
+
+> att ,b
+
+: with bnn 
+
+> rel
+
+=
+
+vn
+
+> rel
+
+/ max  ∥vn
+
+> rel
+
+∥, η  and a small η > 0, and with the usual effective inertia scalar M n 
+
+> eff
+
+assembled from m−1 
+
+> a
+
+, m−1 
+
+> b
+
+,
+
+I−1 
+
+> a
+
+, I−1 
+
+> b
+
+and squared projected lever arms  bnn 
+
+> rel
+
+× rna
+
+2,  bnn 
+
+> rel
+
+× rnb
+
+2 (two-dimensional scalar cross products), the joint contribution is 
+
+Jn 
+
+> joint
+
+= ∥vn
+
+> rel
+
+∥
+
+M n
+
+> eff
+
+bnn
+
+> rel
+
+, Jn = Jn 
+
+> spring
+
++ Jn
+
+> joint
+
+. (14) The link impulse is applied as equal-and-opposite linear impulses at the anchors: body a receives −Jn and body b
+
+receives +Jn, each decomposed into center-of-mass increments 
+
+∆vna = − Jn
+
+ma
+
+, ∆ωna = (pna − xna ) × Jn
+
+Ia
+
+, (15) and the opposite signs for body b, with × denoting the scalar z-component of the planar cross product. For each body, four corners are generated by independent sign patterns on (±hx,i , ±hy,i ) in body frame. For each corner, let ρni be the world vector from the center of mass to the corner (after rotation), with corner position cni = xni + ρni
+
+and corner velocity wni = vni + ωni Jρni . For the ground test, the velocity is augmented by gravity over one step, 
+
+wn, ∗ 
+
+> i
+
+= wni + (0 , g ∆t)⊤, and the predictor position is bc ni = cni + ∆ t wn, ∗ 
+
+> i
+
+. With horizontal ground y = h and outward normal n = (0 , 1) ⊤, contact activation uses n⊤wn, ∗ 
+
+> i
+
+< 0 and bcni,y < h . The normal impulse magnitude Jnn,i ≥ 0
+
+removes incoming normal motion in the inelastic limit with restitution coefficient e (typically e = 0 ), 
+
+Jnn,i = max 
+
+
+
+0, − (1 + e) n⊤wn, ∗
+
+> i
+
+m−1 
+
+> i
+
++ ( n × ρni )2I−1
+
+> i
+
+
+
+, (16) evaluated only when the contact predicate holds (otherwise Jnn,i = 0 ). With tangent t = (1 , 0) ⊤, a tangential impulse 
+
+Jnt,i is first computed as if frictionless along t, then Coulomb-capped, 
+
+Jn, raw  
+
+> t,i
+
+= − t⊤wn, ∗
+
+> i
+
+m−1 
+
+> i
+
++ ( t × ρni )2I−1
+
+> i
+
+, Jnt,i = clip  Jn, raw  
+
+> t,i
+
+, −μJ nn,i , μJ nn,i 
+
+, (17) 13 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+with friction coefficient μ. The world impulse is Ini = Jnn,i n + Jnt,i t and is mapped to rigid-body increments using the lever arm bc ni − xni in the same cross-product formula as for links. Let ζ be the exponential damping rate and g the gravitational acceleration in the vertical direction. After summing all link and ground impulse contributions into (∆ vni , ∆ωni ), the velocity update is 
+
+ev n+1  
+
+> i
+
+= e−ζ∆t vni + (0 , g ∆t)⊤ + ∆ vni , eω n+1  
+
+> i
+
+= e−ζ∆t ωni + ∆ ωni , (18) followed by the semi-implicit position update 
+
+xn+1  
+
+> i
+
+= xni + ∆ t ev n+1  
+
+> i
+
+, θn+1  
+
+> i
+
+= θni + ∆ t eω n+1  
+
+> i
+
+. (19) 
+
+A.2 Continuous Mechanics Elastic Mechanics. The mathematical formulation and experimental setups are inspired by Hoyer et al. [2019]. We model small-deformation, plane-stress linear elasticity on a rectangular domain Ω = (0 , L x) × (0 , L y ) discretized by a structured mesh of four-node quadrilateral (Q4) elements with bilinear isoparametric shape functions Na(ξ, η ),
+
+a = 1 , . . . , 4, on the reference cell (ξ, η ) ∈ [−1, 1] 2. Let N and E denote the sets of nodes and elements, and let u ∈ R2|N | collect nodal displacements (ux, u y ) in a fixed global ordering. Plane stress relates in-plane strains 
+
+ε = [ εxx , ε yy , γ xy ]⊤ to stresses σ = [ σxx , σ yy , τ xy ]⊤ via σ = D(E, ν ) ε, where for isotropic modulus E and Poisson ratio ν,
+
+D(E, ν ) = E
+
+1 − ν2
+
+"1 ν 0
+
+ν 1 00 0 (1 − ν)/2
+
+#
+
+. (20) For each element e, the strain–displacement matrix Be(x) links element nodal displacements ue ∈ R8 to strains 
+
+ε(x) = Be(x)ue. The element stiffness with uniform Young’s modulus E is 
+
+Ke(E) = 
+
+Z
+
+> Ωe
+
+B⊤ 
+
+> e
+
+D(E, ν ) Be dA, (21) evaluated numerically with a 2 × 2 Gauss quadrature rule on Ωe. The global stiffness assembles contributions from all elements, K({Ee}) = P 
+
+> e
+
+L⊤ 
+
+> e
+
+Ke(Ee)Le, where Le maps global to local DOFs. Each element carries a scalar design density ¯ρe ∈ [0 , 1] . The solid isotropic material with penalization (SIMP) law assigns an effective Young’s modulus 
+
+Ee(¯ ρe) = Emin + ¯ ρ pe
+
+ E0 − Emin 
+
+, Emin = ε E 0, (22) with reference modulus E0, penalty exponent p > 1, and a small positive stiffness floor ε ≪ 1 so that void-like regions retain a well-posed, strictly positive-definite K on the free subspace. Static equilibrium with a prescribed nodal force vector f ∈ R2|N | and homogeneous Dirichlet data on a specified subset of displacement components (fixed DOFs) yields the reduced linear system 
+
+Kf f uf = ff , (23) where subscripts f denote rows and columns associated with unconstrained DOFs after partitioning. The compliance of the structure for the given load is the elastic strain energy 
+
+C = f ⊤u = u⊤ 
+
+> f
+
+Kf f uf =
+
+Z
+
+> Ω
+
+σ⊤ε dA, (24) evaluated consistently with the discrete Q4 approximation above. 
+
+Fluid Mechanics. We consider a two-dimensional sectional wind tunnel on a rectangle Ω = (0 , L x) × (0 , H ) with coordinates (x, y ), where y = 0 is the floor and y = H the ceiling. A parameterized car silhouette is described by a single smooth graph y = ybody (x) for x ∈ (0 , L x). In the implementation, the upper boundary is the sum of a fixed deck height (proportional to H), a Gaussian bump in x controlled by amplitude and width parameters, an algebraic rear taper proportional to  1 − x/L x
+
+2+, followed by a hard cap so that ybody ≤ c H with c < 1. The solid region used by the immersed-body mask lies below this surface, {(x, y ) : 0 < y < y body (x)}, smoothed across a thin transition layer. The velocity u = ( u, v )⊤, pressure p, and constant density ρ satisfy a Brinkman–Stokes system posed on the entire tunnel rectangle, 
+
+−μ ∇2u + ∇p + η χ u = 0, ∇ · u = 0 ,
+
+14 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+where μ is the dynamic viscosity and χ(x) ∈ [0 , 1] is a smoothed indicator with χ ≈ 1 in the car region and χ ≈ 0 in the exterior fluid, built from a logistic mollification of ybody (x) − y with width τ > 0. The penalization coefficient η
+
+is taken mesh-dependent, scaling like μ/ ∆x2 for a cell size ∆x comparable to Lx/n x, so that explicit pseudo-time stepping remains stable while enforcing u ≈ 0 where χ ≈ 1. Where χ ≈ 0, the equations reduce to incompressible Stokes in the exterior fluid. A uniform streamwise inlet u = U∞, v = 0 is imposed at x = 0 , no-slip u = 0 on the top and bottom walls, and an approximate outflow at x = Lx by extrapolating (u, v ) from the penultimate column (zero normal gradient of velocity). In the discrete implementation, the no-slip row at y = 0 is applied after the inlet column, so the bottom-left corner is no-slip rather than plug-flow; this affects only a single grid point at the resolution used here. Because the model is marched explicitly in a pseudo-time τac , an artificial compressibility pressure update is used, 
+
+∂p ∂τ ac 
+
++ β2 ∇ · u = 0 ,
+
+with β chosen proportional to U∞ in the code. The velocity is advanced with an explicit Euler step combining viscous diffusion, pressure gradients scaled by ρ−1, and the Brinkman sink −(η/ρ )χu; the pressure is then projected to zero mean. Only a finite number of pseudo-time iterations is taken, so the reported fields approximate a steady discrete Brinkman–Stokes–AC fixed point at the chosen resolution rather than a fully converged continuum limit. A streamwise drag force per unit span is estimated from the relaxed discrete fields by a two-term volume integral that contracts p and a single velocity gradient component with gradients of χ,
+
+D ≈ ρ
+
+Z
+
+> Ω
+
+p ∂χ ∂x dA − μ
+
+Z
+
+> Ω
+
+∂u ∂y ∂χ ∂y dA, 
+
+with an overall sign convention fixed so that D > 0 corresponds to the resistive streamwise force used in optimization. The pressure contribution is in the spirit of Peskin-type IBM force density −∇ χ contracted with the pressure; the second term is a reduced viscous proxy (it retains only ∂u/∂y rather than the full symmetric viscous traction on the interface) and should be read as an engineering surrogate at low mesh Reynolds number, not a high-fidelity boundary traction integral. The surface ybody (x) is controlled by a latent vector z ∈ R4 mapped through bounded nonlinearities to a small set of shape scales (bump amplitude, longitudinal width, streamwise center, and a signed rear taper). This enforces a simple single-hump family suitable for few-parameter inverse design. 
+
+A.3 Atomistic Simulations Density Functional Theory. Kohn-Sham Density Functional Theory (KS-DFT) is a foundational computational framework that simplifies the complex, many-body interactions of electrons by mapping them onto a system of non-interacting particles, allowing researchers to predict the properties of materials based on their overall electron density rather than tracking every individual electron. We implement a radial restricted “helium-like” Kohn-Sham DFT simulator, i.e., a spherical closed-shell density ρ(r) = ρ(r) on r ∈ [0 , R ] with a single nuclear center. The reduced radial amplitude u(r) (with u(0) = u(R) = 0 ) defines a restricted two-electron mean field via ρ(r) = Ne/22πr 2 u(r)2 and R 4πr 2ρ dr = Ne (intended for Ne=2 , i.e. one doubly occupied s-like spatial orbital). The non-interacting kinetic energy uses − 12 d2/dr2 on u (uniform radial mesh in the implementation). The external potential is a softened Coulomb 
+
+Vext = −Z/ √r2 + δ2; VH solves the spherical Poisson equation for ρ; Vxc comes from a local εxc (ρ) (Slater exchange plus an analytic correlation surrogate). For Kohn-Sham self-consistency, Veff = Vext + VH + Vxc and iterating between 
+
+ρ and u with linear mixing are used. The total energy is E = Ts + Eext + 12 EH + Exc with the same 4πr 2 dr measure. 
+
+Tight Binding. The Tight-Binding (TB) approximation replaces the full single-particle Hamiltonian by a sparse matrix in a minimal local basis: one orthogonal orbital per site, nearest-neighbor hopping only, and no explicit spin degrees of freedom unless stated otherwise. We consider a single spinless orbital on each of N ≥ 3 sites arranged on a ring (one spatial dimension, nearest neighbors only). Onsite energies εn and real hopping magnitudes tn,n +1 > 0 enter the Hermitian Hamiltonian with matrix elements 
+
+Hnn = εn, Hn,n +1 = Hn+1 ,n = − tn,n +1 (n = 0 , . . . , N − 2) , (25) and a closing bond between sites N − 1 and 0 with the same convention, HN −1,0 = H0,N −1 = − tN −1,0 in the purely periodic problem. Real t and this sign choice correspond to zero magnetic flux through the ring in the usual tight-binding sense (no Peierls phases on the intracell bonds). To embed this N -site cluster as one supercell of an infinite 1D periodic chain, let a denote the nearest-neighbor distance along the backbone and A = N a the supercell length. A crystal wavevector k enters only through the intercell link that 15 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+reconnects site N −1 to site 0 of the next cell. The Bloch-reduced N × N Hamiltonian H(k) keeps the same intracell matrix elements as above, while the wrap becomes 
+
+HN −1,0(k) = − tN −1,0 eikA , H0,N −1(k) = − tN −1,0 e−ikA , (26) so H(k) is Hermitian for real k, and H(k + 2 π/A ) = H(k). For each k, the single-particle energies are the eigenvalues of H(k); they may be sorted ascending at fixed k for plotting. The finite supercell spectrum used for total energies and eigenvectors at the supercell origin is H(0) , i.e. the same ring Hamiltonian without a phase on the closing bond. The total density of states per site is the spectral measure of H(0) ,
+
+D(E) = 1
+
+N
+
+> N
+
+X
+
+> j=1
+
+δ E − Ej
+
+, (27) with {Ej } the eigenvalues of H(0) . In the benchmarked parameter-identification task, the loss matches {Ej } and the Bloch band matrix E(k) to a frozen reference (weights 1 and 0.25 ); a Gaussian-smoothed DOS is available from the same spectrum for plotting only. 
+
+A.4 Rendering Gaussian Splatting. We consider a fixed image grid of size H × W over a normalized square domain D = [ −1, 1] 2.Each pixel center is denoted uij ∈ D for i ∈ { 1, . . . , H }, j ∈ { 1, . . . , W }. The renderer places K splats. Splat k
+
+is specified by a center xk ∈ R2, a positive scale σk, an opacity αk ∈ (0 , 1) , and a diffuse color ck ∈ (0 , 1) 3. Let 
+
+r2
+
+> k
+
+(u) = ∥u − xk∥2. The splat weight on the image plane is 
+
+gk(u) = exp 
+
+
+
+− r2
+
+> k
+
+(u)2σ2
+
+> k
+
+
+
+, wk(u) = αk gk(u). (28) Thus wk is non-negative and peaks at xk with characteristic width σk. In the implementation, σk is obtained from a unconstrained parameter via a smooth positive map (softplus) plus a small floor, so that σk stays strictly positive and gradients remain stable. At each u, splat colors are combined with a normalized weighted average of the diffuse colors: 
+
+bc(u) = 
+
+PKk=1 wk(u) ck
+
+PKk=1 wk(u) + ε , (29) with a fixed small ε > 0 only to avoid division by zero in regions where all weights vanish. When P 
+
+> k
+
+wk(u) > 0, bc(u)
+
+lies in the convex hull of the ck because the wk are non-negative. Splats are blended in an orderless way: no explicit back-to-front sort is required. Let S(u) = PKk=1 wk(u) act as a non-negative accumulated opacity density at u. A smooth coverage is 
+
+A(u) = 1 − e−S(u) ∈ [0 , 1) . (30) For large S, A → 1; for S → 0, A ∼ S. Given a constant background color Ibg (scalar gray or RGB), the displayed image is 
+
+I(u) = A(u) bc(u) +  1 − A(u) Ibg . (31) The continuous fields gk, wk, S, A, bc, and I are evaluated on the regular grid {uij } only. Coordinates uij are generated by uniform sampling of [−1, 1] along each axis (tensor grid), so pixel spacing is uniform in the normalized frame. All operations (Gaussian evaluation, sums, exponentials, and the final blend) are applied pointwise on that grid; the result is an H × W × 3 RGB image in [0 , 1] 3 suitable as a differentiable forward map in autodiff frameworks. 
+
+Atmospheric Scattering. Sunlight entering Earth’s atmosphere interacts with air molecules and aerosols through scattering and absorption Scattering redirects photons out of the incident beam; absorption removes energy from the beam and heats the medium. Because molecular (Rayleigh) scattering scales strongly with wavelength, short wavelengths are scattered more efficiently than long ones, which is why clear skies appear blue and sunsets appear reddened when long optical paths sample more scattering and extinction. Larger particles (haze, cloud droplets) contribute Mie scattering, which is more forward-peaked and less spectrally selective, producing whitish hazes and bright glints around the sun. For rendering and inverse problems, the full radiative transfer equation couples emission, absorption, and multiple scattering; practical sky models often approximate the visible sky by single scattering along a view ray plus analytic or tabulated optical depths, trading physical completeness for speed and differentiability while preserving the main perceptual cues (gradient, polarization of color with elevation, solar disk glow). 16 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+The scene is a concentric-shell atmosphere between planet radius Rg and outer radius Rt in a planet-centered frame. Pinhole rays (o, ˆd) are intersected with the outer sphere; integration runs from entry to exit along ˆd, truncated at the first intersection with the ground sphere of radius Rg so samples stay above the surface. At a point p with altitude h = max( ∥p∥ − Rg , 0) , scalar number densities follow exponential atmospheres ρR(h) = exp( −h/H R) and 
+
+ρM (h) = exp( −h/H M ), with scale heights HR, H M . Per-channel extinction uses RGB coefficients βR, βM (1/m) and an optional absorption vector βA weighted by the same ρR factor: 
+
+σt(p) = ρR(h) βR + ρM (h) βM + ρR(h) βA. (32) Along the view ray, samples are spaced uniformly in distance; a cumulative sum approximates τ view (s) = R ssmin σt(o +
+
+s′ ˆd) d s′. From each sample p, a second quadrature marches toward the (unit) sun direction ˆs out to the atmosphere shell, yielding τ ⊙(p) for sunlight attenuation to p. Let μ = ˆd·ˆs. Rayleigh uses PR(μ) = 316 π (1 + μ2); Mie uses the Henyey–Greenstein phase PM (μ | g). The in-scattered radiance accumulated along the camera ray is a discrete sum of 
+
+
+
+ρR βRPR(μ) + ρM βM PM (μ | g)
+
+
+
+exp   − (τ view + τ ⊙) ∆s, (33) scaled by a per-channel sun intensity I⊙, exposure, optional white-balance normalization, and mapped to [0 , 1] by 
+
+L 7 → 1 − exp( −L) (invalid rays return black). 
+
+A.5 Semi-Empirical Physics Models Tire Magic Formula. The magic formula is a semi-empirical model for tire dynamics which describes the relationship between the slip ratio and slip angle of a tire and the resulting longitudinal and lateral forces. The model is widely used in vehicle dynamics simulations and control systems. The core equation of the magic formula can be expressed as follows: 
+
+y = D sin( C arctan( Bx − E(Bx − arctan( Bx )))) . (34) It is used to model the longitudinal force as a function of the slip ratio, in which case x is the slip ratio κ, and y is the longitudinal force Fx. It is also used to model the lateral force as a function of the slip angle, in which case x is the slip angle α, and y is the lateral force Fy . The parameters B, C, D, and E can be tuned to fit experimental data, allowing the magic formula to accurately capture the complex behavior of tire forces under various conditions. 
+
+Battery Thevenin Model. The Thevenin model simplifies the complex electrochemical processes in a battery into an equivalent circuit consisting of a voltage source and resistors. We use a first-order Thevenin model with one RC polarization branch. Let I(t) denote the applied current at time t (positive for discharge in the usual sign convention; the benchmark uses bipolar random pulse profiles). Let Q denote the nominal capacity and η ∈ (0 , 1] denote the coulombic efficiency. Let R0 denote ohmic resistance, and (R1, C 1) characterize polarization dynamics. The model state is the state of charge SOC( t) and the RC polarization voltage Vrc (t):
+
+˙SOC( t) = − η I(t)
+
+Q , (35) 
+
+˙Vrc (t) = − 1
+
+R1C1
+
+Vrc (t) + 1
+
+C1
+
+I(t), (36) and the terminal voltage is 
+
+V (t) = Voc (SOC( t)) − R0I(t) − Vrc (t). (37) The open-circuit voltage is parameterized as a smooth SoC map; in our implementation we use a cubic polynomial 
+
+Voc (s) = a0 + a1s + a2s2 + a3s3, s ∈ [0 , 1] . (38) For simulation, this continuous-time model is discretized at step size ∆t and integrated in a differentiable manner, with SoC constrained to [0 , 1] . In the parameter-identification task, both the circuit tuple (Q, η, R 0, R 1, C 1) and the OCV coefficients (a0, . . . , a 3) are learnable; the objective is MSE( V ) + 0 .2 MSE(SOC) against trajectories from a frozen ground-truth model driven by the same currents and initial SoC. 
+
+# B Details of Experiment Setups and Results 
+
+B.1 Experiment Setups 
+
+For each task and each of the 12 optimizers, we evaluate a shared hyper-parameter grid (207 configurations in total across optimizers) and select the best configuration by minimizing the mean best loss over random initializations. 17 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 7: Optimizer hyper-parameter search space for the benchmark. Name Searched / fixed configurations SGD search lr , momentum (8 configs) RMSprop search lr , momentum (8 configs) Adam search lr , beta1 ; fixed beta2=0.999 (8 configs) AdamW search lr , beta1 ; fixed beta2=0.999 (8 configs) LBFGS search lr ; fixed max_iter=10 , line_search_fn=strong_wolfe (4 configs) KFAC search lr , damping ; fixed momentum=0.9 , beta=0.95 ,
+
+precondition_frequency=10 (12 configs) Shampoo search lr , damping ; fixed beta=0.95 , precondition_frequency=10 
+
+(12 configs) SOAP search lr , damping ; fixed betas=(0.9,0.99) , beta_precond=0.95 ,
+
+precondition_frequency=10 (12 configs) RandomSearch search sigma , candidates_per_step , polish_lr ; fixed 
+
+polish_steps=5 , clamp=10 (36 configs) SimulatedAnnealing search sigma , temperature , candidates_per_step ; fixed 
+
+cooling=0.99 , polish_steps=5 , polish_lr=1e-2 , clamp=10 
+
+(27 configs) ParticleSwarm search init_sigma , swarm_size , polish_lr ; fixed polish_steps=5 ,
+
+clamp=10 (36 configs) DifferentialEvolution search init_sigma , population_size , polish_lr ; fixed 
+
+polish_steps=5 , clamp=10 (36 configs) Each configuration is repeated 3 times, and each run executes T = 100 optimizer epochs. One epoch is one call to the optimizer’s update rule, with the scalar loss defined by the task’s loss function. Experiments are run on an NVIDIA A100 GPU (80 GB). For the SIMP topology task only, a run is treated as non-converged if its best loss is negative (physically inconsistent with the non-negative compliance-plus-volume objective). Non-converged repeats are excluded from hyper-parameter selection and from the reported mean/std; selection otherwise follows the same minimize-mean-best-loss rule on the remaining repeats. The benchmarked tasks match the registry defaults used in the grid search. In particular: battery parameter identification minimizes MSE( V ) + 0 .2 MSE(SOC) under fixed pulse currents; tight-binding fitting minimizes MSE( {Ej }) + 0.25 MSE( E(k)) on supercell eigenvalues and Bloch bands; projectile inverse design minimizes (sx − 16 .974) 2 over the launch angle; SIMP topology design uses L = C/C ref +25 ( ρ−0.5) 2 on a 30 ×20 half MBB beam; flight open-loop control maximizes downrange via L = −xT /U + (2 × 10 −5/U ) mean( u⊙2) + (1 × 10 −5/U ) mean(( ut+1 − ut)⊙2)
+
+with U = 10 6 m; rigid-body control optimizes a (10 ×7) -dimensional open-loop actuation table toward goal (0 .9, 0.15) ;and mass–spring control optimizes a (100 × 11) -dimensional table toward (0 .9, 0.2) .Let θ(0) denote the baseline design-variable tensors, i.e., floating-point entries of model.named_parameters() only. Simulator buffers such as FEM stiffness stacks, nodal forces, and mesh coordinates are copied unchanged. For run r,each design variable θ is reinitialized as 
+
+˜θ = θ + σinit · max  m(θ), 10 −2 · ξ, ξ ∼ N (0 , I ), (39) where m(θ) is the mean of |θ|, and σinit is the init noise (set to 0.05). Noise samples use a torch.Generator with seed 0. Table 7 lists the searched hyper-parameters and fixed secondary knobs for each optimizer. Candidate values are drawn from shared global grids: lr /polish_lr ∈ { 10 −3, 10 −2, 10 −1, 1}, momentum /beta1 ∈ { 0, 0.9}, damping ∈{10 −4, 10 −3, 10 −2}, sigma /init_sigma ∈ {0.05 , 0.1, 0.5}, population ∈ {8, 16 , 32 }, temperature ∈{0.5, 1, 2}. For approximate second-order methods, each outer step uses the autograd gradient from the task’s forward–backward pass. For global optimizers, after each global search proposal, the optimizers optionally run a short gradient-descent polish (with polish_steps=5 fixed) to locally refine the best candidate. Exceptions inside the inner training loop are caught per run: the failure is logged, and the benchmark continues with the next repeat or optimizer without terminating the entire sweep. 18 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+B.2 Compute Resources 
+
+We record the wall time and peak GPU memory usage for each run of the selected (best) hyper-parameter configuration. The wall time is measured for the full optimization run and converted to a per-step average by dividing by the number of effective epochs; mean/std are computed over the three repeats. Peak GPU memory is likewise averaged over those three best-configuration repeats (reported in MiB as “MB” in the tables). Table 8: Compute Resource Usage for DFT XC Functional Parameter Fitting. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 1.1 × 10 0 ± 3.1 × 10 −2 5.1 × 10 1 ± 0.0
+
+RMSprop 1.1 × 10 0 ± 8.3 × 10 −3 5.1 × 10 1 ± 0.0
+
+Adam 9.6 × 10 −1 ± 1.1 × 10 −2 5.1 × 10 1 ± 0.0
+
+AdamW 9.6 × 10 −1 ± 1.9 × 10 −2 5.1 × 10 1 ± 0.0
+
+LBFGS 6.4 × 10 −1 ± 1.6 × 10 −2 5.1 × 10 1 ± 1.8 × 10 −3
+
+KFAC 1.1 × 10 0 ± 1.2 × 10 −2 5.1 × 10 1 ± 0.0
+
+Shampoo 1.1 × 10 0 ± 3.3 × 10 −3 5.1 × 10 1 ± 0.0
+
+SOAP 1.1 × 10 0 ± 5.0 × 10 −3 5.1 × 10 1 ± 0.0
+
+RandomSearch 1.9 × 10 1 ± 1.6 × 10 −1 5.1 × 10 1 ± 0.0
+
+SimulatedAnnealing 1.1 × 10 1 ± 3.7 × 10 −2 5.1 × 10 1 ± 0.0
+
+ParticleSwarm 5.0 × 10 0 ± 1.4 × 10 −2 5.1 × 10 1 ± 0.0
+
+DifferentialEvolution 5.0 × 10 0 ± 1.8 × 10 −2 5.1 × 10 1 ± 0.0
+
+Table 9: Compute Resource Usage for Tire Magic Formula Parameter Fitting. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 2.2 × 10 −3 ± 8.2 × 10 −4 8.7 × 10 0 ± 0.0
+
+RMSprop 2.0 × 10 −3 ± 5.0 × 10 −5 8.7 × 10 0 ± 0.0
+
+Adam 2.4 × 10 −3 ± 1.7 × 10 −4 8.7 × 10 0 ± 0.0
+
+AdamW 2.6 × 10 −3 ± 2.3 × 10 −4 8.7 × 10 0 ± 0.0
+
+LBFGS 6.4 × 10 −1 ± 8.4 × 10 −2 8.9 × 10 0 ± 9.2 × 10 −4
+
+KFAC 2.8 × 10 −3 ± 2.0 × 10 −4 8.7 × 10 0 ± 0.0
+
+Shampoo 2.6 × 10 −3 ± 4.7 × 10 −5 8.7 × 10 0 ± 0.0
+
+SOAP 2.6 × 10 −3 ± 9.7 × 10 −5 8.7 × 10 0 ± 0.0
+
+RandomSearch 7.8 × 10 −2 ± 1.3 × 10 −3 8.7 × 10 0 ± 0.0
+
+SimulatedAnnealing 1.2 × 10 −1 ± 6.5 × 10 −4 8.7 × 10 0 ± 0.0
+
+ParticleSwarm 1.0 × 10 −1 ± 2.9 × 10 −3 8.7 × 10 0 ± 0.0
+
+DifferentialEvolution 1.8 × 10 −1 ± 1.1 × 10 −3 8.7 × 10 0 ± 0.0
+
+19 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 10: Compute Resource Usage for Battery Thevenin Model Parameter Fitting. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 9.1 × 10 −2 ± 4.0 × 10 −4 9.1 × 10 0 ± 0.0
+
+RMSprop 8.6 × 10 −2 ± 1.4 × 10 −3 9.1 × 10 0 ± 0.0
+
+Adam 8.6 × 10 −2 ± 8.1 × 10 −4 9.1 × 10 0 ± 0.0
+
+AdamW 8.7 × 10 −2 ± 7.8 × 10 −4 9.1 × 10 0 ± 0.0
+
+LBFGS 6.4 × 10 −1 ± 2.4 × 10 −2 9.2 × 10 0 ± 6.3 × 10 −3
+
+KFAC 9.3 × 10 −2 ± 1.7 × 10 −3 9.1 × 10 0 ± 0.0
+
+Shampoo 8.8 × 10 −2 ± 4.9 × 10 −4 9.1 × 10 0 ± 0.0
+
+SOAP 8.7 × 10 −2 ± 1.2 × 10 −3 9.1 × 10 0 ± 0.0
+
+RandomSearch 8.1 × 10 −1 ± 2.0 × 10 −2 9.1 × 10 0 ± 0.0
+
+SimulatedAnnealing 8.7 × 10 −1 ± 1.7 × 10 −2 9.1 × 10 0 ± 0.0
+
+ParticleSwarm 8.0 × 10 −1 ± 1.5 × 10 −2 9.1 × 10 0 ± 0.0
+
+DifferentialEvolution 1.5 × 10 0 ± 6.6 × 10 −3 9.1 × 10 0 ± 0.0
+
+Table 11: Compute Resource Usage for Tight Binding Parameter Fitting. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 6.8 × 10 −1 ± 1.6 × 10 −3 1.8 × 10 1 ± 0.0
+
+RMSprop 6.9 × 10 −1 ± 9.0 × 10 −3 1.8 × 10 1 ± 0.0
+
+Adam 8.1 × 10 −1 ± 9.8 × 10 −2 1.8 × 10 1 ± 0.0
+
+AdamW 1.2 × 10 0 ± 5.5 × 10 −3 1.8 × 10 1 ± 0.0
+
+LBFGS 2.0 × 10 0 ± 2.1 × 10 −2 1.8 × 10 1 ± 4.8 × 10 −3
+
+KFAC 1.1 × 10 0 ± 5.7 × 10 −3 1.8 × 10 1 ± 0.0
+
+Shampoo 1.2 × 10 0 ± 7.1 × 10 −3 1.8 × 10 1 ± 0.0
+
+SOAP 1.2 × 10 0 ± 5.8 × 10 −3 1.8 × 10 1 ± 0.0
+
+RandomSearch 1.1 × 10 1 ± 2.8 × 10 −1 1.8 × 10 1 ± 0.0
+
+SimulatedAnnealing 5.8 × 10 0 ± 6.5 × 10 −3 1.8 × 10 1 ± 0.0
+
+ParticleSwarm 1.2 × 10 1 ± 3.5 × 10 −2 1.8 × 10 1 ± 0.0
+
+DifferentialEvolution 5.6 × 10 0 ± 1.4 × 10 −2 1.8 × 10 1 ± 0.0
+
+Table 12: Compute Resource Usage for Gaussian Splatting 2D Reconstruction. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 6.8 × 10 −3 ± 1.1 × 10 −4 1.2 × 10 1 ± 0.0
+
+RMSprop 6.8 × 10 −3 ± 7.0 × 10 −5 1.2 × 10 1 ± 0.0
+
+Adam 7.2 × 10 −3 ± 1.7 × 10 −4 1.2 × 10 1 ± 0.0
+
+AdamW 7.1 × 10 −3 ± 8.9 × 10 −5 1.2 × 10 1 ± 0.0
+
+LBFGS 3.2 × 10 0 ± 1.6 × 10 −1 1.2 × 10 1 ± 0.0
+
+KFAC 2.5 × 10 −2 ± 4.1 × 10 −4 1.2 × 10 1 ± 0.0
+
+Shampoo 1.4 × 10 −2 ± 1.1 × 10 −4 1.2 × 10 1 ± 0.0
+
+SOAP 1.5 × 10 −2 ± 4.0 × 10 −4 1.2 × 10 1 ± 0.0
+
+RandomSearch 1.6 × 10 −1 ± 2.2 × 10 −3 1.2 × 10 1 ± 0.0
+
+SimulatedAnnealing 1.7 × 10 −1 ± 6.6 × 10 −4 1.2 × 10 1 ± 0.0
+
+ParticleSwarm 3.9 × 10 −1 ± 9.8 × 10 −3 1.2 × 10 1 ± 0.0
+
+DifferentialEvolution 2.2 × 10 −1 ± 7.7 × 10 −4 1.2 × 10 1 ± 0.0
+
+20 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 13: Compute Resource Usage for Projectile Motion Range Matching. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 1.0 × 10 −3 ± 8.3 × 10 −6 8.7 × 10 0 ± 0.0
+
+RMSprop 1.3 × 10 −3 ± 6.3 × 10 −5 8.7 × 10 0 ± 0.0
+
+Adam 3.5 × 10 −3 ± 2.7 × 10 −3 8.7 × 10 0 ± 0.0
+
+AdamW 1.8 × 10 −3 ± 4.0 × 10 −5 8.7 × 10 0 ± 0.0
+
+LBFGS 6.4 × 10 −2 ± 2.5 × 10 −4 8.7 × 10 0 ± 0.0
+
+KFAC 1.8 × 10 −3 ± 1.2 × 10 −4 8.7 × 10 0 ± 0.0
+
+Shampoo 1.8 × 10 −3 ± 6.6 × 10 −5 8.7 × 10 0 ± 0.0
+
+SOAP 1.7 × 10 −3 ± 1.2 × 10 −4 8.7 × 10 0 ± 0.0
+
+RandomSearch 6.5 × 10 −2 ± 4.6 × 10 −4 8.7 × 10 0 ± 0.0
+
+SimulatedAnnealing 1.1 × 10 −1 ± 2.3 × 10 −3 8.7 × 10 0 ± 0.0
+
+ParticleSwarm 2.7 × 10 −2 ± 4.6 × 10 −4 8.7 × 10 0 ± 0.0
+
+DifferentialEvolution 1.1 × 10 −1 ± 8.4 × 10 −4 8.7 × 10 0 ± 0.0
+
+Table 14: Compute Resource Usage for Fluid Mechanics Shape Optimization. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 4.9 × 10 −1 ± 1.5 × 10 −2 9.3 × 10 0 ± 0.0
+
+RMSprop 4.8 × 10 −1 ± 7.0 × 10 −3 9.3 × 10 0 ± 0.0
+
+Adam 5.2 × 10 −1 ± 3.1 × 10 −3 9.3 × 10 0 ± 0.0
+
+AdamW 5.1 × 10 −1 ± 2.5 × 10 −3 9.3 × 10 0 ± 0.0
+
+LBFGS 6.6 × 10 −1 ± 2.8 × 10 −2 9.4 × 10 0 ± 5.0 × 10 −3
+
+KFAC 5.2 × 10 −1 ± 1.9 × 10 −2 9.3 × 10 0 ± 0.0
+
+Shampoo 4.8 × 10 −1 ± 4.6 × 10 −3 9.3 × 10 0 ± 0.0
+
+SOAP 5.1 × 10 −1 ± 1.9 × 10 −3 9.3 × 10 0 ± 0.0
+
+RandomSearch 3.6 × 10 0 ± 1.0 × 10 −2 9.3 × 10 0 ± 0.0
+
+SimulatedAnnealing 6.5 × 10 0 ± 6.2 × 10 −3 9.3 × 10 0 ± 0.0
+
+ParticleSwarm 4.5 × 10 0 ± 4.1 × 10 −2 9.3 × 10 0 ± 0.0
+
+DifferentialEvolution 4.8 × 10 0 ± 1.8 × 10 −2 9.3 × 10 0 ± 0.0
+
+Table 15: Compute Resource Usage for Atmospheric Scattering Chromaticity Maximization. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 1.5 × 10 −2 ± 3.4 × 10 −4 3.8 × 10 1 ± 0.0
+
+RMSprop 1.4 × 10 −2 ± 8.5 × 10 −5 3.8 × 10 1 ± 0.0
+
+Adam 1.4 × 10 −2 ± 7.3 × 10 −5 3.8 × 10 1 ± 0.0
+
+AdamW 1.4 × 10 −2 ± 2.2 × 10 −4 3.8 × 10 1 ± 0.0
+
+LBFGS 5.0 × 10 −1 ± 4.1 × 10 −2 3.8 × 10 1 ± 4.9 × 10 −3
+
+KFAC 3.1 × 10 −2 ± 3.1 × 10 −4 3.8 × 10 1 ± 0.0
+
+Shampoo 1.6 × 10 −2 ± 1.4 × 10 −4 3.8 × 10 1 ± 0.0
+
+SOAP 1.6 × 10 −2 ± 2.0 × 10 −4 3.8 × 10 1 ± 0.0
+
+RandomSearch 2.8 × 10 −1 ± 2.2 × 10 −3 3.8 × 10 1 ± 0.0
+
+SimulatedAnnealing 4.0 × 10 −1 ± 3.5 × 10 −4 3.8 × 10 1 ± 0.0
+
+ParticleSwarm 5.0 × 10 −1 ± 3.3 × 10 −3 3.8 × 10 1 ± 0.0
+
+DifferentialEvolution 8.9 × 10 −1 ± 5.4 × 10 −3 3.8 × 10 1 ± 0.0
+
+21 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 16: Compute Resource Usage for Elastic Mechanics Topology Optimization. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 3.6 × 10 −1 ± 5.9 × 10 −4 4.4 × 10 1 ± 0.0
+
+RMSprop 3.4 × 10 −1 ± 5.6 × 10 −4 4.4 × 10 1 ± 0.0
+
+Adam 3.4 × 10 −1 ± 1.1 × 10 −3 4.4 × 10 1 ± 0.0
+
+AdamW 3.4 × 10 −1 ± 1.4 × 10 −3 4.4 × 10 1 ± 0.0
+
+LBFGS 2.0 × 10 0 ± 1.6 × 10 −1 4.4 × 10 1 ± 2.2 × 10 −2
+
+KFAC 3.5 × 10 −1 ± 2.1 × 10 −3 4.9 × 10 1 ± 0.0
+
+Shampoo 3.4 × 10 −1 ± 6.8 × 10 −4 4.6 × 10 1 ± 0.0
+
+SOAP 3.4 × 10 −1 ± 3.1 × 10 −3 4.6 × 10 1 ± 0.0
+
+RandomSearch 4.3 × 10 0 ± 7.2 × 10 −3 4.4 × 10 1 ± 0.0
+
+SimulatedAnnealing 4.3 × 10 0 ± 7.8 × 10 −3 4.4 × 10 1 ± 0.0
+
+ParticleSwarm 2.9 × 10 0 ± 2.2 × 10 −2 4.4 × 10 1 ± 0.0
+
+DifferentialEvolution 3.0 × 10 0 ± 5.0 × 10 −3 4.4 × 10 1 ± 0.0
+
+Table 17: Compute Resource Usage for Flight Dynamics Range Maximization. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 1.6 × 10 0 ± 1.4 × 10 −2 1.1 × 10 1 ± 0.0
+
+RMSprop 1.7 × 10 0 ± 1.1 × 10 −2 1.1 × 10 1 ± 0.0
+
+Adam 1.6 × 10 0 ± 7.3 × 10 −3 1.1 × 10 1 ± 0.0
+
+AdamW 1.5 × 10 0 ± 5.0 × 10 −3 1.1 × 10 1 ± 0.0
+
+LBFGS 5.0 × 10 0 ± 4.9 × 10 0 1.1 × 10 1 ± 2.1 × 10 −2
+
+KFAC 2.1 × 10 0 ± 5.1 × 10 −3 1.3 × 10 1 ± 0.0
+
+Shampoo 2.1 × 10 0 ± 1.8 × 10 −3 1.1 × 10 1 ± 0.0
+
+SOAP 2.1 × 10 0 ± 9.8 × 10 −3 1.1 × 10 1 ± 0.0
+
+RandomSearch 1.7 × 10 1 ± 6.4 × 10 −2 1.1 × 10 1 ± 0.0
+
+SimulatedAnnealing 1.7 × 10 1 ± 2.4 × 10 −2 1.1 × 10 1 ± 0.0
+
+ParticleSwarm 1.1 × 10 1 ± 1.1 × 10 −1 1.1 × 10 1 ± 0.0
+
+DifferentialEvolution 7.6 × 10 0 ± 7.6 × 10 −2 1.1 × 10 1 ± 0.0
+
+Table 18: Compute Resource Usage for Rigid-Body Robot Setpoint. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 2.9 × 10 0 ± 5.4 × 10 −2 1.9 × 10 1 ± 0.0
+
+RMSprop 2.8 × 10 0 ± 2.2 × 10 −2 1.9 × 10 1 ± 0.0
+
+Adam 2.6 × 10 0 ± 3.5 × 10 −2 1.9 × 10 1 ± 0.0
+
+AdamW 2.8 × 10 0 ± 1.8 × 10 −1 1.9 × 10 1 ± 0.0
+
+LBFGS 1.3 × 10 1 ± 7.2 × 10 0 1.9 × 10 1 ± 1.3 × 10 −2
+
+KFAC 3.6 × 10 0 ± 5.2 × 10 −3 1.9 × 10 1 ± 0.0
+
+Shampoo 3.6 × 10 0 ± 2.7 × 10 −2 1.9 × 10 1 ± 0.0
+
+SOAP 3.7 × 10 0 ± 5.6 × 10 −2 1.9 × 10 1 ± 0.0
+
+RandomSearch 6.7 × 10 1 ± 1.3 × 10 0 1.9 × 10 1 ± 0.0
+
+SimulatedAnnealing 2.8 × 10 1 ± 4.9 × 10 −2 1.9 × 10 1 ± 0.0
+
+ParticleSwarm 1.4 × 10 1 ± 5.0 × 10 −2 1.9 × 10 1 ± 0.0
+
+DifferentialEvolution 5.7 × 10 0 ± 1.5 × 10 −1 1.9 × 10 1 ± 0.0
+
+22 Benchmarking Optimizers for Differentiable Physics Inverse Problems A P REPRINT 
+
+Table 19: Compute Resource Usage for Mass-Spring Robot Reach. Optimizer Step wall (s), mean ± std Peak GPU (MB), mean ± std SGD 1.4 × 10 0 ± 1.1 × 10 −2 9.3 × 10 0 ± 0.0
+
+RMSprop 1.4 × 10 0 ± 2.3 × 10 −3 9.3 × 10 0 ± 0.0
+
+Adam 1.4 × 10 0 ± 3.8 × 10 −3 9.3 × 10 0 ± 0.0
+
+AdamW 1.4 × 10 0 ± 1.5 × 10 −2 9.3 × 10 0 ± 0.0
+
+LBFGS 3.9 × 10 0 ± 6.5 × 10 −1 9.4 × 10 0 ± 2.3 × 10 −2
+
+KFAC 7.5 × 10 −1 ± 2.0 × 10 −3 1.1 × 10 1 ± 0.0
+
+Shampoo 7.5 × 10 −1 ± 4.0 × 10 −3 9.3 × 10 0 ± 0.0
+
+SOAP 7.5 × 10 −1 ± 9.1 × 10 −4 9.4 × 10 0 ± 0.0
+
+RandomSearch 1.6 × 10 1 ± 4.7 × 10 −2 9.3 × 10 0 ± 0.0
+
+SimulatedAnnealing 1.6 × 10 1 ± 7.2 × 10 −2 9.3 × 10 0 ± 0.0
+
+ParticleSwarm 6.9 × 10 0 ± 3.4 × 10 −2 1.0 × 10 1 ± 0.0
+
+DifferentialEvolution 7.1 × 10 0 ± 3.1 × 10 −2 9.4 × 10 0 ± 0.0
+
+23

@@ -6,41 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-15
-- 运行时间：2026-09-15 22:31:44 UTC
+- 最新运行日期：2026-09-16
+- 运行时间：2026-09-16 21:42:45 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：1
-- 速读区：5
+- 本次总论文数：4
+- 精读区：0
+- 速读区：4
 
 ### 今日简报（AI）
-- 今日共生成 6 篇推荐（精读 1 篇，速读 5 篇）
-- 精读：《Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation》（8.0/10）
-- 速读：《Primitive-Informed Sampling-Based MPC for Multi-Fingered Dexterous Manipulation》（7.0/10）, 《ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies》（6.0/10）, 《DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization》（6.0/10）
-- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
-- 详情：[/202609/15/README](/202609/15/README)
+今日速读4篇机器人方向论文（列出3篇），涵盖统一VLA扩散模型、接触丰富插装的约束强化学习与手内6D位姿泛化，均获6.0分。
+
+最值得看的是“统一视觉-语言-动作扩散模型”与“约束强化学习用于变阻抗控制”这两条线，分别指向通用操作策略和精细接触任务。
+
+普通读者可先挑一篇读摘要与实验视频，重点看方法能否迁移到自家场景，再决定是否深入复现。
+- 详情：[/202609/16/README](/202609/16/README)
 
 ### 精读区论文标签
-1. [Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation](/202609/15/2609.14878v1-real-world-reinforcement-learning-with-mpc-scaffolding-for-dexterous-manipulation)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：以MPC作为脚手架提升真实世界RL的样本效率
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Primitive-Informed Sampling-Based MPC for Multi-Fingered Dexterous Manipulation](/202609/15/2609.14868v1-primitive-informed-sampling-based-mpc-for-multi-fingered-dexterous-manipulation)  
-   标签：评分：7.0/10、query:mbrl-manip
-   evidence：面向灵巧操作的采样模型预测控制
-2. [ActSafeGuard: Differentiable and Training-Aligned Constraint Enforcement for Flow-Matching Policies](/202609/15/2609.11697v2-actsafeguard-differentiable-and-training-aligned-constraint-enforcement-for-flow-matching-policies)  
+1. [Dynin-Robotics: Omnimodal Unified Diffusion Vision-Language-Action Model](/202609/16/2609.13053v1-dynin-robotics-omnimodal-unified-diffusion-vision-language-action-model)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：统一扩散模型学习动作条件下一观测预测与目标预测，服务机器人策略
+2. [Constraint-Grounded Reinforcement Learning for Variable Impedance Control in Contact-Rich Robotic Insertion](/202609/16/2609.13516v1-constraint-grounded-reinforcement-learning-for-variable-impedance-control-in-contact-rich-robotic-insertion)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：面向接触丰富机器人插入操作的强化学习变阻抗控制
+3. [Learning In-Hand Object Reaching to General 6D Poses](/202609/16/2609.13761v1-learning-in-hand-object-reaching-to-general-6d-poses)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：面向手内6D位姿到达的仿真到现实强化学习框架
+4. [Benchmarking Optimizers to Solve Inverse Problems with Differentiable Physics Simulators](/202609/16/2609.13819v1-benchmarking-optimizers-to-solve-inverse-problems-with-differentiable-physics-simulators)  
    标签：评分：6.0/10、query:diff-physics
-   evidence：可微安全层融入操作策略学习
-3. [DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization](/202609/15/2609.12245v1-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向机器人操作任务的扩散策略强化学习微调
-4. [DIA: Denoising Intermediate Advantage for Diffusion Policy Optimization](/202609/15/2609.12245v2-dia-denoising-intermediate-advantage-for-diffusion-policy-optimization)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向机械臂操作扩散策略的强化学习微调
-5. [Runtime-Incremental Transformer for Reinforcement-Learning-Based Adaptive Control](/202609/15/2609.13545v1-runtime-incremental-transformer-for-reinforcement-learning-based-adaptive-control)  
-   标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向机械臂的强化学习自适应控制与运行时增量注意力头
+   evidence：可微物理模拟器的优化器基准测试
 
 
 <div class="dpr-home-promo-card">

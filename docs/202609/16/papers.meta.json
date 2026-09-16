@@ -1,0 +1,69 @@
+{
+  "label": "2026-09-16",
+  "date": "2026-09-16",
+  "generated_at": "2026-09-16T21:42:51",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202609/16/2609.13053v1-dynin-robotics-omnimodal-unified-diffusion-vision-language-action-model",
+      "section": "quick",
+      "title_en": "Dynin-Robotics: Omnimodal Unified Diffusion Vision-Language-Action Model",
+      "authors": "Hoeun Lee, Jaeik Kim, Jusang Oh, Jinhyeok Kim, Geon Choi, Hyeonggeun Kim, Jaeyoung Do",
+      "date": "2026-09-11",
+      "pdf": "https://arxiv.org/pdf/2609.13053v1",
+      "score": "6.0",
+      "evidence": "统一扩散模型学习动作条件下一观测预测与目标预测，服务机器人策略",
+      "tldr": "语言条件机器人策略需要目标结果与动作依赖的场景变化表征。Dynin-Robotics 在 Dynin-Omni 全模态掩码扩散骨干上，把语言、视觉观测、目标与动作统一为离散 token，通过共享轨迹模型同时学习动作预测、下一观测预测、终态目标预测与轨迹到指令重建。该模型在约133万条 Open X-Embodiment 轨迹上持续预训练，并在 VLABench、LIBERO 与真实 Franka 上验证。目标引导与联合去噪提升指令偏移成功率，真实机器人四类操作平均成功率达78.4%，解码加速最高29.2倍，表明共享轨迹建模可作为学习互补目标并在控制中组合预测的通用接口。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Visual goal and dynamics prediction can provide language-conditioned robot policies with both a target outcome and a representation of action-dependent scene changes. We bring these predictions into action generation and selection through a shared trajectory model. Dynin-Robotics implements this formulation on Dynin-Omni, an omnimodal masked-diffusion backbone, representing language, visual observations, goals, and actions as discrete tokens. By varying conditioning and target spans, the same model learns action prediction, action-conditioned next-observation prediction, terminal goal-state prediction, and trajectory-to-instruction reconstruction. These interfaces support test-time scaling through goal prediction, action-candidate evaluation, and joint refinement of action and future-state predictions. We continually pretrain the model on approximately 1.33 million trajectories from 48 Open X-Embodiment datasets and adapt it separately to downstream domains. On two VLABench tasks, robot pretraining improves adaptation within a fixed Stage-2 step budget, and the full objective mixture improves shifted-instruction success over Policy-only post-training under the same coupled decoder. Combining goal guidance with joint action-next-state denoising further improves shifted-instruction success over action-only decoding; the benefit depends on how the predictions are composed. Dynin-Robotics achieves competitive performance on LIBERO and zero-shot LIBERO-Plus, together with a 78.4% average success rate across four manipulation conditions on a Franka Research 3 robot. An optimized block-parallel implementation accelerates model-side action decoding by up to 29.2x relative to the base implementation under the reported profiling setup. These results support shared trajectory modeling as a common interface for learning complementary robot objectives and composing their predictions during control.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/16/2609.13516v1-constraint-grounded-reinforcement-learning-for-variable-impedance-control-in-contact-rich-robotic-insertion",
+      "section": "quick",
+      "title_en": "Constraint-Grounded Reinforcement Learning for Variable Impedance Control in Contact-Rich Robotic Insertion",
+      "authors": "Lin He, Min Deng",
+      "date": "2026-09-11",
+      "pdf": "https://arxiv.org/pdf/2609.13516v1",
+      "score": "6.0",
+      "evidence": "面向接触丰富机器人插入操作的强化学习变阻抗控制",
+      "tldr": "在不确定接触的机器人插入任务中，轴向力限制与合适控制器增益随任务变化，固定增益需人工重调。提出约束接地强化学习CG-RL，以力限制和接触反馈为条件，输出残余运动、插入速率与请求增益，并由控制器将增益投影到可行范围。仿真斜向插入五种子下，无超力限成功率85.8±7.7%，固定中点增益基线仅50.1%。策略能连续适应指定力限并泛化到更宽松力限，免去重训练与人工调参。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "In robotic insertion under uncertain contact, the axial force limit and the appropriate controller gain vary across tasks. As a result, a single fixed gain is unlikely to remain suitable across different task conditions, making conventional impedance controllers reliant on manual retuning. To eliminate manual retuning, we propose Constraint-Grounded Reinforcement Learning (CG-RL), a variable impedance framework for online gain adaptation. Conditioned on the force limit and contact feedback, the policy outputs a residual motion, an insertion rate, and a requested gain. The controller projects this gain into the admissible range without exposing the range itself to the policy. This separation allows a single policy to operate under different force limits without retraining or manual retuning. We evaluate CG-RL on simulated oblique insertion across five training seeds. CG-RL achieves an $85.8\\pm7.7\\%$ (mean $\\pm$ SD) success rate of insertions without violating the force limit, while keeping the applied gain within the admissible range. As a comparison, a fixed-gain baseline using the midpoint gain achieves a success rate of $50.1\\%$. The policy adapts its insertion rate continuously to the specified force limit and further generalizes to more permissive force limits above the training range. In contrast, the same actor without force-limit input does not exhibit this adaptation. The applied gain is guaranteed to remain within the admissible range, while force-limit satisfaction is validated empirically rather than guaranteed formally.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/16/2609.13761v1-learning-in-hand-object-reaching-to-general-6d-poses",
+      "section": "quick",
+      "title_en": "Learning In-Hand Object Reaching to General 6D Poses",
+      "authors": "Junxiao Lin, Tianyue Wu, Jie Yin, Jia Pan, Kaifeng Zhang, Weiming Zhi",
+      "date": "2026-09-12",
+      "pdf": "https://arxiv.org/pdf/2609.13761v1",
+      "score": "6.0",
+      "evidence": "面向手内6D位姿到达的仿真到现实强化学习框架",
+      "tldr": "灵巧手在手中操作常需同时调整物体位置与姿态，但现有学习多聚焦重定向、连续旋转或平移。为此，论文提出 POISE，一个面向手中 6D 位姿到达的 sim-to-real 强化学习框架。它融合多样稳定抓取初始化、目标与几何条件控制、自适应 6D 课程及紧凑奖励，兼顾位姿到达与抓取保持。仿真中初始化使留出抓取成功率从 40.1% 升至 51.5%，课程使全范围成功率从 6.2% 升至 59.5%；硬件上抓取保持奖励将三目标序列成功率从 20% 提至 80%。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "In-hand manipulation allows multi-fingered dexterous hands to reconfigure grasped objects without releasing and regrasping them. This improves manipulation efficiency by reducing repeated grasp acquisition and large arm motions. However, most learning-based methods focus on reorientation, continuous rotation, or translation, whereas many tasks require joint control of object position and orientation. We formulate this capability as in-hand 6D object pose reaching: starting from an existing grasp, coordinated finger motions move the object to a palm-relative target pose. We present POISE (Palm-relative Object reaching In SE(3)), a sim-to-real reinforcement learning framework for this task. POISE combines diverse stable-grasp initialization, goal- and geometry-conditioned control, an adaptive 6D goal curriculum, and a compact reward scheme for pose reaching and grasp preservation. In simulation, diverse initialization raises held-out-grasp success from 40.1% to 51.5% and post-drop recovery from 33.8% to 72.9%; the curriculum raises full-range success from 6.2% to 59.5%. On hardware, the grasp-maintenance reward improves three-target sequence success from 20% to 80%. In real-world experiments, POISE reaches successive 6D targets without manual reset across multiple object geometries and wrist orientations, and recovers from external disturbances. To support further research in dexterous manipulation, we will release our code at https://junxiaolin.github.io/poise-website/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/16/2609.13819v1-benchmarking-optimizers-to-solve-inverse-problems-with-differentiable-physics-simulators",
+      "section": "quick",
+      "title_en": "Benchmarking Optimizers to Solve Inverse Problems with Differentiable Physics Simulators",
+      "authors": "Xiang Chen, Huanhuan Xia",
+      "date": "2026-09-12",
+      "pdf": "https://arxiv.org/pdf/2609.13819v1",
+      "score": "6.0",
+      "evidence": "可微物理模拟器的优化器基准测试",
+      "tldr": "可微分物理模拟器求解逆问题兼具物理正确性与梯度优化效率，但现有优化器性能瓶颈突出。本文构建覆盖离散力学、连续力学、原子模拟、渲染和半经验模型的12个可微分模拟器，并设计参数辨识、逆向设计与最优控制三类逆问题。通过系统对比一阶、近似二阶及全局优化器，分析其表现并给出优化器选择与设计启示。该基准有望推动更有效优化器研发，促进可微分编程在科学与工程中的应用。",
+      "tags": "query:diff-physics",
+      "abstract_en": "Solving inverse problems with differentiable physics simulators holds the potential to revolutionize scientific discovery and engineering design, as it enjoys both the strict physical correctness from rigorous numerical physics simulators, and the high efficiency and effectiveness from automatic differentiation and gradient-based optimization. However, currently, this paradigm faces performance issues in optimization. In this work, we target benchmarking the performance of different optimizers to solve various inverse problems. We construct 12 differentiable physics simulators spanning physics domains including discrete mechanics, continuous mechanics, atomistic simulations, rendering, and semi-empirical physics models. Based on these simulators, we design corresponding inverse problems that can be categorized into parameter identification, inverse design, and optimal control. Finally, we conduct extensive experiments to compare the performance of different optimizers, including regular first-order methods, approximate second-order methods, as well as global optimizers, on these inverse problems, and analyze the results to provide insights on how to choose and design optimizers for differentiable programming. We hope such benchmarks can inspire the development of more effective optimizers, and further promote the applications of differentiable programming in various scientific and engineering domains.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
