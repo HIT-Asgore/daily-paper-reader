@@ -1,0 +1,452 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-17T22:33:03.591755+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 1,
+    "deep_cap": 7,
+    "deep_selected": 1,
+    "quick_candidates": 9,
+    "quick_skim_target": 12,
+    "quick_selected": 9
+  },
+  "deep_dive": [
+    {
+      "id": "2609.14878v2",
+      "source": "arxiv",
+      "title": "Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation",
+      "abstract": "Real-world reinforcement learning (RL) offers a promising route to dexterous manipulation policies that can adapt directly from physical interaction, but learning is hindered by inefficient early exploration and costly failures. We propose a framework that uses sampling-based model predictive control (MPC) as scaffolding for real-world dexterous RL, providing structured prior experience and task-directed guidance during learning without human demonstrations or corrective actions. A small set of MPC trajectories is first used to populate an offline replay buffer and to pretrain the actor and critic. During online learning, MPC intermittently guides data collection while an off-policy Soft Actor-Critic learner trains from both prior MPC experience and newly collected physical interaction, with control gradually transitioning to the learned policy. On continuous in-hand rotation with a 16-DoF Allegro hand, initialized from 20 MPC trajectories collected in 12 minutes on hardware, the policy reaches 100\\% success after 7 minutes of online RL, with about three object drops on average during training. After 20 minutes of online learning, the policy achieves more than five times the rotation speed of the MPC controller and completes 1000 consecutive rotations without a drop. Ablations show complementary benefits from MPC-based pretraining, retained MPC experience, and online MPC guidance, while additional experiments demonstrate rapid adaptation to new object geometries and successful goal-conditioned reorientation.",
+      "authors": [
+        "Emek Barış Küçüktabak",
+        "Karankumar Patel",
+        "Zhaodong Yang",
+        "Jinda Cui",
+        "Kazuhiro Sasabuchi",
+        "Jun Takamatsu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-14T00:57:55+00:00",
+      "link": "https://arxiv.org/pdf/2609.14878v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "sampling-based MPC as scaffolding for real-world reinforcement learning in dexterous manipulation",
+      "llm_evidence_cn": "以采样型MPC为脚手架的真实世界灵巧操作强化学习",
+      "llm_evidence": "以采样型MPC为脚手架的真实世界灵巧操作强化学习",
+      "canonical_evidence": "以采样型MPC为脚手架的真实世界灵巧操作强化学习",
+      "llm_tldr_en": "Real-world RL for dexterous manipulation suffers from inefficient exploration and costly failures. The framework uses sampling-based MPC as scaffolding, pretraining actor and critic from MPC trajectories and intermittently guiding online data collection with an off-policy SAC learner, improving learning without human demonstrations.",
+      "llm_tldr_cn": "真实世界强化学习有望直接从物理交互中学习灵巧操作策略，但早期探索效率低且失败代价高昂。本文提出以采样型模型预测控制作为脚手架的框架，先用少量MPC轨迹填充离线回放池并预训练actor与critic，在线阶段让MPC间歇性引导数据采集，由离策略SAC从先验与在线经验中学习。该方法无需人类示范或纠正动作即可提供结构化先验与任务导向引导，显著提升真实世界灵巧操作的学习效率。",
+      "llm_tldr": "真实世界强化学习有望直接从物理交互中学习灵巧操作策略，但早期探索效率低且失败代价高昂。本文提出以采样型模型预测控制作为脚手架的框架，先用少量MPC轨迹填充离线回放池并预训练actor与critic，在线阶段让MPC间歇性引导数据采集，由离策略SAC从先验与在线经验中学习。该方法无需人类示范或纠正动作即可提供结构化先验与任务导向引导，显著提升真实世界灵巧操作的学习效率。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based reinforcement learning methods for robot arm manipulation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2609.17372v1",
+      "source": "arxiv",
+      "title": "XPACE: Joint World and Action Modeling from Heterogeneous Experience",
+      "abstract": "A general-purpose robot needs to draw on diverse experience, choose actions, and anticipate how those actions will change the world. We introduce XPACE, a unified embodied world model that serves as both a world action model, jointly predicting executable robot actions and future video, and a world simulator, predicting the visual consequences of prescribed actions. Our key insight is that video prediction can both connect heterogeneous experience to action learning and generate new experience for policy improvement. With a shared video backbone between the policy and simulator, we use action-unlabeled video to learn visual dynamics and action-labeled human and robot demonstrations to jointly learn video and action prediction. Building on this architecture, a coarse-to-fine training curriculum progressively emphasizes robot control while retaining human experience, allowing the policy to learn behaviors beyond those covered by robot demonstrations. Beyond learning from recorded experience, XPACE uses its simulator to create additional recovery supervision for the policy. Specifically, we adapt the simulator to its own generated context, synthesize deviation-recovery trajectories around expert demonstrations, and fine-tune the policy on filtered recovery examples. Experiments on XPENG's IRON humanoid robot show that heterogeneous training improves robustness and enables transfer of human-observed skills to tasks absent from robot demonstrations, while recovery data generated by the model's own simulator further improves real-world task completion. Together, these results demonstrate how joint world and action modeling connects learning from heterogeneous experience with simulation-driven policy self-improvement.",
+      "authors": [
+        "Jiacheng Wei",
+        "Jerry Bai",
+        "Xiaoyu Yue",
+        "Zidong Wang",
+        "Xiaoyang Guo",
+        "Cheng Chen",
+        "Fanqi Pu",
+        "Fan Wu",
+        "Zhixu Yue",
+        "Yizhuo Li",
+        "Feng Qiu",
+        "Bo Liu",
+        "Yuying Ge",
+        "Hui Zhou",
+        "Chenyi Chen",
+        "Yixiao Ge"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-15T16:07:34+00:00",
+      "link": "https://arxiv.org/pdf/2609.17372v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "unified world model jointly predicting actions and future video for policy improvement",
+      "llm_evidence_cn": "联合预测动作与未来视频并用于策略改进的世界模型",
+      "llm_evidence": "联合预测动作与未来视频并用于策略改进的世界模型",
+      "canonical_evidence": "联合预测动作与未来视频并用于策略改进的世界模型",
+      "llm_tldr_en": "XPACE is a unified embodied world model that jointly predicts robot actions and future video and acts as a simulator, using unlabeled video to learn visual dynamics.",
+      "llm_tldr_cn": "通用机器人需要利用多样经验选择动作并预判其后果，但带动作标注的数据稀缺。本文提出统一的具身世界模型XPACE，既作为联合预测可执行动作与未来视频的世界动作模型，也作为预测指定动作视觉后果的世界模拟器。其关键在于共享视频主干：用无动作标注视频学习视觉动力学，用有人类和机器人演示的数据联合学习视频与动作预测，并据此生成新经验改进策略。结果表明视频预测能连接异构经验并促进策略提升。",
+      "llm_tldr": "通用机器人需要利用多样经验选择动作并预判其后果，但带动作标注的数据稀缺。本文提出统一的具身世界模型XPACE，既作为联合预测可执行动作与未来视频的世界动作模型，也作为预测指定动作视觉后果的世界模拟器。其关键在于共享视频主干：用无动作标注视频学习视觉动力学，用有人类和机器人演示的数据联合学习视频与动作预测，并据此生成新经验改进策略。结果表明视频预测能连接异构经验并促进策略提升。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.14058v1",
+      "source": "arxiv",
+      "title": "Mobile Multi-Robot Navigation under Runtime Uncertainty via Koopman Operator Learning and Nonlinear Model Predictive Control",
+      "abstract": "In this work, we developed a nonlinear model predictive control (NMPC) framework that employs learned dynamics via the Koopman Operator theory for mobile multi-robot navigation. We formulated and solved NMPC problems using a lifted bilinear Koopman-based model that accurately predicts affine input systems affected by perturbations and uncertainties. Two exemplary multi-robot navigation problems are considered: target reaching and formation control. The output of our method enables closed-loop multi-robot navigation and formation control in environments populated with obstacles, whereby the Koopman operator-based model used in the NMPC formulation addresses runtime uncertainties, namely, various degrees of random wheel slipping. We validated the effectiveness of our method for both problems via extensive numerical simulations in different environments with wheeled robots affected by different amounts of slip and without knowledge of their true dynamic models.",
+      "authors": [
+        "Xiaobin Zhang",
+        "Konstantinos Karydis"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-12T17:16:11+00:00",
+      "link": "https://arxiv.org/pdf/2609.14058v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "learned Koopman dynamics with NMPC for robot navigation",
+      "llm_evidence_cn": "学习Koopman动力学结合NMPC的机器人导航",
+      "llm_evidence": "学习Koopman动力学结合NMPC的机器人导航",
+      "canonical_evidence": "学习Koopman动力学结合NMPC的机器人导航",
+      "llm_tldr_en": "Multi-robot navigation under runtime uncertainty is addressed by learning a lifted bilinear Koopman model embedded in nonlinear MPC, enabling closed-loop target reaching and formation control with obstacles.",
+      "llm_tldr_cn": "移动多机器人导航在运行时不确定性与扰动下难以保持闭环稳定。本文利用Koopman算子学习提升双线性模型，并将其嵌入非线性模型预测控制求解，以应对仿射输入系统的不确定性。在目标到达与编队控制两类任务中实现了含障碍环境下的闭环导航。该工作表明学习动力学结合NMPC可有效处理运行时不确定性。",
+      "llm_tldr": "移动多机器人导航在运行时不确定性与扰动下难以保持闭环稳定。本文利用Koopman算子学习提升双线性模型，并将其嵌入非线性模型预测控制求解，以应对仿射输入系统的不确定性。在目标到达与编队控制两类任务中实现了含障碍环境下的闭环导航。该工作表明学习动力学结合NMPC可有效处理运行时不确定性。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.18167v1",
+      "source": "arxiv",
+      "title": "Characterizing Replay Retention Under Dynamics Shift in Model-Based Reinforcement Learning",
+      "abstract": "Adapting to changes in robot dynamics requires learning from new data without discarding experience that may still be useful. In continual model-based reinforcement learning (RL), replay collected before a dynamics change can slow adaptation, while removing it unnecessarily reduces available training data and can be especially costly if earlier dynamics return. We study when recent transitions are preferable to the full replay history. Two quantities characterize this trade-off: change magnitude and age-staleness area under the curve (AUC), measuring how well transition age separates stale from fresh data. Forgetting stale data helps after large permanent shifts but hurts when dynamics recur and older data becomes useful again. Choosing a replay strategy therefore depends on predicting when older data will help or hurt. We test these effects across two locomotion morphologies, two model-based RL algorithms, and Real-World RL benchmark perturbations. Because ground-truth staleness labels are unavailable on deployed robots, we evaluate whether an estimator built from interaction data can still provide the quantities needed to choose a replay strategy after permanent changes. Our results show that replay retention depends on change magnitude and on how the dynamics evolve.",
+      "authors": [
+        "Everest Yang",
+        "Skye Thompson",
+        "George D. Konidaris"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-09-16T05:47:10+00:00",
+      "link": "https://arxiv.org/pdf/2609.18167v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "continual model-based RL for robot dynamics shift",
+      "llm_evidence_cn": "面向机器人动力学变化的持续基于模型强化学习",
+      "llm_evidence": "面向机器人动力学变化的持续基于模型强化学习",
+      "canonical_evidence": "面向机器人动力学变化的持续基于模型强化学习",
+      "llm_tldr_en": "This work characterizes replay retention under dynamics shift in continual model-based RL using change magnitude and age-staleness AUC, showing when forgetting stale data helps or hurts adaptation.",
+      "llm_tldr_cn": "机器人动力学变化时需要从新数据中适应，而旧回放可能拖慢适应，直接删除又会损失有用经验，尤其当旧动力学重现时。本文研究何时近期经验优于完整回放历史，用变化幅度与年龄陈旧度AUC两个量刻画权衡。结果显示大幅永久偏移后遗忘旧数据有益，但动力学重现时旧数据再次有用。该工作为持续基于模型强化学习中的回放管理提供了理论刻画。",
+      "llm_tldr": "机器人动力学变化时需要从新数据中适应，而旧回放可能拖慢适应，直接删除又会损失有用经验，尤其当旧动力学重现时。本文研究何时近期经验优于完整回放历史，用变化幅度与年龄陈旧度AUC两个量刻画权衡。结果显示大幅永久偏移后遗忘旧数据有益，但动力学重现时旧数据再次有用。该工作为持续基于模型强化学习中的回放管理提供了理论刻画。",
+      "llm_tags": [
+        "query:mbrl-manip:composite"
+      ],
+      "matched_query_tag": "query:mbrl-manip:composite",
+      "matched_query_text": "Papers central to 我需要找出应用于机械臂操作领域的model-base的强化学习方法, especially work that connects or combines: model-based reinforcement learning methods for robot arm manipulation; robot arm manipulation tasks using reinforcement learning; learned policies for robotic manipulation with reinforcement learning; learning dynamics models for robot control; model-based approaches for robot arm control; model based reinforcement learning methods for robotic arm manipulation tasks; how to apply model based RL to robot arm control for improved sample efficiency.",
+      "matched_requirement_id": "req-composite-mbrl-manip",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.14868v2",
+      "source": "arxiv",
+      "title": "Primitive-Informed Sampling-Based MPC for Multi-Fingered Dexterous Manipulation",
+      "abstract": "We present a primitive-informed sampling-based model predictive control (MPC) framework for multi-fingered dexterous manipulation. Sampling-based MPC evaluates candidate control trajectories through forward simulation without requiring gradients through complex contact dynamics. However, directly sampling these trajectories in the high-dimensional joint space of a dexterous hand is inefficient and makes performance strongly dependent on the sampling distribution. Our framework biases sampling using low-dimensional manipulation primitives that encode coordinated finger motions, while simultaneously optimizing joint-level residuals to adapt these motions to the current hand-object configuration. Task-related rollout constraints reject infeasible trajectories during forward simulation, improving the effective use of the sampling budget. We evaluate the approach on a 16 DoF Allegro hand using a synchronized MuJoCo digital twin. Ablations show that both the primitive and residual are necessary for reliable continuous in-hand rotation, that increasing the sampling budget alone does not recover this coordination, and that rollout constraints substantially improve success rate. A primitive extracted for one object size transfers to other sizes and remains effective under model mismatch. The framework further supports grasping, object reorientation, and coordinated arm-hand manipulation, using primitives extracted from both a simulation-trained policy and human hand-motion data.",
+      "authors": [
+        "Emek Barış Küçüktabak",
+        "Karankumar Patel",
+        "Jinda Cui",
+        "Zhaodong Yang",
+        "Kazuhiro Sasabuchi",
+        "Jun Takamatsu"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-14T00:36:17+00:00",
+      "link": "https://arxiv.org/pdf/2609.14868v2",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "sampling-based model predictive control for dexterous manipulation",
+      "llm_evidence_cn": "面向灵巧操作的采样模型预测控制",
+      "llm_evidence": "面向灵巧操作的采样模型预测控制",
+      "canonical_evidence": "面向灵巧操作的采样模型预测控制",
+      "llm_tldr_en": "This paper proposes a primitive-informed sampling-based MPC framework for multi-fingered dexterous manipulation, biasing sampling with low-dimensional primitives to avoid gradients through contact dynamics.",
+      "llm_tldr_cn": "针对灵巧手高维关节空间中直接采样控制轨迹效率低、性能依赖采样分布的问题，论文提出原语引导的采样模型预测控制框架，用编码协调手指运动的低维操作原语偏置采样，并同时优化关节级残差以适应当前手-物构型。该框架通过前向仿真评估候选轨迹、无需接触动力学梯度，并用任务约束剔除不可行轨迹，属面向机械臂的基于模型控制方法。",
+      "llm_tldr": "针对灵巧手高维关节空间中直接采样控制轨迹效率低、性能依赖采样分布的问题，论文提出原语引导的采样模型预测控制框架，用编码协调手指运动的低维操作原语偏置采样，并同时优化关节级残差以适应当前手-物构型。该框架通过前向仿真评估候选轨迹、无需接触动力学梯度，并用任务约束剔除不可行轨迹，属面向机械臂的基于模型控制方法。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "model-based approaches for robot arm control",
+      "matched_requirement_id": "req-14",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.18455v1",
+      "source": "arxiv",
+      "title": "ForwardDLO: Model-Based Bimanual Shape Matching of Unconstrained Deformable Linear Objects",
+      "abstract": "Ropes, cables, and other deformable linear objects appear in tasks from untangling to cable routing and suturing, yet controlling their shape remains a challenge in robot manipulation. We study model-based shape control in a general setting: the object lies unfixated on a support surface and two arms may grasp and move it anywhere along its length. Because each arm chooses a grasp point, direction, and magnitude, the joint action space is combinatorially large, and the dynamics model's per-prediction cost bounds how much of it a planner can search. We present ForwardDLO, a recurrent latent dynamics model for this unfixated bimanual setting that predicts per-segment displacements grounded in the observed rope state at every step. Our model reaches accuracy comparable to more expensive baselines while containing no explicit segment-to-segment operations, which makes batched evaluation of candidate actions cheap. On open-loop prediction of real rope motion it reaches the lowest error of the learned models we evaluate, 13% below the strongest baseline. Within a fixed time budget it scores 8 to 22 times more candidate actions than models of comparable accuracy while matching them in real-world shape matching; and on a simulated routing task at a 30Hz control rate, this throughput converts into 98% task success versus at most 30% for the baselines at their own budgets. We release the model, code, and a dataset of 2.42 million simulated and 14,107 real rope transitions at https://anonymous.4open.science/r/ForwardDLO/",
+      "authors": [
+        "Tim Missal",
+        "Berk Guler",
+        "Lucas Domingues",
+        "Simon Manschitz",
+        "Jan Peters",
+        "Paula Dornhofer Paro Costa"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-16T10:47:33+00:00",
+      "link": "https://arxiv.org/pdf/2609.18455v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "learned latent dynamics model for model-based bimanual manipulation",
+      "llm_evidence_cn": "用于基于模型双臂操作的潜动力学模型",
+      "llm_evidence": "用于基于模型双臂操作的潜动力学模型",
+      "canonical_evidence": "用于基于模型双臂操作的潜动力学模型",
+      "llm_tldr_en": "ForwardDLO learns a recurrent latent dynamics model predicting per-segment rope displacements, enabling model-based bimanual shape matching of unfixated deformable linear objects.",
+      "llm_tldr_cn": "绳索等可变形线性物体的形状控制仍是机械臂操作难题，尤其在物体未固定、双臂可任意抓取的通用设定下，动力学模型的单次预测成本限制了规划搜索范围。本文提出ForwardDLO，一种循环潜动力学模型，在每一步基于观测到的绳态预测分段位移，从而支持基于模型的形状控制。该方法在无约束双臂设定下实现形状匹配，并以较低预测成本扩大可搜索的动作空间。其贡献在于为可变形线性物体的基于模型双臂操作提供了高效的动力学建模方案。",
+      "llm_tldr": "绳索等可变形线性物体的形状控制仍是机械臂操作难题，尤其在物体未固定、双臂可任意抓取的通用设定下，动力学模型的单次预测成本限制了规划搜索范围。本文提出ForwardDLO，一种循环潜动力学模型，在每一步基于观测到的绳态预测分段位移，从而支持基于模型的形状控制。该方法在无约束双臂设定下实现形状匹配，并以较低预测成本扩大可搜索的动作空间。其贡献在于为可变形线性物体的基于模型双臂操作提供了高效的动力学建模方案。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.16074v1",
+      "source": "arxiv",
+      "title": "World-Action Models for Robot Learning and Control: A Survey",
+      "abstract": "Robots operating in open environments act under partial observability, physical constraints, and dynamic task contexts. Beyond mapping observations and language instructions to actions, they must anticipate how candidate actions may affect future states and task-relevant outcomes. Recent advances in world models, video generation, and Vision-Language-Action (VLA) policies have motivated the development of World-Action Models (WAMs), which couple future world prediction with executable action generation. This survey provides a robotics-oriented review of WAMs. We clarify their scope relative to conventional world models, model-based reinforcement learning, action-conditioned video generation, and reactive VLA policies, and organize existing methods through a unified taxonomy covering representations, transition modeling, action interfaces, architectures, training pipelines, data modalities, and scaling strategies. We further review applications of WAMs in manipulation, navigation, and autonomous driving, and we summarize the datasets, benchmarks, metrics, and protocols used to evaluate WAM systems. Finally, we discuss key challenges in action alignment, world-action factorization, spatial and multi-view consistency, long-horizon memory, neural simulation for closed-loop policy learning, and efficient inference. Taken together, this survey aims to provide a concise technical foundation for integrating predictive world modeling with action generation, toward more reliable embodied robot intelligence. Project page: https://rcl-robotics.github.io/Awesome-World-Action-Models.",
+      "authors": [
+        "Zuxing Lu",
+        "Hongjia Zhai",
+        "Guanzhi Wang",
+        "Huajian Zeng",
+        "Jiaqi Yang",
+        "Jingyu Liu",
+        "Lei Cheng",
+        "Yuantai Zhang",
+        "Yuheng Qiu",
+        "Zezhou Cheng",
+        "Ivan Laptev",
+        "Danfei Xu",
+        "Benjamin Riviere",
+        "Giuseppe Loianno",
+        "Eric Xing",
+        "Xingxing Zuo"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-09-13T16:35:56+00:00",
+      "link": "https://arxiv.org/pdf/2609.16074v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "survey linking world models and model-based RL for robot control",
+      "llm_evidence_cn": "连接世界模型与基于模型强化学习的机器人控制综述",
+      "llm_evidence": "连接世界模型与基于模型强化学习的机器人控制综述",
+      "canonical_evidence": "连接世界模型与基于模型强化学习的机器人控制综述",
+      "llm_tldr_en": "Robots in open environments must anticipate how actions affect future states; this survey reviews World-Action Models coupling future prediction with action generation, clarifying their relation to model-based RL and VLA policies for control.",
+      "llm_tldr_cn": "开放环境中的机器人需在部分可观测、物理约束与动态任务下预测候选动作对未来的影响，而现有研究缺乏统一视角。论文综述世界-动作模型（WAM），厘清其与传统世界模型、基于模型的强化学习、动作条件视频生成及反应式VLA策略的关系。文章通过统一框架组织现有方法，明确WAM的范围与分类。该综述为机器人学习与控制中结合未来预测与可执行动作生成的研究提供了系统参考。",
+      "llm_tldr": "开放环境中的机器人需在部分可观测、物理约束与动态任务下预测候选动作对未来的影响，而现有研究缺乏统一视角。论文综述世界-动作模型（WAM），厘清其与传统世界模型、基于模型的强化学习、动作条件视频生成及反应式VLA策略的关系。文章通过统一框架组织现有方法，明确WAM的范围与分类。该综述为机器人学习与控制中结合未来预测与可执行动作生成的研究提供了系统参考。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.17249v1",
+      "source": "arxiv",
+      "title": "Port-Hamiltonian Koopman Operator Synthesis for Mechanical Systems",
+      "abstract": "Finite-dimensional Koopman models enable efficient linear prediction and control of nonlinear robotic systems. However, models learned purely from trajectory data may violate the energetic structure of the underlying mechanics, producing predictions that exhibit artificial energy growth and diverge under recursive propagation. This work presents a structure-preserving Koopman framework for Euler-Lagrange systems built on generalized-momentum coordinates. The momentum transformation exposes the mechanical actuation as a known, state-independent port, which is preserved explicitly in the lifted dynamics. A structure-constrained neural architecture is developed to jointly learn the lifting functions and a port-Hamiltonian Koopman generator, rendering the learned dynamics passive by construction rather than through penalty terms or post-hoc projection. A Cayley-midpoint discretization further preserves the corresponding storage-dissipation balance exactly in discrete time. These properties are established analytically by deriving the discrete storage balance and associated stability guarantees of the learned predictor. Simulation and experimental studies demonstrate improved prediction accuracy, data efficiency, and closed-loop tracking over Koopman baselines, with increasing gains for higher-dimensional systems.",
+      "authors": [
+        "Rajpal Singh",
+        "Aditya Singh",
+        "Jishnu Keshavan"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "eess.SY"
+      ],
+      "published": "2026-09-15T14:31:18+00:00",
+      "link": "https://arxiv.org/pdf/2609.17249v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "structure-preserving learned Koopman dynamics for nonlinear robotic systems",
+      "llm_evidence_cn": "面向非线性机器人系统的保结构学习Koopman动力学",
+      "llm_evidence": "面向非线性机器人系统的保结构学习Koopman动力学",
+      "canonical_evidence": "面向非线性机器人系统的保结构学习Koopman动力学",
+      "llm_tldr_en": "Koopman models learned from data can violate energy structure and diverge; this work builds a structure-preserving port-Hamiltonian Koopman framework for Euler-Lagrange systems using momentum coordinates and structure-constrained neural learning.",
+      "llm_tldr_cn": "纯数据学习的Koopman模型常违反机械系统能量结构，导致递归预测发散。本文在广义动量坐标下构建保结构Koopman框架，用结构约束神经网络联合学习提升函数与端口哈密顿生成元，将驱动显式建模为状态无关端口。实验表明该模型能保持能量结构并抑制人工能量增长。该工作为非线性机器人系统提供了物理一致的线性预测与控制模型。",
+      "llm_tldr": "纯数据学习的Koopman模型常违反机械系统能量结构，导致递归预测发散。本文在广义动量坐标下构建保结构Koopman框架，用结构约束神经网络联合学习提升函数与端口哈密顿生成元，将驱动显式建模为状态无关端口。实验表明该模型能保持能量结构并抑制人工能量增长。该工作为非线性机器人系统提供了物理一致的线性预测与控制模型。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.18164v1",
+      "source": "arxiv",
+      "title": "Energy-Regularized Imitation Learning for Force- and Work-Aware Robotic Manipulation",
+      "abstract": "This paper studies energy-aware manipulation as a physically grounded learning problem. We define a joint-space mechanical-work proxy from joint torque and angular displacement, and train a differentiable energy predictor that estimates this work from robot states and actions. The predictor converts a non-differentiable simulator-side physical quantity into a differentiable regularizer for fine-tuning a pretrained manipulation policy. We instantiate the framework with RVT-2 on RLBench and evaluate 12 manipulation tasks involving object contact, articulated motion, placement, pushing, and sweeping. The proposed fine-tuning reduces the average mechanical work from 208.8J to 204.4J (i.e., 2.1% reduction), while the mean task success rate also increases slightly from 86.2% to 86.9%. These results show that work-aware policy optimization can suppress physically inefficient motion without requiring an explicit differentiable dynamics model.",
+      "authors": [
+        "Toshiki Otani",
+        "Hiromu Taketsugu",
+        "Norimichi Ukita"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.CV"
+      ],
+      "published": "2026-09-16T05:43:28+00:00",
+      "link": "https://arxiv.org/pdf/2609.18164v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "differentiable energy predictor as regularizer for manipulation policy",
+      "llm_evidence_cn": "可微能量预测器作为机械臂操作策略的正则项",
+      "llm_evidence": "可微能量预测器作为机械臂操作策略的正则项",
+      "canonical_evidence": "可微能量预测器作为机械臂操作策略的正则项",
+      "llm_tldr_en": "Energy-aware manipulation is framed as physically grounded learning; the authors train a differentiable energy predictor turning a non-differentiable simulator quantity into a regularizer for fine-tuning a pretrained policy, reducing work and improving success.",
+      "llm_tldr_cn": "本文把能量感知操作建模为物理接地的学习问题，针对仿真器侧物理量不可微的难题，提出从关节力矩和角位移定义机械功代理，并训练可微能量预测器。该预测器将不可微的物理量转化为可微正则项，用于微调预训练操作策略。在RLBench的12个操作任务上，机械功平均降低约2.1%，同时任务成功率提升，说明可微物理正则有助于提升操作质量。",
+      "llm_tldr": "本文把能量感知操作建模为物理接地的学习问题，针对仿真器侧物理量不可微的难题，提出从关节力矩和角位移定义机械功代理，并训练可微能量预测器。该预测器将不可微的物理量转化为可微正则项，用于微调预训练操作策略。在RLBench的12个操作任务上，机械功平均降低约2.1%，同时任务成功率提升，说明可微物理正则有助于提升操作质量。",
+      "llm_tags": [
+        "query:diff-physics"
+      ],
+      "matched_query_tag": "query:diff-physics",
+      "matched_query_text": "differentiable models for manipulation tasks",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2609.18685v1",
+      "source": "arxiv",
+      "title": "WeaveRL: Weaving Reconstruction into Scene-Aware Fabrics for Perceptive Reinforcement Learning",
+      "abstract": "Reinforcement learning allows robots to acquire complex skills, but producing policies for geometrically complex manipulation remains difficult. A promising approach is to learn on top of collision-avoidant controllers, such as geometric fabrics. However, these approaches have relied on static, hand-specified representations of the scene. Integrating active, online 3D perception into massively parallel RL training has so far been inaccessible. We introduce a GPU-accelerated method that reconstructs the scene as a collection of surfels across thousands of parallel simulation instances during active rollouts. This lets policies operate over sensor-derived, rather than hand-specified, geometry. On a suite of collision-dense manipulation tasks, our surfel fabrics enable policies to tackle geometrically complex scenes where primitive-based baselines fail, while maintaining sim-to-real transfer. Furthermore, policies learned with a scene-aware fabric are more robust to the introduction of novel geometry at test time, improving collision-free task completion under unseen obstacles from 35% to 61%. We release our reconstruction system, training code and test dataset to spur research in this direction.",
+      "authors": [
+        "Remo Steiner",
+        "Vikram Ramasamy",
+        "David Tingdahl",
+        "Sam Mady",
+        "Karl Van Wyk",
+        "Nathan Ratliff",
+        "David Recasens Lafuente",
+        "Soha Pouya",
+        "Tuur Stuyck",
+        "Alex Millane"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-16T14:00:37+00:00",
+      "link": "https://arxiv.org/pdf/2609.18685v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL policies for geometrically complex manipulation with GPU parallel simulation",
+      "llm_evidence_cn": "面向几何复杂操作的强化学习策略与GPU并行仿真",
+      "llm_evidence": "面向几何复杂操作的强化学习策略与GPU并行仿真",
+      "canonical_evidence": "面向几何复杂操作的强化学习策略与GPU并行仿真",
+      "llm_tldr_en": "WeaveRL integrates online 3D surfel reconstruction into massively parallel GPU RL training so manipulation policies act on sensor-derived geometry instead of hand-specified scenes.",
+      "llm_tldr_cn": "针对几何复杂操作任务中策略学习困难、且现有几何织物控制器依赖静态手工场景表示的问题，本文提出WeaveRL，一种GPU加速方法，可在数千个并行仿真实例的实时rollout中把场景重建为面元集合，使策略基于传感器几何而非手工几何运行。在碰撞密集的操作任务套件上验证了感知式强化学习的有效性，为在线3D感知与大规模并行RL训练的结合提供了可行路径。",
+      "llm_tldr": "针对几何复杂操作任务中策略学习困难、且现有几何织物控制器依赖静态手工场景表示的问题，本文提出WeaveRL，一种GPU加速方法，可在数千个并行仿真实例的实时rollout中把场景重建为面元集合，使策略基于传感器几何而非手工几何运行。在碰撞密集的操作任务套件上验证了感知式强化学习的有效性，为在线3D感知与大规模并行RL训练的结合提供了可行路径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
