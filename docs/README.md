@@ -6,50 +6,59 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-09-17
-- 运行时间：2026-09-17 22:39:21 UTC
+- 最新运行日期：2026-09-18
+- 运行时间：2026-09-18 21:32:05 UTC
 - 运行状态：成功
-- 本次总论文数：10
+- 本次总论文数：12
 - 精读区：1
-- 速读区：9
+- 速读区：11
 
 ### 今日简报（AI）
-今日精选10篇机器人学习论文，精读1篇、速读9篇。最值得关注的是8.0分的《Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation》，用MPC脚手架让真实世界灵巧操作强化学习更可行；速读中的XPACE世界与动作联合建模也值得一看。普通读者可优先了解MPC与强化学习结合这条路线。
-- 详情：[/202609/17/README](/202609/17/README)
+- 今日共生成 12 篇推荐（精读 1 篇，速读 11 篇）
+- 精读：《Accelerating Visual Policy Learning with Sampling-Based Model Predictive Control》（8.0/10）
+- 速读：《XPACE: Joint World and Action Modeling from Heterogeneous Experience》（7.0/10）, 《ForwardDLO: Model-Based Bimanual Shape Matching of Unconstrained Deformable Linear Objects》（7.0/10）, 《WorldContact: A Contact-Centric World Model for Scalable Robot Learning》（7.0/10）
+- 这些结果覆盖了当下较热的方向，建议先看精读区论文的关键问题与方法。
+- 详情：[/202609/18/README](/202609/18/README)
 
 ### 精读区论文标签
-1. [Real-World Reinforcement Learning with MPC Scaffolding for Dexterous Manipulation](/202609/17/2609.14878v2-real-world-reinforcement-learning-with-mpc-scaffolding-for-dexterous-manipulation)  
-   标签：评分：8.0/10、query:mbrl-manip
-   evidence：以采样型MPC为脚手架的真实世界灵巧操作强化学习
+1. [Accelerating Visual Policy Learning with Sampling-Based Model Predictive Control](/202609/18/2609.20575v1-accelerating-visual-policy-learning-with-sampling-based-model-predictive-control)  
+   标签：评分：8.0/10、query:diff-physics
+   evidence：结合可微仿真一阶策略梯度与采样式MPC
 
 ### 速读区论文标签
-1. [XPACE: Joint World and Action Modeling from Heterogeneous Experience](/202609/17/2609.17372v1-xpace-joint-world-and-action-modeling-from-heterogeneous-experience)  
+1. [XPACE: Joint World and Action Modeling from Heterogeneous Experience](/202609/18/2609.17372v1-xpace-joint-world-and-action-modeling-from-heterogeneous-experience)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：联合预测动作与未来视频并用于策略改进的世界模型
-2. [Characterizing Replay Retention Under Dynamics Shift in Model-Based Reinforcement Learning](/202609/17/2609.18167v1-characterizing-replay-retention-under-dynamics-shift-in-model-based-reinforcement-learning)  
+   evidence：统一世界动作模型，联合预测动作与未来视频
+2. [ForwardDLO: Model-Based Bimanual Shape Matching of Unconstrained Deformable Linear Objects](/202609/18/2609.18455v2-forwarddlo-model-based-bimanual-shape-matching-of-unconstrained-deformable-linear-objects)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：面向机器人动力学变化的持续基于模型强化学习
-3. [ForwardDLO: Model-Based Bimanual Shape Matching of Unconstrained Deformable Linear Objects](/202609/17/2609.18455v1-forwarddlo-model-based-bimanual-shape-matching-of-unconstrained-deformable-linear-objects)  
+   evidence：用于基于模型双臂可变形物体形状控制的递归隐动力学模型
+3. [WorldContact: A Contact-Centric World Model for Scalable Robot Learning](/202609/18/2609.19600v1-worldcontact-a-contact-centric-world-model-for-scalable-robot-learning)  
    标签：评分：7.0/10、query:mbrl-manip
-   evidence：用于基于模型双臂操作的潜动力学模型
-4. [Mobile Multi-Robot Navigation under Runtime Uncertainty via Koopman Operator Learning and Nonlinear Model Predictive Control](/202609/17/2609.14058v1-mobile-multi-robot-navigation-under-runtime-uncertainty-via-koopman-operator-learning-and-nonlinear-model-predictive-control)  
+   evidence：以接触为中心的世界模型预测物体动力学，为操作任务生成训练数据
+4. [DexTouch-WM: Learning Action-Conditioned Tactile World Models from Human Touch for Dexterous Robot Manipulation](/202609/18/2609.20649v1-dextouch-wm-learning-action-conditioned-tactile-world-models-from-human-touch-for-dexterous-robot-manipulation)  
+   标签：评分：7.0/10、query:mbrl-manip
+   evidence：预测未来观测与触觉动力学的动作条件世界模型
+5. [VGFM: Expressive Robot Policies via Dense Value Guidance in Flow Matching](/202609/18/2609.14261v1-vgfm-expressive-robot-policies-via-dense-value-guidance-in-flow-matching)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：学习Koopman动力学结合NMPC的机器人导航
-5. [Primitive-Informed Sampling-Based MPC for Multi-Fingered Dexterous Manipulation](/202609/17/2609.14868v2-primitive-informed-sampling-based-mpc-for-multi-fingered-dexterous-manipulation)  
+   evidence：面向机器人控制策略的离线强化学习框架
+6. [UniDex-ViTac: Learning Unified Visuo-Tactile Dexterous Manipulation Policy from Human Video Data](/202609/18/2609.16504v1-unidex-vitac-learning-unified-visuo-tactile-dexterous-manipulation-policy-from-human-video-data)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向灵巧操作的采样模型预测控制
-6. [World-Action Models for Robot Learning and Control: A Survey](/202609/17/2609.16074v1-world-action-models-for-robot-learning-and-control-a-survey)  
+   evidence：用残差强化学习专家学习灵巧操作策略
+7. [Characterizing Replay Retention Under Dynamics Shift in Model-Based Reinforcement Learning](/202609/18/2609.18167v1-characterizing-replay-retention-under-dynamics-shift-in-model-based-reinforcement-learning)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：连接世界模型与基于模型强化学习的机器人控制综述
-7. [Port-Hamiltonian Koopman Operator Synthesis for Mechanical Systems](/202609/17/2609.17249v1-port-hamiltonian-koopman-operator-synthesis-for-mechanical-systems)  
+   evidence：基于模型的强化学习在机器人动力学变化下的回放保留
+8. [Learning Holistic Whole-Body Loco-Manipulation with a Bipedal Mobile Manipulator](/202609/18/2609.18930v1-learning-holistic-whole-body-loco-manipulation-with-a-bipedal-mobile-manipulator)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向非线性机器人系统的保结构学习Koopman动力学
-8. [Energy-Regularized Imitation Learning for Force- and Work-Aware Robotic Manipulation](/202609/17/2609.18164v1-energy-regularized-imitation-learning-for-force--and-work-aware-robotic-manipulation)  
-   标签：评分：6.0/10、query:diff-physics
-   evidence：可微能量预测器作为机械臂操作策略的正则项
-9. [WeaveRL: Weaving Reconstruction into Scene-Aware Fabrics for Perceptive Reinforcement Learning](/202609/17/2609.18685v1-weaverl-weaving-reconstruction-into-scene-aware-fabrics-for-perceptive-reinforcement-learning)  
+   evidence：面向机械臂操作的强化学习控制器
+9. [Hybrid Residual Reinforcement Learning for Contact-Rich Robotic Book Insertion](/202609/18/2609.19962v1-hybrid-residual-reinforcement-learning-for-contact-rich-robotic-book-insertion)  
    标签：评分：6.0/10、query:mbrl-manip
-   evidence：面向几何复杂操作的强化学习策略与GPU并行仿真
+   evidence：面向接触丰富机械臂插书的残差强化学习
+10. [MoWAM: Explicit Future Motion Prediction for Efficient World Action Models](/202609/18/2609.20709v1-mowam-explicit-future-motion-prediction-for-efficient-world-action-models)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：面向机器人策略学习的未来动力学世界模型
+11. [Agile-WAM: An Agile Tactile World Action Model for Contact-Rich Robot Control](/202609/18/2609.20761v1-agile-wam-an-agile-tactile-world-action-model-for-contact-rich-robot-control)  
+   标签：评分：6.0/10、query:mbrl-manip
+   evidence：学习物理动力学的世界动作模型
 
 
 <div class="dpr-home-promo-card">
