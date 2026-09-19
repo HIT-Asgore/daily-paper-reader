@@ -1,0 +1,39 @@
+{
+  "label": "2026-09-19",
+  "date": "2026-09-19",
+  "generated_at": "2026-09-19T21:53:53",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202609/19/2609.18207v1-reinforcement-learning-for-real-time-vision-language-action-policies",
+      "section": "quick",
+      "title_en": "Reinforcement Learning for Real-Time Vision-Language-Action Policies",
+      "authors": "Perry Dong, Kuo-Han Hung, Dorsa Sadigh, Chelsea Finn",
+      "date": "2026-09-16",
+      "pdf": "https://arxiv.org/pdf/2609.18207v1",
+      "score": "7.0",
+      "evidence": "面向机器人操作策略的强化学习微调",
+      "tldr": "大型预训练 VLA 模型推理延迟高，导致动作选择时观测过时并引发分布偏移，降低机器人可靠性。现有异步执行多基于模仿学习，难以超越训练分布。本文提出 Real-Time EXPO-FT，基于 EXPO-FT 将慢速动作生成与快速反应式动作编辑解耦，用轻量编辑策略基于最新观测实时修正动作。在 Kinetix 上 10/10 环境最优，四个真实动态任务仅用 10 分钟在线数据将平均性能从 42% 提升到 97%。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "Reinforcement learning fine-tuning on top of large, pretrained Vision-Language-Action (VLA) models offers promise for highly reliable robot deployment. However, because of their scale, modern VLA models suffer from high inference latency, so the observation used to select an action is often stale by execution time, creating a distribution shift that can substantially degrade reliability and performance. Prior work has explored asynchronous policy execution to reduce the effect of latency, but these methods are mostly built on imitation learning and offer no mechanism for moving beyond the training distribution toward higher reliability. We close this gap by enabling RL fine-tuning that meets the real-time control requirements of dynamic real-world manipulation. Our approach builds on EXPO-FT, a framework for sample-efficient, reliable VLA fine-tuning with reinforcement learning, and decouples slow, expressive action generation from fast, reactive action edits: a large pretrained VLA proposes action chunks using its strong behavior prior, while a lightweight edit policy performs fast, reactive decision-making by editing actions in response to changes in state, conditioned on the latest observation. We instantiate this as Real-Time EXPO-FT, an RL framework for finetuning real-time VLA policies. On the Kinetix benchmark, Real-Time EXPO-FT enables a delayed policy to achieve the best performance among delayed and non-delayed methods in 10 out of 10 environments. On four dynamic real-world tasks, robot object passing, ball balancing, table soccer kicking, and dynamic object picking, with online robot data capped at 10 minutes, Real-Time EXPO-FT improves average policy performance from 42% to 97%, all without human intervention, demonstrating rapid, sample-efficient adaptation to challenging real-world dynamics. Website: https://pd-perry.github.io/real-time-expo-ft",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202609/19/2609.16644v1-wholebodywam-generalizing-pre-trained-world-action-priors-to-humanoid-loco-manipulation-via-wbc-grounded-coordination",
+      "section": "quick",
+      "title_en": "WholeBodyWAM: Generalizing Pre-trained World-Action Priors to Humanoid Loco-Manipulation via WBC-Grounded Coordination",
+      "authors": "Zhuo Li, Yiming Yao, Jim Tan, Mengjie Jing, Zhipeng Dong, Fei Chen",
+      "date": "2026-09-15",
+      "pdf": "https://arxiv.org/pdf/2609.16644v1",
+      "score": "6.0",
+      "evidence": "联合预测视觉动力学与动作的世界动作模型",
+      "tldr": "现有世界动作模型多面向桌面或机械臂操作，人形全身移动操作仍待探索。WholeBodyWAM联合预测未来视觉动态、操作动作与全身控制意图，在保留预训练世界动作先验的同时，引入WBC语义接地与全身协调。实验在仿真达到91.9%任务成功率，真实OOD任务进度提升0.23，跨WBC成功率方差降低70%。该工作为可扩展人形全身智能提供了不重学全身行为、而是扩展预训练先验的路径。",
+      "tags": "query:mbrl-manip",
+      "abstract_en": "World Action Models (WAMs) offer a promising approach to general-purpose robot manipulation by jointly modeling visual dynamics and actions. However, most WAM studies focus on tabletop or arm-centric manipulation, while humanoid loco-manipulation remains less explored. To address this gap, we introduce WholeBodyWAM, which jointly predicts future visual dynamics, manipulation actions, and whole-body control intents for generalizable humanoid loco-manipulation. It preserves pre-trained world-action priors while grounding heterogeneous whole-body controller (WBC) semantics and coordinating whole-body behavior. Extensive experiments show that WholeBodyWAM achieves an overall simulation task success rate of 91.9%, with a 0.23 improvement in real-world out-of-distribution task progress and a 70% reduction in success-rate variance across WBCs relative to the respective baselines. These results suggest a path toward scalable humanoid whole-body intelligence by extending pre-trained world-action priors through structured WBC grounding and coordination, rather than relearning whole-body behavior from scratch. Project page: https://wholebodywam.github.io/.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

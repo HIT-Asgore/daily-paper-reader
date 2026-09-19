@@ -1,0 +1,100 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-09-19T21:52:32.374550+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 2,
+    "deep_divecandidates": 0,
+    "deep_cap": 7,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 12,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2609.18207v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning for Real-Time Vision-Language-Action Policies",
+      "abstract": "Reinforcement learning fine-tuning on top of large, pretrained Vision-Language-Action (VLA) models offers promise for highly reliable robot deployment. However, because of their scale, modern VLA models suffer from high inference latency, so the observation used to select an action is often stale by execution time, creating a distribution shift that can substantially degrade reliability and performance. Prior work has explored asynchronous policy execution to reduce the effect of latency, but these methods are mostly built on imitation learning and offer no mechanism for moving beyond the training distribution toward higher reliability. We close this gap by enabling RL fine-tuning that meets the real-time control requirements of dynamic real-world manipulation. Our approach builds on EXPO-FT, a framework for sample-efficient, reliable VLA fine-tuning with reinforcement learning, and decouples slow, expressive action generation from fast, reactive action edits: a large pretrained VLA proposes action chunks using its strong behavior prior, while a lightweight edit policy performs fast, reactive decision-making by editing actions in response to changes in state, conditioned on the latest observation. We instantiate this as Real-Time EXPO-FT, an RL framework for finetuning real-time VLA policies. On the Kinetix benchmark, Real-Time EXPO-FT enables a delayed policy to achieve the best performance among delayed and non-delayed methods in 10 out of 10 environments. On four dynamic real-world tasks, robot object passing, ball balancing, table soccer kicking, and dynamic object picking, with online robot data capped at 10 minutes, Real-Time EXPO-FT improves average policy performance from 42% to 97%, all without human intervention, demonstrating rapid, sample-efficient adaptation to challenging real-world dynamics. Website: https://pd-perry.github.io/real-time-expo-ft",
+      "authors": [
+        "Perry Dong",
+        "Kuo-Han Hung",
+        "Dorsa Sadigh",
+        "Chelsea Finn"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO",
+        "cs.LG"
+      ],
+      "published": "2026-09-16T06:38:36+00:00",
+      "link": "https://arxiv.org/pdf/2609.18207v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL fine-tuning for robot manipulation policies",
+      "llm_evidence_cn": "面向机器人操作策略的强化学习微调",
+      "llm_evidence": "面向机器人操作策略的强化学习微调",
+      "canonical_evidence": "面向机器人操作策略的强化学习微调",
+      "llm_tldr_en": "Large pretrained VLA models suffer high inference latency, so actions are based on stale observations. This work enables RL fine-tuning on top of VLA policies to meet real-time control requirements and move beyond the imitation training distribution for more reliable manipulation.",
+      "llm_tldr_cn": "预训练视觉-语言-动作模型虽有望提升机器人可靠性，但规模庞大导致推理延迟高，执行时所依据的观测常常过时，造成分布偏移与性能下降。已有异步执行方法多基于模仿学习，无法超越训练分布。本文提出面向实时控制的强化学习微调框架，在满足动态操作实时性要求的同时提升策略可靠性。实验表明该方法可有效缓解延迟带来的退化，为真实机器人部署提供了新途径。",
+      "llm_tldr": "预训练视觉-语言-动作模型虽有望提升机器人可靠性，但规模庞大导致推理延迟高，执行时所依据的观测常常过时，造成分布偏移与性能下降。已有异步执行方法多基于模仿学习，无法超越训练分布。本文提出面向实时控制的强化学习微调框架，在满足动态操作实时性要求的同时提升策略可靠性。实验表明该方法可有效缓解延迟带来的退化，为真实机器人部署提供了新途径。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learned policies for robotic manipulation with reinforcement learning",
+      "matched_requirement_id": "req-12",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2609.16644v1",
+      "source": "arxiv",
+      "title": "WholeBodyWAM: Generalizing Pre-trained World-Action Priors to Humanoid Loco-Manipulation via WBC-Grounded Coordination",
+      "abstract": "World Action Models (WAMs) offer a promising approach to general-purpose robot manipulation by jointly modeling visual dynamics and actions. However, most WAM studies focus on tabletop or arm-centric manipulation, while humanoid loco-manipulation remains less explored. To address this gap, we introduce WholeBodyWAM, which jointly predicts future visual dynamics, manipulation actions, and whole-body control intents for generalizable humanoid loco-manipulation. It preserves pre-trained world-action priors while grounding heterogeneous whole-body controller (WBC) semantics and coordinating whole-body behavior. Extensive experiments show that WholeBodyWAM achieves an overall simulation task success rate of 91.9%, with a 0.23 improvement in real-world out-of-distribution task progress and a 70% reduction in success-rate variance across WBCs relative to the respective baselines. These results suggest a path toward scalable humanoid whole-body intelligence by extending pre-trained world-action priors through structured WBC grounding and coordination, rather than relearning whole-body behavior from scratch. Project page: https://wholebodywam.github.io/.",
+      "authors": [
+        "Zhuo Li",
+        "Yiming Yao",
+        "Jim Tan",
+        "Mengjie Jing",
+        "Zhipeng Dong",
+        "Fei Chen"
+      ],
+      "primary_category": "cs.RO",
+      "categories": [
+        "cs.RO"
+      ],
+      "published": "2026-09-15T05:03:49+00:00",
+      "link": "https://arxiv.org/pdf/2609.16644v1",
+      "tags": [
+        "keyword:diff-physics",
+        "keyword:mbrl-manip",
+        "query:diff-physics",
+        "query:mbrl-manip"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "world-action model predicting visual dynamics and actions",
+      "llm_evidence_cn": "联合预测视觉动力学与动作的世界动作模型",
+      "llm_evidence": "联合预测视觉动力学与动作的世界动作模型",
+      "canonical_evidence": "联合预测视觉动力学与动作的世界动作模型",
+      "llm_tldr_en": "WholeBodyWAM generalizes pre-trained world-action priors to humanoid loco-manipulation by jointly predicting future visual dynamics, manipulation actions, and whole-body control intents.",
+      "llm_tldr_cn": "针对世界动作模型多集中于桌面或机械臂操作、人形移动操作探索不足的问题，本文提出WholeBodyWAM。该方法联合预测未来视觉动力学、操作动作与全身控制意图，在保留预训练世界动作先验的同时，将异构全身控制器语义与行为进行接地与协调。仿真实验显示整体任务成功率约91%，表明联合动力学与动作建模可显著提升人形移动操作的泛化能力，属于学习动力学模型支撑机器人控制的思路。",
+      "llm_tldr": "针对世界动作模型多集中于桌面或机械臂操作、人形移动操作探索不足的问题，本文提出WholeBodyWAM。该方法联合预测未来视觉动力学、操作动作与全身控制意图，在保留预训练世界动作先验的同时，将异构全身控制器语义与行为进行接地与协调。仿真实验显示整体任务成功率约91%，表明联合动力学与动作建模可显著提升人形移动操作的泛化能力，属于学习动力学模型支撑机器人控制的思路。",
+      "llm_tags": [
+        "query:mbrl-manip"
+      ],
+      "matched_query_tag": "query:mbrl-manip",
+      "matched_query_text": "learning dynamics models for robot control",
+      "matched_requirement_id": "req-13",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
